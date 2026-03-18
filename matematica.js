@@ -1363,7 +1363,7 @@ ui = {
                 loop = true
             }
 
-            if (resposta == null) {
+            if (resposta == "") {
                 resposta = 0
             }
         } while (!((0 <= resposta) && (resposta <= 9)))
@@ -1414,7 +1414,7 @@ ui = {
                         loop = false
                     }
 
-                    return (null)
+                    return ("")
                 }
             }
 
@@ -2920,7 +2920,7 @@ do {
                 }
 
                 // Erro
-                else if (subtipo != null) {
+                else if (subtipo != "") {
                     loop2 = true
                 }
             } while (loop2)
@@ -3197,7 +3197,7 @@ do {
     }
 
     // Erro
-    else if (tipo != null) {
+    else if (tipo == "") {
         loop = true
     }
 } while (loop)
