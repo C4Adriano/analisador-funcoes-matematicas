@@ -1116,7 +1116,6 @@ escrita = {
                 ["atual", "current"],
                 ["digite", "type"],
                 ["digitaste", "typed"],
-                ["erro", "error"],
             ]
 
             conectores = [
