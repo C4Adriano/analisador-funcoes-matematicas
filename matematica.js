@@ -857,6 +857,8 @@ escrita = {
         } else if (config.linguagem == "en") {
             // === TRADUÇÃO DE PORTUGUÊS PARA INGLÊS ===
             frasesCompletas = [
+                ["isso irá alterar a língua do sistema inteiro", "this will change the language of the entire system"],
+                ["você quer alterar a língua para", "do you want to change the language to"],
                 ["a função pode assumir qualquer", "the function can take any"],
                 ["a função só tem esse", "the function only has this"],
                 ["a função será sempre", "the function will always be"],
@@ -3137,15 +3139,18 @@ do {
                     }
 
                     else if (escolha == 5) {
-                        let lingua = ui.intervalo(escrita.itemConfig("Qual língua?", "linguagem") + "\n1 = Português Brasileiro\n2 = Inglês", "Obs.: Isso irá alterar a língua do sistema inteiro.", 1, 2, 0)
-                        if (lingua == 1) {
-                            config.linguagem = "pt-br"
-                            config.separadorDecimal = true
-                            config.acentos = true
-                        } else if (lingua == 2) {
-                            config.linguagem = "en"
-                            config.separadorDecimal = false
-                            config.acentos = false
+                        let pergunta = ui.intervalo(escrita.itemConfig("Qual língua?", "linguagem") + "\n1 = Português Brasileiro\n2 = Inglês", "Obs.: Isso irá alterar a língua do sistema inteiro.", 1, 2, 0),
+                        lingua = ((pergunta == 1) ? "pt-br" : "en")
+                        if (ui.confirmar("Você quer alterar a língua para: " + lingua, "")) {                    
+                            if (lingua == "pt-br") {
+                                config.separadorDecimal = true
+                                config.acentos = true
+                            } else if (lingua == "en") {
+                                config.separadorDecimal = false
+                                config.acentos = false
+                            }
+
+                            config.linguagem = lingua
                         }
                     }
                 }
