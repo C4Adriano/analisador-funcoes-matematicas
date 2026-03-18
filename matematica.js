@@ -490,10 +490,6 @@ escrita = {
             ["∉", "não pertencente a"],
             ["∋", "contém como elemento"],
             ["∌", "não contém como elemento"],
-            ["∉", "pertencente a, mas não"],
-            ["∉̸", "não pertencente a, mas não"],
-            ["∌", "contém como elemento, mas não"],
-            ["∌̸", "não contém como elemento, mas não"],
 
             // === ÍNDICES / EXPOENTES ===
             ["₁", "1"],
@@ -1642,10 +1638,14 @@ ui = {
         do { // Pede um valor
             valor = ui.entrada(mensagem, explicacao, true, casas, comandos)
 
-            if ((!((min <= valor) && (valor <= max))) && (!comandos)) { // Se o valor não estiver entre o intervalo, mostra um erro
+            if ((valor == "sair") || (valor == "config")) {
+                return (valor)
+            }
+
+            if ((!((min <= valor) && (valor <= max)))) { // Se o valor não estiver entre o intervalo, mostra um erro
                 erro.intervalo(min, max)
             }
-        } while ((!((min <= valor) && (valor <= max))) && (!comandos))
+        } while ((!((min <= valor) && (valor <= max))))
 
         return (valor)
     }
@@ -2120,7 +2120,6 @@ algebra = {
                     editar = true
                     loop = true
                     voltar = false
-                    tipo = 9
                 } else {
                     if ((!isFinite(coefA))) {
                         coefA = "a"
@@ -2934,7 +2933,7 @@ do {
                 }
 
                 // Escolha
-                resposta = ui.intervalo(mensagem, "", 0, historico.length - 1) - 1
+                resposta = ui.intervalo(mensagem, "", 0, historico.length - 1)
 
                 // Restaura função
                 let indice = historico.length - 1 - resposta
