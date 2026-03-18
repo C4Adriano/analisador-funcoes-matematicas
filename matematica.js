@@ -734,8 +734,11 @@ escrita = {
             ["B²", "b²"],
 
             ["“A”", "“a”"],
+            ["'A'", "'a'"],
             ["“B”", "“b”"],
+            ["'B'", "'b'"],
             ["“C”", "“c”"],
+            ["'C'", "'c'"],
 
             ["E-", "e-"],
 
@@ -882,6 +885,7 @@ escrita = {
                 ["entre -∞ e c, exceto o próprio c", "between -∞ and c, excluding c itself"],
                 ["não há histórico o suficiente para mudanças", "not enough history for changes"],
                 ["escrevestes apenas uma função até agora. use “alterar” para escrever outra função", "you have only written one function so far. use “change” to write another function"],
+                ["escrevestes apenas uma função até agora. use 'alterar' para escrever outra função", "you have only written one function so far. use 'change' to write another function"],
                 ["todas as configurações já estão na forma padrão", "all settings are already in their default form"],
                 ["não há necessidade de restaurar", "there is no need to restore"],
                 ["voltar às configurações padrão", "reset to default settings"],
@@ -1078,8 +1082,11 @@ escrita = {
 
             conectores = [
                 ["“cancelar”", "“cancel”"],
+                ["'cancelar'", "'cancel'"],
                 ["“sim”", "“yes”"],
+                ["'sim'", "'yes'"],
                 ["“não”", "“no”"],
+                ["'não'", "'no'"],
                 ["obs.", "note"],
                 ["pois", "because"],
                 ["conforme", "according to"],
