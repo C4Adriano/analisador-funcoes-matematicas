@@ -409,9 +409,11 @@ escrita = {
     substituirGrupo(texto = "", lista = [["", ""]]) {
         for (let i = 0; (i < lista.length); i++) {
             let antigo = texto
-            texto = escrita.substituir(texto, lista[i][0], lista[i][1])
+            if ((lista[i][0] != undefined) && (lista[i][1] != undefined)) {
+                texto = escrita.substituir(texto, lista[i][0], lista[i][1])
+            }
             if (antigo != texto) {
-                console.log("antigo:\n" + antigo, "texto:\n" + texto, "de:\n" + lista[i][0], "para:\n" + lista[i][1])
+                console.log("antigo:\n" + antigo, "\ntexto:\n" + texto, "\n----------\nde:\n" + lista[i][0], "\npara:\n" + lista[i][1])
             }
         }
         return (texto)
@@ -505,9 +507,9 @@ escrita = {
             ["ₒ", "_o"],
             ["ₓ", "_x"],
             ["⁽", "^("],
-            ["⁾", "],"],
+            ["⁾", ")"],
             ["₍", "_("],
-            ["₎", "],"],
+            ["₎", ")"],
             ["⁻", "-"],
             ["⁺", "+"],
             ["⁼", "="],
@@ -760,7 +762,7 @@ escrita = {
             ["português", "Português"],
             ["portuguese", "Portuguese"],
             ["inglês", "Inglês"],
-            ["english", "English"],
+            ["english", "English"]
         ]
 
         texto = escrita.substituirGrupo(texto, trocas)
@@ -847,7 +849,7 @@ escrita = {
             palavras = [
                 ["undefined", "indefinido"],
                 ["nan", "não é um número"],
-                ["infinity", "infinito"],
+                ["infinity", "infinito"]
             ]
         } else if (config.linguagem == "en") {
             // === TRADUÇÃO DE PORTUGUÊS PARA INGLÊS ===
@@ -885,7 +887,7 @@ escrita = {
                 ["voltar às configurações padrão", "reset to default settings"],
                 ["configurações não são salvas ao fechar", "settings are not saved on close"],
                 ["isso irá afetar todas as configurações acima", "this will affect all the settings above"],
-                ["essa alteração é permanente", "this change is permanent"],
+                ["essa alteração é permanente", "this change is permanent"]
             ]
 
             frasesParciais = [
@@ -972,11 +974,11 @@ escrita = {
                 ["como y", "since y"],
                 ["pois c", "since c"],
                 ["pois b", "since b"],
-                ["pois y", "since y"],
+                ["pois y", "since y"]
             ]
 
             palavras = [
-                ["erro", "error"]
+                ["erro", "error"],
                 ["português brasileiro", "brazilian portuguese"],
                 ["integral dupla", "double integral"],
                 ["integral tripla", "triple integral"],
@@ -1071,7 +1073,7 @@ escrita = {
                 ["padrão", "default"],
                 ["atual", "current"],
                 ["digitaste", "typed"],
-                ["digite", "type"],
+                ["digite", "type"]
             ]
 
             conectores = [
@@ -1093,7 +1095,7 @@ escrita = {
                 [" ele ", " he "],
                 [" tu ", " you "],
                 [" você ", " you "],
-                [" eu ", " i "],
+                [" eu ", " i "]
             ]
         }
 
