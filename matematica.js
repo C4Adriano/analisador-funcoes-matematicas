@@ -1099,7 +1099,7 @@ escrita = {
             ]
         }
 
-        // texto = escrita.substituirGrupo(texto, [].concat(frasesCompletas, frasesParciais, palavras, conectores))
+        texto = escrita.substituirGrupo(texto, [].concat(frasesCompletas, frasesParciais, palavras, conectores))
 
         return (texto)
     },
