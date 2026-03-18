@@ -1,5 +1,5 @@
 ﻿<div align="center">
-    <h1>Analisador de <b>Funções Matemáticas</b> - Versão 5.5</h1>
+    <h1>Analisador de <b>Funções Matemáticas</b> - Versão 6.0</h1>
     <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
 </div>
 
@@ -593,6 +593,19 @@
 ### Correções
 - Correção de `bugs`
 
+# Versões **6.x**
+
+> **Linhas nestas versões:** *`3172`*<br>
+> **Datada de:** *`2026-03-18 -> 2026-03-18`*
+
+## Versão **6.0** - Lançamento
+
+> **Linhas nesta versão:** *`3172`*<br>
+> **Datada de:** *`2026-03-18 -> 2026-03-18`*
+
+### Mudanças
+- Lançamento Oficial no GitHub
+
 # **Próximas atualizações:**
 + Adicionar opção de verificar quais **Funções** podem ser válidas para os pontos conhecidos
 + Adicionar comandos com `/` para acessar as **Funções JS** e as **Funções de Ajuda**
@@ -604,15 +617,15 @@
 ---
 
 <!--
-# Versões **y.x**
+# Versões **6.x**
 
-> **Linhas nestas versões:** *`z`*<br>
-> **Datada de:** *`YYYY-MM-DD -> YYYY-MM-DD`*
+> **Linhas nestas versões:** *`3000`*<br>
+> **Datada de:** *`2026-03-DD -> 2026-03-DD`*
 
-## Versão **y.x** - 
+## Versão **6.x** - ""
 
-> **Linhas nesta versão:** *`z`*<br>
-> **Datada de:** *`YYYY-MM-DD -> YYYY-MM-DD`*
+> **Linhas nesta versão:** *`3000`*<br>
+> **Datada de:** *`2026-03-DD -> 2026-03-DD`*
 
 ### Adições
 
