@@ -76,4 +76,8 @@ Changelog completo em [`updates.md`](updates.md).
 ## Tecnologias
 
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
+<<<<<<< HEAD
 ![HTML](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
+=======
+![HTML](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
+>>>>>>> 560be556775b4ebce80f817f74c5bbca0b3f07f6
