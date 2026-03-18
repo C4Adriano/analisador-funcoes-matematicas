@@ -705,7 +705,7 @@ escrita = {
                 resultado += atual
             }
 
-            if ((atual == ".") || (atual == "!") || (atual == "?") || (atual == "\n") || (atual == "|") || (atual == "“") || (atual == "'")) {
+            if ((atual == ".") || (atual == "!") || (atual == "?") || (atual == "\n") || (atual == "|") || (atual == "“") || (atual == "\'")) {
                 capitalizar = true
             }
         }
@@ -862,7 +862,7 @@ escrita = {
                 ["a função será sempre", "the function will always be"],
                 ["a função não é", "the function is not"],
                 ["não existe raiz real, portanto não há", "there is no real root, therefore there is no"],
-                ["ainda não posso resolver equações com funções não polinomiais", "i can't solve equations with non-polynomial functions yet"],
+                ["ainda não posso resolver equações com funções não polinomiais", "i can not solve equations with non-polynomial functions yet"],
                 ["porque as funções são iguais, em todos os pontos, elas se encontram", "because the functions are the same at all points, they intersect"],
                 ["porque as funções são diferentes, não há ponto em que elas se encontrarão", "because the functions are different, there is no point at which they will meet"],
                 ["tu tentaste dividir um número por zero, o que não é possível", "you tried to divide a number by zero, which is not possible"],
