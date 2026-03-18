@@ -3138,6 +3138,7 @@ do {
                         config.limiteInteracoes = ui.intervalo(escrita.itemConfig("Qual o limite de interações?", "limiteInteracoes"), "Obs.₁: Isso irá afetar todos os loops, tais como logs, menus, etc.\nObs.₂: Essa configuração é útil para evitar loops infinitos no código, caso algo dê errado", 100, 10000)
                     }
 
+                    // Línguagem
                     else if (escolha == 5) {
                         let pergunta = ui.intervalo(escrita.itemConfig("Qual língua?", "linguagem") + "\n1 = Português Brasileiro\n2 = Inglês", "Obs.: Isso irá alterar a língua do sistema inteiro.", 1, 2, 0),
                         lingua = ((pergunta == 1) ? "pt-br" : "en")
