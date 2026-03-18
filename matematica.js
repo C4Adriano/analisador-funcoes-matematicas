@@ -1375,11 +1375,11 @@ ui = {
      * Exibe um prompt personalizado e verifica ele
      * @param {string} mensagem Mensagem
      * @param {string} explicacao Explicação
-     * @param {boolean} tipo true = número, false = string
+     * @param {boolean} numero true = número, false = string
      * @param {number} casas Casas para arredondar (0 = sem casas)
      * @returns Valor verificado
      */
-    entrada(mensagem = "", explicacao = "", tipo = false, casas = config.casasDecimais, aceitaComandos = false) {
+    entrada(mensagem = "", explicacao = "", numero = false, casas = config.casasDecimais, aceitaComandos = false) {
         let bruto = "", texto = "", valor = 0, valido = false
 
         mensagem = escrita.verificar(mensagem, explicacao)
@@ -1419,7 +1419,7 @@ ui = {
             }
 
             // Número
-            if ((valido) && (tipo)) {
+            if ((valido) && (numero)) {
                 valor = Number(escrita.decimal(texto, true))
                 if (!isFinite(valor)) {
                     valido = false
@@ -1428,12 +1428,12 @@ ui = {
 
             // Confirma
             if ((valido) && (config.confirmacoesEntrada)) {
-                valido = ui.aviso("Tu digitaste: “" + (tipo ? escrita.decimal(valor) : texto) + "”\nTens certeza?", "Obs.₁: Se essa for uma variável e o que foi digitado não for um número, ela será transformada no nome da variável, não no que foi digitado\nObs.₂: Essas mensagens podem ser desativadas nas configurações, em “Confirmações de entrada”", true)
+                valido = ui.aviso("Tu digitaste: “" + (numero ? escrita.decimal(valor) : texto) + "”\nTens certeza?", "Obs.₁: Se essa for uma variável e o que foi digitado não for um número, ela será transformada no nome da variável, não no que foi digitado\nObs.₂: Essas mensagens podem ser desativadas nas configurações, em “Confirmações de entrada”", true)
             }
 
             // Retorna
             if (valido) {
-                if (tipo) {
+                if (numero) {
                     return (algebra.arredonda(valor, casas))
                 }
                 return (texto)
@@ -1445,7 +1445,7 @@ ui = {
             }
         } while (!valido)
 
-        return (tipo ? 0 : "")
+        return (numero ? 0 : "")
     },
 
     /**
