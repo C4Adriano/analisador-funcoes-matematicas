@@ -3142,16 +3142,18 @@ do {
                     else if (escolha == 5) {
                         let pergunta = ui.intervalo(escrita.itemConfig("Qual língua?", "linguagem") + "\n1 = Português Brasileiro\n2 = Inglês", "Obs.: Isso irá alterar a língua do sistema inteiro.", 1, 2, 0),
                         lingua = ((pergunta == 1) ? "pt-br" : "en")
-                        if (ui.confirmar("Você quer alterar a língua para: " + lingua, "")) {                    
-                            if (lingua == "pt-br") {
-                                config.separadorDecimal = true
-                                config.acentos = true
-                            } else if (lingua == "en") {
-                                config.separadorDecimal = false
-                                config.acentos = false
-                            }
+                        if (lingua != config.linguagem) {
+                            if (ui.confirmar("Você quer alterar a língua para: " + lingua, "")) {
+                                if (lingua == "pt-br") {
+                                    config.separadorDecimal = true
+                                    config.acentos = true
+                                } else if (lingua == "en") {
+                                    config.separadorDecimal = false
+                                    config.acentos = false
+                                }
 
-                            config.linguagem = lingua
+                                config.linguagem = lingua
+                            }
                         }
                     }
                 }
