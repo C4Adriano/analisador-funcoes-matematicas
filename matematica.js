@@ -1362,7 +1362,7 @@ ui = {
                 resposta = 0
                 loop = true
             }
-        } while (!((0 <= resposta) && (resposta <= 9)) || ((resposta != "sair") || (resposta != "config")))
+        } while (!((0 <= resposta) && (resposta <= 9)) && ((resposta != "sair") && (resposta != "config")))
 
         return ([resposta, pagina, paginaOpcoes])
     },
@@ -2896,10 +2896,12 @@ do {
                     }
 
                     // Manter
-                    else if ((6 <= subtipo) && (subtipo <= 9)) {
+                    else if ((6 <= subtipo) && (subtipo <= 9) || (subtipo == "sair") || (subtipo == "config")) {
                         tipo = subtipo
                         loop = true
-                        manter = true
+                        if (subtipo != "sair") {
+                            manter = true
+                        }
                     }
 
                     // Voltar
@@ -2948,6 +2950,7 @@ do {
             pagina = 1
             // Loop
             do {
+                tipo = 0
                 loop = true
 
                 // Menu de configurações
