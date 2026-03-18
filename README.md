@@ -4,7 +4,10 @@
 </div>
 
 ---
+
 [![GitHub Pages](https://img.shields.io/badge/Acesse%20aqui-GitHub%20Pages-blue)](https://c4adriano.github.io/analisador-funcoes-matematicas/)
+
+---
 
 ## O que é?
 
