@@ -1342,7 +1342,7 @@ ui = {
             paginaOpcoes = lista.slice((5 * (pagina - 1)), (5 * pagina))
 
             // Responde
-            resposta = ui.intervalo(menu, "", 0, 9)
+            resposta = ui.intervalo(menu, "", 0, 9, 0, true)
             if (resposta == 0) { // Voltar
                 editar = false
                 loop = true
@@ -1376,7 +1376,7 @@ ui = {
      * @param {number} casas Casas para arredondar (0 = sem casas)
      * @returns Valor verificado
      */
-    entrada(mensagem = "", explicacao = "", tipo = false, casas = config.casasDecimais) {
+    entrada(mensagem = "", explicacao = "", tipo = false, casas = config.casasDecimais, aceitaComandos = false) {
         let bruto = "", texto = "", valor = 0, valido = false
 
         mensagem = escrita.verificar(mensagem, explicacao)
@@ -1385,6 +1385,27 @@ ui = {
         let limite = 0
         do {
             bruto = prompt(mensagem)
+
+            // Comandos
+            if ((bruto[0] == "/") && (aceitaComandos)) {
+                let comando = escrita.semAcentos(bruto.slice(1).toLowerCase())
+
+                if ((comando == "ajuda") || (comando == "ajudas") || (comando == "help") || (comando == "cmd") || (comando == "cmds")) {
+                    ui.aviso("Comandos disponíveis:\n/ajuda, /help, /cmds - mostra essa mensagem\n/config, /configuracoes - abre as configurações\n/sair, /exit, /// - sai do programa")
+                } else if ((comando == "config") || (comando == "configuracoes")) {
+                    tipo = 7
+                    subtipo = 7
+                    loop = true
+                    return (7)
+                } else if ((comando == "sair") || (comando == "exit") || (comando == "//")) {
+                    tipo = 0
+                    subtipo = 0
+                    loop = false
+                    return (0)
+                }
+
+                return (null)
+            }
 
             // Cancelar
             if (bruto == null) {
@@ -1623,17 +1644,17 @@ ui = {
      * @param {number} casas Casas decimais
      * @returns Um valor escolhido entre o intervalo
      */
-    intervalo(mensagem = "", explicacao = "", min = 0, max = 1, casas = 0) {
+    intervalo(mensagem = "", explicacao = "", min = 0, max = 1, casas = 0, comandos = false) {
         let valor = 0
 
         // Loop
         do { // Pede um valor
-            valor = ui.entrada(mensagem, explicacao, true, casas)
+            valor = ui.entrada(mensagem, explicacao, true, casas, comandos)
 
-            if (!((min <= valor) && (valor <= max))) { // Se o valor não estiver entre o intervalo, mostra um erro
+            if ((!((min <= valor) && (valor <= max))) && (!comandos)) { // Se o valor não estiver entre o intervalo, mostra um erro
                 erro.intervalo(min, max)
             }
-        } while (!((min <= valor) && (valor <= max)))
+        } while ((!((min <= valor) && (valor <= max))) && (!comandos))
 
         return (valor)
     }
@@ -2765,14 +2786,14 @@ do {
 
     // Tipo de função
     if (!manter) {
-        tipo = ui.entrada("=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair", "", true, 0)
+        tipo = ui.entrada("=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair", "", true, 0, true)
     }
 
     manter = false
     editar = false
     loop = false
 
-    if (((0 <= tipo) && (tipo <= 2)) || ((6 <= tipo) && (tipo <= 9))) {
+    if ((((0 <= tipo) && (tipo <= 2)) || ((6 <= tipo) && (tipo <= 9))) && (tipo != null)) {
         // Polinomiais
         if (tipo == 1) {
             // Incógnitas
@@ -2799,11 +2820,11 @@ do {
         else if (tipo == 2) {
             // Loop do menu
             do {
-                subtipo = ui.entrada("=== Menu ===\nO que queres?\n1 = Função exponencial\n2 = Função logarítmica\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Voltar", "", true, 0)
+                subtipo = ui.entrada("=== Menu ===\nO que queres?\n1 = Função exponencial\n2 = Função logarítmica\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Voltar", "", true, 0, true)
 
                 loop2 = false
 
-                if (((0 <= subtipo) && (subtipo <= 2)) || ((6 <= subtipo) && (subtipo <= 9))) {
+                if ((((0 <= subtipo) && (subtipo <= 2)) || ((6 <= subtipo) && (subtipo <= 9))) && (subtipo != null)) {
                     // Exponencial
                     if (subtipo == 1) {
                         // Incógnitas
@@ -2897,7 +2918,6 @@ do {
 
                 // Erro
                 else {
-                    erro.intervalo(0, 9)
                     loop2 = true
                 }
             } while (loop2)
@@ -2919,22 +2939,15 @@ do {
                     opcao++
                 }
 
-                do {
-                    // Escolha
-                    resposta = ui.entrada(mensagem, "", true, 0) - 1
+                // Escolha
+                resposta = ui.intervalo(mensagem, "", 0, historico.length - 1) - 1
 
-                    // Erro
-                    if (!((0 <= resposta) && (resposta < historico.length))) {
-                        erro.intervalo(1, historico.length)
-                    } else {
-                        // Restaura função
-                        let indice = historico.length - 1 - resposta
-                        globalA = historico[indice][0], globalB = historico[indice][1], globalC = historico[indice][2]
-                        if ((globalA != funcaoAtual[0]) || (globalB != funcaoAtual[1]) || (globalC != funcaoAtual[2])) {
-                            funcaoAtual = [globalA, globalB, globalC]
-                        }
-                    }
-                } while (!((0 <= resposta) && (resposta < historico.length)))
+                // Restaura função
+                let indice = historico.length - 1 - resposta
+                globalA = historico[indice][0], globalB = historico[indice][1], globalC = historico[indice][2]
+                if ((globalA != funcaoAtual[0]) || (globalB != funcaoAtual[1]) || (globalC != funcaoAtual[2])) {
+                    funcaoAtual = [globalA, globalB, globalC]
+                }
             }
         }
 
@@ -2991,10 +3004,8 @@ do {
                 texto += "\n----------------\n7 = Restaurar padrão | 8 = Anterior | 9 = Próxima | 0 = Voltar"
 
                 // Escolha
-                escolha = ui.intervalo(texto, "", 0, 9)
-                if (!((0 <= escolha) && (escolha <= 9))) { // Erro
-                    erro.intervalo(0, 9)
-                } else if (escolha == 7) { // Padrão
+                escolha = ui.intervalo(texto, "", 0, 9, 0, true)
+                if (escolha == 7) { // Padrão
                     if (JSON.stringify(config) == JSON.stringify(padraoConfig)) {
                         ui.aviso("Todas as configurações já estão na forma padrão.", "Não há necessidade de restaurar.")
                     } else {
