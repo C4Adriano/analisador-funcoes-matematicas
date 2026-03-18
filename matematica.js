@@ -1362,11 +1362,7 @@ ui = {
                 resposta = 0
                 loop = true
             }
-
-            if ((resposta == "sair") || (resposta == "config")) {
-                resposta = 0
-            }
-        } while (!((0 <= resposta) && (resposta <= 9)))
+        } while (!((0 <= resposta) && (resposta <= 9)) || ((resposta != "sair") || (resposta != "config")))
 
         return ([resposta, pagina, paginaOpcoes])
     },
@@ -2788,7 +2784,7 @@ do {
     editar = false
     loop = false
 
-    if ((((0 <= tipo) && (tipo <= 2)) || ((6 <= tipo) && (tipo <= 9)))) {
+    if ((((0 <= tipo) && (tipo <= 2)) || ((6 <= tipo) && (tipo <= 9))) || (tipo == "sair") || (tipo == "config")) {
         // Polinomiais
         if (tipo == 1) {
             // Incógnitas
@@ -2819,7 +2815,7 @@ do {
 
                 loop2 = false
 
-                if ((((0 <= subtipo) && (subtipo <= 2)) || ((6 <= subtipo) && (subtipo <= 9)))) {
+                if ((((0 <= subtipo) && (subtipo <= 2)) || ((6 <= subtipo) && (subtipo <= 9))) || (subtipo == "sair") || (subtipo == "config")) {
                     // Exponencial
                     if (subtipo == 1) {
                         // Incógnitas
