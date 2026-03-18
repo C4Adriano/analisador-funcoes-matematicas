@@ -413,7 +413,7 @@ escrita = {
                 texto = escrita.substituir(texto, lista[i][0], lista[i][1])
             }
             if (antigo != texto) {
-                console.log("antigo:\n" + antigo, "texto:\n" + texto, "de:\n" + lista[i][0], "para:\n" + lista[i][1])
+                console.log("antigo:\n" + antigo, "\ntexto:\n" + texto, "\n----------\nde:\n" + lista[i][0], "\npara:\n" + lista[i][1])
             }
         }
         return (texto)
