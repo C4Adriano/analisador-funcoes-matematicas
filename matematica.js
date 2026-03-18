@@ -1363,7 +1363,7 @@ ui = {
                 loop = true
             }
 
-            if (resposta == "") {
+            if ((resposta == "sair") || (resposta == "config")) {
                 resposta = 0
             }
         } while (!((0 <= resposta) && (resposta <= 9)))
@@ -1403,18 +1403,10 @@ ui = {
 
                 if ((comando == "ajuda") || (comando == "ajudas") || (comando == "help") || (comando == "cmd") || (comando == "cmds")) {
                     ui.aviso("Comandos disponíveis:\n/ajuda, /help, /cmds - mostra essa mensagem\n/config, /configuracoes - abre as configurações\n/sair, /exit, /// - sai do programa")
-                } else {
-                    if ((comando == "config") || (comando == "configuracoes") || (comando == "conf") || (comando == "settings") || (comando == "sett") || (comando == "setts")) {
-                        tipo = 7
-                        subtipo = 7
-                        loop = true
-                    } else if ((comando == "sair") || (comando == "exit") || (comando == "//")) {
-                        tipo = 0
-                        subtipo = 0
-                        loop = false
-                    }
-
-                    return ("")
+                } else if ((comando == "config") || (comando == "configuracoes") || (comando == "conf") || (comando == "settings") || (comando == "sett") || (comando == "setts") || (comando == "cfg")) {
+                    return ("config")
+                } else if ((comando == "sair") || (comando == "exit") || (comando == "//")) {
+                    return ("sair")
                 }
             }
 
@@ -2920,7 +2912,7 @@ do {
                 }
 
                 // Erro
-                else if (subtipo != "") {
+                else {
                     loop2 = true
                 }
             } while (loop2)
@@ -2955,7 +2947,7 @@ do {
         }
 
         // Configurações
-        else if (tipo == 7) {
+        else if ((tipo == 7) || (tipo == "config")) {
             pagina = 1
             // Loop
             do {
@@ -3187,7 +3179,7 @@ do {
         }
 
         // Sair
-        else if (tipo == 0) {
+        else if ((tipo == 0) || (tipo == "sair")) {
             if (config.confirmacoesSaida) {
                 loop = !(ui.confirmar("Tu queres sair?", "Obs.: Configurações voltarão ao padrão caso saias"))
             } else {
@@ -3197,7 +3189,7 @@ do {
     }
 
     // Erro
-    else if (tipo == "") {
+    else {
         loop = true
     }
 } while (loop)
