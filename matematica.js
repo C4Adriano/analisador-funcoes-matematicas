@@ -740,7 +740,7 @@ escrita = {
             ["“C”", "“c”"],
             ["'C'", "'c'"],
 
-            ["E-", "e-"],
+            ["1E-", "1e-"],
 
             // Casos especiais para palavras, por padrão, maiúsculas
             ["delta", "Delta"],
