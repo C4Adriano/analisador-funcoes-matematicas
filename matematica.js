@@ -857,7 +857,6 @@ escrita = {
         } else if (config.linguagem == "en") {
             // === TRADUÇÃO DE PORTUGUÊS PARA INGLÊS ===
             frasesCompletas = [
-                ["isso irá alterar a língua do sistema inteiro", "this will change the language of the entire system"],
                 ["você quer alterar a língua para", "do you want to change the language to"],
                 ["a função pode assumir qualquer", "the function can take any"],
                 ["a função só tem esse", "the function only has this"],
@@ -1386,8 +1385,16 @@ ui = {
         do {
             bruto = prompt(mensagem)
 
+            // Cancelar
+            if (bruto == null) {
+                valido = false
+            } else {
+                texto = String(bruto).trim()
+                valido = (texto != "")
+            }
+
             // Comandos
-            if ((bruto[0] == "/") && (aceitaComandos)) {
+            if ((valido) && (bruto[0] == "/") && (aceitaComandos)) {
                 let comando = escrita.semAcentos(bruto.slice(1).toLowerCase())
 
                 if ((comando == "ajuda") || (comando == "ajudas") || (comando == "help") || (comando == "cmd") || (comando == "cmds")) {
@@ -1396,23 +1403,13 @@ ui = {
                     tipo = 7
                     subtipo = 7
                     loop = true
-                    return (7)
                 } else if ((comando == "sair") || (comando == "exit") || (comando == "//")) {
                     tipo = 0
                     subtipo = 0
                     loop = false
-                    return (0)
                 }
 
                 return (null)
-            }
-
-            // Cancelar
-            if (bruto == null) {
-                valido = false
-            } else {
-                texto = String(bruto).trim()
-                valido = (texto != "")
             }
 
             // Número
@@ -2917,7 +2914,7 @@ do {
                 }
 
                 // Erro
-                else {
+                else if (subtipo != null) {
                     loop2 = true
                 }
             } while (loop2)
@@ -3194,8 +3191,7 @@ do {
     }
 
     // Erro
-    else {
-        erro.intervalo(0, 9)
+    else if (tipo != null) {
         loop = true
     }
 } while (loop)
