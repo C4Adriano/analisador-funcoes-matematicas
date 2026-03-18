@@ -1362,6 +1362,10 @@ ui = {
                 resposta = 0
                 loop = true
             }
+
+            if (resposta == null) {
+                resposta = 0
+            }
         } while (!((0 <= resposta) && (resposta <= 9)))
 
         return ([resposta, pagina, paginaOpcoes])
@@ -1399,17 +1403,19 @@ ui = {
 
                 if ((comando == "ajuda") || (comando == "ajudas") || (comando == "help") || (comando == "cmd") || (comando == "cmds")) {
                     ui.aviso("Comandos disponíveis:\n/ajuda, /help, /cmds - mostra essa mensagem\n/config, /configuracoes - abre as configurações\n/sair, /exit, /// - sai do programa")
-                } else if ((comando == "config") || (comando == "configuracoes")) {
-                    tipo = 7
-                    subtipo = 7
-                    loop = true
-                } else if ((comando == "sair") || (comando == "exit") || (comando == "//")) {
-                    tipo = 0
-                    subtipo = 0
-                    loop = false
-                }
+                } else {
+                    if ((comando == "config") || (comando == "configuracoes") || (comando == "conf") || (comando == "settings") || (comando == "sett") || (comando == "setts")) {
+                        tipo = 7
+                        subtipo = 7
+                        loop = true
+                    } else if ((comando == "sair") || (comando == "exit") || (comando == "//")) {
+                        tipo = 0
+                        subtipo = 0
+                        loop = false
+                    }
 
-                return (null)
+                    return (null)
+                }
             }
 
             // Número
@@ -2790,7 +2796,7 @@ do {
     editar = false
     loop = false
 
-    if ((((0 <= tipo) && (tipo <= 2)) || ((6 <= tipo) && (tipo <= 9))) && (tipo != null)) {
+    if ((((0 <= tipo) && (tipo <= 2)) || ((6 <= tipo) && (tipo <= 9)))) {
         // Polinomiais
         if (tipo == 1) {
             // Incógnitas
@@ -2821,7 +2827,7 @@ do {
 
                 loop2 = false
 
-                if ((((0 <= subtipo) && (subtipo <= 2)) || ((6 <= subtipo) && (subtipo <= 9))) && (subtipo != null)) {
+                if ((((0 <= subtipo) && (subtipo <= 2)) || ((6 <= subtipo) && (subtipo <= 9)))) {
                     // Exponencial
                     if (subtipo == 1) {
                         // Incógnitas
