@@ -2950,7 +2950,7 @@ do {
             pagina = 1
             // Loop
             do {
-                tipo = 0
+                tipo = -1
                 loop = true
 
                 // Menu de configurações
@@ -3025,6 +3025,11 @@ do {
                 } else if (escolha == 9) { // +1
                     escolha = -1
                     pagina += 1
+                } else if (escolha == "config") {
+                    escolha = -1
+                } else if (escolha == "sair") {
+                    escolha = 0
+                    tipo = "sair"
                 }
 
                 // Página 1
