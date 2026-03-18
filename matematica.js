@@ -978,7 +978,7 @@ escrita = {
             ]
 
             palavras = [
-                ["erro", "error"]
+                ["erro", "error"],
                 ["português brasileiro", "brazilian portuguese"],
                 ["integral dupla", "double integral"],
                 ["integral tripla", "triple integral"],
