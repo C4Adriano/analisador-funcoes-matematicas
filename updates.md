@@ -573,7 +573,7 @@
 
 ---
 
-## Versão **5.5** - 
+## Versão **5.5** - Melhorias
 
 > **Linhas nesta versão:** *`3255`*<br>
 > **Datada de:** *`2026-03-07 -> 2026-03-17`*
