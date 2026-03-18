@@ -613,6 +613,7 @@
 + Adicionar uma **Função** que faz contas de maneira segura
 + Adicionar equações entre **Funções Exponenciais**
 + Adicionar uma forma de achar `a` em **Funções Exponenciais**
++ Adicionar **Funções Trigonométricas** e suas propriedades
 
 ---
 
