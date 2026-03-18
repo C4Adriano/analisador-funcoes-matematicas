@@ -409,7 +409,7 @@ escrita = {
     substituirGrupo(texto = "", lista = [["", ""]]) {
         for (let i = 0; (i < lista.length); i++) {
             let antigo = texto
-            if (lista[i][0] && lista[i][1]) {
+            if (lista[i][0] != 0) {
                 texto = escrita.substituir(texto, lista[i][0], lista[i][1])
             }
             if (antigo != texto) {
