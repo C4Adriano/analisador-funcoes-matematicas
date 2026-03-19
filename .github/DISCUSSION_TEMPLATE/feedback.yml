@@ -1,0 +1,66 @@
+labels: [feedback]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Feedback
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: "Type / Tipo"
+      options:
+        - "Positive / Positivo"
+        - "Negative / Negativo"
+        - "Neutral / Neutro"
+    validations:
+      required: true
+
+  - type: textarea
+    id: feedback
+    attributes:
+      label: "Feedback"
+      description: "English: Share your feedback | Português: Compartilhe seu feedback"
+      placeholder: "..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: "Suggestion / Sugestão"
+      description: "English: Any improvement suggestion | Português: Alguma sugestão de melhoria"
+      placeholder: "..."
+    validations:
+      required: false
+```
+
+---
+
+**Estrutura final do teu repositório ficará assim:**
+```
+repositório/
+│
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md
+│   │   └── suggestion.md
+│   ├── DISCUSSION_TEMPLATE/
+│   │   ├── question.yml
+│   │   └── feedback.yml
+│   └── PULL_REQUEST_TEMPLATE.md
+│
+├── docs/
+│   ├── LICENSE.md
+│   ├── CHANGELOG.md
+│   ├── CONTRIBUTING.md
+│   ├── SECURITY.md
+│   └── CODE_OF_CONDUCT.md
+│
+├── src/
+│   └── matematica.js
+│
+├── CODEOWNERS
+├── FUNDING.yml
+├── index.html
+└── README.md
