@@ -33,34 +33,3 @@ body:
       placeholder: "..."
     validations:
       required: false
-```
-
----
-
-**Estrutura final do teu repositório ficará assim:**
-```
-repositório/
-│
-├── .github/
-│   ├── ISSUE_TEMPLATE/
-│   │   ├── bug_report.md
-│   │   └── suggestion.md
-│   ├── DISCUSSION_TEMPLATE/
-│   │   ├── question.yml
-│   │   └── feedback.yml
-│   └── PULL_REQUEST_TEMPLATE.md
-│
-├── docs/
-│   ├── LICENSE.md
-│   ├── CHANGELOG.md
-│   ├── CONTRIBUTING.md
-│   ├── SECURITY.md
-│   └── CODE_OF_CONDUCT.md
-│
-├── src/
-│   └── matematica.js
-│
-├── CODEOWNERS
-├── FUNDING.yml
-├── index.html
-└── README.md
