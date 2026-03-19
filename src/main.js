@@ -899,6 +899,7 @@ escrita = {
             ]
 
             frasesParciais = [
+                ["em construção", "under construction"],
                 ["o que queres", "what do you want"],
                 ["tu digitaste", "you typed"],
                 ["tens certeza", "are you sure"],
@@ -987,6 +988,7 @@ escrita = {
             ]
 
             palavras = [
+                ["histórico", "history"],
                 ["erro", "error"],
                 ["equações", "equations"],
                 ["exceto", "execpt"],
@@ -2947,7 +2949,7 @@ do {
 
                 // Mostra histórico
                 for (let func = historico.length - 1; func >= 0; func--) {
-                    mensagem += String(opcao) + " ⇒ a = " + escrita.decimal(historico[func][0]) + "; b = " + escrita.decimal(historico[func][1]) + "; c = " + escrita.decimal(historico[func][2]) + "\n"
+                    mensagem += String(opcao) + " ⇒ “a” = " + escrita.decimal(historico[func][0]) + "; “b” = " + escrita.decimal(historico[func][1]) + "; “c” = " + escrita.decimal(historico[func][2]) + "\n"
                     opcao++
                 }
 
@@ -3196,7 +3198,7 @@ do {
 
         // Rever
         else if (tipo == 8) {
-            ui.exibir("Valores:\na = " + escrita.decimal(globalA) + "\nb = " + escrita.decimal(globalB) + "\nc = " + escrita.decimal(globalC))
+            ui.exibir("Valores:\n“a” = " + escrita.decimal(globalA) + "\n“b” = " + escrita.decimal(globalB) + "\n“c” = " + escrita.decimal(globalC))
             loop = true
         }
 
