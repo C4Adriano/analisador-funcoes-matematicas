@@ -859,7 +859,7 @@ escrita = {
         } else if (config.linguagem == "en") {
             // === TRADUÇÃO DE PORTUGUÊS PARA INGLÊS ===
             frasesCompletas = [
-                ["você quer alterar a língua para", "do you want to change the language to"],
+                ["tu queres alterar a língua para", "do you want to change the language to"],
                 ["a função pode assumir qualquer", "the function can take any"],
                 ["a função só tem esse", "the function only has this"],
                 ["a função será sempre", "the function will always be"],
@@ -889,13 +889,78 @@ escrita = {
                 ["entre -∞ e c, exceto o próprio c", "between -∞ and c, excluding c itself"],
                 ["não há histórico o suficiente para mudanças", "not enough history for changes"],
                 ["escrevestes apenas uma função até agora. use “alterar” para escrever outra função", "you have only written one function so far. use “change” to write another function"],
-                ["escrevestes apenas uma função até agora. use \'alterar\' para escrever outra função", "you have only written one function so far. use \'change\' to write another function"],
                 ["todas as configurações já estão na forma padrão", "all settings are already in their default form"],
                 ["não há necessidade de restaurar", "there is no need to restore"],
                 ["voltar às configurações padrão", "reset to default settings"],
                 ["configurações não são salvas ao fechar", "settings are not saved on close"],
                 ["isso irá afetar todas as configurações acima", "this will affect all the settings above"],
-                ["essa alteração é permanente", "this change is permanent"]
+                ["essa alteração é permanente", "this change is permanent"],
+
+                // Unicode
+                ["caracteres unicode são os símbolos especiais, tais como: “ℝ”, “∀”, etc. desativar fará com que eles sejam transformados em uma palavra correspondente, tais como:", "unicode characters are special symbols, such as: “ℝ”, “∀”, etc. disabling them will cause them to be replaced by a corresponding word, such as:"],
+                ["nem todos os caracteres unicode serão desativados", "not all unicode characters will be disabled"],
+                ["essa configuração pode mudar algumas explicações", "this setting may change some explanations"],
+
+                // Explicações
+                ["ativar fará com que certas mensagens sejam diferentes e tenham explicações, por exemplo: o cálculo do delta,", "enabling will cause certain messages to be different and include explanations, for example: the calculation of delta,"],
+                ["sem ser só o resultado dele", "instead of just the result"],
+                ["nem todas as mensagens têm versão explicada", "not all messages have an explained version"],
+                ["desativar o unicode fará com que seja mostrado: delta = b^2 - 4 * a * c", "disabling unicode will show: delta = b^2 - 4 * a * c"],
+
+                // Acentos
+                ["essa configuração irá tirar todos os acentos gráficos das palavras, podendo haver má interpretação", "this setting will remove all diacritical marks from words, which may cause misinterpretation"],
+
+                // Capitalizadas
+                ["essa configuração irá transformar as palavras em “normais”, no caso, a primeira letra da frase em maiúscula e as outras todas em minúsculas", "this setting will transform words into “normal” form, meaning the first letter of each sentence in uppercase and all others in lowercase"],
+                ["essa configuração irá desativar “maiúsculas” e “minúsculas”", "this setting will disable “uppercase” and “lowercase”"],
+
+                // Maiúsculas
+                ["essa configuração irá transformar todas as letras em maiúsculas", "this setting will transform all letters into uppercase"],
+                ["essa configuração irá desativar “capitalizadas” e “minúsculas”", "this setting will disable “capitalized” and “lowercase”"],
+
+                // Minúsculas
+                ["essa configuração irá transformar todas as letras em minúsculas", "this setting will transform all letters into lowercase"],
+                ["essa configuração irá desativar “capitalizadas” e “maiúsculas”", "this setting will disable “capitalized” and “uppercase”"],
+
+                // Ponto decimal
+                ["essa configuração irá transformar os números com “.” em números com “,”", "this setting will transform numbers with “.” into numbers with “,”"],
+                ["isso é apenas estético e não irá afetar as contas", "this is only aesthetic and will not affect calculations"],
+                ["tu também poderás escrever os números com “,” em vez de “.”", "you will also be able to write numbers with “,” instead of “.”"],
+
+                // Multiplicação simples
+                ["isso irá alterar esteticamente as contas polinomiais de: “a · x² + b · x + c” para: “ax² + bx + c”", "this will aesthetically change polynomial expressions from: “a · x² + b · x + c” to: “ax² + bx + c”"],
+                ["desativar o unicode irá transformar o “·” em “*”", "disabling unicode will transform “·” into “*”"],
+                ["isso não irá afetar o “×”, porém o unicode irá transformá-lo em “*”", "this will not affect “×”, but unicode will transform it into “*”"],
+
+                // Confirmações de entrada
+                ["toda e qualquer coisa digitada passará a ter que ser confirmada", "everything typed will have to be confirmed"],
+
+                // Confirmações de saída
+                ["isso irá ativar uma mensagem antes de sair / fechar o programa", "this will enable a message before exiting / closing the program"],
+
+                // Erros
+                ["desativar pode fazer com que tu não percebas algum erro que estás cometendo", "disabling may cause you not to notice an error you are making"],
+
+                // Mostrar função
+                ["“mostrar função” significa que será mostrada a função (por exemplo: ax² + bx + c) no começo dos menus, antes das opções", "“show function” means the function (for example: ax² + bx + c) will be shown at the beginning of menus, before the options"],
+                ["a função ainda continuará sendo mostrada quando for escolhida a opção “6” (rever / mostrar função)", "the function will still be shown when option “6” (review / show function) is selected"],
+
+                // Casas decimais
+                ["um número muito pequeno de casas decimais pode fazer as contas ficarem erradas", "too few decimal places may cause calculations to be incorrect"],
+                ["os números já digitados serão arredondados para o novo número de casas decimais", "numbers already entered will be rounded to the new number of decimal places"],
+
+                // Precisão do log
+                ["isso poderá afetar contas muito pequenas envolvendo logs", "this may affect very small calculations involving logarithms"],
+                ["tu terás que escrever literalmente “1e-12”", "you will have to literally type “1e-12”"],
+
+                // Precisão da divisão
+                ["isso poderá afetar contas muito pequenas envolvendo divisões", "this may affect very small calculations involving divisions"],
+
+                // Limite de iterações
+                ["isso irá afetar todos os loops, tais como logs, menus, etc.", "this will affect all loops, such as logarithms, menus, etc."],
+
+                // Linguagem
+                ["isso irá alterar a língua do sistema inteiro.", "this will change the entire system language."],
             ]
 
             frasesParciais = [
@@ -944,21 +1009,6 @@ escrita = {
                 ["estudo do sinal", "signal analytics"],
                 ["não há", "there is no"],
                 ["não é", "is not"],
-                ["para todo", "for all"],
-                ["não existe", "does not exist"],
-                ["não pertencente a", "not belonging to"],
-                ["pertencente a", "belonging to"],
-                ["proporcional a", "proportional to"],
-                ["semelhante a", "similar to"],
-                ["congruente a", "congruent to"],
-                ["aproximadamente igual a", "approximately equal to"],
-                ["idêntico a", "identical to"],
-                ["raiz quadrada de", "square root of"],
-                ["raiz cúbica de", "cube root of"],
-                ["raiz quarta de", "fourth root of"],
-                ["menos infinito", "negative infinity"],
-                ["ou exclusivo", "or exclusive"],
-                ["ou não exclusivo", "or not exclusive"],
                 ["divisão por zero", "division by zero"],
                 ["ultrapassou o limite", "exceeded the limit"],
                 ["assíntota horizontal", "horizontal asymptote"],
@@ -993,16 +1043,8 @@ escrita = {
                 ["equações", "equations"],
                 ["exceto", "execpt"],
                 ["português brasileiro", "brazilian portuguese"],
-                ["integral dupla", "double integral"],
-                ["integral tripla", "triple integral"],
-                ["integral de linha", "line integral"],
-                ["integral de superfície", "surface integral"],
-                ["integral de volume", "volume integral"],
-                ["derivada parcial", "partial derivative"],
                 ["raiz real", "real root"],
                 ["raízes reais", "real roots"],
-                ["conjunto de", "set of"],
-                ["um único", "a single"],
                 ["domínio", "domain"],
                 ["imagem", "range"],
                 ["positiva", "positive"],
@@ -1042,15 +1084,6 @@ escrita = {
                 ["coincidem", "coincide"],
                 ["infinitos", "infinite"],
                 ["infinito", "infinity"],
-                ["reais", "reals"],
-                ["inteiros", "integers"],
-                ["naturais", "naturals"],
-                ["racionais", "rationals"],
-                ["complexos", "complexes"],
-                ["existem", "they exist"],
-                ["vazio", "empty"],
-                ["união", "union"],
-                ["ângulo", "angle"],
                 ["inválido", "invalid"],
                 ["motivo", "reason"],
                 ["número", "number"],
@@ -1069,9 +1102,6 @@ escrita = {
                 ["entre", "between"],
                 ["sempre", "always"],
                 ["aviso", "warning"],
-                ["alfa", "alpha"],
-                ["soma", "sum"],
-                ["produto", "product"],
                 ["função", "function"],
                 ["funções", "functions"],
                 ["configurações", "settings"],
@@ -1091,11 +1121,8 @@ escrita = {
 
             conectores = [
                 ["“cancelar”", "“cancel”"],
-                ["\'cancelar\'", "\'cancel\'"],
                 ["“sim”", "“yes”"],
-                ["\'sim\'", "\'yes\'"],
                 ["“não”", "“no”"],
-                ["\'não\'", "\'no\'"],
                 ["obs.", "note"],
                 ["pois", "because"],
                 ["conforme", "according to"],
@@ -1121,6 +1148,47 @@ escrita = {
         return (texto)
     },
 
+    traduzirUnicode(texto = "") {
+        trocas = [
+            ["alfa", "alpha"],
+            ["para todo", "for all"],
+            ["não existe", "does not exist"],
+            ["não pertencente a", "not belonging to"],
+            ["pertencente a", "belonging to"],
+            ["proporcional a", "proportional to"],
+            ["semelhante a", "similar to"],
+            ["congruente a", "congruent to"],
+            ["aproximadamente igual a", "approximately equal to"],
+            ["idêntico a", "identical to"],
+            ["raiz quadrada de", "square root of"],
+            ["raiz cúbica de", "cube root of"],
+            ["raiz quarta de", "fourth root of"],
+            ["menos infinito", "negative infinity"],
+            ["ou exclusivo", "or exclusive"],
+            ["ou não exclusivo", "or not exclusive"],
+            ["integral dupla", "double integral"],
+            ["integral tripla", "triple integral"],
+            ["integral de linha", "line integral"],
+            ["integral de superfície", "surface integral"],
+            ["integral de volume", "volume integral"],
+            ["derivada parcial", "partial derivative"],
+            ["reais", "reals"],
+            ["inteiros", "integers"],
+            ["naturais", "naturals"],
+            ["racionais", "rationals"],
+            ["complexos", "complexes"],
+            ["vazio", "empty"],
+            ["união", "union"],
+            ["ângulo", "angle"],
+            ["soma", "sum"],
+            ["produto", "product"],
+        ]
+
+        texto = escrita.substituirGrupo(texto, trocas)
+
+        return (texto)
+    },
+
     /**
      * [FORMATAÇÃO] - Formatação geral de mensagens
      * @param {string} mensagem Mensagem
@@ -1140,16 +1208,19 @@ escrita = {
             mensagem = escrita.multiSimples(mensagem)
         }
 
-        // === REMOÇÃO DE UNICODE ===
-        // Remove símbolos Unicode especiais, se desativado
-        if (!config.unicode) {
-            mensagem = escrita.semUnicode(mensagem)
-        }
-
         // === TRADUÇÃO ===
         // Traduz a mensagem para a linguagem configurada
         if (config.linguagem != "pt-br") {
             mensagem = escrita.traduzir(mensagem)
+        }
+
+        // === REMOÇÃO DE UNICODE ===
+        // Remove símbolos Unicode especiais, se desativado
+        if (!config.unicode) {
+            mensagem = escrita.semUnicode(mensagem)
+            if (config.linguagem != "pt-br") {
+                mensagem = escrita.traduzirUnicode(mensagem)
+            }
         }
 
         // === REMOÇÃO DE ACENTOS ===
@@ -3174,7 +3245,7 @@ do {
                         let pergunta = ui.intervalo(escrita.itemConfig("Qual língua?", "linguagem") + "\n1 = Português Brasileiro\n2 = Inglês", "Obs.: Isso irá alterar a língua do sistema inteiro.", 1, 2, 0),
                         lingua = ((pergunta == 1) ? "pt-br" : "en")
                         if (lingua != config.linguagem) {
-                            if (ui.confirmar("Você quer alterar a língua para: " + lingua, "")) {
+                            if (ui.confirmar("Tu queres alterar a língua para: " + lingua, "")) {
                                 if (lingua == "pt-br") {
                                     config.separadorDecimal = true
                                     config.acentos = true
