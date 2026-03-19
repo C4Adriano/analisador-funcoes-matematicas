@@ -36,13 +36,13 @@ let config = {
 /**
  * Configurações padrão do programa (para restaurar as configurações)
  */
-padraoConfig = JSON.parse(JSON.stringify(config)),
+configPadrao = JSON.parse(JSON.stringify(config)),
 
 /**
  * Objeto base para as ajudas de código (repetições) e cálculos comuns
  * - Use as funções aqui para obter ajudas comuns, como o domínio, imagem, interseção com os eixos, estudo do sinal, etc. As funções de ajuda também são usadas para exibir os resultados, então as explicações são feitas automaticamente conforme as configurações.
  */
-ajudas = {
+helpers = {
     /**
      * Monta o domínio de uma função
      * @param {string} pertence Intervalo de pertencimento
@@ -141,8 +141,8 @@ ajudas = {
             } else if ((coefA == 0) && (coefB != 0)) { // Afim
                 ui.exibir(mensagem + "x = " + escrita.decimal(algebra.divisao((y - coefC), coefB)), "x = (y - c) / b")
             } else if (coefA != 0) { // Quadrática
-                let delta = ajudas.calcDelta(coefA, coefB, (coefC - y))
-                ajudas.exibDelta(delta[0], mensagem + "∄! x ∈ ℝ", mensagem + "x = " + escrita.decimal(delta[1]), mensagem + "x₁ = " + escrita.decimal(delta[1]) + ", x₂ = " + escrita.decimal(delta[2]), true)
+                let delta = helpers.calcDelta(coefA, coefB, (coefC - y))
+                helpers.exibDelta(delta[0], mensagem + "∄! x ∈ ℝ", mensagem + "x = " + escrita.decimal(delta[1]), mensagem + "x₁ = " + escrita.decimal(delta[1]) + ", x₂ = " + escrita.decimal(delta[2]), true)
             }
         } else { // Não polinomial
             let expoente = algebra.divisao((y - coefC), coefB, false) // (y - c) / b
@@ -174,10 +174,10 @@ ajudas = {
                 let op = (coefC > 0) ? 0 : 1
                 ui.exibir("ƒ(x) " + ((coefC != 0) ? operacoes[op] : "=") + " 0, ∀ x ∈ ℝ", "A função será sempre " + ((coefC != 0) ? palavras[op] : "nula") + ", pois c " + ((coefC != 0) ? operacoes[op] : "=") + " 0")
             } else if ((coefA == 0) && (coefB != 0)) { // Afim
-                let raizAfim = ajudas.calcRaiz(0, coefB, coefC), op = (coefB > 0) ? 0 : 1
+                let raizAfim = helpers.calcRaiz(0, coefB, coefC), op = (coefB > 0) ? 0 : 1
                 ui.exibir("ƒ(x) " + operacoes[op] + " 0 se x " + operacoes[(op + ((coefB < 0) ? 1 : 0)) % 2] + " " + raizAfim + "\nƒ(x) " + operacoes[1 - op] + " 0 se x " + operacoes[(1 - op + ((coefB < 0) ? 1 : 0)) % 2] + " " + raizAfim + "\nƒ(x) = 0 em x = " + raizAfim, "Pois b " + operacoes[op] + " 0.")
             } else if (coefA != 0) { // Quadrática
-                let delta = ajudas.calcRaiz(coefA, coefB, coefC), op = (coefA > 0) ? 0 : 1
+                let delta = helpers.calcRaiz(coefA, coefB, coefC), op = (coefA > 0) ? 0 : 1
                 if (delta[1] > delta[2]) { // Inverte para ficar de menor a maior
                     let temp = delta[2]
                     delta[2] = delta[1]
@@ -198,7 +198,7 @@ ajudas = {
         } else { // Não polinomial
             if (funcExp) { // Exponencial
                 if (algebra.divisao(-coefC, coefB, false) > 0) { // Raiz
-                    let raizExp = ajudas.calcRaiz(coefA, coefB, coefC, true)
+                    let raizExp = helpers.calcRaiz(coefA, coefB, coefC, true)
                     if (((coefA < 1) && (coefB < 0)) || ((coefA > 1) && (coefB > 0))) { // Curva para cima
                         ui.exibir("ƒ(x) > 0 se x > " + escrita.decimal(raizExp) + "\nƒ(x) < 0 se x < " + escrita.decimal(raizExp) + "\nƒ(x) = 0 em x = " + escrita.decimal(raizExp), "Conforme a curva e a raiz, neste caso, crescente e (−c) / b > 0.")
                     } else if (((coefA > 1) && (coefB < 0)) || ((coefA < 1) && (coefB > 0))) { // Curva para baixo
@@ -210,7 +210,7 @@ ajudas = {
                     ui.exibir("ƒ(x) < 0, ∀ x ∈ ℝ", "Conforme b < 0 e (−c) / b ≤ 0.")
                 }
             } else if (funcLog) { // Logarítmica
-                let raizLog = ajudas.calcRaiz(coefA, coefB, coefC, false, true)
+                let raizLog = helpers.calcRaiz(coefA, coefB, coefC, false, true)
                 if (((coefA < 1) && (coefB < 0)) || ((coefA > 1) && (coefB > 0))) { // Curva para cima
                     ui.exibir("ƒ(x) > 0 se x > " + escrita.decimal(raizLog) + "\nƒ(x) < 0 se x < " + escrita.decimal(raizLog) + "\nƒ(x) = 0 em x = " + escrita.decimal(raizLog), "Conforme a curva (crescente)")
                 } else if (((coefA > 1) && (coefB < 0)) || ((coefA < 1) && (coefB > 0))) { // Curva para baixo
@@ -230,15 +230,15 @@ ajudas = {
      */
     equacoes(polinomial = true, coefA = 0, coefB = 0, coefC = 0) {
         if (polinomial) { // Polinomial
-            if (funcaoBase.length == 0) { // Salvar a primeira função para comparar depois
-                funcaoBase = [coefA, coefB, coefC]
-                editar = true
+            if (funcBase.length == 0) { // Salvar a primeira função para comparar depois
+                funcBase = [coefA, coefB, coefC]
+                pedirCoefs = true
                 loop = true
                 ui.aviso("ƒ₁(x) salva.", "Digite ƒ₂(x) para comparar.")
                 return (0)
             } else { // Comparar as duas funções
-                algebra.equacoes(funcaoBase, [coefA, coefB, coefC])
-                funcaoBase = []
+                algebra.equacoes(funcBase, [coefA, coefB, coefC])
+                funcBase = []
                 return (1)
             }
         } else { // Não polinomial
@@ -292,7 +292,7 @@ ajudas = {
             } else if ((coefA == 0) && (coefB != 0)) {
                 return (algebra.divisao(-coefC, coefB))
             } else if (coefA != 0) {
-                return (ajudas.calcDelta(coefA, coefB, coefC))
+                return (helpers.calcDelta(coefA, coefB, coefC))
             }
         } else {
             let expoente = algebra.divisao(-coefC, coefB, false)
@@ -1246,7 +1246,7 @@ escrita = {
      * @returns Mensagem formatada
      */
     itemConfig(mensagem = "", nome = "") {
-        return (mensagem + " | Atual: “" + escrita.formatar(config[nome]) + "” | Padrão: “" + escrita.formatar(padraoConfig[nome]) + "”")
+        return (mensagem + " | Atual: “" + escrita.formatar(config[nome]) + "” | Padrão: “" + escrita.formatar(configPadrao[nome]) + "”")
     },
 },
 
@@ -1306,7 +1306,7 @@ ui = {
      * @returns Retorna a resposta, a página atual, as opções por página
      */
     menu(opcoes = ["---"], pagina = 1) {
-        let resposta = 0, menu = "", opcao = 1, paginaOpcoes = [""], total = 0, lista = [].concat(opcoes)
+        let resposta = 0, menu = "", opcao = 1, opcoesPag = [""], total = 0, lista = [].concat(opcoes)
 
         // Organiza
         while (((lista.length % 5) != 0) || (lista.length == 0)) {
@@ -1334,15 +1334,15 @@ ui = {
 
             opcao = 1
             menu += "\n----------------\n6 = Rever | 7 = Alterar | 8 = Anterior | 9 = Próxima | 0 = Voltar"
-            paginaOpcoes = lista.slice((5 * (pagina - 1)), (5 * pagina))
+            opcoesPag = lista.slice((5 * (pagina - 1)), (5 * pagina))
 
             // Responde
             resposta = ui.intervalo(menu, "", 0, 9, 0, true)
             if (resposta == 0) { // Voltar
-                editar = false
+                pedirCoefs = false
                 loop = true
             } else if (resposta == 7) { // Alterar
-                editar = true
+                pedirCoefs = true
                 loop = true
                 resposta = 0
             } else if (resposta == 8) { // -1
@@ -1351,16 +1351,26 @@ ui = {
             } else if (resposta == 9) { // +1
                 resposta = -1
                 pagina += 1
+            } else if (resposta == "sair") {
+                loop = true
+                manterTipo = true
+                resposta = 0
+                tipo = 0
+            } else if (resposta == "config") {
+                loop = true
+                manterTipo = true
+                resposta = 0
+                tipo = 7
             }
 
             // Limite
-            if (ajudas.estourouLimite(++limite)) {
+            if (helpers.estourouLimite(++limite)) {
                 resposta = 0
                 loop = true
             }
         } while (!((0 <= resposta) && (resposta <= 9)) && ((resposta != "sair") && (resposta != "config")))
 
-        return ([resposta, pagina, paginaOpcoes])
+        return ([resposta, pagina, opcoesPag])
     },
 
     /**
@@ -1424,7 +1434,7 @@ ui = {
             }
 
             // Limite
-            if (ajudas.estourouLimite(++limite)) {
+            if (helpers.estourouLimite(++limite)) {
                 valido = true
             }
         } while (!valido)
@@ -1631,12 +1641,12 @@ ui = {
      * @param {number} casas Casas decimais
      * @returns Um valor escolhido entre o intervalo
      */
-    intervalo(mensagem = "", explicacao = "", min = 0, max = 1, casas = 0, comandos = false) {
+    intervalo(mensagem = "", explicacao = "", min = 0, max = 1, casas = 0, aceitaComandos = false) {
         let valor = 0
 
         // Loop
         do { // Pede um valor
-            valor = ui.entrada(mensagem, explicacao, true, casas, comandos)
+            valor = ui.entrada(mensagem, explicacao, true, casas, aceitaComandos)
 
             if ((valor == "sair") || (valor == "config")) {
                 return (valor)
@@ -1798,8 +1808,8 @@ algebra = {
 
         // Quadrática
         else if ((coefA != 0)) {
-            let delta = ajudas.calcDelta(coefA, coefB, coefC)
-            ajudas.exibDelta(delta[0], "As funções não possuem pontos de interseção reais", "As funções se encontram em: x = " + escrita.decimal(delta[1]), "As funções se encontram em: x₁ = " + escrita.decimal(delta[1]) + ", x₂ = " + escrita.decimal(delta[2]))
+            let delta = helpers.calcDelta(coefA, coefB, coefC)
+            helpers.exibDelta(delta[0], "As funções não possuem pontos de interseção reais", "As funções se encontram em: x = " + escrita.decimal(delta[1]), "As funções se encontram em: x₁ = " + escrita.decimal(delta[1]) + ", x₂ = " + escrita.decimal(delta[2]))
         }
     },
 
@@ -1813,7 +1823,7 @@ algebra = {
      * @returns Retorna os coeficientes em formato de array numérico [a, b, c]
      */
     incognita(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
-        let voltar = false, pontoConst = [0], pontoAfim = [0], pontoQuad = [0], pontoExp = [0], pontoLog = [0], denominador = 0, delta1 = 0, delta2 = 0, term1 = 0, term2 = 0, term3 = 0, term4 = 0
+        let repetir = false, pts = [0], denominador = 0, dif1 = 0, dif2 = 0, term1 = 0, term2 = 0, term3 = 0, term4 = 0
 
         if ((funcExp) || (funcLog)) {
             // Valida
@@ -1838,45 +1848,45 @@ algebra = {
         // Loop
         let limite = 0
         do {
-            voltar = false
+            repetir = false
 
             // Polinomial
             if ((!funcExp) && (!funcLog)) {
                 // Constante
                 if ((coefA == 0) && (coefB == 0)) {
-                    pontoConst = algebra.ponto()
+                    pts = algebra.ponto()
 
-                    coefC = pontoConst[1]
+                    coefC = pts[1]
                 }
 
                 // Afim
                 else if ((coefA == 0) && (coefB != 0)) {
                     // Únicas
                     if (((coefB == "b") && (coefC != "c")) || ((coefC == "c") && (coefB != "b"))) {
-                        pontoAfim = algebra.ponto()
+                        pts = algebra.ponto()
 
                         if (coefC == "c") {
-                            coefC = pontoAfim[1] - (coefB * pontoAfim[0])
+                            coefC = pts[1] - (coefB * pts[0])
                         } else if (coefB == "b") {
-                            if (pontoAfim[0] != 0) {
-                                coefB = algebra.divisao((pontoAfim[1] - coefC), pontoAfim[0])
+                            if (pts[0] != 0) {
+                                coefB = algebra.divisao((pts[1] - coefC), pts[0])
                             } else {
                                 erro.divZero("x ≠ 0")
-                                voltar = true
+                                repetir = true
                             }
                         }
                     }
 
                     // Duplas
                     else if (((coefB == "b") && (coefC == "c"))) {
-                        pontoAfim = algebra.ponto(2)
+                        pts = algebra.ponto(2)
 
-                        if ((pontoAfim[0] != pontoAfim[2]) && ((pontoAfim[0] != 0) || (pontoAfim[2] != 0))) {
-                            coefB = algebra.divisao((pontoAfim[3] - pontoAfim[1]), (pontoAfim[2] - pontoAfim[0]))
-                            coefC = pontoAfim[1] - (coefB * pontoAfim[0])
+                        if ((pts[0] != pts[2]) && ((pts[0] != 0) || (pts[2] != 0))) {
+                            coefB = algebra.divisao((pts[3] - pts[1]), (pts[2] - pts[0]))
+                            coefC = pts[1] - (coefB * pts[0])
                         } else {
                             erro.divZero("x ≠ 0 e x₁ ≠ x₂")
-                            voltar = true
+                            repetir = true
                         }
                     }
                 }
@@ -1887,97 +1897,97 @@ algebra = {
 
                     // a
                     if ((coefA == "a") && ((coefB != "b") && (coefC != "c"))) {
-                        pontoQuad = algebra.ponto()
+                        pts = algebra.ponto()
 
-                        if (pontoQuad[0] != 0) {
-                            coefA = algebra.divisao((pontoQuad[1] - (coefB * pontoQuad[0]) - coefC), (pontoQuad[0] * pontoQuad[0]))
+                        if (pts[0] != 0) {
+                            coefA = algebra.divisao((pts[1] - (coefB * pts[0]) - coefC), (pts[0] * pts[0]))
                         } else {
                             erro.divZero("x ≠ 0")
-                            voltar = true
+                            repetir = true
                         }
                     }
 
                     // b
                     else if ((coefB == "b") && ((coefA != "a") && (coefC != "c"))) {
-                        pontoQuad = algebra.ponto()
+                        pts = algebra.ponto()
 
-                        if (pontoQuad[0] != 0) {
-                            coefB = algebra.divisao((pontoQuad[1] - (coefA * (pontoQuad[0] * pontoQuad[0])) - coefC), (pontoQuad[0]))
+                        if (pts[0] != 0) {
+                            coefB = algebra.divisao((pts[1] - (coefA * (pts[0] * pts[0])) - coefC), (pts[0]))
                         } else {
                             erro.divZero("x ≠ 0")
-                            voltar = true
+                            repetir = true
                         }
                     }
 
                     // c
                     else if ((coefC == "c") && ((coefB != "b") && (coefA != "a"))) {
-                        pontoQuad = algebra.ponto()
+                        pts = algebra.ponto()
 
-                        coefC = pontoQuad[1] - (coefA * (pontoQuad[0] * pontoQuad[0])) - (coefB * pontoQuad[0])
+                        coefC = pts[1] - (coefA * (pts[0] * pts[0])) - (coefB * pts[0])
                     }
 
                     // Duplas
 
                     // a, b
                     else if ((coefA == "a") && (coefB == "b") && (coefC != "c")) {
-                        pontoQuad = algebra.ponto(2)
+                        pts = algebra.ponto(2)
 
-                        if ((pontoQuad[0] != 0) && (pontoQuad[0] != pontoQuad[2])) {
-                            denominador = pontoQuad[0] * pontoQuad[2] * (pontoQuad[0] - pontoQuad[2])
-                            coefA = algebra.divisao(((pontoQuad[1] - coefC) * pontoQuad[2] - (pontoQuad[3] - coefC) * pontoQuad[0]), denominador)
-                            coefB = algebra.divisao(((pontoQuad[3] - coefC) * pontoQuad[0] * pontoQuad[0] - (pontoQuad[1] - coefC) * pontoQuad[2] * pontoQuad[2]), denominador)
+                        if ((pts[0] != 0) && (pts[0] != pts[2])) {
+                            denominador = pts[0] * pts[2] * (pts[0] - pts[2])
+                            coefA = algebra.divisao(((pts[1] - coefC) * pts[2] - (pts[3] - coefC) * pts[0]), denominador)
+                            coefB = algebra.divisao(((pts[3] - coefC) * pts[0] * pts[0] - (pts[1] - coefC) * pts[2] * pts[2]), denominador)
                         } else {
                             erro.divZero("x ≠ 0 e x₁ ≠ x₂")
-                            voltar = true
+                            repetir = true
                         }
                     }
 
                     // a, c
                     else if ((coefA == "a") && (coefB != "b") && (coefC == "c")) {
-                        pontoQuad = algebra.ponto(2)
+                        pts = algebra.ponto(2)
 
-                        denominador = (pontoQuad[0] * pontoQuad[0]) - (pontoQuad[2] * pontoQuad[2])
+                        denominador = (pts[0] * pts[0]) - (pts[2] * pts[2])
                         if (denominador != 0) {
-                            coefA = algebra.divisao(((pontoQuad[1] - coefB * pontoQuad[0]) - (pontoQuad[3] - coefB * pontoQuad[2])), denominador)
-                            coefC = pontoQuad[1] - (coefA * (pontoQuad[0] * pontoQuad[0])) - (coefB * pontoQuad[0])
+                            coefA = algebra.divisao(((pts[1] - coefB * pts[0]) - (pts[3] - coefB * pts[2])), denominador)
+                            coefC = pts[1] - (coefA * (pts[0] * pts[0])) - (coefB * pts[0])
                         } else {
                             erro.divZero("x₁ ≠ x₂")
-                            voltar = true
+                            repetir = true
                         }
                     }
 
                     // b, c
                     else if ((coefA != "a") && (coefB == "b") && (coefC == "c")) {
-                        pontoQuad = algebra.ponto(2)
+                        pts = algebra.ponto(2)
 
-                        if ((pontoQuad[0] != pontoQuad[2])) {
-                            coefB = algebra.divisao(((pontoQuad[3] - (coefA * pontoQuad[2] * pontoQuad[2])) - (pontoQuad[1] - (coefA * pontoQuad[0] * pontoQuad[0]))), (pontoQuad[2] - pontoQuad[0]))
-                            coefC = pontoQuad[1] - (coefA * (pontoQuad[0] * pontoQuad[0])) - (coefB * pontoQuad[0])
+                        if ((pts[0] != pts[2])) {
+                            coefB = algebra.divisao(((pts[3] - (coefA * pts[2] * pts[2])) - (pts[1] - (coefA * pts[0] * pts[0]))), (pts[2] - pts[0]))
+                            coefC = pts[1] - (coefA * (pts[0] * pts[0])) - (coefB * pts[0])
                         } else {
                             erro.divZero("x₁ ≠ x₂")
-                            voltar = true
+                            repetir = true
                         }
                     }
 
                     // Triplas
                     else if ((coefA == "a") && (coefB == "b") && (coefC == "c")) {
-                        pontoQuad = algebra.ponto(3)
+                        pts = algebra.ponto(3)
 
-                        delta1 = pontoQuad[3] - pontoQuad[1]
-                        delta2 = pontoQuad[5] - pontoQuad[1]
-                        term1 = (pontoQuad[2] * pontoQuad[2]) - (pontoQuad[0] * pontoQuad[0])
-                        term2 = pontoQuad[2] - pontoQuad[0]
-                        term3 = (pontoQuad[4] * pontoQuad[4]) - (pontoQuad[0] * pontoQuad[0])
-                        term4 = pontoQuad[4] - pontoQuad[0]
+                        dif1 = pts[3] - pts[1]
+                        dif2 = pts[5] - pts[1]
+                        term1 = (pts[2] * pts[2]) - (pts[0] * pts[0])
+                        term2 = pts[2] - pts[0]
+                        term3 = (pts[4] * pts[4]) - (pts[0] * pts[0])
+                        term4 = pts[4] - pts[0]
                         denominador = (term1 * term4) - (term2 * term3)
 
                         if (denominador != 0) {
-                            coefA = algebra.divisao(((delta1 * term4) - (term2 * delta2)), denominador)
-                            coefB = algebra.divisao(((term1 * delta2) - (delta1 * term3)), denominador)
-                            coefC = pontoQuad[1] - (coefA * (pontoQuad[0] * pontoQuad[0])) - (coefB * pontoQuad[0])
+                            coefA = algebra.divisao(((dif1 * term4) - (term2 * dif2)), denominador)
+                            coefB = algebra.divisao(((term1 * dif2) - (dif1 * term3)), denominador)
+                            coefC = pts[1] - (coefA * (pts[0] * pts[0])) - (coefB * pts[0])
                         } else {
                             erro.divZero("x₁ ≠ x₂")
-                            voltar = true
+                            repetir = true
                         }
                     }
                 }
@@ -1989,33 +1999,33 @@ algebra = {
 
                 // a
                 if ((coefA == "a") && ((coefB != "b") && (coefC != "c"))) {
-                    pontoExp = algebra.ponto()
+                    pts = algebra.ponto()
 
-                    coefA = algebra.arredonda(algebra.divisao((pontoExp[1] - coefC), coefB, false) ** (algebra.divisao(1, pontoExp[0], false)))
+                    coefA = algebra.arredonda(algebra.divisao((pts[1] - coefC), coefB, false) ** (algebra.divisao(1, pts[0], false)))
                 }
 
                 // b
                 else if ((coefB == "b") && ((coefA != "a") && (coefC != "c"))) {
-                    pontoExp = algebra.ponto()
+                    pts = algebra.ponto()
 
-                    coefB = algebra.divisao((pontoExp[1] - coefC), (coefA ** pontoExp[0]))
+                    coefB = algebra.divisao((pts[1] - coefC), (coefA ** pts[0]))
                 }
 
                 // c
                 else if ((coefC == "c") && ((coefB != "b") && (coefA != "a"))) {
-                    pontoExp = algebra.ponto()
+                    pts = algebra.ponto()
 
-                    coefC = pontoExp[1] - (coefB * (coefA ** pontoExp[0]))
+                    coefC = pts[1] - (coefB * (coefA ** pts[0]))
                 }
 
                 // Duplas
 
                 // a, b
                 else if ((coefA == "a") && (coefB == "b") && (coefC != "c")) {
-                    pontoExp = algebra.ponto(2)
+                    pts = algebra.ponto(2)
 
-                    coefA = algebra.arredonda(algebra.divisao((pontoExp[1] - coefC), (pontoExp[3] - coefC), false) ** (algebra.divisao(1, (pontoExp[0] - pontoExp[2]), false)))
-                    coefB = algebra.divisao((pontoExp[1] - coefC), (coefA ** pontoExp[0]))
+                    coefA = algebra.arredonda(algebra.divisao((pts[1] - coefC), (pts[3] - coefC), false) ** (algebra.divisao(1, (pts[0] - pts[2]), false)))
+                    coefB = algebra.divisao((pts[1] - coefC), (coefA ** pts[0]))
                 }
 
                 // a, c
@@ -2029,10 +2039,10 @@ algebra = {
 
                 // b, c
                 else if ((coefA != "a") && (coefB == "b") && (coefC == "c")) {
-                    pontoExp = algebra.ponto(2)
+                    pts = algebra.ponto(2)
 
-                    coefB = algebra.divisao((pontoExp[3] - pontoExp[1]), ((coefA ** pontoExp[2]) - (coefA ** pontoExp[0])))
-                    coefC = pontoExp[1] - (coefB * (coefA ** pontoExp[0]))
+                    coefB = algebra.divisao((pts[3] - pts[1]), ((coefA ** pts[2]) - (coefA ** pts[0])))
+                    coefC = pts[1] - (coefB * (coefA ** pts[0]))
                 }
 
                 // Triplas
@@ -2052,23 +2062,23 @@ algebra = {
 
                 // a
                 if ((coefA == "a") && (coefB != "b") && (coefC != "c")) {
-                    pontoLog = algebra.ponto()
+                    pts = algebra.ponto()
 
-                    coefA = algebra.arredonda(pontoLog[0] ** (algebra.divisao(coefB, (pontoLog[1] - coefC), false)))
+                    coefA = algebra.arredonda(pts[0] ** (algebra.divisao(coefB, (pts[1] - coefC), false)))
                 }
 
                 // b
                 else if ((coefA != "a") && (coefB == "b") && (coefC != "c")) {
-                    pontoLog = algebra.ponto()
+                    pts = algebra.ponto()
 
-                    coefB = algebra.divisao((pontoLog[1] - coefC), algebra.log(pontoLog[0], coefA))
+                    coefB = algebra.divisao((pts[1] - coefC), algebra.log(pts[0], coefA))
                 }
 
                 // c
                 else if ((coefA != "a") && (coefB != "b") && (coefC == "c")) {
-                    pontoLog = algebra.ponto()
+                    pts = algebra.ponto()
 
-                    coefC = pontoLog[1] - algebra.arredonda((coefB * algebra.log(pontoLog[0], coefA)))
+                    coefC = pts[1] - algebra.arredonda((coefB * algebra.log(pts[0], coefA)))
                 }
 
                 // Duplas
@@ -2085,18 +2095,18 @@ algebra = {
 
                 // a, c
                 else if ((coefA == "a") && (coefB != "b") && (coefC == "c")) {
-                    pontoLog = algebra.ponto(2)
+                    pts = algebra.ponto(2)
 
-                    coefA = algebra.arredonda(algebra.divisao(pontoLog[0], pontoLog[2], false) ** (algebra.divisao(coefB, (pontoLog[1] - pontoLog[3]), false)))
-                    coefC = pontoLog[1] - (coefB * algebra.log(pontoLog[0], coefA))
+                    coefA = algebra.arredonda(algebra.divisao(pts[0], pts[2], false) ** (algebra.divisao(coefB, (pts[1] - pts[3]), false)))
+                    coefC = pts[1] - (coefB * algebra.log(pts[0], coefA))
                 }
 
                 // b, c
                 else if ((coefA != "a") && (coefB == "b") && (coefC == "c")) {
-                    pontoLog = algebra.ponto(2)
+                    pts = algebra.ponto(2)
 
-                    coefB = algebra.divisao((pontoLog[1] - pontoLog[3]), (algebra.log(pontoLog[0], coefA) - algebra.log(pontoLog[2], coefA)))
-                    coefC = pontoLog[1] - (coefB * algebra.log(pontoLog[0], coefA))
+                    coefB = algebra.divisao((pts[1] - pts[3]), (algebra.log(pts[0], coefA) - algebra.log(pts[2], coefA)))
+                    coefC = pts[1] - (coefB * algebra.log(pts[0], coefA))
                 }
 
                 // Triplas
@@ -2117,9 +2127,9 @@ algebra = {
                     coefA = "a"
                     coefB = "b"
                     coefC = "c"
-                    editar = true
+                    pedirCoefs = true
                     loop = true
-                    voltar = false
+                    repetir = false
                 } else {
                     if ((!isFinite(coefA))) {
                         coefA = "a"
@@ -2130,15 +2140,15 @@ algebra = {
                     if ((!isFinite(coefC))) {
                         coefC = "c"
                     }
-                    voltar = true
+                    repetir = true
                 }
             }
 
             // Limite
-            if (ajudas.estourouLimite(++limite)) {
-                voltar = false
+            if (helpers.estourouLimite(++limite)) {
+                repetir = false
             }
-        } while (voltar)
+        } while (repetir)
 
         return ([(coefA), (coefB), (coefC)])
     },
@@ -2180,7 +2190,7 @@ algebra = {
             y -= delta
 
             // Limite
-            if (ajudas.estourouLimite(++limite)) {
+            if (helpers.estourouLimite(++limite)) {
                 return (NaN)
             }
         }
@@ -2210,7 +2220,7 @@ algebra = {
             y -= delta
 
             // Limite
-            if (ajudas.estourouLimite(++limite)) {
+            if (helpers.estourouLimite(++limite)) {
                 return (NaN)
             }
         }
@@ -2259,14 +2269,14 @@ algebra = {
  * Objeto base para as funções envolvendo funções matemáticas, seus estudos e características
  * - Use as funções aqui para montar as funções constantes, afins, quadráticas, exponenciais e logarítmicas. As funções de escrita são usadas para exibir os resultados, então as mensagens são formatadas automaticamente conforme as configurações.
  */
-funcoes = {
+analisar = {
     /**
      * Monta uma função constante: ƒ(x) = c
      * @param {number} coefC Coeficiente c da função constante
      * @returns Retorna: [coefC]
      */
     constante(coefC = globalC) {
-        let opcao = 0, pagina = 1, opcoesConst = [0, ""]
+        let opcao = 0, pagina = 1, menuResp = [0, ""]
 
         // Mostra
         ui.funcao(0, 0, coefC)
@@ -2275,35 +2285,35 @@ funcoes = {
         let limite = 0
         do {
             // Menu
-            opcoesConst = ui.menu(menuConst, pagina)
-            opcao = opcoesConst[0]
-            pagina = opcoesConst[1]
+            menuResp = ui.menu(opcoesConst, pagina)
+            opcao = menuResp[0]
+            pagina = menuResp[1]
 
             // Página 1
             if (pagina == 1) {
                 // Domínio
                 if (opcao == 1) {
-                    ajudas.dominio()
+                    helpers.dominio()
                 }
 
                 // Imagem
                 else if (opcao == 2) {
-                    ajudas.imagem("= " + escrita.decimal(coefC), ".", "A função só tem esse valor de y, pois y = c")
+                    helpers.imagem("= " + escrita.decimal(coefC), ".", "A função só tem esse valor de y, pois y = c")
                 }
 
                 // Interseção com o eixo x
                 else if (opcao == 3) {
-                    ajudas.eixoX("0", coefC)
+                    helpers.eixoX("0", coefC)
                 }
 
                 // Interseção com o eixo y
                 else if (opcao == 4) {
-                    ajudas.eixoY(coefC, "c", "c")
+                    helpers.eixoY(coefC, "c", "c")
                 }
 
                 // Valores para x
                 else if (opcao == 5) {
-                    ajudas.valoresX(0, 0, coefC)
+                    helpers.valoresX(0, 0, coefC)
                 }
             }
 
@@ -2311,17 +2321,17 @@ funcoes = {
             else if (pagina == 2) {
                 // Valores para y
                 if (opcao == 1) {
-                    ajudas.valoresY(0, 0, coefC)
+                    helpers.valoresY(0, 0, coefC)
                 }
 
                 // Estudo do sinal
                 else if (opcao == 2) {
-                    ajudas.sinal(0, 0, coefC)
+                    helpers.sinal(0, 0, coefC)
                 }
 
                 // Equações
                 else if (opcao == 3) {
-                    opcao = ajudas.equacoes(true, 0, 0, coefC)
+                    opcao = helpers.equacoes(true, 0, 0, coefC)
                 }
             }
 
@@ -2331,7 +2341,7 @@ funcoes = {
             }
 
             // Limite
-            if (ajudas.estourouLimite(++limite)) {
+            if (helpers.estourouLimite(++limite)) {
                 opcao = 0
             }
         } while (opcao != 0)
@@ -2346,47 +2356,47 @@ funcoes = {
      * @returns Retorna: [coefB, coefC]
      */
     afim(coefB = globalB, coefC = globalC) {
-        let opcao = 0, pagina = 1, opcoesAfim = [0, ""]
+        let opcao = 0, pagina = 1, menuResp = [0, ""]
 
         // Mostra
         ui.funcao(0, coefB, coefC)
 
         // Cálculo
-        let raizAfim = ajudas.calcRaiz(0, coefB, coefC)
+        let raiz = helpers.calcRaiz(0, coefB, coefC)
 
         // Loop
         let limite = 0
         do {
             // Menu
-            opcoesAfim = ui.menu(menuAfim, pagina)
-            pagina = opcoesAfim[1]
-            opcao = opcoesAfim[0]
+            menuResp = ui.menu(opcoesAfim, pagina)
+            pagina = menuResp[1]
+            opcao = menuResp[0]
 
             // Página 1
             if (pagina == 1) {
                 // Inclinação
                 if (opcao == 1) {
-                    ajudas.curva(0, coefB)
+                    helpers.curva(0, coefB)
                 }
 
                 // Raiz
                 else if (opcao == 2) {
-                    ajudas.exibRaiz(raizAfim, "(−c) / b")
+                    helpers.exibRaiz(raiz, "(−c) / b")
                 }
 
                 // Domínio
                 else if (opcao == 3) {
-                    ajudas.dominio()
+                    helpers.dominio()
                 }
 
                 // Imagem
                 else if (opcao == 4) {
-                    ajudas.imagem()
+                    helpers.imagem()
                 }
 
                 // Interseção com o eixo x
                 else if (opcao == 5) {
-                    ajudas.eixoX(raizAfim, "(−c) / b")
+                    helpers.eixoX(raiz, "(−c) / b")
                 }
             }
 
@@ -2394,27 +2404,27 @@ funcoes = {
             else if (pagina == 2) {
                 // Interseção com o eixo y
                 if (opcao == 1) {
-                    ajudas.eixoY(coefC, "bx + c", "c")
+                    helpers.eixoY(coefC, "bx + c", "c")
                 }
 
                 // Valores para x
                 else if (opcao == 2) {
-                    ajudas.valoresX(0, coefB, coefC)
+                    helpers.valoresX(0, coefB, coefC)
                 }
 
                 // Valores para y
                 else if (opcao == 3) {
-                    ajudas.valoresY(0, coefB, coefC)
+                    helpers.valoresY(0, coefB, coefC)
                 }
 
                 // Estudo do sinal
                 else if (opcao == 4) {
-                    ajudas.sinal(0, coefB, coefC)
+                    helpers.sinal(0, coefB, coefC)
                 }
 
                 // Equações
                 else if (opcao == 5) {
-                    opcao = ajudas.equacoes(true, 0, coefB, coefC)
+                    opcao = helpers.equacoes(true, 0, coefB, coefC)
                 }
             }
 
@@ -2424,7 +2434,7 @@ funcoes = {
             }
 
             // Limite
-            if (ajudas.estourouLimite(++limite)) {
+            if (helpers.estourouLimite(++limite)) {
                 opcao = 0
             }
         } while (opcao != 0)
@@ -2440,32 +2450,32 @@ funcoes = {
      * @returns Retorna: [coefA, coefB, coefC]
      */
     quadratica(coefA = globalA, coefB = globalB, coefC = globalC) {
-        let opcao = 0, pagina = 1, opcoesQuad = [0, ""]
+        let opcao = 0, pagina = 1, menuResp = [0, ""]
 
         // Mostra
         ui.funcao(coefA, coefB, coefC)
 
         // Cálculo
-        let delta = ajudas.calcDelta(coefA, coefB, coefC), vertice = ajudas.vertice(coefA, coefB, delta[0])
+        let delta = helpers.calcDelta(coefA, coefB, coefC), vertice = helpers.vertice(coefA, coefB, delta[0])
 
         // Loop
         let limite = 0
         do {
             // Menu
-            opcoesQuad = ui.menu(menuQuad, pagina)
-            opcao = opcoesQuad[0]
-            pagina = opcoesQuad[1]
+            menuResp = ui.menu(opcoesQuad, pagina)
+            opcao = menuResp[0]
+            pagina = menuResp[1]
 
             // Página 1
             if (pagina == 1) {
                 // Concavidade
                 if (opcao == 1) {
-                    ajudas.curva(coefA)
+                    helpers.curva(coefA)
                 }
 
                 // Raízes
                 else if (opcao == 2) {
-                    ajudas.exibDelta(delta[0], "Não há raízes reais.", "Raiz real: x₁ = x₂ = " + escrita.decimal(delta[1]), "Raízes reais: x₁ = " + escrita.decimal(delta[1]) + ", x₂ = " + escrita.decimal(delta[2]))
+                    helpers.exibDelta(delta[0], "Não há raízes reais.", "Raiz real: x₁ = x₂ = " + escrita.decimal(delta[1]), "Raízes reais: x₁ = " + escrita.decimal(delta[1]) + ", x₂ = " + escrita.decimal(delta[2]))
                 }
 
                 // Vértice
@@ -2475,15 +2485,15 @@ funcoes = {
 
                 // Domínio
                 else if (opcao == 4) {
-                    ajudas.dominio()
+                    helpers.dominio()
                 }
 
                 // Imagem
                 else if (opcao == 5) {
                     if (coefA > 0) {
-                        ajudas.imagem("∈ [" + escrita.decimal(vertice[1]) + ", ∞)", " entre o vértice e o ∞.")
+                        helpers.imagem("∈ [" + escrita.decimal(vertice[1]) + ", ∞)", " entre o vértice e o ∞.")
                     } else if (coefA < 0) {
-                        ajudas.imagem("∈ (-∞, " + escrita.decimal(vertice[1]) + "]", " entre -∞ e o vértice.")
+                        helpers.imagem("∈ (-∞, " + escrita.decimal(vertice[1]) + "]", " entre -∞ e o vértice.")
                     }
                 }
             }
@@ -2492,27 +2502,27 @@ funcoes = {
             else if (pagina == 2) {
                 // Interseção com o eixo x
                 if (opcao == 1) {
-                    ajudas.exibDelta(delta[0], "Não há interseção com o eixo x.", "Interseção com o eixo x: (" + escrita.decimal(delta[1]) + ", 0)", "Interseções com o eixo x: (" + escrita.decimal(delta[1]) + ", 0) e (" + escrita.decimal(delta[2]) + ", 0)")
+                    helpers.exibDelta(delta[0], "Não há interseção com o eixo x.", "Interseção com o eixo x: (" + escrita.decimal(delta[1]) + ", 0)", "Interseções com o eixo x: (" + escrita.decimal(delta[1]) + ", 0) e (" + escrita.decimal(delta[2]) + ", 0)")
                 }
 
                 // Interseção com o eixo y
                 else if (opcao == 2) {
-                    ajudas.eixoY(coefC, "ax² + bx + c", "c")
+                    helpers.eixoY(coefC, "ax² + bx + c", "c")
                 }
 
                 // Valores para x
                 else if (opcao == 3) {
-                    ajudas.valoresX(coefA, coefB, coefC)
+                    helpers.valoresX(coefA, coefB, coefC)
                 }
 
                 // Valores para y
                 else if (opcao == 4) {
-                    ajudas.valoresY(coefA, coefB, coefC)
+                    helpers.valoresY(coefA, coefB, coefC)
                 }
 
                 // Estudo do sinal
                 else if (opcao == 5) {
-                    ajudas.sinal(coefA, coefB, coefC)
+                    helpers.sinal(coefA, coefB, coefC)
                 }
             }
 
@@ -2520,7 +2530,7 @@ funcoes = {
             else if (pagina == 3) {
                 // Equações
                 if (opcao == 1) {
-                    opcao = ajudas.equacoes(true, coefA, coefB, coefC)
+                    opcao = helpers.equacoes(true, coefA, coefB, coefC)
                 }
             }
 
@@ -2530,7 +2540,7 @@ funcoes = {
             }
 
             // Limite
-            if (ajudas.estourouLimite(++limite)) {
+            if (helpers.estourouLimite(++limite)) {
                 opcao = 0
             }
         } while (opcao != 0)
@@ -2546,32 +2556,32 @@ funcoes = {
      * @returns Retorna: [coefA, coefB, coefC]
      */
     exponencial(coefA = globalA, coefB = globalB, coefC = globalC) {
-        let opcao = 0, pagina = 1, opcoesExp = [], expoente = algebra.divisao(-coefC, coefB, false)
+        let opcao = 0, pagina = 1, menuResp = []
 
         // Mostra
         ui.funcao(coefA, coefB, coefC, true)
 
         // Cálculo
-        let raizExp = ajudas.calcRaiz(coefA, coefB, coefC, true)
+        let raiz = helpers.calcRaiz(coefA, coefB, coefC, true)
 
         // Loop
         let limite = 0
         do {
             // Menu
-            opcoesExp = ui.menu(menuExp, pagina)
-            opcao = opcoesExp[0]
-            pagina = opcoesExp[1]
+            menuResp = ui.menu(opcoesExp, pagina)
+            opcao = menuResp[0]
+            pagina = menuResp[1]
 
             // Página 1
             if (pagina == 1) {
                 // Curva
                 if (opcao == 1) {
-                    ajudas.curva(coefA, coefB, false)
+                    helpers.curva(coefA, coefB, false)
                 }
 
                 // Raiz
                 else if (opcao == 2) {
-                    ajudas.exibRaiz(raizExp, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0")
+                    helpers.exibRaiz(raiz, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0")
                 }
 
                 // Assíntota
@@ -2581,15 +2591,15 @@ funcoes = {
 
                 // Domínio
                 else if (opcao == 4) {
-                    ajudas.dominio()
+                    helpers.dominio()
                 }
 
                 // Imagem
                 else if (opcao == 5) {
                     if (coefB > 0) {
-                        ajudas.imagem("∈ (" + escrita.decimal(coefC) + ", ∞)", " entre c e ∞, exceto o próprio c.")
+                        helpers.imagem("∈ (" + escrita.decimal(coefC) + ", ∞)", " entre c e ∞, exceto o próprio c.")
                     } else {
-                        ajudas.imagem("∈ (-∞, " + escrita.decimal(coefC) + ")", " entre -∞ e c, exceto o próprio c.")
+                        helpers.imagem("∈ (-∞, " + escrita.decimal(coefC) + ")", " entre -∞ e c, exceto o próprio c.")
                     }
                 }
             }
@@ -2598,27 +2608,27 @@ funcoes = {
             else if (pagina == 2) {
                 // Interseção com o eixo x
                 if (opcao == 1) {
-                    ajudas.eixoX(raizExp, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0")
+                    helpers.eixoX(raiz, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0")
                 }
 
                 // Interseção com o eixo y
                 else if (opcao == 2) {
-                    ajudas.eixoY(coefB + coefC, "b × aˣ + c", "b + c")
+                    helpers.eixoY(coefB + coefC, "b × aˣ + c", "b + c")
                 }
 
                 // Valores para x
                 else if (opcao == 3) {
-                    ajudas.valoresX(coefA, coefB, coefC, true)
+                    helpers.valoresX(coefA, coefB, coefC, true)
                 }
 
                 // Valores para y
                 else if (opcao == 4) {
-                    ajudas.valoresY(coefA, coefB, coefC, true)
+                    helpers.valoresY(coefA, coefB, coefC, true)
                 }
 
                 // Estudo do sinal
                 else if (opcao == 5) {
-                    ajudas.sinal(coefA, coefB, coefC, true)
+                    helpers.sinal(coefA, coefB, coefC, true)
                 }
             }
 
@@ -2626,7 +2636,7 @@ funcoes = {
             else if (pagina == 3) {
                 // Equações
                 if (opcao == 1) {
-                    ajudas.equacoes(false)
+                    helpers.equacoes(false)
                 }
             }
 
@@ -2636,7 +2646,7 @@ funcoes = {
             }
 
             // Limite
-            if (ajudas.estourouLimite(++limite)) {
+            if (helpers.estourouLimite(++limite)) {
                 opcao = 0
             }
         } while (opcao != 0)
@@ -2652,47 +2662,47 @@ funcoes = {
      * @returns Retorna: [coefA, coefB, coefC]
      */
     logaritmica(coefA = globalA, coefB = globalB, coefC = globalC) {
-        let opcao = 0, pagina = 1, opcoesLog = [], expoente = algebra.divisao(-coefC, coefB, false)
+        let opcao = 0, pagina = 1, menuResp = []
 
         // Mostra
         ui.funcao(coefA, coefB, coefC, false, true)
 
         // Cálculo
-        let raizLog = algebra.arredonda(coefA ** (expoente))
+        let raiz = algebra.arredonda(coefA ** algebra.divisao(-coefC, coefB, false))
 
         // Loop
         let limite = 0
         do {
             // Menu
-            opcoesLog = ui.menu(menuLog, pagina)
-            opcao = opcoesLog[0]
-            pagina = opcoesLog[1]
+            menuResp = ui.menu(opcoesLog, pagina)
+            opcao = menuResp[0]
+            pagina = menuResp[1]
 
             // Página 1
             if (pagina == 1) {
                 // Curva
                 if (opcao == 1) {
-                    ajudas.curva(coefA, coefB, false)
+                    helpers.curva(coefA, coefB, false)
                 }
 
                 // Raiz
                 else if (opcao == 2) {
-                    ajudas.exibRaiz(raizLog, "a⁽⁻ᶜ⁄ᵇ⁾")
+                    helpers.exibRaiz(raiz, "a⁽⁻ᶜ⁄ᵇ⁾")
                 }
 
                 // Domínio
                 else if (opcao == 3) {
-                    ajudas.dominio("> 0", "x ≤ 0 ⇒ logₐ(x) ∉ ℝ")
+                    helpers.dominio("> 0", "x ≤ 0 ⇒ logₐ(x) ∉ ℝ")
                 }
 
                 // Imagem
                 else if (opcao == 4) {
-                    ajudas.imagem()
+                    helpers.imagem()
                 }
 
                 // Interseção com o eixo x
                 else if (opcao == 5) {
-                    ajudas.eixoX(raizLog, "a⁽⁻ᶜ⁄ᵇ⁾")
+                    helpers.eixoX(raiz, "a⁽⁻ᶜ⁄ᵇ⁾")
                 }
             }
 
@@ -2700,27 +2710,27 @@ funcoes = {
             else if (pagina == 2) {
                 // Interseção com o eixo y
                 if (opcao == 1) {
-                    ajudas.eixoY("∄", "b × logₐ(x) + c", " x = 0 ⇒ logₐ(x) ∉ ℝ")
+                    helpers.eixoY("∄", "b × logₐ(x) + c", " x = 0 ⇒ logₐ(x) ∉ ℝ")
                 }
 
                 // Valores para x
                 else if (opcao == 2) {
-                    ajudas.valoresX(coefA, coefB, coefC, false, true)
+                    helpers.valoresX(coefA, coefB, coefC, false, true)
                 }
 
                 // Valores para y
                 else if (opcao == 3) {
-                    ajudas.valoresY(coefA, coefB, coefC, false, true)
+                    helpers.valoresY(coefA, coefB, coefC, false, true)
                 }
 
                 // Estudo do sinal
                 else if (opcao == 4) {
-                    ajudas.sinal(coefA, coefB, coefC, false, true)
+                    helpers.sinal(coefA, coefB, coefC, false, true)
                 }
 
                 // Equações
                 else if (opcao == 5) {
-                    ajudas.equacoes(false)
+                    helpers.equacoes(false)
                 }
             }
 
@@ -2730,7 +2740,7 @@ funcoes = {
             }
 
             // Limite
-            if (ajudas.estourouLimite(++limite)) {
+            if (helpers.estourouLimite(++limite)) {
                 opcao = 0
             }
         } while (opcao != 0)
@@ -2740,7 +2750,7 @@ funcoes = {
 }
 
 // Boolean
-let manter = false, loop = false, editar = false, loop2 = false
+let manterTipo = false, loop = false, pedirCoefs = false, loopSub = false
 
 // String
 let globalA = algebra.variaveis("a"), globalB = algebra.variaveis("b"), globalC = algebra.variaveis("c")
@@ -2749,39 +2759,39 @@ let globalA = algebra.variaveis("a"), globalB = algebra.variaveis("b"), globalC 
 let tipo = 0, subtipo = 0, escolha = 0, pagina = 1, total = 1, opcao = 1
 
 // Array
-let menuBasico = ["Domínio", "Imagem", "Interseção com o eixo x", "Interseção com o eixo y", "Valores para x", "Valores para y", "Estudo do sinal", "Equações entre funções"],
-menuConst = [].concat(menuBasico),
-menuAfim = ["Inclinação", "Raiz"].concat(menuBasico),
-menuQuad = ["Concavidade", "Raízes", "Vértice"].concat(menuBasico),
-menuExp = ["Curva", "Raiz", "Assíntota"].concat(menuBasico),
-menuLog = ["Curva", "Raiz"].concat(menuBasico),
-funcaoBase = [], coeficientes = [], funcaoAtual = [globalA, globalB, globalC], historico = [funcaoAtual.slice()]
+let opcoesBase = ["Domínio", "Imagem", "Interseção com o eixo x", "Interseção com o eixo y", "Valores para x", "Valores para y", "Estudo do sinal", "Equações entre funções"],
+opcoesConst = [].concat(opcoesBase),
+opcoesAfim = ["Inclinação", "Raiz"].concat(opcoesBase),
+opcoesQuad = ["Concavidade", "Raízes", "Vértice"].concat(opcoesBase),
+opcoesExp = ["Curva", "Raiz", "Assíntota"].concat(opcoesBase),
+opcoesLog = ["Curva", "Raiz"].concat(opcoesBase),
+funcBase = [], coeficientes = [], funcAtual = [globalA, globalB, globalC], historico = [funcAtual.slice()]
 
 // Código principal
 do {
     // Variáveis globais
-    if (editar) {
+    if (pedirCoefs) {
         globalA = algebra.variaveis("a")
         globalB = algebra.variaveis("b")
         globalC = algebra.variaveis("c")
     }
 
     // Salva histórico
-    if ((globalA != funcaoAtual[0]) || (globalB != funcaoAtual[1]) || (globalC != funcaoAtual[2])) {
-        funcaoAtual = [globalA, globalB, globalC], historico.push(funcaoAtual.slice())
+    if ((globalA != funcAtual[0]) || (globalB != funcAtual[1]) || (globalC != funcAtual[2])) {
+        funcAtual = [globalA, globalB, globalC], historico.push(funcAtual.slice())
         if (historico.length > 9) {
             historico.shift()
         }
     }
 
     // Tipo de função
-    if (!manter) {
+    if (!manterTipo) {
         tipo = ui.entrada("=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair", "", true, 0, true)
         console.log(tipo)
     }
 
-    manter = false
-    editar = false
+    manterTipo = false
+    pedirCoefs = false
     loop = false
 
     if ((((0 <= tipo) && (tipo <= 2)) || ((6 <= tipo) && (tipo <= 9))) || (tipo == "sair") || (tipo == "config")) {
@@ -2798,11 +2808,11 @@ do {
             // Números
             if ((isFinite(globalA)) && (isFinite(globalB)) && (isFinite(globalC))) {
                 if ((globalA == 0) && (globalB == 0)) {
-                    funcoes.constante(globalC)
+                    analisar.constante(globalC)
                 } else if ((globalA == 0) && (globalB != 0)) {
-                    funcoes.afim(globalB, globalC)
+                    analisar.afim(globalB, globalC)
                 } else if (globalA != 0) {
-                    funcoes.quadratica(globalA, globalB, globalC)
+                    analisar.quadratica(globalA, globalB, globalC)
                 }
             }
         }
@@ -2813,7 +2823,7 @@ do {
             do {
                 subtipo = ui.entrada("=== Menu ===\nO que queres?\n1 = Função exponencial\n2 = Função logarítmica\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Voltar", "", true, 0, true)
 
-                loop2 = false
+                loopSub = false
 
                 if ((((0 <= subtipo) && (subtipo <= 2)) || ((6 <= subtipo) && (subtipo <= 9))) || (subtipo == "sair") || (subtipo == "config")) {
                     // Exponencial
@@ -2829,7 +2839,7 @@ do {
                         // Números
                         if ((globalA != "a") && (globalB != "b") && (globalC != "c")) {
                             if (((globalA > 0) && (globalA != 1)) && (globalB != 0)) {
-                                funcoes.exponencial(globalA, globalB, globalC)
+                                analisar.exponencial(globalA, globalB, globalC)
                             }
 
                             // Constante
@@ -2842,7 +2852,7 @@ do {
                                 globalA = 0
                                 globalB = 0
                                 tipo = 1
-                                manter = true
+                                manterTipo = true
                                 loop = true
                             }
 
@@ -2850,7 +2860,7 @@ do {
                             else if (globalA < 0) {
                                 erro.funcaoInvalida("exponencial")
 
-                                editar = true
+                                pedirCoefs = true
                                 loop = true
                             }
                         }
@@ -2869,7 +2879,7 @@ do {
                         // Números
                         if ((globalA != "a") && (globalB != "b") && (globalC != "c")) {
                             if (((globalA > 0) && (globalA != 1)) && (globalB != 0)) {
-                                funcoes.logaritmica(globalA, globalB, globalC)
+                                analisar.logaritmica(globalA, globalB, globalC)
                             }
 
                             // Constante
@@ -2881,14 +2891,14 @@ do {
                                 globalA = 0
                                 globalB = 0
                                 tipo = 1
-                                manter = true
+                                manterTipo = true
                                 loop = true
                             }
 
                             // Erro de base
                             else if (globalA < 0) {
                                 erro.funcaoInvalida("logarítmica")
-                                editar = true
+                                pedirCoefs = true
                                 loop = true
                             }
                         }
@@ -2899,7 +2909,7 @@ do {
                         tipo = subtipo
                         loop = true
                         if (subtipo != "sair") {
-                            manter = true
+                            manterTipo = true
                         }
                     }
 
@@ -2911,9 +2921,9 @@ do {
 
                 // Erro
                 else {
-                    loop2 = true
+                    loopSub = true
                 }
-            } while (loop2)
+            } while (loopSub)
         }
 
         // Antigas
@@ -2938,8 +2948,8 @@ do {
                 // Restaura função
                 let indice = historico.length - 1 - resposta
                 globalA = historico[indice][0], globalB = historico[indice][1], globalC = historico[indice][2]
-                if ((globalA != funcaoAtual[0]) || (globalB != funcaoAtual[1]) || (globalC != funcaoAtual[2])) {
-                    funcaoAtual = [globalA, globalB, globalC]
+                if ((globalA != funcAtual[0]) || (globalB != funcAtual[1]) || (globalC != funcAtual[2])) {
+                    funcAtual = [globalA, globalB, globalC]
                 }
             }
         }
@@ -2953,7 +2963,7 @@ do {
                 loop = true
 
                 // Menu de configurações
-                let menuConfig = [
+                let opcoesConfig = [
                     escrita.itemConfig("Caracteres Unicode", "unicode"),
                     escrita.itemConfig("Explicações", "explicacoes"),
                     escrita.itemConfig("Acentos", "acentos"),
@@ -2976,10 +2986,10 @@ do {
                 ]
 
                 // Preenche com separadores
-                while (((menuConfig.length % 6) != 0) || (menuConfig.length == 0)) {
-                    menuConfig.push("---")
+                while (((opcoesConfig.length % 6) != 0) || (opcoesConfig.length == 0)) {
+                    opcoesConfig.push("---")
                 }
-                total = Math.ceil(menuConfig.length / 6)
+                total = Math.ceil(opcoesConfig.length / 6)
 
                 // Controla página
                 if (pagina < 1) {
@@ -2991,7 +3001,7 @@ do {
                 // Mostra opções
                 let texto = "=== Configurações ===\nPágina " + String(pagina) + "/" + String(total) + "\nObs.: Configurações não são salvas ao fechar"
                 while (opcao <= 6) {
-                    texto += "\n" + String(opcao) + " = " + String(menuConfig[(opcao - 1) + (6 * (pagina - 1))])
+                    texto += "\n" + String(opcao) + " = " + String(opcoesConfig[(opcao - 1) + (6 * (pagina - 1))])
                     opcao++
                 }
                 opcao = 1
@@ -3000,14 +3010,14 @@ do {
                 // Escolha
                 escolha = ui.intervalo(texto, "", 0, 9, 0, true)
                 if (escolha == 7) { // Padrão
-                    if (JSON.stringify(config) == JSON.stringify(padraoConfig)) {
+                    if (JSON.stringify(config) == JSON.stringify(configPadrao)) {
                         ui.aviso("Todas as configurações já estão na forma padrão.", "Não há necessidade de restaurar.")
                     } else {
                         let mensagem = "Voltar às configurações padrão?\nConfigurações afetadas:\n", arrayConfig = Object.keys(config)
 
                         // Mostra configurações afetadas
                         for (let i = 0; i < arrayConfig.length; i++) {
-                            mensagem += (config[arrayConfig[i]] != padraoConfig[arrayConfig[i]]) ? arrayConfig[i] + ", " : ""
+                            mensagem += (config[arrayConfig[i]] != configPadrao[arrayConfig[i]]) ? arrayConfig[i] + ", " : ""
                         }
 
                         // Remove última vírgula e espaço
@@ -3015,7 +3025,7 @@ do {
 
                         // Confirmação
                         if (ui.aviso(mensagem, "Obs.₁: Isso irá afetar todas as configurações acima\nObs.₂: Essa alteração é permanente", true)) {
-                            config = JSON.parse(JSON.stringify(padraoConfig))
+                            config = JSON.parse(JSON.stringify(configPadrao))
                         }
                     }
                 } else if (escolha == 8) { // -1
@@ -3184,7 +3194,7 @@ do {
         // Mudar
         else if (tipo == 9) {
             loop = true
-            editar = true
+            pedirCoefs = true
         }
 
         // Sair

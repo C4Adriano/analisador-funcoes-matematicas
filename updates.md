@@ -580,7 +580,6 @@
 
 ### Adições
 - Adicionados `helpers` para ajudar a minímizar o código
-- Adicionado o objeto `ajudas` junto de suas **Funções**
 - Agora **Funções** podem ser salvas
 - Agora as **Funções** podem ser recuperadas, com histórico *(enquanto não fecha o código)*
 - Adicionados vários comentários bonitinhos para melhor entendimento do código *(com o uso de Inline Suggestions do GitHub Copilot)*
@@ -605,6 +604,7 @@
 
 ### Mudanças
 - Lançamento Oficial no GitHub
+- Mudados os nomes das variáveis no código, para que fiquem mais intuitivas
 
 # **Próximas atualizações:**
 + Adicionar opção de verificar quais **Funções** podem ser válidas para os pontos conhecidos

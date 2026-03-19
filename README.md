@@ -43,12 +43,12 @@ Não é necessário instalar nada.
 | Objeto | Responsabilidade |
 |---|---|
 | `config` | Configurações globais do programa |
-| `ajudas` | Cálculos e montagem de resultados comuns |
+| `helpers` | Cálculos e montagem de resultados comuns |
 | `escrita` | Formatação, tradução e conversão de texto |
 | `ui` | Interação com o usuário (menus, entradas, erros) |
 | `erro` | Mensagens de erro padronizadas |
 | `algebra` | Cálculos matemáticos (log, ln, divisão segura, etc.) |
-| `funcoes` | Análise de cada tipo de função |
+| `analisar` | Análise de cada tipo de função |
 
 ---
 
@@ -63,7 +63,7 @@ Não é necessário instalar nada.
 | 4.5 | Pré-Lançamento |
 | 5.1 | Sistema de configurações |
 | 5.2 | Objetos JS, padrão de configurações |
-| 5.5 | Objeto `ajudas`, histórico de funções, tradução EN |
+| 5.5 | Objeto `helpers`, histórico de funções, tradução EN |
 | 6.0 | Lançamento no GitHub |
 
 Changelog completo em [`updates.md`](updates.md).
@@ -73,7 +73,7 @@ Changelog completo em [`updates.md`](updates.md).
 ## Próximas atualizações
 
 - Verificar quais funções são válidas para pontos conhecidos
-- Comandos com `/` para acesso rápido
+- Comandos com `/` para acesso rápido *(em desenvolvimento)*
 - Ajuda, resumos e relatórios por tipo de função
 - Equações entre Funções Exponenciais
 
