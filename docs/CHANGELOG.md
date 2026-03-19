@@ -602,6 +602,18 @@
 > **Linhas nesta versão:** *`3172`*<br>
 > **Datada de:** *`2026-03-18 -> 2026-03-18`*
 
+### Adições
+- Adicionados comandos com `/` para acessar de vários lugares as opções de:
+    + Ajuda com comandos `/help`
+    + Configurações `/config`
+    + Sair `/exit`
+
+- Todos os comandos têm versão funcional em Inglês e Português, para que seja mais acessível
+- Todos os comandos têm variações, por exemplo: 
+    + `///` => `/exit`
+    + `/configuracoes` => `/config`
+    + `/cmd` => `/help`
+
 ### Mudanças
 - Lançamento Oficial no GitHub
 - Mudados os nomes das variáveis no código, para que fiquem mais intuitivas

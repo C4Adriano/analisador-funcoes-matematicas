@@ -406,6 +406,12 @@ escrita = {
         return (String(texto).split(de).join(para))
     },
 
+    /**
+     * [SUBSTITUIÇÃO] - Substituição de várias strings
+     * @param {string} texto Texto
+     * @param {string[][]} lista Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
+     * @returns Texto convertido
+     */
     substituirGrupo(texto = "", lista = [["", ""]]) {
         for (let i = 0; (i < lista.length); i++) {
             let antigo = texto
@@ -1403,9 +1409,9 @@ ui = {
             if ((valido) && (bruto[0] == "/") && (aceitaComandos)) {
                 let comando = escrita.semAcentos(bruto.slice(1).toLowerCase())
 
-                if ((comando == "ajuda") || (comando == "ajudas") || (comando == "help") || (comando == "cmd") || (comando == "cmds")) {
+                if ((comando == "ajuda") || (comando == "ajudas") || (comando == "a") || (comando == "help") || (comando == "h") || (comando == "cmd") || (comando == "cmds") || (comando == "c")) {
                     ui.aviso("Comandos disponíveis:\n/ajuda, /help, /cmds - mostra essa mensagem\n/config, /configuracoes - abre as configurações\n/sair, /exit, /// - sai do programa")
-                } else if ((comando == "config") || (comando == "configuracoes") || (comando == "conf") || (comando == "settings") || (comando == "sett") || (comando == "setts") || (comando == "cfg")) {
+                } else if ((comando == "config") || (comando == "configuracoes") || (comando == "configuracao") || (comando == "conf") || (comando == "settings") || (comando == "sett") || (comando == "setts") || (comando == "cfg")) {
                     return ("config")
                 } else if ((comando == "sair") || (comando == "exit") || (comando == "//")) {
                     return ("sair")
