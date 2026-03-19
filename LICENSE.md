@@ -1,11 +1,20 @@
+# License / Licença
+
+## English
+
 Copyright (c) 2025 - 2026 Adriano Lima
-All rights reserved. / Todos os direitos reservados.
+All rights reserved.
 
 This software and its source code are the exclusive property of the author.
 No part of this software may be copied, modified, distributed, sublicensed,
 or used in any form without the explicit written permission of the author.
 
 ---
+
+## Português
+
+Copyright (c) 2025 - 2026 Adriano Lima
+Todos os direitos reservados.
 
 Este software e seu código-fonte são propriedade exclusiva do autor.
 Nenhuma parte deste software pode ser copiada, modificada, distribuída,
