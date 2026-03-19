@@ -2,22 +2,39 @@
 
 ## English
 
-### Reporting a Vulnerability
+### Current Version
 
-If you find a security vulnerability in this project, do **not** open a public issue.
+This project currently runs entirely in the browser with no server, no user
+data, and no external connections, so security vulnerabilities are unlikely.
 
-Instead, contact the author directly via GitHub: [@C4Adriano](https://github.com/C4Adriano)
+If you find something in the current version, open an [issue](../../issues).
 
-There is no guaranteed response time, as this is a personal project.
+### Future Versions
+
+Future versions may include user accounts and data storage. When that happens,
+this policy will be updated — and vulnerabilities involving user data should
+**not** be reported publicly.
+
+Until then, if in doubt, contact the author directly via GitHub:
+[@C4Adriano](https://github.com/C4Adriano)
 
 ---
 
 ## Português
 
-### Reportando uma Vulnerabilidade
+### Versão Atual
 
-Se encontrares uma vulnerabilidade de segurança neste projeto, **não** abras uma issue pública.
+Este projeto atualmente roda inteiramente no navegador, sem servidor, sem
+dados do usuário e sem conexões externas, portanto vulnerabilidades de
+segurança são improváveis.
 
-Em vez disso, entre em contato diretamente com o autor pelo GitHub: [@C4Adriano](https://github.com/C4Adriano)
+Se encontrares algo na versão atual, abre uma [issue](../../issues).
 
-Não há prazo garantido de resposta, pois este é um projeto pessoal.
+### Versões Futuras
+
+Versões futuras poderão incluir contas de usuário e armazenamento de dados.
+Quando isso acontecer, esta política será atualizada — e vulnerabilidades
+envolvendo dados de usuários **não** devem ser reportadas publicamente.
+
+Até lá, em caso de dúvida, entre em contato diretamente com o autor pelo
+GitHub: [@C4Adriano](https://github.com/C4Adriano)
