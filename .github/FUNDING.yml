@@ -1,18 +1,1 @@
 github: C4Adriano
-```
-
----
-
-**`CODEOWNERS`:**
-```
-# Everything / Tudo
-* @C4Adriano
-
-# Documentation / Documentação
-docs/* @C4Adriano
-
-# Source / Código
-src/* @C4Adriano
-
-# GitHub config / Configuração do GitHub
-.github/* @C4Adriano
