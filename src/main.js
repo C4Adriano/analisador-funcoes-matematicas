@@ -940,6 +940,7 @@ escrita = {
                 ["sem termo constante", "without a constant term"],
                 ["ela é constante", "it is constant"],
                 ["valores inválidos", "invalid values"],
+                ["estudo do sinal", "signal analytics"],
                 ["não há", "there is no"],
                 ["não é", "is not"],
                 ["para todo", "for all"],
@@ -987,6 +988,8 @@ escrita = {
 
             palavras = [
                 ["erro", "error"],
+                ["equações", "equations"],
+                ["exceto", "execpt"],
                 ["português brasileiro", "brazilian portuguese"],
                 ["integral dupla", "double integral"],
                 ["integral tripla", "triple integral"],
