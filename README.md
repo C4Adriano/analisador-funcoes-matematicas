@@ -31,7 +31,7 @@ Desenvolvida inteiramente em JavaScript puro, sem bibliotecas externas.
 ## Como usar
 
 1. Clone ou baixe o repositório
-2. Abra `matematica.html` no navegador
+2. Abra `index.html` no navegador
 3. Siga os menus nos `prompts` e `alerts`
 
 Não é necessário instalar nada.

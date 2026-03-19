@@ -11,13 +11,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
         }
 
         h1 {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 10rem;
+            font-size: clamp(3rem, 15vw, 10rem);
             font-variant: small-caps;
             animation: rgbColors 35s linear infinite;
         }
@@ -36,6 +36,6 @@
 </head>
 <body>
     <h1>Matemática</h1>
-    <script src="matematica.js" defer></script>
+    <script src="matematica.js"></script>
 </body>
 </html>
