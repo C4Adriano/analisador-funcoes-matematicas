@@ -68,7 +68,7 @@ Ou: [![GitHub Pages](https://img.shields.io/badge/Acesse%20aqui-GitHub%20Pages-b
 | 5.5 | Objeto `helpers`, histórico de funções, tradução EN |
 | 6.0 | Lançamento no GitHub |
 
-Changelog completo em [`updates.md`](updates.md).
+Changelog completo em [`CHANGELOG.md`](docs/CHANGELOG.md).
 
 ---
 
