@@ -5,8 +5,8 @@
 
 ---
 
-> **Total lines / Total de linhas:** *`3255`*<br>
-> **Dated / Datado de:** *`2025-07-23 -> 2026-03-17`*
+> **Total lines / Total de linhas:** *`3296`*<br>
+> **Dated / Datado de:** *`2025-07-23 -> today / hoje`*
 
 ---
 
@@ -598,13 +598,13 @@
 
 # Versions **6.x**
 
-> **Lines in these versions:** *`3172`*<br>
-> **Dated:** *`2026-03-18 -> 2026-03-18`*
+> **Lines in these versions:** *`3296`*<br>
+> **Dated:** *`2026-03-18 -> 2026-03-19`*
 
 ### Version **6.0** - Release
 
-> **Lines in this version:** *`3172`*<br>
-> **Dated:** *`2026-03-18 -> 2026-03-18`*
+> **Lines in this version:** *`3296`*<br>
+> **Dated:** *`2026-03-18 -> 2026-03-19`*
 
 #### Additions
 - Added `/` commands to access from various places the options for:
@@ -1223,13 +1223,13 @@
 
 # Versões **6.x**
 
-> **Linhas nestas versões:** *`3172`*<br>
-> **Datada de:** *`2026-03-18 -> 2026-03-18`*
+> **Linhas nestas versões:** *`3296`*<br>
+> **Datada de:** *`2026-03-18 -> 2026-03-19`*
 
 ### Versão **6.0** - Lançamento
 
-> **Linhas nesta versão:** *`3172`*<br>
-> **Datada de:** *`2026-03-18 -> 2026-03-18`*
+> **Linhas nesta versão:** *`3296`*<br>
+> **Datada de:** *`2026-03-18 -> 2026-03-19`*
 
 #### Adições
 - Adicionados comandos com `/` para acessar de vários lugares as opções de:
