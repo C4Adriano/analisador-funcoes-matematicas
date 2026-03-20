@@ -2869,7 +2869,6 @@ do {
     // Tipo de função
     if (!manterTipo) {
         tipo = ui.entrada("=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair", "", true, 0, true)
-        console.log(tipo)
     }
 
     manterTipo = false
