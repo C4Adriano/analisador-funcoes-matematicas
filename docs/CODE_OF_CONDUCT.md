@@ -1,43 +1,11 @@
-# Code of Conduct / Código de Conduta
-
-## English
-
-### Our Standards
-
-This is a personal project. Interactions in issues and discussions must be respectful and constructive.
-
-Examples of acceptable behavior:
-- Reporting bugs clearly and objectively
-- Making suggestions politely
-- Respecting the author's decisions
-
-Examples of unacceptable behavior:
-- Insults or disrespectful language
-- Spam or irrelevant content
-- Demanding features or fixes
-
-### Enforcement
-
-Unacceptable behavior may result in issues/discussions being closed or the user being blocked.
+<div align="center">
+    <h1>Mathematical <b>Function Analyzer</b> / Analisador de <b>Funções Matemáticas</b></h1>
+    <h2>CODE OF CONDUCT / Código de Conduta</h2>
+    <p>All rights reserved / Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
+</div>
 
 ---
 
-## Português
+🌐 [Back to Documentation / Voltar à Documentação](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/INDEX.md) | 🇺🇸 [English](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CODE_OF_CONDUCT/CODE_OF_CONDUCT_EN.md) | 🇧🇷 [Português](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CODE_OF_CONDUCT/CODE_OF_CONDUCT_PT.md)
 
-### Nossos Padrões
-
-Este é um projeto pessoal. Interações em issues e discussões devem ser respeitosas e construtivas.
-
-Exemplos de comportamento aceitável:
-- Reportar bugs de forma clara e objetiva
-- Fazer sugestões com educação
-- Respeitar as decisões do autor
-
-Exemplos de comportamento inaceitável:
-- Insultos ou linguagem desrespeitosa
-- Spam ou conteúdo irrelevante
-- Exigir funcionalidades ou correções
-
-### Aplicação
-
-Comportamento inaceitável pode resultar no fechamento de issues/discussões ou no bloqueio do usuário.
+---

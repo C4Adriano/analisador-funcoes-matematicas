@@ -1,19 +1,11 @@
-# Contributing / Contribuindo
-
-## English
-
-This is a personal project and is not open for external contributions.
-
-Pull requests will not be accepted.
-
-If you find a bug or have a suggestion, you can open an [issue](https://github.com/C4Adriano/analisador-funcoes-matematicas/issues) — but there is no guarantee of a response or fix.
+<div align="center">
+    <h1>Mathematical <b>Function Analyzer</b> / Analisador de <b>Funções Matemáticas</b></h1>
+    <h2>CONTRIBUTING / Contribuindo</h2>
+    <p>All rights reserved / Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
+</div>
 
 ---
 
-## Português
+🌐 [Back to Documentation / Voltar à Documentação](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/INDEX.md) | 🇺🇸 [English](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTING/CONTRIBUTING_EN.md) | 🇧🇷 [Português](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTING/CONTRIBUTING_PT.md)
 
-Este é um projeto pessoal e não está aberto para contribuições externas.
-
-Pull requests não serão aceitos.
-
-Se encontrares um bug ou tiveres uma sugestão, podes abrir uma [issue](https://github.com/C4Adriano/analisador-funcoes-matematicas/issues) — mas não há garantia de resposta ou correção.
+---
