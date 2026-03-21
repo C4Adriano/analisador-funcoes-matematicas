@@ -1,21 +1,14 @@
-## O que há de novo / What's new
-
-### Adições / Additions
+## What's new / O que há de novo
+### Additions / Adições
 - 
-
-### Mudanças / Changes
+### Changes / Mudanças
 - 
-
-### Correções / Fixes
+### Fixes / Correções
 - 
-
-### Remoções / Removals
+### Removals / Remoções
 - 
-
 ---
-
-## Informações / Information
-
-- **Linhas de código / Lines of code:** ``
-- **Data / Date:** ``
-- **Changelog completo / Full changelog:** [CHANGELOG.md](../docs/CHANGELOG.md)
+## Information / Informações
+- **Lines of code / Linhas de código:** `x`
+- **Date / Data:** `YYYY-MM-DD`
+- **Full changelog / Changelog completo:** [CHANGELOG.md](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/CHANGELOG.md)

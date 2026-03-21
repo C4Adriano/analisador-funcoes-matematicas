@@ -1,15 +1,18 @@
 <div align="center">
-    <h1>Analisador de <b>Funções Matemáticas</b> - Versão 6.0</h1>
+    <h1>Analisador de <b>Funções Matemáticas</b></h1>
+    <h2>README</h2>
     <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
 </div>
+
+---
+
+🌐 [Voltar ao geral](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/README.md) | 🇺🇸 [English](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/README/README_EN.md)
 
 ---
 
 [![GitHub Pages](https://img.shields.io/badge/Access%20here-GitHub%20Pages-blue)](https://c4adriano.github.io/analisador-funcoes-matematicas/)
 
 ---
-
-## Português
 
 ### O que é?
 
@@ -62,7 +65,7 @@ Ou acesse diretamente: [![GitHub Pages](https://img.shields.io/badge/Access%20he
 | 5.5 | Objeto `helpers`, histórico de funções, tradução EN |
 | 6.0 | Lançamento no GitHub |
 
-Changelog completo em [`CHANGELOG.md`](../CHANGELOGS/CHANGELOG_PT.md).
+Changelog completo em [`CHANGELOG.md`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOGS/CHANGELOG_PT.md).
 
 ### Próximas atualizações
 

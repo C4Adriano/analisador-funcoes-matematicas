@@ -1,7 +1,12 @@
 ﻿<div align="center">
-    <h1>Mathematical <b>Function Analyzer</b> - Version 6.0</h1>
+    <h1>Mathematical <b>Function Analyzer</b></h1>
+    <h2>CHANGELOG</h2>
     <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
 </div>
+
+---
+
+🌐 [Back to main](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/CHANGELOG.md) | 🇧🇷 [Português](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOGS/CHANGELOG_PT.md)
 
 ---
 
@@ -9,8 +14,6 @@
 > **Dated:** *`2025-07-23 -> today`*
 
 ---
-
-## English
 
 # Versions **1.x**
 
@@ -634,5 +637,3 @@
 + Add equations between **Exponential Functions**
 + Add a way to find `a` in **Exponential Functions**
 + Add **Trigonometric Functions** and their properties
-
----

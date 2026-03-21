@@ -7,7 +7,7 @@
 This project currently runs entirely in the browser with no server, no user
 data, and no external connections, so security vulnerabilities are unlikely.
 
-If you find something in the current version, open an [issue](../../issues).
+If you find something in the current version, open an [issue](https://github.com/C4Adriano/analisador-funcoes-matematicas/issues).
 
 ### Future Versions
 
@@ -28,7 +28,7 @@ Este projeto atualmente roda inteiramente no navegador, sem servidor, sem
 dados do usuário e sem conexões externas, portanto vulnerabilidades de
 segurança são improváveis.
 
-Se encontrares algo na versão atual, abre uma [issue](../../issues).
+Se encontrares algo na versão atual, abre uma [issue](https://github.com/C4Adriano/analisador-funcoes-matematicas/issues).
 
 ### Versões Futuras
 

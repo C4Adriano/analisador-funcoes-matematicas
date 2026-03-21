@@ -1,7 +1,12 @@
 <div align="center">
-    <h1>Mathematical <b>Function Analyzer</b> - Version 6.0 / Analisador de <b>Funções Matemáticas</b> - Versão 6.0</h1>
+    <h1>Mathematical <b>Function Analyzer</b> / Analisador de <b>Funções Matemáticas</b></h1>
+    <h2>README</h2>
     <p>All rights reserved / Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
 </div>
+
+---
+
+🇧🇷 [Português](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/README/README_PT.md) | 🇺🇸 [English](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/README/README_EN.md)
 
 ---
 
@@ -10,5 +15,3 @@
 [![HTML](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 
 ---
-
-🇧🇷 [Português](docs/README/README_PT.md) | 🇺🇸 [English](docs/README/README_EN.md)
