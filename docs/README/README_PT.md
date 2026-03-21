@@ -65,7 +65,7 @@ Ou acesse diretamente: [![GitHub Pages](https://img.shields.io/badge/Access%20he
 | 5.5 | Objeto `helpers`, histórico de funções, tradução EN |
 | 6.0 | Lançamento no GitHub |
 
-Changelog completo em [`CHANGELOG.md`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOGS/CHANGELOG_PT.md).
+Changelog completo em [`CHANGELOG`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md).
 
 ### Próximas atualizações
 

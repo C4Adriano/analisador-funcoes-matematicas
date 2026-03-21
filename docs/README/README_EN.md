@@ -65,7 +65,7 @@ Or access directly: [![GitHub Pages](https://img.shields.io/badge/Access%20here-
 | 5.5 | `helpers` object, function history, EN translation |
 | 6.0 | Public release on GitHub |
 
-Full changelog in [`CHANGELOG.md`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOGS/CHANGELOG_EN.md).
+Full changelog in [`CHANGELOG`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md).
 
 ### Upcoming updates
 
