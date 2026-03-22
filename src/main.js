@@ -2832,8 +2832,9 @@ analisar = {
 }
 
 // Para alterar o HTML também, conforme a língua
-document.title = ((config.linguagem == "en") ? "Mathematics" : "Matemática")
+document.title = ((config.linguagem == "en") ? "Mathematical Function Analyzer" : "Analisador de Funções Matemáticas")
 document.querySelector("h1").textContent = ((config.linguagem == "en") ? "Mathematics" : "Matemática")
+document.documentElement.lang = config.linguagem
 
 // Boolean
 let manterTipo = false, loop = false, pedirCoefs = false, loopSub = false
@@ -3260,8 +3261,9 @@ do {
                                 config.linguagem = lingua
 
                                 // Para alterar o HTML também, conforme a língua
-                                document.title = ((config.linguagem == "en") ? "Mathematics" : "Matemática")
+                                document.title = ((config.linguagem == "en") ? "Mathematical Function Analyzer" : "Analisador de Funções Matemáticas")
                                 document.querySelector("h1").textContent = ((config.linguagem == "en") ? "Mathematics" : "Matemática")
+                                document.documentElement.lang = config.linguagem
                             }
                         }
                     }
