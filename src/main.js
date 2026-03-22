@@ -2831,6 +2831,10 @@ analisar = {
     }
 }
 
+// Para alterar o HTML também, conforme a língua
+document.title = ((config.linguagem == "en") ? "Mathematics" : "Matemática")
+document.querySelector("h1").textContent = ((config.linguagem == "en") ? "Mathematics" : "Matemática")
+
 // Boolean
 let manterTipo = false, loop = false, pedirCoefs = false, loopSub = false
 
@@ -3254,6 +3258,10 @@ do {
                                 }
 
                                 config.linguagem = lingua
+
+                                // Para alterar o HTML também, conforme a língua
+                                document.title = ((config.linguagem == "en") ? "Mathematics" : "Matemática")
+                                document.querySelector("h1").textContent = ((config.linguagem == "en") ? "Mathematics" : "Matemática")
                             }
                         }
                     }
