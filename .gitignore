@@ -4,13 +4,9 @@
 Thumbs.db
 desktop.ini
 $RECYCLE.BIN/
-ehthumbs.db
-ehthumbs_vista.db
 
 # macOS
 .DS_Store
-.AppleDouble
-.LSOverride
 ._*
 .Spotlight-V100
 .Trashes
@@ -18,7 +14,6 @@ ehthumbs_vista.db
 # Linux
 *~
 .fuse_hidden*
-.directory
 .Trash-*
 
 # === EDITOR / IDE ===
@@ -27,126 +22,29 @@ ehthumbs_vista.db
 .vscode/
 *.code-workspace
 
-# JetBrains (WebStorm, IntelliJ, etc.)
+# JetBrains
 .idea/
-*.iml
-*.iws
-*.ipr
 
 # Vim
 *.swp
 *.swo
-*~
-
-# Emacs
-\#*\#
-.\#*
 
 # Sublime Text
 *.sublime-project
 *.sublime-workspace
 
-# === LINGUAGENS ===
-
-# Python
-*.py
-*.pyc
-*.pyo
-*.pyd
-__pycache__/
-*.egg-info/
-dist/
-build/
-.env
-venv/
-.venv/
-
-# C / C++
-*.c
-*.cpp
-*.h
-*.o
-*.obj
-*.exe
-*.out
-*.dll
-*.so
-*.dylib
-
-# Java
-*.java
-*.class
-*.jar
-*.war
-*.ear
-
-# C#
-*.cs
-*.csproj
-*.sln
-bin/
-obj/
-
-# PHP
-*.php
-
-# Ruby
-*.rb
-*.gem
-Gemfile.lock
-
-# Go
-*.go
-
-# Rust
-*.rs
-target/
-
-# TypeScript
-*.ts
-*.tsx
-
-# === NODE / NPM ===
-node_modules/
-package-lock.json
-yarn.lock
-.npm/
-
-# === BUILD / COMPILADOS ===
-dist/
-build/
-out/
-*.min.js
-*.bundle.js
-*.map
-
 # === LOGS E TEMPORÁRIOS ===
 *.log
 *.tmp
-*.temp
 *.bak
 *.cache
-*.pid
-*.seed
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # === ARQUIVOS PESSOAIS ===
 notes.md
 TODO.md
-*.psd
-*.ai
-*.sketch
-*.fig
-*.xd
 
-# === CREDENCIAIS / SEGURANÇA ===
+# === CREDENCIAIS ===
 .env
 .env.*
-*.key
-*.pem
-*.cert
-*.p12
 secrets.*
 credentials.*
