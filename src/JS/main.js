@@ -1,7 +1,7 @@
 console.log("" +
 "====================================================" + "\n" +
-"Analisador de Funções Matemáticas - Versão 6.0" + "\n" +
-"Todos os direitos reservados © Adriano Lima 2025 - 2026" + "\n" +
+"Mathematical Function Analyzer / Analisador de Funções Matemáticas - v6.0" + "\n" +
+"All rights reserved / Todos os direitos reservados © Adriano Lima 2025 - 2026" + "\n" +
 "===================================================="
 )
 
