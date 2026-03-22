@@ -1,6 +1,5 @@
 import { algebra } from "./algebra.js"
 import { config } from "./config.js"
-import { escrita } from "./escrita.js"
 
 /**
  * Objeto base para as funções envolvendo escrita e conversão de texto

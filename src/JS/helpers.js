@@ -2,7 +2,6 @@ import { algebra } from "./algebra.js"
 import { config } from "./config.js"
 import { erro } from "./erro.js"
 import { escrita } from "./escrita.js"
-import { helpers } from "./helpers.js"
 import { state } from "./state.js"
 import { ui } from "./ui.js"
 

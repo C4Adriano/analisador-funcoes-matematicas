@@ -1,4 +1,3 @@
-import { erro } from "./erro.js"
 import { ui } from "./ui.js"
 
 /**
