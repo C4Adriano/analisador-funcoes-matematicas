@@ -68,3 +68,5 @@ Não. Leia o [`CONTRIBUTING.md`](https://github.com/C4Adriano/analisador-funcoes
 
 **Encontrei um erro. O que faço?**
 Abra uma issue usando o template `bug_report`. Descreva o que aconteceu, qual função estava usando e o resultado esperado.
+
+---

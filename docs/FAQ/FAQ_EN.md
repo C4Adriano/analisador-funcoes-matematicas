@@ -68,3 +68,5 @@ No. Read [`CONTRIBUTING.md`](https://github.com/C4Adriano/analisador-funcoes-mat
 
 **I found a bug. What do I do?**
 Open an issue using the `bug_report` template. Describe what happened, which function you were using, and the expected result.
+
+---

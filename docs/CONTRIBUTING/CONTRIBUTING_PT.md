@@ -15,3 +15,5 @@ Este é um projeto pessoal e não está aberto para contribuições externas.
 Pull requests não serão aceitos.
 
 Se encontrares um bug ou tiveres uma sugestão, podes abrir uma [issue](https://github.com/C4Adriano/analisador-funcoes-matematicas/issues) — mas não há garantia de resposta ou correção.
+
+---

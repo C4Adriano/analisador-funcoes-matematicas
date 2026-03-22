@@ -637,3 +637,7 @@
 + Add equations between **Exponential Functions**
 + Add a way to find `a` in **Exponential Functions**
 + Add **Trigonometric Functions** and their properties
+
+Full upcoming updates in [`ROADMAP`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP/ROADMAP_EN.md)
+
+---

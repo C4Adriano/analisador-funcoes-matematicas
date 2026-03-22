@@ -38,3 +38,5 @@ envolvendo dados de usuários **não** devem ser reportadas publicamente.
 
 Até lá, em caso de dúvida, entre em contato diretamente com o autor pelo
 GitHub: [@C4Adriano](https://github.com/C4Adriano)
+
+---

@@ -116,3 +116,5 @@ Uma versão publicada do projeto, marcada com uma tag de versão (ex.: `v6.0`).
 
 **Repositório**
 A pasta do projeto hospedada no GitHub, contendo todos os arquivos, histórico e configurações.
+
+---

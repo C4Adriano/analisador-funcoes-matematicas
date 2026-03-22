@@ -35,3 +35,5 @@ The status of each item is updated as development progresses.
 - [x] JS object architecture
 - [x] Function history during the session
 - [x] Public release on GitHub with GitHub Pages
+
+---

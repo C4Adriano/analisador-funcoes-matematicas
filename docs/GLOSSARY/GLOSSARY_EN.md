@@ -116,3 +116,5 @@ A published version of the project, marked with a version tag (e.g., `v6.0`).
 
 **Repository**
 The project folder hosted on GitHub, containing all files, history, and settings.
+
+---

@@ -74,7 +74,11 @@ Full changelog in [`CHANGELOG`](https://github.com/C4Adriano/analisador-funcoes-
 - Help, summaries, and reports by function type
 - Equations between Exponential Functions
 
+Full upcoming updates in [`ROADMAP`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP/ROADMAP_EN.md)
+
 ### Technologies
 
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![HTML](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+
+---

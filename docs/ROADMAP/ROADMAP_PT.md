@@ -35,3 +35,5 @@ O status de cada item é atualizado conforme o desenvolvimento avança.
 - [x] Arquitetura em objetos JS
 - [x] Histórico de funções durante a sessão
 - [x] Lançamento público no GitHub com GitHub Pages
+
+---
