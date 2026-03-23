@@ -7,7 +7,7 @@ console.log("" +
 
 import { algebra } from "./algebra.js"
 import { analisar } from "./analisar.js"
-import { config } from "./config.js"
+import { config, configPadrao } from "./config.js"
 import { erro } from "./erro.js"
 import { escrita } from "./escrita.js"
 import { state } from "./state.js"
