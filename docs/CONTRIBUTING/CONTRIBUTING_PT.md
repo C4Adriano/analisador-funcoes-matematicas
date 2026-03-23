@@ -10,10 +10,12 @@
 
 ---
 
-Este é um projeto pessoal e não está aberto para contribuições externas.
+Este é um projeto pessoal, desenvolvido e mantido por mim.
 
-Pull requests não serão aceitos.
+Não estou à procura de colaboradores fixos, mas contribuições pontuais são bem-vindas.
 
-Se encontrares um bug ou tiveres uma sugestão, podes abrir uma [issue](https://github.com/C4Adriano/analisador-funcoes-matematicas/issues) — mas não há garantia de resposta ou correção.
+Se encontrares um bug ou tiveres uma sugestão, abre uma [issue](https://github.com/C4Adriano/analisador-funcoes-matematicas/issues) — vou tentar responder quando possível.
+
+Pull requests podem ser considerados, mas não há garantia de que serão aceitos.
 
 ---
