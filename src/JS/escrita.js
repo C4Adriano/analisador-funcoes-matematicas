@@ -760,7 +760,7 @@ export const escrita = {
     },
 
     traduzirUnicode(texto = "") {
-        trocas = [
+        let trocas = [
             ["alfa", "alpha"],
             ["para todo", "for all"],
             ["não existe", "does not exist"],
