@@ -682,6 +682,7 @@ export const escrita = {
                 ["exponencial", "exponential"],
                 ["logarítmica", "logarithmic"],
                 ["polinomiais", "polynomial"],
+                ["polinomial", "polynomial"],
                 ["incompleta", "incomplete"],
                 ["identidade", "identity"],
                 ["oposta", "opposite"],
@@ -727,7 +728,8 @@ export const escrita = {
                 ["padrão", "default"],
                 ["atual", "current"],
                 ["digitaste", "typed"],
-                ["digite", "type"]
+                ["digite", "type"],
+                ["interações", "iterations"]
             ]
 
             conectores = [

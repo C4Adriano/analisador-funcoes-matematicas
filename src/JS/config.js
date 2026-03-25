@@ -22,7 +22,8 @@ export const config = {
     casasDecimais: 6, // Número de casas decimais para arredondar os resultados numéricos
     logPrecisao: 1e-12, // Precisão para cálculos logarítmicos (para evitar erros de arredondamento)
     divPrecisao: 1e-12, // Precisão para cálculos de divisão (para evitar divisão por zero)
-    limiteInteracoes: 1000 // Limite de interações para evitar state.loops infinitos (como no estudo do sinal de uma função sem raízes reais, onde o programa pode tentar testar infinitos valores de x para encontrar as raízes)
+    limiteInteracoes: 1000, // Limite de interações para evitar state.loops infinitos (como no estudo do sinal de uma função sem raízes reais, onde o programa pode tentar testar infinitos valores de x para encontrar as raízes)
+    graus: false // Usar graus ou radianos
 }
 
 /**

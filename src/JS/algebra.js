@@ -111,7 +111,7 @@ export const algebra = {
      * @param {boolean} funcLog Se é logarítmica
      * @returns Retorna os coeficientes em formato de array numérico [a, b, c]
      */
-    incognita(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
+    incognita(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, tipo = 0) {
         let repetir = false, pts = [0], denominador = 0, dif1 = 0, dif2 = 0, term1 = 0, term2 = 0, term3 = 0, term4 = 0
 
         if ((funcExp) || (funcLog)) {
@@ -132,7 +132,7 @@ export const algebra = {
         }
 
         // Mostra
-        ui.funcao(coefA, coefB, coefC, funcExp, funcLog)
+        ui.funcao(coefA, coefB, coefC, funcExp, funcLog, tipo)
 
         // Loop
         let limite = 0

@@ -9,7 +9,10 @@ opcoesConst = [].concat(opcoesBase),
 opcoesAfim = ["Inclinação", "Raiz"].concat(opcoesBase),
 opcoesQuad = ["Concavidade", "Raízes", "Vértice"].concat(opcoesBase),
 opcoesExp = ["Curva", "Raiz", "Assíntota"].concat(opcoesBase),
-opcoesLog = ["Curva", "Raiz"].concat(opcoesBase)
+opcoesLog = ["Curva", "Raiz"].concat(opcoesBase),
+opcoesSen = ["Amplitude", "Período"].concat(opcoesBase),
+opcoesCos = ["Amplitude", "Período"].concat(opcoesBase),
+opcoesTan = ["Assíntotas verticais", "Período"].concat(opcoesBase)
 
 /**
  * Objeto base para as funções envolvendo funções matemáticas, seus estudos e características
@@ -83,7 +86,7 @@ export const analisar = {
 
             // Rever
             if (opcao == 6) {
-                ui.funcao(0, 0, coefC, false, false, true)
+                ui.funcao(0, 0, coefC, false, false, 0, true)
             }
 
             // Limite
@@ -176,7 +179,7 @@ export const analisar = {
 
             // Rever
             if (opcao == 6) {
-                ui.funcao(0, coefB, coefC, false, false, true)
+                ui.funcao(0, coefB, coefC, false, false, 0, true)
             }
 
             // Limite
@@ -282,7 +285,7 @@ export const analisar = {
 
             // Rever
             if (opcao == 6) {
-                ui.funcao(coefA, coefB, coefC, false, false, true)
+                ui.funcao(coefA, coefB, coefC, false, false, 0, true)
             }
 
             // Limite
@@ -388,7 +391,7 @@ export const analisar = {
 
             // Rever
             if (opcao == 6) {
-                ui.funcao(coefA, coefB, coefC, true, false, true)
+                ui.funcao(coefA, coefB, coefC, true, false, 0, true)
             }
 
             // Limite
@@ -482,7 +485,7 @@ export const analisar = {
 
             // Rever
             if (opcao == 6) {
-                ui.funcao(coefA, coefB, coefC, false, true, true)
+                ui.funcao(coefA, coefB, coefC, false, true, 0, true)
             }
 
             // Limite
@@ -492,5 +495,26 @@ export const analisar = {
         } while (opcao != 0)
 
         return ([coefA, coefB, coefC])
+    },
+
+    seno(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
+        let opcao = 0, pagina = 1, menuResp = []
+
+        // Mostra
+        ui.funcao(coefA, coefB, coefC, false, false, "1")
+    },
+
+    cosseno(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
+        let opcao = 0, pagina = 1, menuResp = []
+
+        // Mostra
+        ui.funcao(coefA, coefB, coefC, false, false, "2")
+    },
+
+    tangente(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
+        let opcao = 0, pagina = 1, menuResp = []
+
+        // Mostra
+        ui.funcao(coefA, coefB, coefC, false, false, "3")
     }
 }

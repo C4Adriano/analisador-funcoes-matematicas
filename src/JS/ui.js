@@ -4,6 +4,7 @@ import { erro } from "./erro.js"
 import { escrita } from "./escrita.js"
 import { helpers } from "./helpers.js"
 import { state } from "./state.js"
+import { teste } from "./teste.js"
 
 /**
  * Objeto base para as funções envolvendo UI / UX e interação com o usuário
@@ -159,11 +160,18 @@ export const ui = {
                 let comando = escrita.semAcentos(bruto.slice(1).toLowerCase())
 
                 if ((comando == "ajuda") || (comando == "ajudas") || (comando == "a") || (comando == "help") || (comando == "h") || (comando == "cmd") || (comando == "cmds") || (comando == "c")) {
-                    ui.aviso("Comandos disponíveis:\n/ajuda, /help, /cmds - mostra essa mensagem\n/config, /configuracoes - abre as configurações\n/sair, /exit, /// - sai do programa")
+                    ui.aviso("Comandos disponíveis:\n/ajuda, /help, /cmds - mostra essa mensagem\n/config, /configuracoes, /settings - abre as configurações\n/sair, /exit, /// - sai do programa")
                 } else if ((comando == "config") || (comando == "configuracoes") || (comando == "configuracao") || (comando == "conf") || (comando == "settings") || (comando == "sett") || (comando == "setts") || (comando == "cfg")) {
                     return ("config")
-                } else if ((comando == "sair") || (comando == "exit") || (comando == "//")) {
+                } else if ((comando == "sair") || (comando == "exit") || (comando == "//") || (comando == "ex") || (comando == "out")) {
                     return ("sair")
+                } else if (comando == "teste") {
+                    let senha = comando.slice(6)
+                    if (senha == "1234") { // senha simples, só pra não abrir por acidente
+                        teste.rodar()
+                    }
+                } else {
+                    ui.erro("Comando inválido")
                 }
             }
 
@@ -206,14 +214,14 @@ export const ui = {
      * @param {boolean} funcLog Logarítmica
      * @param {boolean} mostrar Mostrará a função ou não, baseado na configuração
      */
-    funcao(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, mostrar = config.mostrarFuncao) {
+    funcao(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = 0, mostrar = config.mostrarFuncao) {
         if (!mostrar) { // Não mostrar
             return ("")
         }
 
         let func = "A função: ƒ(x) = "
 
-        if ((!funcExp) && (!funcLog)) { // Polinomial
+        if ((!funcExp) && (!funcLog) && (funcTrig == 0)) { // Polinomial
             if ((coefA == 0) && (coefB == 0)) { // Constante
                 if (coefC == "c") { // Variável
                     func += "c"
@@ -312,7 +320,7 @@ export const ui = {
                     func += " / incompleta (sem termo constante)"
                 }
             }
-        } else if (funcExp) { // Exponencial
+        } else if ((funcExp) && (funcTrig == 0)) { // Exponencial
             if (coefB != "b") { // Não variável
                 if (coefB != 1) { // Se for diferente de 1, mostra o número
                     func += String(coefB) + " × "
@@ -346,7 +354,7 @@ export const ui = {
             if (coefA == algebra.arredonda(Math.E)) { // Se o coeficiente a for igual a e, é uma função exponencial natural
                 func += " / natural"
             }
-        } else if (funcLog) { // Logarítmica
+        } else if ((funcLog) && (funcTrig == 0)) { // Logarítmica
             if (coefB != "b") { // Não variável
                 if (coefB != 1) {
                     func += String(coefB) + " × "

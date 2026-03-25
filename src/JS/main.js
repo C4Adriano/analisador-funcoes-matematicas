@@ -55,9 +55,9 @@ do {
             // Incógnitas
             if ((!isFinite(state.globalA)) || (!isFinite(state.globalB)) || (!isFinite(state.globalC))) {
                 state.coeficientes = algebra.incognita(state.globalA, state.globalB, state.globalC)
-                state.globalA = algebra.arredonda(coeficientes[0])
-                state.globalB = algebra.arredonda(coeficientes[1])
-                state.globalC = algebra.arredonda(coeficientes[2])
+                state.globalA = algebra.arredonda(state.coeficientes[0])
+                state.globalB = algebra.arredonda(state.coeficientes[1])
+                state.globalC = algebra.arredonda(state.coeficientes[2])
             }
 
             // Números
@@ -86,9 +86,9 @@ do {
                         // Incógnitas
                         if ((state.globalA == "a") || (state.globalB == "b") || (state.globalC == "c")) {
                             state.coeficientes = algebra.incognita(state.globalA, state.globalB, state.globalC, true)
-                            state.globalA = algebra.arredonda(coeficientes[0])
-                            state.globalB = algebra.arredonda(coeficientes[1])
-                            state.globalC = algebra.arredonda(coeficientes[2])
+                            state.globalA = algebra.arredonda(state.coeficientes[0])
+                            state.globalB = algebra.arredonda(state.coeficientes[1])
+                            state.globalC = algebra.arredonda(state.coeficientes[2])
                         }
 
                         // Números
@@ -126,9 +126,9 @@ do {
                         // Incógnitas
                         if ((state.globalA == "a") || (state.globalB == "b") || (state.globalC == "c")) {
                             state.coeficientes = algebra.incognita(state.globalA, state.globalB, state.globalC, false, true)
-                            state.globalA = algebra.arredonda(coeficientes[0])
-                            state.globalB = algebra.arredonda(coeficientes[1])
-                            state.globalC = algebra.arredonda(coeficientes[2])
+                            state.globalA = algebra.arredonda(state.coeficientes[0])
+                            state.globalB = algebra.arredonda(state.coeficientes[1])
+                            state.globalC = algebra.arredonda(state.coeficientes[2])
                         }
 
                         // Números
