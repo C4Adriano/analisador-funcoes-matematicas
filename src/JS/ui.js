@@ -157,7 +157,7 @@ export const ui = {
 
             // Comandos
             if ((valido) && (bruto[0] == "/") && (aceitaComandos)) {
-                let comando = escrita.semAcentos(bruto.slice(1).toLowerCase())
+                let comando = escrita.semAcentos(bruto.slice(1).toLowerCase()), adicional = comando.split(" ")
 
                 if ((comando == "ajuda") || (comando == "ajudas") || (comando == "a") || (comando == "help") || (comando == "h") || (comando == "cmd") || (comando == "cmds") || (comando == "c")) {
                     ui.aviso("Comandos disponíveis:\n/ajuda, /help, /cmds - mostra essa mensagem\n/config, /configuracoes, /settings - abre as configurações\n/sair, /exit, /// - sai do programa")
@@ -165,13 +165,14 @@ export const ui = {
                     return ("config")
                 } else if ((comando == "sair") || (comando == "exit") || (comando == "//") || (comando == "ex") || (comando == "out")) {
                     return ("sair")
-                } else if (comando == "teste") {
-                    let senha = comando.slice(6)
-                    if (senha == "1234") { // senha simples, só pra não abrir por acidente
+                } else if (adicional[0] == "teste") {
+                    if (adicional[1] == "1234") { // senha simples, só pra não abrir por acidente
                         teste.rodar()
+                    } else {
+                        ui.erro("Senha inválida", String(adicional[1]) + " não é uma senha válida\nDigite uma senha válida")
                     }
                 } else {
-                    ui.erro("Comando inválido")
+                    ui.erro("Comando inválido", String(comando) + " não é um comando válido\nDigite “/help” para ver todos os comandos")
                 }
             }
 
