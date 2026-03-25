@@ -4,7 +4,7 @@ import { erro } from "./erro.js"
 import { escrita } from "./escrita.js"
 import { helpers } from "./helpers.js"
 import { state } from "./state.js"
-import { teste } from "./teste.js"
+import { comandos } from "./comandos.js"
 
 /**
  * Objeto base para as funções envolvendo UI / UX e interação com o usuário
@@ -107,16 +107,23 @@ export const ui = {
             } else if (resposta == 9) { // +1
                 resposta = -1
                 pagina += 1
-            } else if (resposta == "sair") {
-                state.loop = true
+            } else if (comandos.nomes().includes(resposta)) {
                 state.manterTipo = true
-                resposta = 0
-                state.tipo = 0
-            } else if (resposta == "config") {
                 state.loop = true
-                state.manterTipo = true
+                if (resposta == "sair") {
+                    state.tipo = 0
+                } else if (resposta == "config") {
+                    state.tipo = 7
+                } else if (resposta == "rever") {
+                    state.tipo = 8
+                } else if (resposta == "alterar") {
+                    state.tipo = 9
+                } else if (resposta == "historico") {
+                    state.tipo = 6
+                } else if (resposta == "inicio") {
+                    state.tipo = -1
+                }
                 resposta = 0
-                state.tipo = 7
             }
 
             // Limite
@@ -124,7 +131,7 @@ export const ui = {
                 resposta = 0
                 state.loop = true
             }
-        } while (!((0 <= resposta) && (resposta <= 9)) && ((resposta != "sair") && (resposta != "config")))
+        } while (!((0 <= resposta) && (resposta <= 9)) && (!comandos.nomes().includes(resposta)))
 
         return ([resposta, pagina, opcoesPag])
     },
@@ -157,23 +164,11 @@ export const ui = {
 
             // Comandos
             if ((valido) && (bruto[0] == "/") && (aceitaComandos)) {
-                let comando = escrita.semAcentos(bruto.slice(1).toLowerCase()), adicional = comando.split(" ")
-
-                if ((comando == "ajuda") || (comando == "ajudas") || (comando == "a") || (comando == "help") || (comando == "h") || (comando == "cmd") || (comando == "cmds") || (comando == "c")) {
-                    ui.aviso("Comandos disponíveis:\n/ajuda, /help, /cmds - mostra essa mensagem\n/config, /configuracoes, /settings - abre as configurações\n/sair, /exit, /// - sai do programa")
-                } else if ((comando == "config") || (comando == "configuracoes") || (comando == "configuracao") || (comando == "conf") || (comando == "settings") || (comando == "sett") || (comando == "setts") || (comando == "cfg")) {
-                    return ("config")
-                } else if ((comando == "sair") || (comando == "exit") || (comando == "//") || (comando == "ex") || (comando == "out")) {
-                    return ("sair")
-                } else if (adicional[0] == "teste") {
-                    if (adicional[1] == "1234") { // senha simples, só pra não abrir por acidente
-                        teste.rodar()
-                    } else {
-                        ui.erro("Senha inválida", String(adicional[1]) + " não é uma senha válida\nDigite uma senha válida")
-                    }
-                } else {
-                    ui.erro("Comando inválido", String(comando) + " não é um comando válido\nDigite “/help” para ver todos os comandos")
+                let acao = comandos.processar(bruto)
+                if (acao != null) {
+                    return (acao) 
                 }
+                valido = false
             }
 
             // Número
@@ -412,7 +407,7 @@ export const ui = {
         do { // Pede um valor
             valor = ui.entrada(mensagem, explicacao, true, casas, aceitaComandos)
 
-            if ((valor == "sair") || (valor == "config")) {
+            if (comandos.nomes().includes(valor)) {
                 return (valor)
             }
 

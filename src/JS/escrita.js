@@ -311,15 +311,15 @@ export const escrita = {
         for (let i = 0; (i < texto.length); i++) {
             let atual = texto[i], letra = escrita.semAcentos(atual).toLowerCase()
 
-            if ((capitalizar) && (("a" <= letra) && (letra <= "z"))) {
+            if ((atual == ".") || (atual == "!") || (atual == "?") || (atual == "\n") || (atual == "|") || (atual == "“") || (atual == "\'")) {
+                capitalizar = true
+            } else if ((atual == "/")) {
+                capitalizar = false
+            } else if ((capitalizar) && (("a" <= letra) && (letra <= "z"))) {
                 resultado += atual.toUpperCase()
                 capitalizar = false
             } else {
                 resultado += atual
-            }
-
-            if ((atual == ".") || (atual == "!") || (atual == "?") || (atual == "\n") || (atual == "|") || (atual == "“") || (atual == "\'")) {
-                capitalizar = true
             }
         }
 

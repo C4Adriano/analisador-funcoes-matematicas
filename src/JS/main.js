@@ -41,7 +41,7 @@ do {
     }
 
     // Tipo de função
-    if (!state.manterTipo) {
+    if ((!state.manterTipo) || (state.tipo == "inicio")) {
         state.tipo = ui.entrada("=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair", "", true, 0, true)
     }
 
@@ -181,8 +181,8 @@ do {
             } while (state.loopSub)
         }
 
-        // Antigas
-        else if (state.tipo == 6) {
+        // Histórico
+        else if ((state.tipo == 6) || (state.tipo == "historico")) {
             state.loop = true
 
             // Erro de histórico
