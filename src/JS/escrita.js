@@ -315,7 +315,9 @@ export const escrita = {
                 capitalizar = true
             } else if ((atual == "/")) {
                 capitalizar = false
-            } else if ((capitalizar) && (("a" <= letra) && (letra <= "z"))) {
+            } 
+            
+            if ((capitalizar) && (("a" <= letra) && (letra <= "z"))) {
                 resultado += atual.toUpperCase()
                 capitalizar = false
             } else {
