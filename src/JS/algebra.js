@@ -20,7 +20,7 @@ export const algebra = {
         numero = escrita.decimal(numero, true)
 
         if (isFinite(numero)) {
-            numero = Math.round(numero * 10 ** casas) / 10 ** casas
+            numero = Math.round((numero + Number.EPSILON) * 10 ** casas) / 10 ** casas
             if (numero == "-0") {
                 numero = 0
             }

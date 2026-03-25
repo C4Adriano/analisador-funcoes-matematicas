@@ -74,6 +74,9 @@ export const teste = {
         resultados.push(["arredonda(3.14159, 2)", algebra.arredonda(3.14159, 2), 3.14])
         resultados.push(["arredonda(-0, 2)", algebra.arredonda(-0, 2), 0])
         resultados.push(["arredonda(1.005, 2)", algebra.arredonda(1.005, 2), 1.01])
+        resultados.push(["arredonda(1.005, 2)", algebra.arredonda(1.005, 2), 1.01])
+        resultados.push(["arredonda(1.045, 2)", algebra.arredonda(1.045, 2), 1.05])
+        resultados.push(["arredonda(1.055, 2)", algebra.arredonda(1.055, 2), 1.06])
 
         // algebra.divisao
         resultados.push(["divisao(10, 3)", algebra.divisao(10, 3), 3.333333])
