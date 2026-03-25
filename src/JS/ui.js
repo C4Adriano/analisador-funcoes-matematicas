@@ -108,6 +108,8 @@ export const ui = {
                 resposta = -1
                 pagina += 1
             } else if (comandos.nomes().includes(resposta)) {
+                state.loop = true
+                state.manterTipo = true
                 return (resposta)
             }
 
