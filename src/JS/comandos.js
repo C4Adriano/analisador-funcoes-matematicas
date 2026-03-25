@@ -1,4 +1,4 @@
-import { config } from "./config.js"
+import { config, versao } from "./config.js"
 import { escrita } from "./escrita.js"
 import { state } from "./state.js"
 import { ui } from "./ui.js"
@@ -104,7 +104,7 @@ export const comandos = {
     },
 
     versao() {
-        ui.aviso("Analisador de Funções Matemáticas\nv6.0 — Adriano Lima 2025 - 2026")
+        ui.aviso("Mathematical Function Analyzer / Analisador de Funções Matemáticas\n" + versao + " — Adriano Lima 2025 - 2026")
         return (null)
     },
 

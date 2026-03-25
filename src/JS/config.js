@@ -30,3 +30,8 @@ export const config = {
  * Configurações padrão do programa (para restaurar as configurações)
  */
 export const configPadrao = JSON.parse(JSON.stringify(config))
+
+/**
+ * Versão do programa
+ */
+export const versao = "v6.0"

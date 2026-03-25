@@ -1,18 +1,18 @@
-console.log("" +
-"====================================================" + "\n" +
-"Mathematical Function Analyzer / Analisador de Funções Matemáticas - v6.0" + "\n" +
-"All rights reserved / Todos os direitos reservados © Adriano Lima 2025 - 2026" + "\n" +
-"===================================================="
-)
-
 import { algebra } from "./algebra.js"
 import { analisar } from "./analisar.js"
-import { config, configPadrao } from "./config.js"
+import { config, configPadrao, versao } from "./config.js"
 import { erro } from "./erro.js"
 import { escrita } from "./escrita.js"
 import { state } from "./state.js"
 import { ui } from "./ui.js"
 import { comandos } from "./comandos.js"
+
+console.log("" +
+"====================================================" + "\n" +
+"Mathematical Function Analyzer / Analisador de Funções Matemáticas — " + versao + "\n" +
+"All rights reserved / Todos os direitos reservados © Adriano Lima 2025 — 2026" + "\n" +
+"===================================================="
+)
 
 // === OBJETOS GLOBAIS ===
 // Para alterar o HTML também, conforme a língua
