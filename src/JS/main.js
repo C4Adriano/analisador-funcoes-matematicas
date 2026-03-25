@@ -12,6 +12,7 @@ import { erro } from "./erro.js"
 import { escrita } from "./escrita.js"
 import { state } from "./state.js"
 import { ui } from "./ui.js"
+import { comandos } from "./comandos.js"
 
 // === OBJETOS GLOBAIS ===
 // Para alterar o HTML também, conforme a língua
@@ -49,7 +50,7 @@ do {
     state.pedirCoefs = false
     state.loop = false
 
-    if ((((0 <= state.tipo) && (state.tipo <= 2)) || ((6 <= state.tipo) && (state.tipo <= 9))) || (state.tipo == "sair") || (state.tipo == "config")) {
+    if (((((0 <= state.tipo) && (state.tipo <= 2)) || ((6 <= state.tipo) && (state.tipo <= 9))) || (comandos.nomes().includes(state.tipo)))) {
         // Polinomiais
         if (state.tipo == 1) {
             // Incógnitas
@@ -80,7 +81,7 @@ do {
 
                 state.loopSub = false
 
-                if ((((0 <= subtipo) && (subtipo <= 2)) || ((6 <= subtipo) && (subtipo <= 9))) || (subtipo == "sair") || (subtipo == "config")) {
+                if ((((0 <= subtipo) && (subtipo <= 2)) || ((6 <= subtipo) && (subtipo <= 9))) || (comandos.nomes().includes(subtipo))) {
                     // Exponencial
                     if (subtipo == 1) {
                         // Incógnitas
@@ -160,7 +161,7 @@ do {
                     }
 
                     // Manter
-                    else if ((6 <= subtipo) && (subtipo <= 9) || (subtipo == "sair") || (subtipo == "config")) {
+                    else if ((6 <= subtipo) && (subtipo <= 9) || (comandos.nomes().includes(subtipo))) {
                         state.tipo = subtipo
                         state.loop = true
                         if (subtipo != "sair") {
@@ -446,13 +447,13 @@ do {
         }
 
         // Rever
-        else if (state.tipo == 8) {
+        else if ((state.tipo == 8) || (state.tipo == "rever")) {
             ui.exibir("Valores:\n“a” = " + escrita.decimal(state.globalA) + "\n“b” = " + escrita.decimal(state.globalB) + "\n“c” = " + escrita.decimal(state.globalC))
             state.loop = true
         }
 
         // Mudar
-        else if (state.tipo == 9) {
+        else if ((state.tipo == 9) || (state.tipo == "alterar")) {
             state.loop = true
             state.pedirCoefs = true
         }

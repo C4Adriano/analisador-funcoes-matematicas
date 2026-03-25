@@ -96,6 +96,7 @@ export const comandos = {
             "/historico — abre o histórico" + "\n" +
             "/versao — mostra a versão" + "\n" +
             "/unicode — alterna Unicode" + "\n" +
+            "/acentos — alterna acentos" + "\n" +
             "/explicar — alterna explicações" + "\n" +
             "/sair — sai do programa"
         )

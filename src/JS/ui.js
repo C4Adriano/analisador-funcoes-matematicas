@@ -108,22 +108,7 @@ export const ui = {
                 resposta = -1
                 pagina += 1
             } else if (comandos.nomes().includes(resposta)) {
-                state.manterTipo = true
-                state.loop = true
-                if (resposta == "sair") {
-                    state.tipo = 0
-                } else if (resposta == "config") {
-                    state.tipo = 7
-                } else if (resposta == "rever") {
-                    state.tipo = 8
-                } else if (resposta == "alterar") {
-                    state.tipo = 9
-                } else if (resposta == "historico") {
-                    state.tipo = 6
-                } else if (resposta == "inicio") {
-                    state.tipo = -1
-                }
-                resposta = 0
+                return (resposta)
             }
 
             // Limite
