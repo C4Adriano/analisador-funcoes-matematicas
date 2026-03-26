@@ -42,9 +42,11 @@ do {
     }
 
     // Tipo de função
-    if ((!state.manterTipo) || (state.tipo == "inicio")) {
+    if ((!state.manterTipo)) { //  || (state.tipo == "inicio")) {
+        alert(state.tipo)
         state.tipo = ui.entrada("=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair", "", true, 0, true)
-    }
+    alert(state.tipo)
+     }
 
     state.manterTipo = false
     state.pedirCoefs = false
