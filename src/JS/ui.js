@@ -107,11 +107,11 @@ export const ui = {
             } else if (resposta == 9) { // +1
                 resposta = -1
                 pagina += 1
-            } else if (comandos.nomes().includes(resposta)) {
+            } /* else if (comandos.nomes().includes(resposta)) {
                 state.loop = true
                 state.manterTipo = true
                 return (resposta)
-            }
+            } */
 
             // Limite
             if (helpers.estourouLimite(++limite)) {
@@ -149,14 +149,14 @@ export const ui = {
                 valido = (texto != "")
             }
 
-            // Comandos
+            /* Comandos
             if ((valido) && (bruto[0] == "/") && (aceitaComandos)) {
                 let acao = comandos.processar(bruto)
                 if (acao != null) {
                     return (acao) 
                 }
                 valido = false
-            }
+            } */
 
             // Número
             if ((valido) && (numero)) {
@@ -394,9 +394,9 @@ export const ui = {
         do { // Pede um valor
             valor = ui.entrada(mensagem, explicacao, true, casas, aceitaComandos)
 
-            if (comandos.nomes().includes(valor)) {
+            /* if (comandos.nomes().includes(valor)) {
                 return (valor)
-            }
+            } */
 
             if ((!((min <= valor) && (valor <= max)))) { // Se o valor não estiver entre o intervalo, mostra um erro
                 erro.intervalo(min, max)
