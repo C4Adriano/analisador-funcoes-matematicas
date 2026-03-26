@@ -118,7 +118,7 @@ export const ui = {
                 resposta = 0
                 state.loop = true
             }
-        } while (!((0 <= resposta) && (resposta <= 9)) && (!comandos.nomes().includes(resposta)))
+        } while (!((0 <= resposta) && (resposta <= 9))) // && (!comandos.nomes().includes(resposta)))
 
         return ([resposta, pagina, opcoesPag])
     },
@@ -185,7 +185,7 @@ export const ui = {
             }
         } while (!valido)
 
-        return (numero ? 0 : "")
+        // return (numero ? 0 : "")
     },
 
     /**
