@@ -50,7 +50,7 @@ do {
     state.pedirCoefs = false
     state.loop = false
 
-    if (((((0 <= state.tipo) && (state.tipo <= 2)) || ((6 <= state.tipo) && (state.tipo <= 9)))) { //  || (comandos.nomes().includes(state.tipo)))) {
+    if (((((0 <= state.tipo) && (state.tipo <= 2)) || ((6 <= state.tipo) && (state.tipo <= 9))))) { //  || (comandos.nomes().includes(state.tipo)))) {
         // Polinomiais
         if (state.tipo == 1) {
             // Incógnitas
@@ -161,7 +161,7 @@ do {
                     }
 
                     // Manter
-                    else if ((6 <= subtipo) && (subtipo <= 9) || (comandos.nomes().includes(subtipo))) {
+                    else if ((6 <= subtipo) && (subtipo <= 9)) { //  || (comandos.nomes().includes(subtipo))) {
                         state.tipo = subtipo
                         state.loop = true
                         if (subtipo != "sair") {
