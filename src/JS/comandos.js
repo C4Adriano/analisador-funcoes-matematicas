@@ -115,6 +115,6 @@ export const comandos = {
     },
 
     nomes() {
-        return (["config", "sair", "inicio", "rever", "historico", "alterar", null])
+        return (["config", "sair", "inicio", "rever", "historico", "alterar"])
     }
 }

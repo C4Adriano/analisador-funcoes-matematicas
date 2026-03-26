@@ -45,8 +45,8 @@ do {
     if ((!state.manterTipo)) { //  || (state.tipo == "inicio")) {
         alert(state.tipo)
         state.tipo = ui.entrada("=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair", "", true, 0, true)
-    alert(state.tipo)
-     }
+        alert(state.tipo)
+    }
 
     state.manterTipo = false
     state.pedirCoefs = false
@@ -271,11 +271,11 @@ do {
                     if (JSON.stringify(config) == JSON.stringify(configPadrao)) {
                         ui.aviso("Todas as configurações já estão na forma padrão.", "Não há necessidade de restaurar.")
                     } else {
-                        let mensagem = "Voltar às configurações padrão?\nConfigurações afetadas:\n", arrayConfig = Object.keys(config)
+                        let mensagem = "Voltar às configurações padrão?\nConfigurações afetadas:\n", chaves = Object.keys(config)
 
                         // Mostra configurações afetadas
-                        for (let i = 0; i < arrayConfig.length; i++) {
-                            mensagem += (config[arrayConfig[i]] != configPadrao[arrayConfig[i]]) ? arrayConfig[i] + ", " : ""
+                        for (let i = 0; i < chaves.length; i++) {
+                            mensagem += (config[chaves[i]] != configPadrao[chaves[i]]) ? chaves[i] + ", " : ""
                         }
 
                         // Remove última vírgula e espaço
@@ -283,7 +283,9 @@ do {
 
                         // Confirmação
                         if (ui.aviso(mensagem, "Obs.₁: Isso irá afetar todas as configurações acima\nObs.₂: Essa alteração é permanente", true)) {
-                            config = JSON.parse(JSON.stringify(configPadrao))
+                            for (let i = 0; i < chaves.length; i++) {
+                                config[chaves[i]] = configPadrao[chaves[i]]
+                            }
                         }
                     }
                 } else if (escolha == 8) { // -1

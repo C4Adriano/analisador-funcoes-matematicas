@@ -51,7 +51,7 @@ export const ui = {
         if (!tipo) { // Se tipo for falso, é um aviso simples, como um alert
             ui.exibir("=== Aviso ===\n" + mensagem, explicacao)
         } else { // Se tipo for verdadeiro, é um aviso de confirmação, como um confirm
-            ui.confirmar("=== Aviso ===\n" + mensagem, explicacao)
+            return (ui.confirmar("=== Aviso ===\n" + mensagem, explicacao))
         }
     },
 
@@ -185,7 +185,7 @@ export const ui = {
             }
         } while (!valido)
 
-        // return (numero ? 0 : "")
+        return (numero ? 0 : "")
     },
 
     /**

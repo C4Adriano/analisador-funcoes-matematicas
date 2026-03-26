@@ -16,10 +16,10 @@ export const erro = {
 
     /**
      * Exibe um erro de divisão por zero
-     * @param {string} moitvo Motivo
+     * @param {string} motivo Motivo
      */
-    divZero(moitvo = "") {
-        ui.erro("ERRO-002: Divisão por zero", (moitvo != "" ? "Motivo: " + moitvo : "Tu tentaste dividir um número por zero, o que não é possível."))
+    divZero(motivo = "") {
+        ui.erro("ERRO-002: Divisão por zero", (motivo != "" ? "Motivo: " + motivo : "Tu tentaste dividir um número por zero, o que não é possível."))
     },
 
     /**
