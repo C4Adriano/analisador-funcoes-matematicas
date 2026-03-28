@@ -14,6 +14,6 @@ Thanks to everyone who contributed to this project.
 
 ---
 
-| Name | Role | GitHub |
-| --- | --- | --- |
+| Name         | Role               | GitHub                                     |
+| ------------ | ------------------ | ------------------------------------------ |
 | Adriano Lima | Author & Developer | [@C4Adriano](https://github.com/C4Adriano) |

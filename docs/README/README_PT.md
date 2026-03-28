@@ -27,7 +27,7 @@ Desenvolvida inteiramente em JavaScript puro, sem bibliotecas externas.
 - **Coeficientes variáveis:** `a`, `b`, `c` podem ser deixados como incógnitas — o programa calcula seus valores a partir de pontos conhecidos
 - **Histórico:** Salva e recupera funções anteriores durante a sessão
 - **Configurações:** Unicode, acentos, casas decimais, capitalização, separador decimal, precisão de log e divisão, limite de iterações, idioma (PT-BR / EN) e mais
-- **Bilíngue:** Português Brasileiro e Inglês *(em desenvolvimento)*
+- **Bilíngue:** Português Brasileiro e Inglês _(em desenvolvimento)_
 
 ### Como usar
 
@@ -41,36 +41,36 @@ Ou acesse diretamente: [![GitHub Pages](https://img.shields.io/badge/Access%20he
 
 ### Estrutura do código
 
-| Objeto | Responsabilidade |
-| --- | --- |
-| `config` | Configurações globais do programa |
-| `helpers` | Cálculos e montagem de resultados comuns |
-| `escrita` | Formatação, tradução e conversão de texto |
-| `ui` | Interação com o usuário (menus, entradas, erros) |
-| `erro` | Mensagens de erro padronizadas |
-| `algebra` | Cálculos matemáticos (log, ln, divisão segura, etc.) |
-| `analisar` | Análise de cada tipo de função |
+| Objeto     | Responsabilidade                                     |
+| ---------- | ---------------------------------------------------- |
+| `config`   | Configurações globais do programa                    |
+| `helpers`  | Cálculos e montagem de resultados comuns             |
+| `escrita`  | Formatação, tradução e conversão de texto            |
+| `ui`       | Interação com o usuário (menus, entradas, erros)     |
+| `erro`     | Mensagens de erro padronizadas                       |
+| `algebra`  | Cálculos matemáticos (log, ln, divisão segura, etc.) |
+| `analisar` | Análise de cada tipo de função                       |
 
 ### Histórico resumido
 
-| Versão | Destaque |
-| --- | --- |
-| 1.0 | Funções Quadráticas, Afins e Constantes |
-| 2.1 | Funções Exponenciais |
-| 3.0 | Coeficientes como variáveis (incógnitas) |
-| 4.4 | Funções Logarítmicas |
-| 4.5 | Pré-Lançamento |
-| 5.1 | Sistema de configurações |
-| 5.2 | Objetos JS, padrão de configurações |
-| 5.5 | Objeto `helpers`, histórico de funções, tradução EN |
-| 6.0 | Lançamento no GitHub |
+| Versão | Destaque                                            |
+| ------ | --------------------------------------------------- |
+| 1.0    | Funções Quadráticas, Afins e Constantes             |
+| 2.1    | Funções Exponenciais                                |
+| 3.0    | Coeficientes como variáveis (incógnitas)            |
+| 4.4    | Funções Logarítmicas                                |
+| 4.5    | Pré-Lançamento                                      |
+| 5.1    | Sistema de configurações                            |
+| 5.2    | Objetos JS, padrão de configurações                 |
+| 5.5    | Objeto `helpers`, histórico de funções, tradução EN |
+| 6.0    | Lançamento no GitHub                                |
 
 Changelog completo em [`CHANGELOG`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md).
 
 ### Próximas atualizações
 
 - Verificar quais funções são válidas para pontos conhecidos
-- Comandos com `/` para acesso rápido *(em desenvolvimento)*
+- Comandos com `/` para acesso rápido _(em desenvolvimento)_
 - Ajuda, resumos e relatórios por tipo de função
 - Equações entre Funções Exponenciais
 

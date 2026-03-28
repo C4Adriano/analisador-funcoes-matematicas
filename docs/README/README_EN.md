@@ -27,7 +27,7 @@ Built entirely in pure JavaScript, with no external libraries.
 - **Variable coefficients:** `a`, `b`, `c` can be left as unknowns — the program calculates their values from known points
 - **History:** Saves and retrieves previous functions during the session
 - **Settings:** Unicode, accents, decimal places, capitalization, decimal separator, log and division precision, iteration limit, language (PT-BR / EN), and more
-- **Bilingual:** Brazilian Portuguese and English *(in development)*
+- **Bilingual:** Brazilian Portuguese and English _(in development)_
 
 ### How to use
 
@@ -41,36 +41,36 @@ Or access directly: [![GitHub Pages](https://img.shields.io/badge/Access%20here-
 
 ### Code structure
 
-| Object | Responsibility |
-| --- | --- |
-| `config` | Global program settings |
-| `helpers` | Common calculations and result assembly |
-| `escrita` | Formatting, translation, and text conversion |
-| `ui` | User interaction (menus, inputs, errors) |
-| `erro` | Standardized error messages |
-| `algebra` | Mathematical calculations (log, ln, safe division, etc.) |
-| `analisar` | Analysis of each function type |
+| Object     | Responsibility                                           |
+| ---------- | -------------------------------------------------------- |
+| `config`   | Global program settings                                  |
+| `helpers`  | Common calculations and result assembly                  |
+| `escrita`  | Formatting, translation, and text conversion             |
+| `ui`       | User interaction (menus, inputs, errors)                 |
+| `erro`     | Standardized error messages                              |
+| `algebra`  | Mathematical calculations (log, ln, safe division, etc.) |
+| `analisar` | Analysis of each function type                           |
 
 ### Version history
 
-| Version | Highlight |
-| --- | --- |
-| 1.0 | Quadratic, Linear, and Constant functions |
-| 2.1 | Exponential functions |
-| 3.0 | Coefficients as unknowns |
-| 4.4 | Logarithmic functions |
-| 4.5 | Pre-release |
-| 5.1 | Settings system |
-| 5.2 | JS objects, settings standard |
-| 5.5 | `helpers` object, function history, EN translation |
-| 6.0 | Public release on GitHub |
+| Version | Highlight                                          |
+| ------- | -------------------------------------------------- |
+| 1.0     | Quadratic, Linear, and Constant functions          |
+| 2.1     | Exponential functions                              |
+| 3.0     | Coefficients as unknowns                           |
+| 4.4     | Logarithmic functions                              |
+| 4.5     | Pre-release                                        |
+| 5.1     | Settings system                                    |
+| 5.2     | JS objects, settings standard                      |
+| 5.5     | `helpers` object, function history, EN translation |
+| 6.0     | Public release on GitHub                           |
 
 Full changelog in [`CHANGELOG`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md).
 
 ### Upcoming updates
 
 - Verify which functions are valid for known points
-- `/` commands for quick access *(in development)*
+- `/` commands for quick access _(in development)_
 - Help, summaries, and reports by function type
 - Equations between Exponential Functions
 

@@ -42,6 +42,7 @@ $RECYCLE.BIN/
 # === ARQUIVOS PESSOAIS ===
 notes.md
 TODO.md
+node_modules/
 
 # === CREDENCIAIS ===
 .env

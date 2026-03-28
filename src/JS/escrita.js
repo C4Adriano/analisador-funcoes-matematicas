@@ -14,7 +14,7 @@ export const escrita = {
      * @returns Texto convertido
      */
     substituir(texto = "", de = "", para = "") {
-        return (String(texto).split(de).join(para))
+        return String(texto).split(de).join(para)
     },
 
     /**
@@ -24,13 +24,13 @@ export const escrita = {
      * @returns Texto convertido
      */
     substituirGrupo(texto = "", lista = [["", ""]]) {
-        for (let i = 0; (i < lista.length); i++) {
+        for (let i = 0; i < lista.length; i++) {
             let antigo = texto
-            if ((lista[i][0] != undefined) && (lista[i][1] != undefined)) {
+            if (lista[i][0] != undefined && lista[i][1] != undefined) {
                 texto = escrita.substituir(texto, lista[i][0], lista[i][1])
             }
         }
-        return (texto)
+        return texto
     },
 
     /**
@@ -199,12 +199,12 @@ export const escrita = {
             ["—", "-"],
             ["–", "-"],
             ["−", "-"],
-            ["•", "*"]
+            ["•", "*"],
         ]
 
         texto = escrita.substituirGrupo(texto, trocas)
 
-        return (texto)
+        return texto
     },
 
     /**
@@ -288,12 +288,12 @@ export const escrita = {
 
             // === GANCHOS ===
             ["ç", "c"], // Cedilha / C com gancho (português, francês)
-            ["Ç", "C"]
+            ["Ç", "C"],
         ]
 
         texto = escrita.substituirGrupo(texto, trocas)
 
-        return (texto)
+        return texto
     },
 
     /**
@@ -305,16 +305,25 @@ export const escrita = {
         let resultado = ""
         let capitalizar = true
 
-        for (let i = 0; (i < texto.length); i++) {
-            let atual = texto[i], letra = escrita.semAcentos(atual).toLowerCase()
+        for (let i = 0; i < texto.length; i++) {
+            let atual = texto[i],
+                letra = escrita.semAcentos(atual).toLowerCase()
 
-            if ((atual == ".") || (atual == "!") || (atual == "?") || (atual == "\n") || (atual == "|") || (atual == "“") || (atual == "\'")) {
+            if (
+                atual == "." ||
+                atual == "!" ||
+                atual == "?" ||
+                atual == "\n" ||
+                atual == "|" ||
+                atual == "“" ||
+                atual == "\'"
+            ) {
                 capitalizar = true
-            } else if ((atual == "/")) {
+            } else if (atual == "/") {
                 capitalizar = false
-            } 
-            
-            if ((capitalizar) && (("a" <= letra) && (letra <= "z"))) {
+            }
+
+            if (capitalizar && "a" <= letra && letra <= "z") {
                 resultado += atual.toUpperCase()
                 capitalizar = false
             } else {
@@ -377,12 +386,12 @@ export const escrita = {
             ["português", "Português"],
             ["portuguese", "Portuguese"],
             ["inglês", "Inglês"],
-            ["english", "English"]
+            ["english", "English"],
         ]
 
         texto = escrita.substituirGrupo(texto, trocas)
 
-        return (texto)
+        return texto
     },
 
     /**
@@ -395,7 +404,7 @@ export const escrita = {
         // Caso especial para a letra grega delta, que matematicamente tem uma forma diferente em maiúscula e minúscula
         texto = escrita.substituir(texto, "δ", "Δ")
 
-        return (texto)
+        return texto
     },
 
     /**
@@ -408,7 +417,7 @@ export const escrita = {
         // Caso especial para a letra latina f, que matematicamente tem uma forma diferente em maiúscula e minúscula
         texto = escrita.substituir(texto, "Ƒ", "ƒ")
 
-        return (texto)
+        return texto
     },
 
     /**
@@ -424,7 +433,7 @@ export const escrita = {
 
         // Se inverter é verdadeiro, troca vírgulas por pontos para não afetar nas contas
         if (inverter) {
-            return (escrita.substituir(numero, ",", "."))
+            return escrita.substituir(numero, ",", ".")
         }
 
         // Se arredondar é verdadeiro, arredonda o número para o número de casas decimais configurado
@@ -434,10 +443,10 @@ export const escrita = {
 
         // Se separadorDecimal é verdadeiro, troca pontos por vírgulas para exibição
         if (config.separadorDecimal) {
-            return (escrita.substituir(numero, ".", ","))
+            return escrita.substituir(numero, ".", ",")
         }
 
-        return (numero)
+        return numero
     },
 
     /**
@@ -446,7 +455,7 @@ export const escrita = {
      * @returns Texto convertido
      */
     multiSimples(texto = "") {
-        return (escrita.substituir(texto, " · ", ""))
+        return escrita.substituir(texto, " · ", "")
     },
 
     /**
@@ -457,14 +466,17 @@ export const escrita = {
     traduzir(texto = "") {
         texto = escrita.minusculas(texto)
 
-        let frasesCompletas = [["", ""]], frasesParciais = [["", ""]], palavras = [["", ""]], conectores = [["", ""]]
+        let frasesCompletas = [["", ""]],
+            frasesParciais = [["", ""]],
+            palavras = [["", ""]],
+            conectores = [["", ""]]
 
         if (config.linguagem == "pt-br") {
             // === TRADUÇÃO DE INGLÊS PARA PORTUGUÊS ===
             palavras = [
                 ["undefined", "indefinido"],
                 ["nan", "não é um número"],
-                ["infinity", "infinito"]
+                ["infinity", "infinito"],
             ]
         } else if (config.linguagem == "en") {
             // === TRADUÇÃO DE PORTUGUÊS PARA INGLÊS ===
@@ -475,30 +487,66 @@ export const escrita = {
                 ["a função será sempre", "the function will always be"],
                 ["a função não é", "the function is not"],
                 ["não existe raiz real, portanto não há", "there is no real root, therefore there is no"],
-                ["ainda não posso resolver equações com funções não polinomiais", "i can not solve equations with non-polynomial functions yet"],
-                ["porque as funções são iguais, em todos os pontos, elas se encontram", "because the functions are the same at all points, they intersect"],
-                ["porque as funções são diferentes, não há ponto em que elas se encontrarão", "because the functions are different, there is no point at which they will meet"],
-                ["tu tentaste dividir um número por zero, o que não é possível", "you tried to divide a number by zero, which is not possible"],
-                ["tu tentaste calcular um logaritmo com base menor ou igual a 1, o que não é possível", "you tried to calculate a logarithm with a base less than or equal to 1, which is not possible"],
-                ["se essa for uma variável e o que foi digitado não for um número, ela será transformada no nome da variável, não no que foi digitado", "if this is a variable and what was typed is not a number, it will be transformed into the variable name, not what was typed"],
-                ["essas mensagens podem ser desativadas nas configurações, em", "these messages can be disabled in the settings, under"],
-                ["toda e qualquer coisa digitada passará a ter que ser confirmada", "everything typed will have to be confirmed"],
-                ["isso irá ativar uma mensagem antes de sair / fechar o programa", "this will enable a message before exiting / closing the program"],
-                ["essa configuração é útil para evitar loops infinitos no código, caso algo dê errado", "this setting is useful to avoid infinite loops in the code if something goes wrong"],
+                [
+                    "ainda não posso resolver equações com funções não polinomiais",
+                    "i can not solve equations with non-polynomial functions yet",
+                ],
+                [
+                    "porque as funções são iguais, em todos os pontos, elas se encontram",
+                    "because the functions are the same at all points, they intersect",
+                ],
+                [
+                    "porque as funções são diferentes, não há ponto em que elas se encontrarão",
+                    "because the functions are different, there is no point at which they will meet",
+                ],
+                [
+                    "tu tentaste dividir um número por zero, o que não é possível",
+                    "you tried to divide a number by zero, which is not possible",
+                ],
+                [
+                    "tu tentaste calcular um logaritmo com base menor ou igual a 1, o que não é possível",
+                    "you tried to calculate a logarithm with a base less than or equal to 1, which is not possible",
+                ],
+                [
+                    "se essa for uma variável e o que foi digitado não for um número, ela será transformada no nome da variável, não no que foi digitado",
+                    "if this is a variable and what was typed is not a number, it will be transformed into the variable name, not what was typed",
+                ],
+                [
+                    "essas mensagens podem ser desativadas nas configurações, em",
+                    "these messages can be disabled in the settings, under",
+                ],
+                [
+                    "toda e qualquer coisa digitada passará a ter que ser confirmada",
+                    "everything typed will have to be confirmed",
+                ],
+                [
+                    "isso irá ativar uma mensagem antes de sair / fechar o programa",
+                    "this will enable a message before exiting / closing the program",
+                ],
+                [
+                    "essa configuração é útil para evitar loops infinitos no código, caso algo dê errado",
+                    "this setting is useful to avoid infinite loops in the code if something goes wrong",
+                ],
                 ["isso irá alterar a língua do sistema inteiro", "this will change the entire system language"],
-                ["a quantidade de interações passou do limite", "the number of iterations exceeded the limit"],            
+                ["a quantidade de interações passou do limite", "the number of iterations exceeded the limit"],
                 ["tu escolheste algo fora do intervalo", "you chose a value outside the interval"],
                 ["não há raízes reais", "there are no real roots"],
                 ["não há interseção com o eixo x", "there is no intersection with the x-axis"],
                 ["interseção com o eixo x", "intersection with the x-axis"],
                 ["interseções com o eixo x", "intersections with the x-axis"],
-                ["ponto mais baixo (ou mais alto, conforme a concavidade) da função", "lowest (or highest, depending on concavity) point of the function"],
+                [
+                    "ponto mais baixo (ou mais alto, conforme a concavidade) da função",
+                    "lowest (or highest, depending on concavity) point of the function",
+                ],
                 ["entre o vértice e o ∞", "between the vertex and ∞"],
                 ["entre -∞ e o vértice", "between -∞ and the vertex"],
                 ["entre c e ∞, exceto o próprio c", "between c and ∞, excluding c itself"],
                 ["entre -∞ e c, exceto o próprio c", "between -∞ and c, excluding c itself"],
                 ["não há histórico o suficiente para mudanças", "not enough history for changes"],
-                ["escrevestes apenas uma função até agora. use “alterar” para escrever outra função", "you have only written one function so far. use “change” to write another function"],
+                [
+                    "escrevestes apenas uma função até agora. use “alterar” para escrever outra função",
+                    "you have only written one function so far. use “change” to write another function",
+                ],
                 ["todas as configurações já estão na forma padrão", "all settings are already in their default form"],
                 ["não há necessidade de restaurar", "there is no need to restore"],
                 ["voltar às configurações padrão", "reset to default settings"],
@@ -507,67 +555,142 @@ export const escrita = {
                 ["essa alteração é permanente", "this change is permanent"],
 
                 // Unicode
-                ["caracteres unicode são os símbolos especiais, tais como: “ℝ”, “∀”, etc. desativar fará com que eles sejam transformados em uma palavra correspondente, tais como:", "unicode characters are special symbols, such as: “ℝ”, “∀”, etc. disabling them will cause them to be replaced by a corresponding word, such as:"],
+                [
+                    "caracteres unicode são os símbolos especiais, tais como: “ℝ”, “∀”, etc. desativar fará com que eles sejam transformados em uma palavra correspondente, tais como:",
+                    "unicode characters are special symbols, such as: “ℝ”, “∀”, etc. disabling them will cause them to be replaced by a corresponding word, such as:",
+                ],
                 ["nem todos os caracteres unicode serão desativados", "not all unicode characters will be disabled"],
                 ["essa configuração pode mudar algumas explicações", "this setting may change some explanations"],
 
                 // Explicações
-                ["ativar fará com que certas mensagens sejam diferentes e tenham explicações, por exemplo: o cálculo do delta,", "enabling will cause certain messages to be different and include explanations, for example: the calculation of delta,"],
+                [
+                    "ativar fará com que certas mensagens sejam diferentes e tenham explicações, por exemplo: o cálculo do delta,",
+                    "enabling will cause certain messages to be different and include explanations, for example: the calculation of delta,",
+                ],
                 ["sem ser só o resultado dele", "instead of just the result"],
                 ["nem todas as mensagens têm versão explicada", "not all messages have an explained version"],
-                ["desativar o unicode fará com que seja mostrado: delta = b^2 - 4 * a * c", "disabling unicode will show: delta = b^2 - 4 * a * c"],
+                [
+                    "desativar o unicode fará com que seja mostrado: delta = b^2 - 4 * a * c",
+                    "disabling unicode will show: delta = b^2 - 4 * a * c",
+                ],
 
                 // Acentos
-                ["essa configuração irá tirar todos os acentos gráficos das palavras, podendo haver má interpretação", "this setting will remove all diacritical marks from words, which may cause misinterpretation"],
+                [
+                    "essa configuração irá tirar todos os acentos gráficos das palavras, podendo haver má interpretação",
+                    "this setting will remove all diacritical marks from words, which may cause misinterpretation",
+                ],
 
                 // Capitalizadas
-                ["essa configuração irá transformar as palavras em “normais”, no caso, a primeira letra da frase em maiúscula e as outras todas em minúsculas", "this setting will transform words into “normal” form, meaning the first letter of each sentence in uppercase and all others in lowercase"],
-                ["essa configuração irá desativar “maiúsculas” e “minúsculas”", "this setting will disable “uppercase” and “lowercase”"],
+                [
+                    "essa configuração irá transformar as palavras em “normais”, no caso, a primeira letra da frase em maiúscula e as outras todas em minúsculas",
+                    "this setting will transform words into “normal” form, meaning the first letter of each sentence in uppercase and all others in lowercase",
+                ],
+                [
+                    "essa configuração irá desativar “maiúsculas” e “minúsculas”",
+                    "this setting will disable “uppercase” and “lowercase”",
+                ],
 
                 // Maiúsculas
-                ["essa configuração irá transformar todas as letras em maiúsculas", "this setting will transform all letters into uppercase"],
-                ["essa configuração irá desativar “capitalizadas” e “minúsculas”", "this setting will disable “capitalized” and “lowercase”"],
+                [
+                    "essa configuração irá transformar todas as letras em maiúsculas",
+                    "this setting will transform all letters into uppercase",
+                ],
+                [
+                    "essa configuração irá desativar “capitalizadas” e “minúsculas”",
+                    "this setting will disable “capitalized” and “lowercase”",
+                ],
 
                 // Minúsculas
-                ["essa configuração irá transformar todas as letras em minúsculas", "this setting will transform all letters into lowercase"],
-                ["essa configuração irá desativar “capitalizadas” e “maiúsculas”", "this setting will disable “capitalized” and “uppercase”"],
+                [
+                    "essa configuração irá transformar todas as letras em minúsculas",
+                    "this setting will transform all letters into lowercase",
+                ],
+                [
+                    "essa configuração irá desativar “capitalizadas” e “maiúsculas”",
+                    "this setting will disable “capitalized” and “uppercase”",
+                ],
 
                 // Ponto decimal
-                ["essa configuração irá transformar os números com “.” em números com “,”", "this setting will transform numbers with “.” into numbers with “,”"],
-                ["isso é apenas estético e não irá afetar as contas", "this is only aesthetic and will not affect calculations"],
-                ["tu também poderás escrever os números com “,” em vez de “.”", "you will also be able to write numbers with “,” instead of “.”"],
+                [
+                    "essa configuração irá transformar os números com “.” em números com “,”",
+                    "this setting will transform numbers with “.” into numbers with “,”",
+                ],
+                [
+                    "isso é apenas estético e não irá afetar as contas",
+                    "this is only aesthetic and will not affect calculations",
+                ],
+                [
+                    "tu também poderás escrever os números com “,” em vez de “.”",
+                    "you will also be able to write numbers with “,” instead of “.”",
+                ],
 
                 // Multiplicação simples
-                ["isso irá alterar esteticamente as contas polinomiais de: “a · x² + b · x + c” para: “ax² + bx + c”", "this will aesthetically change polynomial expressions from: “a · x² + b · x + c” to: “ax² + bx + c”"],
+                [
+                    "isso irá alterar esteticamente as contas polinomiais de: “a · x² + b · x + c” para: “ax² + bx + c”",
+                    "this will aesthetically change polynomial expressions from: “a · x² + b · x + c” to: “ax² + bx + c”",
+                ],
                 ["desativar o unicode irá transformar o “·” em “*”", "disabling unicode will transform “·” into “*”"],
-                ["isso não irá afetar o “×”, porém o unicode irá transformá-lo em “*”", "this will not affect “×”, but unicode will transform it into “*”"],
+                [
+                    "isso não irá afetar o “×”, porém o unicode irá transformá-lo em “*”",
+                    "this will not affect “×”, but unicode will transform it into “*”",
+                ],
 
                 // Confirmações de entrada
-                ["toda e qualquer coisa digitada passará a ter que ser confirmada", "everything typed will have to be confirmed"],
+                [
+                    "toda e qualquer coisa digitada passará a ter que ser confirmada",
+                    "everything typed will have to be confirmed",
+                ],
 
                 // Confirmações de saída
-                ["isso irá ativar uma mensagem antes de sair / fechar o programa", "this will enable a message before exiting / closing the program"],
+                [
+                    "isso irá ativar uma mensagem antes de sair / fechar o programa",
+                    "this will enable a message before exiting / closing the program",
+                ],
 
                 // Erros
-                ["desativar pode fazer com que tu não percebas algum erro que estás cometendo", "disabling may cause you not to notice an error you are making"],
+                [
+                    "desativar pode fazer com que tu não percebas algum erro que estás cometendo",
+                    "disabling may cause you not to notice an error you are making",
+                ],
 
                 // Mostrar função
-                ["“mostrar função” significa que será mostrada a função (por exemplo: ax² + bx + c) no começo dos menus, antes das opções", "“show function” means the function (for example: ax² + bx + c) will be shown at the beginning of menus, before the options"],
-                ["a função ainda continuará sendo mostrada quando for escolhida a opção “6” (rever / mostrar função)", "the function will still be shown when option “6” (review / show function) is selected"],
+                [
+                    "“mostrar função” significa que será mostrada a função (por exemplo: ax² + bx + c) no começo dos menus, antes das opções",
+                    "“show function” means the function (for example: ax² + bx + c) will be shown at the beginning of menus, before the options",
+                ],
+                [
+                    "a função ainda continuará sendo mostrada quando for escolhida a opção “6” (rever / mostrar função)",
+                    "the function will still be shown when option “6” (review / show function) is selected",
+                ],
 
                 // Casas decimais
-                ["um número muito pequeno de casas decimais pode fazer as contas ficarem erradas", "too few decimal places may cause calculations to be incorrect"],
-                ["os números já digitados serão arredondados para o novo número de casas decimais", "numbers already entered will be rounded to the new number of decimal places"],
+                [
+                    "um número muito pequeno de casas decimais pode fazer as contas ficarem erradas",
+                    "too few decimal places may cause calculations to be incorrect",
+                ],
+                [
+                    "os números já digitados serão arredondados para o novo número de casas decimais",
+                    "numbers already entered will be rounded to the new number of decimal places",
+                ],
 
                 // Precisão do log
-                ["isso poderá afetar contas muito pequenas envolvendo logs", "this may affect very small calculations involving logarithms"],
+                [
+                    "isso poderá afetar contas muito pequenas envolvendo logs",
+                    "this may affect very small calculations involving logarithms",
+                ],
                 ["tu terás que escrever literalmente “1e-12”", "you will have to literally type “1e-12”"],
 
                 // Precisão da divisão
-                ["isso poderá afetar contas muito pequenas envolvendo divisões", "this may affect very small calculations involving divisions"],
+                [
+                    "isso poderá afetar contas muito pequenas envolvendo divisões",
+                    "this may affect very small calculations involving divisions",
+                ],
 
                 // Limite de iterações
-                ["isso irá afetar todos os loops, tais como logs, menus, etc.", "this will affect all loops, such as logarithms, menus, etc."],
+                [
+                    "isso irá afetar todos os loops, tais como logs, menus, etc.",
+                    "this will affect all loops, such as logarithms, menus, etc.",
+                ],
 
                 // Linguagem
                 ["isso irá alterar a língua do sistema inteiro.", "this will change the entire system language."],
@@ -602,7 +725,7 @@ export const escrita = {
                 ["para cima", "upward"],
                 ["para baixo", "downward"],
                 ["| atual", "| current"],
-                ["| padrão", "| default"],                
+                ["| padrão", "| default"],
                 ["a raiz é", "the root is"],
                 ["as raízes reais", "the real roots"],
                 ["as funções", "the functions"],
@@ -644,7 +767,7 @@ export const escrita = {
                 ["como y", "since y"],
                 ["pois c", "since c"],
                 ["pois b", "since b"],
-                ["pois y", "since y"]
+                ["pois y", "since y"],
             ]
 
             palavras = [
@@ -728,7 +851,7 @@ export const escrita = {
                 ["atual", "current"],
                 ["digitaste", "typed"],
                 ["digite", "type"],
-                ["interações", "iterations"]
+                ["interações", "iterations"],
             ]
 
             conectores = [
@@ -751,13 +874,13 @@ export const escrita = {
                 [" ele ", " he "],
                 [" tu ", " you "],
                 [" você ", " you "],
-                [" eu ", " i "]
+                [" eu ", " i "],
             ]
         }
 
         texto = escrita.substituirGrupo(texto, [].concat(frasesCompletas, frasesParciais, palavras, conectores))
 
-        return (texto)
+        return texto
     },
 
     traduzirUnicode(texto = "") {
@@ -798,7 +921,7 @@ export const escrita = {
 
         texto = escrita.substituirGrupo(texto, trocas)
 
-        return (texto)
+        return texto
     },
 
     /**
@@ -810,7 +933,7 @@ export const escrita = {
     verificar(mensagem = "", explicacao = "") {
         // === ADIÇÃO DE EXPLICAÇÕES ===
         // Se explicações estão ativadas e há uma explicação, adiciona à mensagem
-        if ((config.explicacoes) && (explicacao != "")) {
+        if (config.explicacoes && explicacao != "") {
             mensagem += "\n\n" + explicacao
         }
 
@@ -851,7 +974,7 @@ export const escrita = {
             mensagem = escrita.maiusculas(mensagem)
         }
 
-        return (mensagem)
+        return mensagem
     },
 
     /**
@@ -862,7 +985,7 @@ export const escrita = {
     expoente(texto = "") {
         // Se Unicode está desativado, retorna o texto com um símbolo de sobrescrito simples
         if (!config.unicode) {
-            return ("^" + texto)
+            return "^" + texto
         }
 
         let trocas = [
@@ -877,13 +1000,13 @@ export const escrita = {
             ["8", "⁸"],
             ["9", "⁹"],
             ["-", "⁻"],
-            [".", "․"]
+            [".", "․"],
         ]
 
         // Substitui os números por seus equivalentes em sobrescrito
         texto = escrita.substituirGrupo(texto, trocas)
 
-        return (texto)
+        return texto
     },
 
     /**
@@ -894,7 +1017,7 @@ export const escrita = {
     base(texto = "") {
         // Se Unicode está desativado, retorna o texto com um símbolo de subscrito simples
         if (!config.unicode) {
-            return ("_" + texto)
+            return "_" + texto
         }
 
         let trocas = [
@@ -909,13 +1032,13 @@ export const escrita = {
             ["8", "₈"],
             ["9", "₉"],
             ["-", "₋"],
-            [".", "․"]
+            [".", "․"],
         ]
 
         // Substitui os números por seus equivalentes em subscrito
         texto = escrita.substituirGrupo(texto, trocas)
 
-        return (texto)
+        return texto
     },
 
     /**
@@ -925,11 +1048,11 @@ export const escrita = {
      * @returns "Sim" ou "Não" se for boolean, ou a string do valor
      */
     formatar(valor = true) {
-        if ((valor == true) || (valor == false)) {
-            return (valor ? "Sim" : "Não")
+        if (valor == true || valor == false) {
+            return valor ? "Sim" : "Não"
         }
 
-        return (String(valor))
+        return String(valor)
     },
 
     /**
@@ -940,6 +1063,13 @@ export const escrita = {
      * @returns Mensagem formatada
      */
     itemConfig(mensagem = "", nome = "") {
-        return (mensagem + " | Atual: “" + escrita.formatar(config[nome]) + "” | Padrão: “" + escrita.formatar(configPadrao[nome]) + "”")
+        return (
+            mensagem +
+            " | Atual: “" +
+            escrita.formatar(config[nome]) +
+            "” | Padrão: “" +
+            escrita.formatar(configPadrao[nome]) +
+            "”"
+        )
     },
 }

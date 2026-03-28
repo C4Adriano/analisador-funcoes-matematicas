@@ -27,6 +27,7 @@ Sim. O projeto é público e pode ser acessado sem custo pelo GitHub Pages.
 Diretamente no navegador em: https://c4adriano.github.io/analisador-funcoes-matematicas/
 
 Ou localmente:
+
 1. Baixe ou clone o repositório
 2. Abra o arquivo `index.html` no navegador
 3. Não é necessário instalar nada
@@ -35,6 +36,7 @@ Ou localmente:
 O projeto foi desenvolvido intencionalmente em JavaScript puro, sem frameworks ou bibliotecas externas. Os menus via `prompt` e `alert` tornam o código simples e acessível.
 
 **Quais tipos de função são suportados?**
+
 - Constante — `f(x) = c`
 - Afim — `f(x) = bx + c`
 - Quadrática — `f(x) = ax² + bx + c`

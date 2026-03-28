@@ -18,9 +18,9 @@ assignees: C4Adriano
 <!-- English: Steps to reproduce the behavior -->
 <!-- Português: Passos para reproduzir o comportamento -->
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ---
 

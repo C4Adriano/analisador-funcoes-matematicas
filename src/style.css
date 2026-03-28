@@ -9,7 +9,7 @@ body {
 }
 
 h1 {
-    font-family: 'Times New Roman', Times, serif;
+    font-family: "Times New Roman", Times, serif;
     font-size: clamp(3rem, 15vw, 10rem);
     font-variant: small-caps;
     letter-spacing: 0.05em;
@@ -19,11 +19,25 @@ h1 {
 
 /* Animação de cores RGB */
 @keyframes rgbColors {
-    0% {color: rgb(255, 0, 0);} /* vermelho */
-    16% {color: rgb(255, 255, 0);} /* amarelo */
-    33% {color: rgb(0, 255, 0);} /* verde */
-    50% {color: rgb(0, 255, 255);} /* ciano */
-    66% {color: rgb(0, 0, 255);} /* azul */
-    83% {color: rgb(255, 0, 255);} /* magenta */
-    100% {color: rgb(255, 0, 0);} /* volta ao vermelho */
+    0% {
+        color: rgb(255, 0, 0);
+    } /* vermelho */
+    16% {
+        color: rgb(255, 255, 0);
+    } /* amarelo */
+    33% {
+        color: rgb(0, 255, 0);
+    } /* verde */
+    50% {
+        color: rgb(0, 255, 255);
+    } /* ciano */
+    66% {
+        color: rgb(0, 0, 255);
+    } /* azul */
+    83% {
+        color: rgb(255, 0, 255);
+    } /* magenta */
+    100% {
+        color: rgb(255, 0, 0);
+    } /* volta ao vermelho */
 }

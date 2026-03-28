@@ -11,8 +11,8 @@ export const comandos = {
      * @returns Ação a executar, ou null se não for comando
      */
     processar(bruto = "") {
-        if (bruto[0] != "/") { 
-            return (null)
+        if (bruto[0] != "/") {
+            return null
         }
 
         let partes = escrita.semAcentos(bruto.slice(1).toLowerCase()).split(" ")
@@ -20,58 +20,48 @@ export const comandos = {
 
         // Ajuda
         if (["ajuda", "help", "a", "h", "cmd", "cmds", "c"].includes(cmd)) {
-            return (comandos.ajuda())
+            return comandos.ajuda()
         }
 
         // Configurações
         else if (["config", "configuracoes", "conf", "settings", "cfg"].includes(cmd)) {
             state.tipo = "config"
-            return ("config")
+            return "config"
         }
 
         // Sair
         else if (["sair", "exit", "//", "ex", "out"].includes(cmd)) {
             state.tipo = "sair"
-            return ("sair")
+            return "sair"
         }
 
         // Navegação
         else if (["inicio", "start"].includes(cmd)) {
             state.tipo = "inicio"
-            return ("inicio")
-        }
-
-        else if (["rever", "review"].includes(cmd)) {
+            return "inicio"
+        } else if (["rever", "review"].includes(cmd)) {
             state.tipo = "rever"
-            return ("rever")
-        }
-
-        else if (["alterar", "change"].includes(cmd)) {
+            return "rever"
+        } else if (["alterar", "change"].includes(cmd)) {
             state.tipo = "alterar"
-            return ("alterar")
-        }
-
-        else if (["historico", "history"].includes(cmd)) {
+            return "alterar"
+        } else if (["historico", "history"].includes(cmd)) {
             state.tipo = "historico"
-            return ("historico")
+            return "historico"
         }
 
         // Versão
         else if (["versao", "version", "v"].includes(cmd)) {
-            return (comandos.versao())
+            return comandos.versao()
         }
 
         // Confiugrações
         else if (["unicode"].includes(cmd)) {
-            return (comandos.alterar("unicode"))
-        }
-
-        else if (["explicar", "explicacoes", "explain"].includes(cmd)) {
-            return (comandos.alterar("explicacoes"))
-        }
-
-        else if (["acentos", "accents", "acento", "accent"].includes(cmd)) {
-            return (comandos.alterar("acentos"))
+            return comandos.alterar("unicode")
+        } else if (["explicar", "explicacoes", "explain"].includes(cmd)) {
+            return comandos.alterar("explicacoes")
+        } else if (["acentos", "accents", "acento", "accent"].includes(cmd)) {
+            return comandos.alterar("acentos")
         }
 
         // Teste
@@ -81,46 +71,64 @@ export const comandos = {
             } else {
                 ui.erro("Senha inválida", String(partes[1]) + " não é uma senha válida")
             }
-            return (null)
+            return null
         }
 
         // Inválido
         else {
-            ui.erro("Comando inválido", String(cmd) + " não é um comando válido\nDigite “/help” para ver todos os comandos")
-            return (null)
+            ui.erro(
+                "Comando inválido",
+                String(cmd) + " não é um comando válido\nDigite “/help” para ver todos os comandos",
+            )
+            return null
         }
     },
 
     ajuda() {
         ui.aviso(
-            "Comandos disponíveis:" + "\n" +
-            "/ajuda, /help — mostra essa mensagem" + "\n" +
-            "/config — abre as configurações" + "\n" +
-            "/inicio — volta ao menu principal" + "\n" +
-            "/rever — mostra os coeficientes atuais" + "\n" +
-            "/alterar — muda os coeficientes" + "\n" +
-            "/historico — abre o histórico" + "\n" +
-            "/versao — mostra a versão" + "\n" +
-            "/unicode — alterna Unicode" + "\n" +
-            "/acentos — alterna acentos" + "\n" +
-            "/explicar — alterna explicações" + "\n" +
-            "/sair — sai do programa"
+            "Comandos disponíveis:" +
+                "\n" +
+                "/ajuda, /help — mostra essa mensagem" +
+                "\n" +
+                "/config — abre as configurações" +
+                "\n" +
+                "/inicio — volta ao menu principal" +
+                "\n" +
+                "/rever — mostra os coeficientes atuais" +
+                "\n" +
+                "/alterar — muda os coeficientes" +
+                "\n" +
+                "/historico — abre o histórico" +
+                "\n" +
+                "/versao — mostra a versão" +
+                "\n" +
+                "/unicode — alterna Unicode" +
+                "\n" +
+                "/acentos — alterna acentos" +
+                "\n" +
+                "/explicar — alterna explicações" +
+                "\n" +
+                "/sair — sai do programa",
         )
-        return (null)
+        return null
     },
 
     versao() {
-        ui.aviso("Mathematical Function Analyzer / Analisador de Funções Matemáticas\n" + versao + " — Adriano Lima 2025 - 2026")
-        return (null)
+        ui.aviso(
+            "Mathematical Function Analyzer / Analisador de Funções Matemáticas\n" +
+                versao +
+                " — Adriano Lima 2025 - 2026",
+        )
+        return null
     },
 
     alterar(nome = "") {
         config[nome] = !config[nome]
         ui.aviso(escrita.itemConfig("Alterado: “" + nome + "”", nome))
-        return (null)
+        return null
     },
 
     nomes() {
-        return (["config", "sair", "inicio", "rever", "historico", "alterar"])
-    }
+        return ["config", "sair", "inicio", "rever", "historico", "alterar"]
+    },
 }

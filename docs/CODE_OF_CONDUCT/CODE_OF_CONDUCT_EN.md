@@ -15,11 +15,13 @@
 This is a personal project. Interactions in issues and discussions must be respectful and constructive.
 
 Examples of acceptable behavior:
+
 - Reporting bugs clearly and objectively
 - Making suggestions politely
 - Respecting the author's decisions
 
 Examples of unacceptable behavior:
+
 - Insults or disrespectful language
 - Spam or irrelevant content
 - Demanding features or fixes

@@ -1,0 +1,30 @@
+{
+    "name": "analisador",
+    "version": "1.0.0",
+    "description": "<div align=\"center\">\r     <h1>Mathematical <b>Function Analyzer</b> / Analisador de <b>Funções Matemáticas</b></h1>\r     <p>All rights reserved / Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>\r </div>",
+    "main": "index.js",
+    "directories": {
+        "doc": "docs"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/C4Adriano/analisador-funcoes-matematicas.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "bugs": {
+        "url": "https://github.com/C4Adriano/analisador-funcoes-matematicas/issues"
+    },
+    "homepage": "https://github.com/C4Adriano/analisador-funcoes-matematicas#readme",
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "eslint": "^10.1.0",
+        "globals": "^17.4.0",
+        "prettier": "^3.8.1"
+    }
+}

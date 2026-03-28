@@ -15,11 +15,13 @@
 Este é um projeto pessoal. Interações em issues e discussões devem ser respeitosas e construtivas.
 
 Exemplos de comportamento aceitável:
+
 - Reportar bugs de forma clara e objetiva
 - Fazer sugestões com educação
 - Respeitar as decisões do autor
 
 Exemplos de comportamento inaceitável:
+
 - Insultos ou linguagem desrespeitosa
 - Spam ou conteúdo irrelevante
 - Exigir funcionalidades ou correções

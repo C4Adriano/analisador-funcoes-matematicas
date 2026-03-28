@@ -5,15 +5,24 @@ import { state } from "./state.js"
 import { ui } from "./ui.js"
 import { comandos } from "./comandos.js"
 
-let opcoesBase = ["Domínio", "Imagem", "Interseção com o eixo x", "Interseção com o eixo y", "Valores para x", "Valores para y", "Estudo do sinal", "Equações entre funções"],
-opcoesConst = [].concat(opcoesBase),
-opcoesAfim = ["Inclinação", "Raiz"].concat(opcoesBase),
-opcoesQuad = ["Concavidade", "Raízes", "Vértice"].concat(opcoesBase),
-opcoesExp = ["Curva", "Raiz", "Assíntota"].concat(opcoesBase),
-opcoesLog = ["Curva", "Raiz"].concat(opcoesBase),
-opcoesSen = ["Amplitude", "Período"].concat(opcoesBase),
-opcoesCos = ["Amplitude", "Período"].concat(opcoesBase),
-opcoesTan = ["Assíntotas verticais", "Período"].concat(opcoesBase)
+let opcoesBase = [
+        "Domínio",
+        "Imagem",
+        "Interseção com o eixo x",
+        "Interseção com o eixo y",
+        "Valores para x",
+        "Valores para y",
+        "Estudo do sinal",
+        "Equações entre funções",
+    ],
+    opcoesConst = [].concat(opcoesBase),
+    opcoesAfim = ["Inclinação", "Raiz"].concat(opcoesBase),
+    opcoesQuad = ["Concavidade", "Raízes", "Vértice"].concat(opcoesBase),
+    opcoesExp = ["Curva", "Raiz", "Assíntota"].concat(opcoesBase),
+    opcoesLog = ["Curva", "Raiz"].concat(opcoesBase),
+    opcoesSen = ["Amplitude", "Período"].concat(opcoesBase),
+    opcoesCos = ["Amplitude", "Período"].concat(opcoesBase),
+    opcoesTan = ["Assíntotas verticais", "Período"].concat(opcoesBase)
 
 /**
  * Objeto base para as funções envolvendo funções matemáticas, seus estudos e características
@@ -26,7 +35,9 @@ export const analisar = {
      * @returns Retorna: [coefC]
      */
     constante(coefC = state.globalC) {
-        let opcao = 0, pagina = 1, menuResp = [0, ""]
+        let opcao = 0,
+            pagina = 1,
+            menuResp = [0, ""]
 
         // Mostra
         ui.funcao(0, 0, coefC)
@@ -100,7 +111,7 @@ export const analisar = {
             }
         } while (opcao != 0)
 
-        return ([coefC])
+        return [coefC]
     },
 
     /**
@@ -110,7 +121,9 @@ export const analisar = {
      * @returns Retorna: [coefB, coefC]
      */
     afim(coefB = state.globalB, coefC = state.globalC) {
-        let opcao = 0, pagina = 1, menuResp = [0, ""]
+        let opcao = 0,
+            pagina = 1,
+            menuResp = [0, ""]
 
         // Mostra
         ui.funcao(0, coefB, coefC)
@@ -197,7 +210,7 @@ export const analisar = {
             }
         } while (opcao != 0)
 
-        return ([coefB, coefC])
+        return [coefB, coefC]
     },
 
     /**
@@ -208,13 +221,16 @@ export const analisar = {
      * @returns Retorna: [coefA, coefB, coefC]
      */
     quadratica(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
-        let opcao = 0, pagina = 1, menuResp = [0, ""]
+        let opcao = 0,
+            pagina = 1,
+            menuResp = [0, ""]
 
         // Mostra
         ui.funcao(coefA, coefB, coefC)
 
         // Cálculo
-        let delta = helpers.calcDelta(coefA, coefB, coefC), vertice = helpers.vertice(coefA, coefB, delta[0])
+        let delta = helpers.calcDelta(coefA, coefB, coefC),
+            vertice = helpers.vertice(coefA, coefB, delta[0])
 
         // Loop
         let limite = 0
@@ -237,12 +253,20 @@ export const analisar = {
 
                 // Raízes
                 else if (opcao == 2) {
-                    helpers.exibDelta(delta[0], "Não há raízes reais.", "Raiz real: x₁ = x₂ = " + escrita.decimal(delta[1]), "Raízes reais: x₁ = " + escrita.decimal(delta[1]) + ", x₂ = " + escrita.decimal(delta[2]))
+                    helpers.exibDelta(
+                        delta[0],
+                        "Não há raízes reais.",
+                        "Raiz real: x₁ = x₂ = " + escrita.decimal(delta[1]),
+                        "Raízes reais: x₁ = " + escrita.decimal(delta[1]) + ", x₂ = " + escrita.decimal(delta[2]),
+                    )
                 }
 
                 // Vértice
                 else if (opcao == 3) {
-                    ui.exibir("Vértice: (" + escrita.decimal(vertice[0]) + ", " + escrita.decimal(vertice[1]) + ")", "Ponto mais baixo (ou mais alto, conforme a concavidade) da função. Ponto (-b / (2 · a), -Δ / (4 · a))")
+                    ui.exibir(
+                        "Vértice: (" + escrita.decimal(vertice[0]) + ", " + escrita.decimal(vertice[1]) + ")",
+                        "Ponto mais baixo (ou mais alto, conforme a concavidade) da função. Ponto (-b / (2 · a), -Δ / (4 · a))",
+                    )
                 }
 
                 // Domínio
@@ -264,7 +288,16 @@ export const analisar = {
             else if (pagina == 2) {
                 // Interseção com o eixo x
                 if (opcao == 1) {
-                    helpers.exibDelta(delta[0], "Não há interseção com o eixo x.", "Interseção com o eixo x: (" + escrita.decimal(delta[1]) + ", 0)", "Interseções com o eixo x: (" + escrita.decimal(delta[1]) + ", 0) e (" + escrita.decimal(delta[2]) + ", 0)")
+                    helpers.exibDelta(
+                        delta[0],
+                        "Não há interseção com o eixo x.",
+                        "Interseção com o eixo x: (" + escrita.decimal(delta[1]) + ", 0)",
+                        "Interseções com o eixo x: (" +
+                            escrita.decimal(delta[1]) +
+                            ", 0) e (" +
+                            escrita.decimal(delta[2]) +
+                            ", 0)",
+                    )
                 }
 
                 // Interseção com o eixo y
@@ -307,7 +340,7 @@ export const analisar = {
             }
         } while (opcao != 0)
 
-        return ([coefA, coefB, coefC])
+        return [coefA, coefB, coefC]
     },
 
     /**
@@ -318,7 +351,9 @@ export const analisar = {
      * @returns Retorna: [coefA, coefB, coefC]
      */
     exponencial(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
-        let opcao = 0, pagina = 1, menuResp = []
+        let opcao = 0,
+            pagina = 1,
+            menuResp = []
 
         // Mostra
         ui.funcao(coefA, coefB, coefC, true)
@@ -417,7 +452,7 @@ export const analisar = {
             }
         } while (opcao != 0)
 
-        return ([coefA, coefB, coefC])
+        return [coefA, coefB, coefC]
     },
 
     /**
@@ -428,7 +463,9 @@ export const analisar = {
      * @returns Retorna: [coefA, coefB, coefC]
      */
     logaritmica(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
-        let opcao = 0, pagina = 1, menuResp = []
+        let opcao = 0,
+            pagina = 1,
+            menuResp = []
 
         // Mostra
         ui.funcao(coefA, coefB, coefC, false, true)
@@ -515,27 +552,33 @@ export const analisar = {
             }
         } while (opcao != 0)
 
-        return ([coefA, coefB, coefC])
+        return [coefA, coefB, coefC]
     },
 
     seno(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
-        let opcao = 0, pagina = 1, menuResp = []
+        let opcao = 0,
+            pagina = 1,
+            menuResp = []
 
         // Mostra
         ui.funcao(coefA, coefB, coefC, false, false, 1)
     },
 
     cosseno(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
-        let opcao = 0, pagina = 1, menuResp = []
+        let opcao = 0,
+            pagina = 1,
+            menuResp = []
 
         // Mostra
         ui.funcao(coefA, coefB, coefC, false, false, 2)
     },
 
     tangente(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
-        let opcao = 0, pagina = 1, menuResp = []
+        let opcao = 0,
+            pagina = 1,
+            menuResp = []
 
         // Mostra
         ui.funcao(coefA, coefB, coefC, false, false, 3)
-    }
+    },
 }

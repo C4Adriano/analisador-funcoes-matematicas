@@ -11,7 +11,14 @@ export const erro = {
      * @param {number} max Máximo
      */
     intervalo(min = 0, max = 1) {
-        ui.erro("ERRO-001: Escolha um valor entre " + String(min + (min == 0 ? 1 : 0)) + " e " + String(max) + (min == 0 ? " ou selecione 0 para voltar / sair" : ""), "Tu escolheste algo fora do intervalo.")
+        ui.erro(
+            "ERRO-001: Escolha um valor entre " +
+                String(min + (min == 0 ? 1 : 0)) +
+                " e " +
+                String(max) +
+                (min == 0 ? " ou selecione 0 para voltar / sair" : ""),
+            "Tu escolheste algo fora do intervalo.",
+        )
     },
 
     /**
@@ -19,7 +26,10 @@ export const erro = {
      * @param {string} motivo Motivo
      */
     divZero(motivo = "") {
-        ui.erro("ERRO-002: Divisão por zero", (motivo != "" ? "Motivo: " + motivo : "Tu tentaste dividir um número por zero, o que não é possível."))
+        ui.erro(
+            "ERRO-002: Divisão por zero",
+            motivo != "" ? "Motivo: " + motivo : "Tu tentaste dividir um número por zero, o que não é possível.",
+        )
     },
 
     /**
@@ -51,6 +61,11 @@ export const erro = {
      * @param {string} motivo Motivo
      */
     logInvalido(tipo = "log", motivo = "") {
-        ui.erro("ERRO-006: " + tipo + " inválido", (motivo != "" ? "Motivo: " + motivo : "Tu tentaste calcular um logaritmo com base menor ou igual a 1, o que não é possível."))
-    }
+        ui.erro(
+            "ERRO-006: " + tipo + " inválido",
+            motivo != ""
+                ? "Motivo: " + motivo
+                : "Tu tentaste calcular um logaritmo com base menor ou igual a 1, o que não é possível.",
+        )
+    },
 }

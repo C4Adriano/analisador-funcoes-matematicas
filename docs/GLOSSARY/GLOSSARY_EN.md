@@ -29,7 +29,7 @@ Describes whether a Quadratic Function opens upward (happy face, `a > 0`) or dow
 The set of all valid input values (`x`) for a function.
 
 **Range**
-The set of all output values (`y`) produced by a function. Also called *Image*.
+The set of all output values (`y`) produced by a function. Also called _Image_.
 
 **Root**
 A value of `x` where `f(x) = 0` — that is, where the function crosses the X axis.
