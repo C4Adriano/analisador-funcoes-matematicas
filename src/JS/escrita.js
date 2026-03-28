@@ -29,9 +29,6 @@ export const escrita = {
             if ((lista[i][0] != undefined) && (lista[i][1] != undefined)) {
                 texto = escrita.substituir(texto, lista[i][0], lista[i][1])
             }
-            if (antigo != texto) {
-                // console.log("antigo:\n" + antigo, "\ntexto:\n" + texto, "\n----------\nde:\n" + lista[i][0], "\npara:\n" + lista[i][1])
-            }
         }
         return (texto)
     },

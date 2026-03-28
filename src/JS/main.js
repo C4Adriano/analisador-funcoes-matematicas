@@ -42,17 +42,15 @@ do {
     }
 
     // Tipo de função
-    if ((!state.manterTipo)) { //  || (state.tipo == "inicio")) {
-        alert(state.tipo)
+    if ((!state.manterTipo) || (state.tipo == "inicio")) {
         state.tipo = ui.entrada("=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair", "", true, 0, true)
-        alert(state.tipo)
     }
 
     state.manterTipo = false
     state.pedirCoefs = false
     state.loop = false
 
-    if (((((0 <= state.tipo) && (state.tipo <= 2)) || ((6 <= state.tipo) && (state.tipo <= 9))))) { //  || (comandos.nomes().includes(state.tipo)))) {
+    if ((((0 <= state.tipo) && (state.tipo <= 2)) || ((6 <= state.tipo) && (state.tipo <= 9))) || (comandos.nomes().includes(state.tipo))) {
         // Polinomiais
         if (state.tipo == 1) {
             // Incógnitas
@@ -83,7 +81,7 @@ do {
 
                 state.loopSub = false
 
-                if ((((0 <= subtipo) && (subtipo <= 2)) || ((6 <= subtipo) && (subtipo <= 9)))) { //  || (comandos.nomes().includes(subtipo))) {
+                if ((((0 <= subtipo) && (subtipo <= 2)) || ((6 <= subtipo) && (subtipo <= 9))) || (comandos.nomes().includes(subtipo))) {
                     // Exponencial
                     if (subtipo == 1) {
                         // Incógnitas
@@ -163,7 +161,7 @@ do {
                     }
 
                     // Manter
-                    else if ((6 <= subtipo) && (subtipo <= 9)) { //  || (comandos.nomes().includes(subtipo))) {
+                    else if ((6 <= subtipo) && (subtipo <= 9) || (comandos.nomes().includes(subtipo))) {
                         state.tipo = subtipo
                         state.loop = true
                         if (subtipo != "sair") {
@@ -185,7 +183,7 @@ do {
         }
 
         // Histórico
-        else if ((state.tipo == 6)) { //  || (state.tipo == "historico")) {
+        else if ((state.tipo == 6) || (state.tipo == "historico")) {
             state.loop = true
 
             // Erro de histórico
@@ -213,7 +211,7 @@ do {
         }
 
         // Configurações
-        else if ((state.tipo == 7)) { //  || (state.tipo == "config")) {
+        else if ((state.tipo == 7) || (state.tipo == "config")) {
             pagina = 1
             // Loop
             do {
@@ -451,19 +449,19 @@ do {
         }
 
         // Rever
-        else if ((state.tipo == 8)) { //  || (state.tipo == "rever")) {
+        else if ((state.tipo == 8) || (state.tipo == "rever")) {
             ui.exibir("Valores:\n“a” = " + escrita.decimal(state.globalA) + "\n“b” = " + escrita.decimal(state.globalB) + "\n“c” = " + escrita.decimal(state.globalC))
             state.loop = true
         }
 
         // Mudar
-        else if ((state.tipo == 9)) { //  || (state.tipo == "alterar")) {
+        else if ((state.tipo == 9) || (state.tipo == "alterar")) {
             state.loop = true
             state.pedirCoefs = true
         }
 
         // Sair
-        else if ((state.tipo == 0)) { // || (state.tipo == "sair")) {
+        else if ((state.tipo == 0) || (state.tipo == "sair")) {
             if (config.confirmacoesSaida) {
                 state.loop = !(ui.confirmar("Tu queres sair?", "Obs.: Configurações voltarão ao padrão caso saias"))
             } else {
