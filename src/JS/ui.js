@@ -62,7 +62,7 @@ export const ui = {
      * @returns Retorna a resposta, a página atual, as opções por página
      */
     menu(opcoes = ["---"], pagina = 1) {
-        let resposta = 0, menu = "", opcao = 1, opcoesPag = [""], total = 0, lista = [].concat(opcoes)
+        let resposta = 0, menu = "", opcao = 1, total = 0, lista = [].concat(opcoes)
 
         // Organiza
         while (((lista.length % 5) != 0) || (lista.length == 0)) {
@@ -90,7 +90,6 @@ export const ui = {
 
             opcao = 1
             menu += "\n----------------\n6 = Rever | 7 = Alterar | 8 = Anterior | 9 = Próxima | 0 = Voltar"
-            opcoesPag = lista.slice((5 * (pagina - 1)), (5 * pagina))
 
             // Responde
             resposta = ui.intervalo(menu, "", 0, 9, 0, true)
@@ -110,7 +109,7 @@ export const ui = {
             } else if (comandos.nomes().includes(resposta)) {
                 state.loop = true
                 state.manterTipo = true
-                return (resposta)
+                return ([resposta, pagina])
             }
 
             // Limite
@@ -120,7 +119,7 @@ export const ui = {
             }
         } while (!((0 <= resposta) && (resposta <= 9))) // && (!comandos.nomes().includes(resposta)))
 
-        return ([resposta, pagina, opcoesPag])
+        return ([resposta, pagina])
     },
 
     /**

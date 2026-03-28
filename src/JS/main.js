@@ -20,7 +20,7 @@ document.title = ((config.linguagem == "en") ? "Mathematical Function Analyzer" 
 document.querySelector("h1").textContent = ((config.linguagem == "en") ? "Mathematics" : "Matemática")
 document.documentElement.lang = config.linguagem
 
-let subtipo = 0, escolha = 0, pagina = 1, total = 1, opcao = 1
+let subtipo = 0, escolha = 0, pagina = 1
 
 state.globalA = algebra.variaveis("a"), state.globalB = algebra.variaveis("b"), state.globalC = algebra.variaveis("c")
 
@@ -245,7 +245,7 @@ do {
                 while (((opcoesConfig.length % 6) != 0) || (opcoesConfig.length == 0)) {
                     opcoesConfig.push("---")
                 }
-                total = Math.ceil(opcoesConfig.length / 6)
+                let total = Math.ceil(opcoesConfig.length / 6), opcao = 1
 
                 // Controla página
                 if (pagina < 1) {
@@ -413,7 +413,7 @@ do {
 
                     // Limite de interações
                     else if (escolha == 4) {
-                        config.limiteInteracoes = ui.intervalo(escrita.itemConfig("Qual o limite de interações?", "limiteInteracoes"), "Obs.₁: Isso irá afetar todos os state.loops, tais como logs, menus, etc.\nObs.₂: Essa configuração é útil para evitar state.loops infinitos no código, caso algo dê errado", 100, 10000)
+                        config.limiteInteracoes = ui.intervalo(escrita.itemConfig("Qual o limite de interações?", "limiteInteracoes"), "Obs.₁: Isso irá afetar todos os loops, tais como logs, menus, etc.\nObs.₂: Essa configuração é útil para evitar loops infinitos no código, caso algo dê errado", 100, 10000)
                     }
 
                     // Línguagem
