@@ -19,10 +19,12 @@ let opcoesBase = [
     opcoesAfim = ["Inclinação", "Raiz"].concat(opcoesBase),
     opcoesQuad = ["Concavidade", "Raízes", "Vértice"].concat(opcoesBase),
     opcoesExp = ["Curva", "Raiz", "Assíntota"].concat(opcoesBase),
-    opcoesLog = ["Curva", "Raiz"].concat(opcoesBase),
+    opcoesLog = ["Curva", "Raiz"].concat(opcoesBase)
+    /*
     opcoesSen = ["Amplitude", "Período"].concat(opcoesBase),
     opcoesCos = ["Amplitude", "Período"].concat(opcoesBase),
     opcoesTan = ["Assíntotas verticais", "Período"].concat(opcoesBase)
+    */
 
 /**
  * Objeto base para as funções envolvendo funções matemáticas, seus estudos e características
@@ -555,6 +557,7 @@ export const analisar = {
         return [coefA, coefB, coefC]
     },
 
+    /*
     seno(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
         let opcao = 0,
             pagina = 1,
@@ -580,5 +583,5 @@ export const analisar = {
 
         // Mostra
         ui.funcao(coefA, coefB, coefC, false, false, 3)
-    },
+    }, */
 }

@@ -586,9 +586,9 @@ do {
                         }
                     }
 
-                    // Comandos
+                    /* Comandos
                     else if (escolha == 6) {
-                    }
+                    } */
                 }
             } while (escolha != 0)
         }

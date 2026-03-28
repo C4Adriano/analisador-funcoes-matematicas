@@ -25,7 +25,6 @@ export const escrita = {
      */
     substituirGrupo(texto = "", lista = [["", ""]]) {
         for (let i = 0; i < lista.length; i++) {
-            let antigo = texto
             if (lista[i][0] != undefined && lista[i][1] != undefined) {
                 texto = escrita.substituir(texto, lista[i][0], lista[i][1])
             }
@@ -191,10 +190,10 @@ export const escrita = {
             ["↙", "/"],
 
             // === PONTUAÇÃO / TEXTO ===
-            ["“", "\'"],
-            ["”", "\'"],
-            ["‘", "\'"],
-            ["’", "\'"],
+            ["“", "'"],
+            ["”", "'"],
+            ["‘", "'"],
+            ["’", "'"],
             ["…", "..."],
             ["—", "-"],
             ["–", "-"],
@@ -316,7 +315,7 @@ export const escrita = {
                 atual == "\n" ||
                 atual == "|" ||
                 atual == "“" ||
-                atual == "\'"
+                atual == "'"
             ) {
                 capitalizar = true
             } else if (atual == "/") {
@@ -355,11 +354,11 @@ export const escrita = {
             ["B²", "b²"],
 
             ["“A”", "“a”"],
-            ["\'A\'", "\'a\'"],
+            ["'A'", "'a'"],
             ["“B”", "“b”"],
-            ["\'B\'", "\'b\'"],
+            ["'B'", "'b'"],
             ["“C”", "“c”"],
-            ["\'C\'", "\'c\'"],
+            ["'C'", "'c'"],
 
             ["1E-", "1e-"],
 

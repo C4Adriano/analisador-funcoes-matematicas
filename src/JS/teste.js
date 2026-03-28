@@ -1,6 +1,5 @@
 import { algebra } from "./algebra.js"
 import { helpers } from "./helpers.js"
-import { escrita } from "./escrita.js"
 import { ui } from "./ui.js"
 import { analisar } from "./analisar.js"
 

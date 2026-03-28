@@ -24,7 +24,7 @@ Yes. The project is public and can be accessed for free via GitHub Pages.
 ### Usage
 
 **How do I access the program?**
-Directly in the browser at: https://c4adriano.github.io/analisador-funcoes-matematicas/
+Directly in the browser at: [Analyzer](https://c4adriano.github.io/analisador-funcoes-matematicas/)
 
 Or locally:
 
