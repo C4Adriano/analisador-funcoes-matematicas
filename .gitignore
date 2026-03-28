@@ -43,6 +43,7 @@ $RECYCLE.BIN/
 notes.md
 TODO.md
 node_modules/
+*-lock.json
 
 # === CREDENCIAIS ===
 .env
