@@ -13,7 +13,7 @@
 ---
 
 | Document / Documento | Main / Geral | EN | PT |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | README | — | [🇺🇸](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/README/README_EN.md) | [🇧🇷](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/README/README_PT.md) |
 | Changelog | [📄](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/CHANGELOG.md) | [🇺🇸](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md) | [🇧🇷](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md) |
 | FAQ | [📄](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/FAQ.md) | [🇺🇸](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/FAQ/FAQ_EN.md) | [🇧🇷](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/FAQ/FAQ_PT.md) |

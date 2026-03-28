@@ -15,5 +15,5 @@ Obrigado a todos que contribuíram com este projeto.
 ---
 
 | Nome | Função | GitHub |
-|---|---|---|
+| --- | --- | --- |
 | Adriano Lima | Autor e Desenvolvedor | [@C4Adriano](https://github.com/C4Adriano) |

@@ -42,7 +42,7 @@ Or access directly: [![GitHub Pages](https://img.shields.io/badge/Access%20here-
 ### Code structure
 
 | Object | Responsibility |
-|---|---|
+| --- | --- |
 | `config` | Global program settings |
 | `helpers` | Common calculations and result assembly |
 | `escrita` | Formatting, translation, and text conversion |
@@ -54,7 +54,7 @@ Or access directly: [![GitHub Pages](https://img.shields.io/badge/Access%20here-
 ### Version history
 
 | Version | Highlight |
-|---|---|
+| --- | --- |
 | 1.0 | Quadratic, Linear, and Constant functions |
 | 2.1 | Exponential functions |
 | 3.0 | Coefficients as unknowns |

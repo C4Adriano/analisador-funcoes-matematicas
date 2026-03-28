@@ -42,7 +42,7 @@ Ou acesse diretamente: [![GitHub Pages](https://img.shields.io/badge/Access%20he
 ### Estrutura do código
 
 | Objeto | Responsabilidade |
-|---|---|
+| --- | --- |
 | `config` | Configurações globais do programa |
 | `helpers` | Cálculos e montagem de resultados comuns |
 | `escrita` | Formatação, tradução e conversão de texto |
@@ -54,7 +54,7 @@ Ou acesse diretamente: [![GitHub Pages](https://img.shields.io/badge/Access%20he
 ### Histórico resumido
 
 | Versão | Destaque |
-|---|---|
+| --- | --- |
 | 1.0 | Funções Quadráticas, Afins e Constantes |
 | 2.1 | Funções Exponenciais |
 | 3.0 | Coeficientes como variáveis (incógnitas) |
