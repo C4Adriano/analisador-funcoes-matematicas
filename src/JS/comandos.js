@@ -25,28 +25,34 @@ export const comandos = {
 
         // Configurações
         else if (["config", "configuracoes", "conf", "settings", "cfg"].includes(cmd)) {
+            state.tipo = "config"
             return ("config")
         }
 
         // Sair
         else if (["sair", "exit", "//", "ex", "out"].includes(cmd)) {
+            state.tipo = "sair"
             return ("sair")
         }
 
         // Navegação
         else if (["inicio", "start"].includes(cmd)) {
+            state.tipo = "inicio"
             return ("inicio")
         }
 
         else if (["rever", "review"].includes(cmd)) {
+            state.tipo = "rever"
             return ("rever")
         }
 
         else if (["alterar", "change"].includes(cmd)) {
+            state.tipo = "alterar"
             return ("alterar")
         }
 
         else if (["historico", "history"].includes(cmd)) {
+            state.tipo = "historico"
             return ("historico")
         }
 

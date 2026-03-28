@@ -109,7 +109,6 @@ export const ui = {
             } else if (comandos.nomes().includes(resposta)) {
                 state.loop = true
                 state.manterTipo = true
-                return ([resposta, pagina])
             }
 
             // Limite
@@ -117,7 +116,7 @@ export const ui = {
                 resposta = 0
                 state.loop = true
             }
-        } while (!((0 <= resposta) && (resposta <= 9))) // && (!comandos.nomes().includes(resposta)))
+        } while (!((0 <= resposta) && (resposta <= 9)) && (!comandos.nomes().includes(resposta)))
 
         return ([resposta, pagina])
     },

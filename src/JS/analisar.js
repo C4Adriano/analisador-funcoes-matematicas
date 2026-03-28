@@ -3,6 +3,7 @@ import { escrita } from "./escrita.js"
 import { helpers } from "./helpers.js"
 import { state } from "./state.js"
 import { ui } from "./ui.js"
+import { comandos } from "./comandos.js"
 
 let opcoesBase = ["Domínio", "Imagem", "Interseção com o eixo x", "Interseção com o eixo y", "Valores para x", "Valores para y", "Estudo do sinal", "Equações entre funções"],
 opcoesConst = [].concat(opcoesBase),
@@ -37,6 +38,10 @@ export const analisar = {
             menuResp = ui.menu(opcoesConst, pagina)
             opcao = menuResp[0]
             pagina = menuResp[1]
+            if (comandos.nomes().includes(menuResp[0])) {
+                opcao = 0
+                pagina = 1
+            }
 
             // Página 1
             if (pagina == 1) {
@@ -120,6 +125,10 @@ export const analisar = {
             menuResp = ui.menu(opcoesAfim, pagina)
             pagina = menuResp[1]
             opcao = menuResp[0]
+            if (comandos.nomes().includes(menuResp[0])) {
+                opcao = 0
+                pagina = 1
+            }
 
             // Página 1
             if (pagina == 1) {
@@ -214,6 +223,10 @@ export const analisar = {
             menuResp = ui.menu(opcoesQuad, pagina)
             opcao = menuResp[0]
             pagina = menuResp[1]
+            if (comandos.nomes().includes(menuResp[0])) {
+                opcao = 0
+                pagina = 1
+            }
 
             // Página 1
             if (pagina == 1) {
@@ -320,6 +333,10 @@ export const analisar = {
             menuResp = ui.menu(opcoesExp, pagina)
             opcao = menuResp[0]
             pagina = menuResp[1]
+            if (comandos.nomes().includes(menuResp[0])) {
+                opcao = 0
+                pagina = 1
+            }
 
             // Página 1
             if (pagina == 1) {
@@ -426,6 +443,10 @@ export const analisar = {
             menuResp = ui.menu(opcoesLog, pagina)
             opcao = menuResp[0]
             pagina = menuResp[1]
+            if (comandos.nomes().includes(menuResp[0])) {
+                opcao = 0
+                pagina = 1
+            }
 
             // Página 1
             if (pagina == 1) {
@@ -501,20 +522,20 @@ export const analisar = {
         let opcao = 0, pagina = 1, menuResp = []
 
         // Mostra
-        ui.funcao(coefA, coefB, coefC, false, false, "1")
+        ui.funcao(coefA, coefB, coefC, false, false, 1)
     },
 
     cosseno(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
         let opcao = 0, pagina = 1, menuResp = []
 
         // Mostra
-        ui.funcao(coefA, coefB, coefC, false, false, "2")
+        ui.funcao(coefA, coefB, coefC, false, false, 2)
     },
 
     tangente(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
         let opcao = 0, pagina = 1, menuResp = []
 
         // Mostra
-        ui.funcao(coefA, coefB, coefC, false, false, "3")
+        ui.funcao(coefA, coefB, coefC, false, false, 3)
     }
 }
