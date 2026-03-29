@@ -20,11 +20,9 @@ let opcoesBase = [
     opcoesQuad = ["Concavidade", "Raízes", "Vértice"].concat(opcoesBase),
     opcoesExp = ["Curva", "Raiz", "Assíntota"].concat(opcoesBase),
     opcoesLog = ["Curva", "Raiz"].concat(opcoesBase)
-    /*
-    opcoesSen = ["Amplitude", "Período"].concat(opcoesBase),
-    opcoesCos = ["Amplitude", "Período"].concat(opcoesBase),
-    opcoesTan = ["Assíntotas verticais", "Período"].concat(opcoesBase)
-    */
+// opcoesSen = ["Amplitude", "Período"].concat(opcoesBase),
+// opcoesCos = ["Amplitude", "Período"].concat(opcoesBase),
+// opcoesTan = ["Assíntotas verticais", "Período"].concat(opcoesBase)
 
 /**
  * Objeto base para as funções envolvendo funções matemáticas, seus estudos e características
