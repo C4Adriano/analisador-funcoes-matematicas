@@ -17,7 +17,12 @@ export const ui = {
      * @param {string} explicacao Explicação
      */
     exibir(mensagem = "", explicacao = "") {
-        alert(escrita.verificar(mensagem, explicacao))
+        if (config.debug) {
+            console.log("Mensagem:", mensagem)
+            console.log("Explicação:", explicacao)
+        } else {
+            alert(escrita.verificar(mensagem, explicacao))
+        }
     },
 
     /**
@@ -27,7 +32,13 @@ export const ui = {
      * @returns Sim / Não
      */
     confirmar(mensagem = "", explicacao = "") {
-        return confirm(escrita.verificar(mensagem, explicacao + "\n\n“Ok” = “Sim” | “Cancelar” = “Não”"))
+        if (config.debug) {
+            console.log("Mensagem:", mensagem)
+            console.log("Explicação:", explicacao)
+            return true
+        } else {
+            return confirm(escrita.verificar(mensagem, explicacao + "\n\n“Ok” = “Sim” | “Cancelar” = “Não”"))
+        }
     },
 
     /**

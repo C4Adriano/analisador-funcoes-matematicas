@@ -4,6 +4,7 @@
  */
 export const config = {
     linguagem: "en", // Linguagem para as mensagens do programa (em construção, por enquanto só pt-br / en)
+    debug: false, // Exibir mensagens de debug detalhadas para o desenvolvedor (como os passos intermediários dos cálculos)
 
     unicode: true, // Usar Unicode para deixar bonitinhas as frases / expressões (como Δ, ∈, etc.)
     explicacoes: true, // Exibir explicações detalhadas junto com os resultados
