@@ -1,37 +1,3 @@
-# Tipos de Commit
-
-## ➕ Adições
-
-- `add` — Nova função, arquivo, feature, recurso
-- `doc` — Qualquer arquivo `.md`, comentários, README
-- `tst` — Adicionar ou corrigir testes
-
-## ✏️ Mudanças Mínimas
-
-- `txt` — Palavras, nomes de variáveis, mensagens ao usuário
-- `fmt` — Espaços, vírgulas, indentação, Prettier
-- `lng` — Traduções, PT-BR/EN
-- `cfg` — `.json`, `.yml`, `package.json`, configs do projeto
-
-## 🔧 Mudanças Médias
-
-- `fix` — Comportamento errado sendo corrigido
-- `rfr` — Reorganização sem mudar o que o código faz
-- `prf` — Mesmo resultado, mais rápido ou eficiente
-
-## 🔨 Mudanças Grandes
-
-- `ovr` — Reescrita ou reformulação pesada de algo existente
-- `brk` — Mudança que quebra compatibilidade com versão anterior
-
-## 🗑️ Remoções
-
-- `rmv` — Deletar função, arquivo ou recurso inteiro
-
-## ↩️ Controle
-
-- `rvt` — Desfazer um commit anterior
-
 # Link
 
 [GitHub](https://github.com/C4Adriano/analisador-funcoes-matematicas)
