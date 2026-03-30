@@ -26,6 +26,7 @@ document.querySelector("h1").textContent = config.linguagem == "en" ? "Mathemati
 document.documentElement.lang = config.linguagem
 
 let subtipo = 0,
+    loopSub = false,
     escolha = 0,
     pagina = 1
 
@@ -109,7 +110,7 @@ do {
                     true,
                 )
 
-                state.loopSub = false
+                loopSub = false
 
                 if (
                     (0 <= subtipo && subtipo <= 2) ||
@@ -217,9 +218,9 @@ do {
 
                 // Erro
                 else {
-                    state.loopSub = true
+                    loopSub = true
                 }
-            } while (state.loopSub)
+            } while (loopSub)
         }
 
         // Histórico

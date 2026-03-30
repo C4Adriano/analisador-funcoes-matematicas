@@ -55,7 +55,7 @@ export const comandos = {
             return comandos.versao()
         }
 
-        // Confiugrações
+        // Configurações
         else if (["unicode"].includes(cmd)) {
             return comandos.alterar("unicode")
         } else if (["explicar", "explicacoes", "explain"].includes(cmd)) {

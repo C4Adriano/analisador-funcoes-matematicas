@@ -6,7 +6,6 @@ export const state = {
     manterTipo: false,
     loop: false,
     pedirCoefs: false,
-    loopSub: false,
     globalA: "a",
     globalB: "b",
     globalC: "c",

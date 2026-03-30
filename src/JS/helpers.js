@@ -215,24 +215,24 @@ export const helpers = {
                 )
             } else if (coefA != 0) {
                 // Quadrática
-                let delta = helpers.calcRaiz(coefA, coefB, coefC),
+                let raizQuad = helpers.calcRaiz(coefA, coefB, coefC),
                     op = coefA > 0 ? 0 : 1
-                if (delta[1] > delta[2]) {
+                if (raizQuad[1] > raizQuad[2]) {
                     // Inverte para ficar de menor a maior
-                    let temp = delta[2]
-                    delta[2] = delta[1]
-                    delta[1] = temp
+                    let temp = raizQuad[2]
+                    raizQuad[2] = raizQuad[1]
+                    raizQuad[1] = temp
                 }
-                if (delta[0] < 0) {
+                if (raizQuad[0] < 0) {
                     // Sem raiz
                     ui.exibir(
                         "ƒ(x) " + operacoes[op] + " 0, ∀ x ∈ ℝ",
                         "Conforme a concavidade e as raízes, a " + operacoes[op] + " 0 e Δ < 0.",
                     )
-                } else if (delta[0] == 0) {
+                } else if (raizQuad[0] == 0) {
                     // Uma raiz
                     ui.exibir(
-                        "ƒ(x) " + operacoes[op] + " 0, exceto em x = " + escrita.decimal(delta[1]),
+                        "ƒ(x) " + operacoes[op] + " 0, exceto em x = " + escrita.decimal(raizQuad[1]),
                         "Conforme a concavidade e a raiz, a " + operacoes[op] + " 0 e Δ = 0.",
                     )
                 } else {
@@ -241,34 +241,34 @@ export const helpers = {
                         // Concavidade para baixo
                         ui.exibir(
                             "ƒ(x) > 0 se " +
-                                escrita.decimal(delta[1]) +
+                                escrita.decimal(raizQuad[1]) +
                                 " < x < " +
-                                escrita.decimal(delta[2]) +
+                                escrita.decimal(raizQuad[2]) +
                                 "\nƒ(x) < 0 se (x < " +
-                                escrita.decimal(delta[1]) +
+                                escrita.decimal(raizQuad[1]) +
                                 ") ∨ (x > " +
-                                escrita.decimal(delta[2]) +
+                                escrita.decimal(raizQuad[2]) +
                                 ")\nƒ(x) = 0 em x = " +
-                                escrita.decimal(delta[1]) +
+                                escrita.decimal(raizQuad[1]) +
                                 ", " +
-                                escrita.decimal(delta[2]),
+                                escrita.decimal(raizQuad[2]),
                             "Conforme a concavidade e as raízes, a < 0 e Δ > 0.",
                         )
                     } else {
                         // Concavidade para cima
                         ui.exibir(
                             "ƒ(x) > 0 se (x < " +
-                                escrita.decimal(delta[1]) +
+                                escrita.decimal(raizQuad[1]) +
                                 ") ∨ (x > " +
-                                escrita.decimal(delta[2]) +
+                                escrita.decimal(raizQuad[2]) +
                                 ")\nƒ(x) < 0 se " +
-                                escrita.decimal(delta[1]) +
+                                escrita.decimal(raizQuad[1]) +
                                 " < x < " +
-                                escrita.decimal(delta[2]) +
+                                escrita.decimal(raizQuad[2]) +
                                 "\nƒ(x) = 0 em x = " +
-                                escrita.decimal(delta[1]) +
+                                escrita.decimal(raizQuad[1]) +
                                 ", " +
-                                escrita.decimal(delta[2]),
+                                escrita.decimal(raizQuad[2]),
                             "Conforme a concavidade e as raízes, a > 0 e Δ > 0.",
                         )
                     }
@@ -459,7 +459,7 @@ export const helpers = {
      * @returns Delta
      */
     calcDelta(coefA = 0, coefB = 0, coefC = 0) {
-        let array = [coefB ** 2 + -4 * coefA * coefC]
+        let array = [coefB ** 2 - 4 * coefA * coefC]
         array.push(array[0] >= 0 ? algebra.divisao(-coefB + Math.sqrt(array[0]), 2 * coefA) : NaN)
         array.push(array[0] > 0 ? algebra.divisao(-coefB - Math.sqrt(array[0]), 2 * coefA) : NaN)
 

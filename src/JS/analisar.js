@@ -353,7 +353,7 @@ export const analisar = {
     exponencial(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
         let opcao = 0,
             pagina = 1,
-            menuResp = []
+            menuResp = [0, ""]
 
         // Mostra
         ui.funcao(coefA, coefB, coefC, true)
@@ -465,7 +465,7 @@ export const analisar = {
     logaritmica(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
         let opcao = 0,
             pagina = 1,
-            menuResp = []
+            menuResp = [0, ""]
 
         // Mostra
         ui.funcao(coefA, coefB, coefC, false, true)
@@ -559,7 +559,7 @@ export const analisar = {
     seno(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
         let opcao = 0,
             pagina = 1,
-            menuResp = []
+            menuResp = [0, ""]
 
         // Mostra
         ui.funcao(coefA, coefB, coefC, false, false, 1)
@@ -568,7 +568,7 @@ export const analisar = {
     cosseno(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
         let opcao = 0,
             pagina = 1,
-            menuResp = []
+            menuResp = [0, ""]
 
         // Mostra
         ui.funcao(coefA, coefB, coefC, false, false, 2)
@@ -577,7 +577,7 @@ export const analisar = {
     tangente(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
         let opcao = 0,
             pagina = 1,
-            menuResp = []
+            menuResp = [0, ""]
 
         // Mostra
         ui.funcao(coefA, coefB, coefC, false, false, 3)
