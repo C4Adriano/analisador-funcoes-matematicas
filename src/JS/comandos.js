@@ -25,7 +25,7 @@ export const Comandos = {
 
         // === Ajuda ===
         if (["ajuda", "help", "a", "h", "cmd", "cmds", "c"].includes(cmd)) {
-            return Comandos.ajuda()
+            return Comandos.ajuda(partes[1] || "")
         }
 
         // === Configurações ===
@@ -116,32 +116,74 @@ export const Comandos = {
      * @returns {null}
      * @since v6.1.0
      */
-    ajuda() {
-        Ui.aviso(
-            "Comandos disponíveis:" +
-                "\n" +
-                "/ajuda, /help — mostra essa mensagem" +
-                "\n" +
-                "/config — abre as configurações" +
-                "\n" +
-                "/inicio — volta ao menu principal" +
-                "\n" +
-                "/rever — mostra os coeficientes atuais" +
-                "\n" +
-                "/alterar — muda os coeficientes" +
-                "\n" +
-                "/historico — abre o histórico" +
-                "\n" +
-                "/versao — mostra a versão" +
-                "\n" +
-                "/unicode — alterna Unicode" +
-                "\n" +
-                "/acentos — alterna acentos" +
-                "\n" +
-                "/explicar — alterna explicações" +
-                "\n" +
-                "/sair — sai do programa",
-        )
+    ajuda(especifico = "") {
+        let cmds = {
+            ajuda: {
+                curta: "mostra essa mensagem",
+                longa: "Exibe a lista de todos os comandos disponíveis.\nUso: /ajuda [comando]",
+            },
+            config: { curta: "abre as configurações", longa: "Abre o menu de configurações do programa." },
+            inicio: { curta: "volta ao menu principal", longa: "Retorna ao menu inicial de seleção de função." },
+            rever: {
+                curta: "mostra os coeficientes atuais",
+                longa: "Exibe os coeficientes inseridos na sessão atual.",
+            },
+            alterar: {
+                curta: "muda os coeficientes",
+                longa: "Permite alterar os coeficientes sem reiniciar a análise.",
+            },
+            historico: { curta: "abre o histórico", longa: "Exibe o histórico de funções analisadas na sessão." },
+            versao: { curta: "mostra a versão", longa: "Exibe a versão atual do programa e informações de autoria." },
+            unicode: { curta: "alterna Unicode", longa: "Ativa ou desativa o uso de caracteres Unicode na saída." },
+            acentos: { curta: "alterna acentos", longa: "Ativa ou desativa acentos nas mensagens exibidas." },
+            explicar: {
+                curta: "alterna explicações",
+                longa: "Ativa ou desativa as explicações detalhadas dos resultados.",
+            },
+            capitalizar: {
+                curta: "alterna capitalização",
+                longa: "Ativa ou desativa a capitalização das primeiras letras.",
+            },
+            maiusculas: { curta: "alterna maiúsculas", longa: "Ativa ou desativa a exibição em maiúsculas." },
+            minusculas: { curta: "alterna minúsculas", longa: "Ativa ou desativa a exibição em minúsculas." },
+            decimal: {
+                curta: "alterna separador decimal",
+                longa: "Alterna o separador decimal entre ponto e vírgula.",
+            },
+            multiplos: { curta: "alterna múltiplos simples", longa: "Ativa ou desativa a simplificação de múltiplos." },
+            confirmar: {
+                curta: "alterna confirmações de entrada",
+                longa: "Ativa ou desativa as confirmações ao inserir dados.",
+            },
+            confirmarsaida: {
+                curta: "alterna confirmações de saída",
+                longa: "Ativa ou desativa a confirmação ao sair do programa.",
+            },
+            erros: { curta: "alterna exibição de erros", longa: "Ativa ou desativa a exibição de mensagens de erro." },
+            funcao: { curta: "alterna exibição da função", longa: "Ativa ou desativa a exibição da função analisada." },
+            graus: { curta: "alterna modo graus", longa: "Alterna entre graus e radianos nos cálculos." },
+            debug: { curta: "alterna modo debug", longa: "Ativa ou desativa o modo de depuração." },
+            teste: { curta: "executa testes", longa: "Executa a bateria de testes internos do programa." },
+            sair: { curta: "sai do programa", longa: "Encerra o programa. Confirmação pode ser solicitada." },
+        }
+
+        if (especifico != "" && cmds[especifico] != undefined) {
+            Ui.aviso("/" + especifico + " — " + cmds[especifico].longa)
+            return null
+        }
+
+        if (especifico != "") {
+            Ui.erro("Comando desconhecido", "/" + especifico + " não é um comando válido")
+            return null
+        }
+        let linhas = [],
+            chaves = Object.keys(cmds)
+        for (let i = 0; i < chaves.length; i++) {
+            let cmd = chaves[i]
+            linhas.push("/" + cmd + " — " + cmds[cmd].curta)
+        }
+
+        Ui.aviso("Comandos disponíveis:\n" + linhas.join("\n"))
         return null
     },
 

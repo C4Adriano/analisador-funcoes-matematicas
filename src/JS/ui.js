@@ -19,7 +19,11 @@ export const Ui = {
     exibir(mensagem = "", explicacao = "") {
         if (Config.debug) {
             console.log("Mensagem:", mensagem)
-            console.log("Explicação:", explicacao)
+            if (explicacao != "") {
+                console.log("Explicação:", explicacao)
+            } else {
+                console.log("Sem explicação")
+            }
         } else {
             alert(Escrita.verificar(mensagem, explicacao))
         }
