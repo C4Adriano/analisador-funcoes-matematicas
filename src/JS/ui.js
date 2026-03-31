@@ -1,27 +1,27 @@
-import { algebra } from "./algebra.js"
-import { config } from "./config.js"
-import { erro } from "./erro.js"
-import { escrita } from "./escrita.js"
-import { helpers } from "./helpers.js"
-import { state } from "./state.js"
-import { comandos } from "./comandos.js"
+import { Algebra } from "./algebra.js"
+import { Config } from "./config.js"
+import { Erro } from "./erro.js"
+import { Escrita } from "./escrita.js"
+import { Helpers } from "./helpers.js"
+import { State } from "./state.js"
+import { Comandos } from "./comandos.js"
 
 /**
  * Objeto base para as funções envolvendo UI / UX e interação com o usuário
  * - Use as funções aqui para exibir mensagens, menus, prompts e outras interações. As mensagens são formatadas automaticamente conforme as configurações, então use a função "escrita.verificar" para formatar as mensagens antes de exibi-las.
  */
-export const ui = {
+export const Ui = {
     /**
      * Exibe um alert personalizado
      * @param {string} mensagem Mensagem
      * @param {string} explicacao Explicação
      */
     exibir(mensagem = "", explicacao = "") {
-        if (config.debug) {
+        if (Config.debug) {
             console.log("Mensagem:", mensagem)
             console.log("Explicação:", explicacao)
         } else {
-            alert(escrita.verificar(mensagem, explicacao))
+            alert(Escrita.verificar(mensagem, explicacao))
         }
     },
 
@@ -32,12 +32,12 @@ export const ui = {
      * @returns Sim / Não
      */
     confirmar(mensagem = "", explicacao = "") {
-        if (config.debug) {
+        if (Config.debug) {
             console.log("Mensagem:", mensagem)
             console.log("Explicação:", explicacao)
             return true
         } else {
-            return confirm(escrita.verificar(mensagem, explicacao + "\n\n“Ok” = “Sim” | “Cancelar” = “Não”"))
+            return confirm(Escrita.verificar(mensagem, explicacao + "\n\n“Ok” = “Sim” | “Cancelar” = “Não”"))
         }
     },
 
@@ -47,8 +47,8 @@ export const ui = {
      * @param {string} explicacao Explicação
      */
     erro(mensagem = "", explicacao = "") {
-        if (config.erros) {
-            ui.exibir("=== Erro ===\n" + mensagem, explicacao)
+        if (Config.erros) {
+            Ui.exibir("=== Erro ===\n" + mensagem, explicacao)
         }
     },
 
@@ -61,10 +61,10 @@ export const ui = {
     aviso(mensagem = "", explicacao = "", tipo = false) {
         if (!tipo) {
             // Se tipo for falso, é um aviso simples, como um alert
-            ui.exibir("=== Aviso ===\n" + mensagem, explicacao)
+            Ui.exibir("=== Aviso ===\n" + mensagem, explicacao)
         } else {
             // Se tipo for verdadeiro, é um aviso de confirmação, como um confirm
-            return ui.confirmar("=== Aviso ===\n" + mensagem, explicacao)
+            return Ui.confirmar("=== Aviso ===\n" + mensagem, explicacao)
         }
     },
 
@@ -109,15 +109,15 @@ export const ui = {
             menu += "\n----------------\n6 = Rever | 7 = Alterar | 8 = Anterior | 9 = Próxima | 0 = Voltar"
 
             // Responde
-            resposta = ui.intervalo(menu, "", 0, 9, 0, true)
+            resposta = Ui.intervalo(menu, "", 0, 9, 0, true)
             if (resposta == 0) {
                 // Voltar
-                state.pedirCoefs = false
-                state.loop = true
+                State.pedirCoefs = false
+                State.loop = true
             } else if (resposta == 7) {
                 // Alterar
-                state.pedirCoefs = true
-                state.loop = true
+                State.pedirCoefs = true
+                State.loop = true
                 resposta = 0
             } else if (resposta == 8) {
                 // -1
@@ -127,17 +127,17 @@ export const ui = {
                 // +1
                 resposta = -1
                 pagina += 1
-            } else if (comandos.nomes().includes(resposta)) {
-                state.loop = true
-                state.manterTipo = true
+            } else if (Comandos.nomes().includes(resposta)) {
+                State.loop = true
+                State.manterTipo = true
             }
 
             // Limite
-            if (helpers.estourouLimite(++limite)) {
+            if (Helpers.estourouLimite(++limite)) {
                 resposta = 0
-                state.loop = true
+                State.loop = true
             }
-        } while (!(0 <= resposta && resposta <= 9) && !comandos.nomes().includes(resposta))
+        } while (!(0 <= resposta && resposta <= 9) && !Comandos.nomes().includes(resposta))
 
         return [resposta, pagina]
     },
@@ -150,13 +150,13 @@ export const ui = {
      * @param {number} casas Casas para arredondar (0 = sem casas)
      * @returns Valor verificado
      */
-    entrada(mensagem = "", explicacao = "", numero = false, casas = config.casasDecimais, aceitaComandos = false) {
+    entrada(mensagem = "", explicacao = "", numero = false, casas = Config.casasDecimais, aceitaComandos = false) {
         let bruto = "",
             texto = "",
             valor = 0,
             valido = false
 
-        mensagem = escrita.verificar(mensagem, explicacao)
+        mensagem = Escrita.verificar(mensagem, explicacao)
 
         // Loop
         let limite = 0
@@ -173,7 +173,7 @@ export const ui = {
 
             // Comandos
             if (valido && bruto[0] == "/" && aceitaComandos) {
-                let acao = comandos.processar(bruto)
+                let acao = Comandos.processar(bruto)
                 if (acao != null) {
                     return acao
                 }
@@ -182,16 +182,16 @@ export const ui = {
 
             // Número
             if (valido && numero) {
-                valor = Number(escrita.decimal(texto, true))
+                valor = Number(Escrita.decimal(texto, true))
                 if (!isFinite(valor)) {
                     valido = false
                 }
             }
 
             // Confirma
-            if (valido && config.confirmacoesEntrada) {
-                valido = ui.aviso(
-                    "Tu digitaste: “" + (numero ? escrita.decimal(valor) : texto) + "”\nTens certeza?",
+            if (valido && Config.confirmacoesEntrada) {
+                valido = Ui.aviso(
+                    "Tu digitaste: “" + (numero ? Escrita.decimal(valor) : texto) + "”\nTens certeza?",
                     "Obs.₁: Se essa for uma variável e o que foi digitado não for um número, ela será transformada no nome da variável, não no que foi digitado\nObs.₂: Essas mensagens podem ser desativadas nas configurações, em “Confirmações de entrada”",
                     true,
                 )
@@ -200,13 +200,13 @@ export const ui = {
             // Retorna
             if (valido) {
                 if (numero) {
-                    return algebra.arredonda(valor, casas)
+                    return Algebra.arredonda(valor, casas)
                 }
                 return texto
             }
 
             // Limite
-            if (helpers.estourouLimite(++limite)) {
+            if (Helpers.estourouLimite(++limite)) {
                 valido = true
             }
         } while (!valido)
@@ -230,7 +230,7 @@ export const ui = {
         funcExp = false,
         funcLog = false,
         funcTrig = 0,
-        mostrar = config.mostrarFuncao,
+        mostrar = Config.mostrarFuncao,
     ) {
         if (!mostrar) {
             // Não mostrar
@@ -417,7 +417,7 @@ export const ui = {
                 // Se o coeficiente b for 1 e o coeficiente c for zero, é uma função exponencial pura
                 func += " / pura"
             }
-            if (coefA == algebra.arredonda(Math.E)) {
+            if (coefA == Algebra.arredonda(Math.E)) {
                 // Se o coeficiente a for igual a e, é uma função exponencial natural
                 func += " / natural"
             }
@@ -435,7 +435,7 @@ export const ui = {
 
             if (coefA != "a") {
                 // Não variável
-                func += "log" + escrita.base(coefA) + "(x)"
+                func += "log" + Escrita.base(coefA) + "(x)"
             } else if (coefA == "a") {
                 // Variável
                 func += "logₐ(x)"
@@ -462,7 +462,7 @@ export const ui = {
                 // Se o coeficiente b for 1 e o coeficiente c for zero, é uma função logarítmica pura
                 func += " / pura"
             }
-            if (coefA == algebra.arredonda(Math.E)) {
+            if (coefA == Algebra.arredonda(Math.E)) {
                 // Se o coeficiente a for igual a e, é uma função logarítmica natural
                 func += " / natural"
             } else if (coefA == 10) {
@@ -471,7 +471,7 @@ export const ui = {
             }
         }
 
-        ui.exibir("=== Função Atual ===\n" + escrita.decimal(func))
+        Ui.exibir("=== Função Atual ===\n" + Escrita.decimal(func))
     },
 
     /**
@@ -489,16 +489,16 @@ export const ui = {
         // Loop
         do {
             // Pede um valor
-            valor = ui.entrada(mensagem, explicacao, true, casas, aceitaComandos)
+            valor = Ui.entrada(mensagem, explicacao, true, casas, aceitaComandos)
 
             // Comandos
-            if (comandos.nomes().includes(valor)) {
+            if (Comandos.nomes().includes(valor)) {
                 return valor
             }
 
             if (!(min <= valor && valor <= max)) {
                 // Se o valor não estiver entre o intervalo, mostra um erro
-                erro.intervalo(min, max)
+                Erro.intervalo(min, max)
             }
         } while (!(min <= valor && valor <= max))
 

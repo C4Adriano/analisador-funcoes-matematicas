@@ -1,17 +1,18 @@
-import { ui } from "./ui.js"
+import { Ui } from "./ui.js"
 
 /**
- * Objeto base para as funções de erro
- * - Use as funções aqui para exibir mensagens de erro, como quando o usuário digita algo inválido ou quando acontece um erro inesperado. As mensagens são formatadas automaticamente conforme as configurações, então use a função "escrita.verificar" para formatar as mensagens antes de exibi-las.
+ * Mensagens de erro padronizadas do programa
+ * - Use as funções aqui para exibir erros ao usuário. Nunca chame ui.erro() diretamente
  */
-export const erro = {
+export const Erro = {
     /**
-     * Exibe um erro de intervalo
-     * @param {number} min Mínimo
-     * @param {number} max Máximo
+     * Exibe um erro de valor fora do intervalo permitido
+     * @param {number} min Valor mínimo permitido
+     * @param {number} max Valor máximo permitido
+     * @since v6.1.0
      */
     intervalo(min = 0, max = 1) {
-        ui.erro(
+        Ui.erro(
             "ERRO-001: Escolha um valor entre " +
                 String(min + (min == 0 ? 1 : 0)) +
                 " e " +
@@ -23,45 +24,50 @@ export const erro = {
 
     /**
      * Exibe um erro de divisão por zero
-     * @param {string} motivo Motivo
+     * @param {string} motivo Motivo da divisão por zero, para exibir uma mensagem mais específica (opcional)
+     * @since v6.1.0
      */
     divZero(motivo = "") {
-        ui.erro(
+        Ui.erro(
             "ERRO-002: Divisão por zero",
             motivo != "" ? "Motivo: " + motivo : "Tu tentaste dividir um número por zero, o que não é possível.",
         )
     },
 
     /**
-     * Exibe um erro de limite estourado
+     * Exibe um erro de limite de interações estourado
+     * @since v6.1.0
      */
     limiteEstourado() {
-        ui.erro("ERRO-003: Ultrapassou o limite", "A quantidade de interações passou do limite.")
+        Ui.erro("ERRO-003: Ultrapassou o limite", "A quantidade de interações passou do limite.")
     },
 
     /**
-     * Exibe um erro de função que vira constante
+     * Exibe um erro de função que se torna constante pelos coeficientes dados
      * @param {string} tipo Tipo
+     * @since v6.1.0
      */
     funcaoConstante(tipo = "") {
-        ui.erro("ERRO-004: A função não é " + tipo + "; ela é constante", "(a = 0) ∨ (a = 1) ∨ (b = 0)")
+        Ui.erro("ERRO-004: A função não é " + tipo + "; ela é constante", "(a = 0) ∨ (a = 1) ∨ (b = 0)")
     },
 
     /**
-     * Exibe um erro de função inválida
+     * Exibe um erro de função inválida pelos coeficientes dados
      * @param {string} tipo Tipo
+     * @since v6.1.0
      */
     funcaoInvalida(tipo = "") {
-        ui.erro("ERRO-005: A função não é " + tipo, "a < 0")
+        Ui.erro("ERRO-005: A função não é " + tipo, "a < 0")
     },
 
     /**
      * Exibe um erro de logaritmo inválido
-     * @param {string} tipo Tipo
-     * @param {string} motivo Motivo
+     * @param {string} tipo Tipo de logaritmo (log, ln, etc.), para exibir uma mensagem mais específica (opcional)
+     * @param {string} motivo Motivo do erro, para exibir uma mensagem mais específica (opcional)
+     * @since v6.1.0
      */
     logInvalido(tipo = "log", motivo = "") {
-        ui.erro(
+        Ui.erro(
             "ERRO-006: " + tipo + " inválido",
             motivo != ""
                 ? "Motivo: " + motivo

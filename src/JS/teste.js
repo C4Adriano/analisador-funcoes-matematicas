@@ -1,13 +1,21 @@
-import { algebra } from "./algebra.js"
-import { helpers } from "./helpers.js"
-import { ui } from "./ui.js"
-import { analisar } from "./analisar.js"
+import { Algebra } from "./algebra.js"
+import { Helpers } from "./helpers.js"
+import { Ui } from "./ui.js"
+import { Analisar } from "./analisar.js"
 
-export const teste = {
+/**
+ * Objeto de testes do programa
+ * - Use as funções aqui para testar as funcionalidades do programa.
+ */
+export const Teste = {
+    /**
+     * Executa os testes do programa
+     * @since v6.1.0
+     */
     rodar() {
         let opcao = 0
         do {
-            opcao = ui.intervalo(
+            opcao = Ui.intervalo(
                 "=== Testes ===\n1 = Constante\n2 = Afim\n3 = Quadrática\n4 = Exponencial\n5 = Logarítmica\n6 = Contas\n0 = Sair",
                 "",
                 0,
@@ -15,111 +23,135 @@ export const teste = {
             )
 
             if (opcao == 1) {
-                teste.constante()
+                Teste.constante()
             } else if (opcao == 2) {
-                teste.afim()
+                Teste.afim()
             } else if (opcao == 3) {
-                teste.quadratica()
+                Teste.quadratica()
             } else if (opcao == 4) {
-                teste.exponencial()
+                Teste.exponencial()
             } else if (opcao == 5) {
-                teste.logaritmica()
+                Teste.logaritmica()
             } else if (opcao == 6) {
-                teste.contas()
+                Teste.contas()
             }
         } while (opcao != 0)
     },
 
+    /**
+     * Testa a função constante com diferentes coeficientes
+     * @since v6.1.0
+     */
     constante() {
-        ui.exibir("Testando constante...")
-        analisar.constante(5) // Normal
-        analisar.constante(0) // Nula
-        analisar.constante(-3) // Negativa
+        Ui.exibir("Testando constante...")
+        Analisar.constante(5) // Normal
+        Analisar.constante(0) // Nula
+        Analisar.constante(-3) // Negativa
     },
 
+    /**
+     * Testa a função afim com diferentes coeficientes
+     * @since v6.1.0
+     */
     afim() {
-        ui.exibir("Testando afim...")
-        analisar.afim(1, 0) // Identidade: x
-        analisar.afim(-1, 0) // Oposta: -x
-        analisar.afim(2, -4) // Raiz em x = 2
-        analisar.afim(1, 1) // Crescente com c positivo
-        analisar.afim(-2, 6) // Decrescente com raiz em x = 3
+        Ui.exibir("Testando afim...")
+        Analisar.afim(1, 0) // Identidade: x
+        Analisar.afim(-1, 0) // Oposta: -x
+        Analisar.afim(2, -4) // Raiz em x = 2
+        Analisar.afim(1, 1) // Crescente com c positivo
+        Analisar.afim(-2, 6) // Decrescente com raiz em x = 3
     },
 
+    /**
+     * Testa a função quadrática com diferentes coeficientes
+     * @since v6.1.0
+     */
     quadratica() {
-        ui.exibir("Testando quadrática...")
-        analisar.quadratica(1, 0, 0) // Pura: x²
-        analisar.quadratica(1, -3, 2) // Δ > 0: raízes em x = 1 e x = 2
-        analisar.quadratica(1, -2, 1) // Δ = 0: raiz dupla em x = 1
-        analisar.quadratica(1, 0, 1) // Δ < 0: sem raízes reais
-        analisar.quadratica(-1, 0, 4) // Concavidade para baixo
+        Ui.exibir("Testando quadrática...")
+        Analisar.quadratica(1, 0, 0) // Pura: x²
+        Analisar.quadratica(1, -3, 2) // Δ > 0: raízes em x = 1 e x = 2
+        Analisar.quadratica(1, -2, 1) // Δ = 0: raiz dupla em x = 1
+        Analisar.quadratica(1, 0, 1) // Δ < 0: sem raízes reais
+        Analisar.quadratica(-1, 0, 4) // Concavidade para baixo
     },
 
+    /**
+     * Testa a função exponencial com diferentes coeficientes
+     * @since v6.1.0
+     */
     exponencial() {
-        ui.exibir("Testando exponencial...")
-        analisar.exponencial(2, 1, 0) // Pura: 2ˣ
-        analisar.exponencial(2, 1, -1) // Com assíntota em y = -1
-        analisar.exponencial(0.5, 1, 0) // Base < 1: decrescente
-        analisar.exponencial(2, -1, 0) // b negativo: decrescente
+        Ui.exibir("Testando exponencial...")
+        Analisar.exponencial(2, 1, 0) // Pura: 2ˣ
+        Analisar.exponencial(2, 1, -1) // Com assíntota em y = -1
+        Analisar.exponencial(0.5, 1, 0) // Base < 1: decrescente
+        Analisar.exponencial(2, -1, 0) // b negativo: decrescente
         // Casos de erro esperados:
         // analisar.exponencial(1, 1, 0) → constante (a = 1)
         // analisar.exponencial(-2, 1, 0) → inválida (a < 0)
     },
 
+    /**
+     * Testa a função logarítmica com diferentes coeficientes
+     * @since v6.1.0
+     */
     logaritmica() {
-        ui.exibir("Testando logarítmica...")
-        analisar.logaritmica(2, 1, 0) // Pura: log₂(x)
-        analisar.logaritmica(10, 1, 0) // Decimal: log₁₀(x)
-        analisar.logaritmica(Math.E, 1, 0) // Natural: ln(x)
-        analisar.logaritmica(2, 1, -1) // Com deslocamento
-        analisar.logaritmica(0.5, 1, 0) // Base < 1: decrescente
+        Ui.exibir("Testando logarítmica...")
+        Analisar.logaritmica(2, 1, 0) // Pura: log₂(x)
+        Analisar.logaritmica(10, 1, 0) // Decimal: log₁₀(x)
+        Analisar.logaritmica(Math.E, 1, 0) // Natural: ln(x)
+        Analisar.logaritmica(2, 1, -1) // Com deslocamento
+        Analisar.logaritmica(0.5, 1, 0) // Base < 1: decrescente
         // Casos de erro esperados:
         // analisar.logaritmica(1, 1, 0) → constante (a = 1)
         // analisar.logaritmica(-2, 1, 0) → inválida (a < 0)
     },
 
+    /**
+     * Testa as funções auxiliares do programa (arredondamento, divisão, logaritmos, delta, vértice, etc.)
+     * @since v6.1.0
+     */
     contas() {
         let resultados = [],
             erros = 0
 
         // algebra.arredonda
-        resultados.push(["arredonda(3.14159, 2)", algebra.arredonda(3.14159, 2), 3.14])
-        resultados.push(["arredonda(-0, 2)", algebra.arredonda(-0, 2), 0])
-        resultados.push(["arredonda(1.005, 2)", algebra.arredonda(1.005, 2), 1.01])
-        resultados.push(["arredonda(1.005, 2)", algebra.arredonda(1.005, 2), 1.01])
-        resultados.push(["arredonda(1.045, 2)", algebra.arredonda(1.045, 2), 1.05])
-        resultados.push(["arredonda(1.055, 2)", algebra.arredonda(1.055, 2), 1.06])
+        resultados.push(["arredonda(3.14159, 2)", Algebra.arredonda(3.14159, 2), 3.14])
+        resultados.push(["arredonda(-0, 2)", Algebra.arredonda(-0, 2), 0])
+        resultados.push(["arredonda(1.005, 2)", Algebra.arredonda(1.005, 2), 1.01])
+        resultados.push(["arredonda(1.005, 2)", Algebra.arredonda(1.005, 2), 1.01])
+        resultados.push(["arredonda(1.045, 2)", Algebra.arredonda(1.045, 2), 1.05])
+        resultados.push(["arredonda(1.055, 2)", Algebra.arredonda(1.055, 2), 1.06])
 
         // algebra.divisao
-        resultados.push(["divisao(10, 3)", algebra.divisao(10, 3), 3.333333])
-        resultados.push(["divisao(1, 0)", algebra.divisao(1, 0), NaN])
-        resultados.push(["divisao(0, 5)", algebra.divisao(0, 5), 0])
+        resultados.push(["divisao(10, 3)", Algebra.divisao(10, 3), 3.333333])
+        resultados.push(["divisao(1, 0)", Algebra.divisao(1, 0), NaN])
+        resultados.push(["divisao(0, 5)", Algebra.divisao(0, 5), 0])
 
         // algebra.log
-        resultados.push(["log(100, 10)", algebra.log(100, 10), 2])
-        resultados.push(["log(8, 2)", algebra.log(8, 2), 3])
-        resultados.push(["log(1, 10)", algebra.log(1, 10), 0])
-        resultados.push(["log(-1, 10)", algebra.log(-1, 10), NaN])
+        resultados.push(["log(100, 10)", Algebra.log(100, 10), 2])
+        resultados.push(["log(8, 2)", Algebra.log(8, 2), 3])
+        resultados.push(["log(1, 10)", Algebra.log(1, 10), 0])
+        resultados.push(["log(-1, 10)", Algebra.log(-1, 10), NaN])
 
         // algebra.ln
-        resultados.push(["ln(1)", algebra.ln(1), 0])
-        resultados.push(["ln(Math.E)", algebra.ln(Math.E), 1])
-        resultados.push(["ln(0)", algebra.ln(0), NaN])
+        resultados.push(["ln(1)", Algebra.ln(1), 0])
+        resultados.push(["ln(Math.E)", Algebra.ln(Math.E), 1])
+        resultados.push(["ln(0)", Algebra.ln(0), NaN])
 
         // helpers.calcDelta
-        let d1 = helpers.calcDelta(1, -3, 2)
+        let d1 = Helpers.calcDelta(1, -3, 2)
         resultados.push(["calcDelta(1,-3,2)[0]", d1[0], 1]) // Δ = 1
         resultados.push(["calcDelta(1,-3,2)[1]", d1[1], 1]) // x₁ = 1
         resultados.push(["calcDelta(1,-3,2)[2]", d1[2], 2]) // x₂ = 2
 
-        let d2 = helpers.calcDelta(1, -2, 1)
+        let d2 = Helpers.calcDelta(1, -2, 1)
         resultados.push(["calcDelta(1,-2,1)[0]", d2[0], 0]) // Δ = 0
 
-        let d3 = helpers.calcDelta(1, 0, 1)
+        let d3 = Helpers.calcDelta(1, 0, 1)
         resultados.push(["calcDelta(1,0,1)[0]", d3[0], -4]) // Δ < 0
 
         // helpers.vertice
-        let v = helpers.vertice(1, -2, 0)
+        let v = Helpers.vertice(1, -2, 0)
         resultados.push(["vertice(1,-2,0)[0]", v[0], 1]) // x do vértice
         resultados.push(["vertice(1,-2,0)[1]", v[1], 0]) // y do vértice
 
@@ -144,6 +176,6 @@ export const teste = {
         }
 
         relatorio += "\n" + (erros == 0 ? "✓ Todos os testes passaram!" : "✗ " + erros + " erro(s) encontrado(s)")
-        ui.exibir(relatorio)
+        Ui.exibir(relatorio)
     },
 }

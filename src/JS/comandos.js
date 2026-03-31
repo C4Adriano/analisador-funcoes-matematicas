@@ -1,82 +1,109 @@
-import { config, versao } from "./config.js"
-import { escrita } from "./escrita.js"
-import { state } from "./state.js"
-import { ui } from "./ui.js"
-import { teste } from "./teste.js"
+import { Config, VERSAO } from "./config.js"
+import { Escrita } from "./escrita.js"
+import { State } from "./state.js"
+import { Ui } from "./ui.js"
+import { Teste } from "./teste.js"
 
-export const comandos = {
+/**
+ * Processamento de comandos do usuário
+ * - Use o comando "/help" para ver todos os comandos disponíveis
+ */
+export const Comandos = {
     /**
      * Processa um comando slash
      * @param {string} bruto Texto digitado pelo usuário
-     * @returns Ação a executar, ou null se não for comando
+     * @returns {string | null} Ação a executar, ou null se não for comando
+     * @since v6.1.0
      */
     processar(bruto = "") {
         if (bruto[0] != "/") {
             return null
         }
 
-        let partes = escrita.semAcentos(bruto.slice(1).toLowerCase()).split(" ")
-        let cmd = partes[0]
+        let partes = Escrita.semAcentos(bruto.slice(1).toLowerCase()).split(" "), // Partes do comando
+            cmd = partes[0] // Comando em si
 
-        // Ajuda
+        // === Ajuda ===
         if (["ajuda", "help", "a", "h", "cmd", "cmds", "c"].includes(cmd)) {
-            return comandos.ajuda()
+            return Comandos.ajuda()
         }
 
-        // Configurações
+        // === Configurações ===
         else if (["config", "configuracoes", "conf", "settings", "cfg"].includes(cmd)) {
-            state.tipo = "config"
+            State.tipo = "config"
             return "config"
         }
 
-        // Sair
+        // === Sair ===
         else if (["sair", "exit", "//", "ex", "out"].includes(cmd)) {
-            state.tipo = "sair"
+            State.tipo = "sair"
             return "sair"
         }
 
-        // Navegação
+        // === Navegação ===
         else if (["inicio", "start"].includes(cmd)) {
-            state.tipo = "inicio"
+            State.tipo = "inicio"
             return "inicio"
         } else if (["rever", "review"].includes(cmd)) {
-            state.tipo = "rever"
+            State.tipo = "rever"
             return "rever"
         } else if (["alterar", "change"].includes(cmd)) {
-            state.tipo = "alterar"
+            State.tipo = "alterar"
             return "alterar"
         } else if (["historico", "history"].includes(cmd)) {
-            state.tipo = "historico"
+            State.tipo = "historico"
             return "historico"
         }
 
-        // Versão
+        // === Versão ===
         else if (["versao", "version", "v"].includes(cmd)) {
-            return comandos.versao()
+            return Comandos.versao()
         }
 
-        // Configurações
+        // === Atalhos de configuração ===
         else if (["unicode"].includes(cmd)) {
-            return comandos.alterar("unicode")
+            return Comandos.alterar("unicode")
         } else if (["explicar", "explicacoes", "explain"].includes(cmd)) {
-            return comandos.alterar("explicacoes")
+            return Comandos.alterar("explicacoes")
         } else if (["acentos", "accents", "acento", "accent"].includes(cmd)) {
-            return comandos.alterar("acentos")
+            return Comandos.alterar("acentos")
+        } else if (["debug", "dbg"].includes(cmd)) {
+            return Comandos.alterar("debug")
+        } else if (["capitalizar", "capitalizadas", "capitalize", "capitalized", "cap"].includes(cmd)) {
+            return Comandos.alterar("capitalizadas")
+        } else if (["maiusculas", "maiuscula", "uppercase", "upper"].includes(cmd)) {
+            return Comandos.alterar("maiusculas")
+        } else if (["minusculas", "minuscula", "lowercase", "lower"].includes(cmd)) {
+            return Comandos.alterar("minusculas")
+        } else if (["decimal", "separador", "separator", "sep"].includes(cmd)) {
+            return Comandos.alterar("separadorDecimal")
+        } else if (["multiplos", "multiplo", "multiples", "multi"].includes(cmd)) {
+            return Comandos.alterar("multiSimples")
+        } else if (["confirmar", "confirmacoes", "confirm", "confirmations", "confent", "confinp"].includes(cmd)) {
+            return Comandos.alterar("confirmacoesEntrada")
+        } else if (["confirmarsaida", "confirmsaida", "confirmexit", "confsaida", "confexit"].includes(cmd)) {
+            return Comandos.alterar("confirmacoesSaida")
+        } else if (["erros", "erro", "errors", "error", "err"].includes(cmd)) {
+            return Comandos.alterar("erros")
+        } else if (["funcao", "mostrarfuncao", "function", "showfunction", "func"].includes(cmd)) {
+            return Comandos.alterar("mostrarFuncao")
+        } else if (["graus", "grau", "degrees", "degree", "deg"].includes(cmd)) {
+            return Comandos.alterar("graus")
         }
 
-        // Teste
+        // === Teste ===
         else if (cmd == "teste") {
             if (partes[1] == "1234") {
-                teste.rodar()
+                Teste.rodar()
             } else {
-                ui.erro("Senha inválida", String(partes[1]) + " não é uma senha válida")
+                Ui.erro("Senha inválida", String(partes[1]) + " não é uma senha válida")
             }
             return null
         }
 
-        // Inválido
+        // === Inválido ===
         else {
-            ui.erro(
+            Ui.erro(
                 "Comando inválido",
                 String(cmd) + " não é um comando válido\nDigite “/help” para ver todos os comandos",
             )
@@ -84,8 +111,13 @@ export const comandos = {
         }
     },
 
+    /**
+     * Exibe a ajuda com todos os comandos disponíveis
+     * @returns {null}
+     * @since v6.1.0
+     */
     ajuda() {
-        ui.aviso(
+        Ui.aviso(
             "Comandos disponíveis:" +
                 "\n" +
                 "/ajuda, /help — mostra essa mensagem" +
@@ -113,21 +145,37 @@ export const comandos = {
         return null
     },
 
+    /**
+     * Exibe a versão do programa
+     * @returns {null}
+     * @since v6.1.0
+     */
     versao() {
-        ui.aviso(
+        Ui.aviso(
             "Mathematical Function Analyzer / Analisador de Funções Matemáticas\n" +
-                versao +
+                VERSAO +
                 " — Adriano Lima 2025 - 2026",
         )
         return null
     },
 
+    /**
+     * Altera uma configuração do programa
+     * @param {string} nome Nome em config
+     * @returns {null}
+     * @since v6.1.0
+     */
     alterar(nome = "") {
-        config[nome] = !config[nome]
-        ui.aviso(escrita.itemConfig("Alterado: “" + nome + "”", nome))
+        Config[nome] = !Config[nome]
+        Ui.aviso(Escrita.itemConfig("Alterado: “" + nome + "”", nome))
         return null
     },
 
+    /**
+     * Retorna uma lista com os nomes dos comandos disponíveis
+     * @returns {string[]}
+     * @since v6.1.0
+     */
     nomes() {
         return ["config", "sair", "inicio", "rever", "historico", "alterar"]
     },

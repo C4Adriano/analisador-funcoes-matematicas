@@ -2,7 +2,7 @@
  * Configurações do programa
  * - Edite os valores aqui para mudar os valores padrões das configurações. Porém tente não ultrapassar os limites ou alterar os tipos dos valores
  */
-export const config = {
+export const Config = {
     linguagem: "en", // Linguagem para as mensagens do programa (em construção, por enquanto só pt-br / en)
     debug: false, // Exibir mensagens de debug detalhadas para o desenvolvedor (como os passos intermediários dos cálculos)
 
@@ -30,9 +30,9 @@ export const config = {
 /**
  * Configurações padrão do programa (para restaurar as configurações)
  */
-export const configPadrao = JSON.parse(JSON.stringify(config))
+export const CONFIG_PADRAO = JSON.parse(JSON.stringify(Config))
 
 /**
- * Versão do programa
+ * Versão do programa (MAJOR.MINOR.PATCH)
  */
-export const versao = "v6.0"
+export const VERSAO = "v6.1.1"
