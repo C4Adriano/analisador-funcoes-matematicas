@@ -944,9 +944,9 @@ export const Escrita = {
 
         // === TRADUÇÃO ===
         // Traduz a mensagem para a linguagem configurada
-        /* if (Config.linguagem != "pt-br") {
+        if (Config.linguagem != "pt-br") {
             mensagem = Escrita.traduzir(mensagem)
-        } */
+        }
 
         // === REMOÇÃO DE UNICODE ===
         // Remove símbolos Unicode especiais, se desativado
