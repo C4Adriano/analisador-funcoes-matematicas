@@ -1,22 +1,8 @@
-# Link
-
-[GitHub](https://github.com/C4Adriano/analisador-funcoes-matematicas)
-
-## Sublinks
-
-[Arquivo](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/)
-[Pasta](https://github.com/C4Adriano/analisador-funcoes-matematicas/tree/main/)
-[Issues](https://github.com/C4Adriano/analisador-funcoes-matematicas/issues)
-[Releases](https://github.com/C4Adriano/analisador-funcoes-matematicas/releases)
-[Específicar](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG.md#ancora)
-
-# Tags personalizadas
-
 # Geral
 
 <div align="center">
     <h1>Mathematical <b>Function Analyzer</b> / Analisador de <b>Funções Matemáticas</b></h1>
-    <h2>NOME_EN / NOME_PT</h2>
+    <h2>NAME_EN / NOME_PT</h2>
     <p>All rights reserved / Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
 </div>
 
@@ -30,7 +16,7 @@
 
 <div align="center">
     <h1>Mathematical <b>Function Analyzer</b></h1>
-    <h2>NOME_EN</h2>
+    <h2>NAME_EN</h2>
     <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
 </div>
 
@@ -57,23 +43,5 @@
 # INDEX
 
 | ARQUIVO | [📄](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ARQUIVO.md) | [🇺🇸](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ARQUIVO/ARQUIVO_EN.md) | [🇧🇷](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ARQUIVO/ARQUIVO_PT.md) |
-
----
-
-# Release
-
-## 🇺🇸 English
-
-TITLE_EN
-
-📋 [Full changelog for this version](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md#version-NUM---TOPIC)
-
----
-
-## 🇧🇷 Português
-
-TÍTULO_PT
-
-📋 [Changelog completo desta versão](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md#vers%C3%A3o-NUM---TOPIC)
 
 ---
