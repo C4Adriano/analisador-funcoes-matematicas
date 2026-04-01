@@ -862,7 +862,7 @@ export const Escrita = {
                 ["conforme", "according to"],
                 [" com ", " with "],
                 [" é ", " is "],
-                [" a ", " the "],
+                // [" a ", " the "], - Problemas com a letra "a" em inglês, que pode ser um artigo ou uma variável
                 [" as ", " the "],
                 [" o ", " the "],
                 [" os ", " the "],

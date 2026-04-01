@@ -44,6 +44,7 @@ notes.md
 TODO.md
 node_modules/
 *-lock.json
+*.txt
 
 # === CREDENCIAIS ===
 .env
