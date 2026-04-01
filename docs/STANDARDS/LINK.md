@@ -1,4 +1,6 @@
-# GitHub
+# Links
+
+## GitHub
 
 [GitHub](https://github.com/C4Adriano/analisador-funcoes-matematicas)
 

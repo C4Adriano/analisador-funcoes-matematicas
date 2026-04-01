@@ -1,4 +1,6 @@
-# Geral
+# DocsTags
+
+## Geral
 
 <div align="center">
     <h1>Mathematical <b>Function Analyzer</b> / Analisador de <b>Funções Matemáticas</b></h1>
@@ -12,7 +14,7 @@
 
 ---
 
-# EN
+## EN
 
 <div align="center">
     <h1>Mathematical <b>Function Analyzer</b></h1>
@@ -26,7 +28,7 @@
 
 ---
 
-# PT
+## PT
 
 <div align="center">
     <h1>Analisador de <b>Funções Matemáticas</b></h1>
@@ -40,7 +42,7 @@
 
 ---
 
-# INDEX
+## INDEX
 
 | ARQUIVO | [📄](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ARQUIVO.md) | [🇺🇸](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ARQUIVO/ARQUIVO_EN.md) | [🇧🇷](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ARQUIVO/ARQUIVO_PT.md) |
 
