@@ -28,6 +28,56 @@ export const Config = {
 }
 
 /**
+ * Carrega as configurações salvas no localStorage (se existirem)
+ */
+export function carregarConfig() {
+    let salvo = localStorage.getItem("config"),
+        versaoSalva = localStorage.getItem("configVersao")
+
+    if (salvo == null) {
+        return
+    }
+
+    if (versaoSalva !== VERSAO) {
+        // Versão diferente: descarta o salvo e começa do zero
+        localStorage.removeItem("config")
+        localStorage.removeItem("configVersao")
+        return
+    }
+
+    let configSalva = JSON.parse(salvo),
+        chaves = Object.keys(configSalva)
+
+    for (let i = 0; i < chaves.length; i++) {
+        let chave = chaves[i]
+        if (Config[chave] !== undefined) {
+            Config[chave] = configSalva[chave]
+        }
+    }
+}
+
+/**
+ * Salva as configurações atuais no localStorage
+ */
+export function salvarConfig() {
+    localStorage.setItem("config", JSON.stringify(Config))
+    localStorage.setItem("configVersao", VERSAO)
+    console.log("Configurações salvas:", Config)
+}
+
+/**
+ * Remove as configurações salvas no localStorage, restaurando os padrões
+ */
+export function resetarConfig() {
+    localStorage.removeItem("config")
+
+    let chaves = Object.keys(CONFIG_PADRAO)
+    for (let i = 0; i < chaves.length; i++) {
+        Config[chaves[i]] = CONFIG_PADRAO[chaves[i]]
+    }
+}
+
+/**
  * Configurações padrão do programa (para restaurar as configurações)
  */
 export const CONFIG_PADRAO = JSON.parse(JSON.stringify(Config))

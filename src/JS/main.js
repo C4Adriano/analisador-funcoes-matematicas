@@ -1,6 +1,6 @@
 import { Algebra } from "./algebra.js"
 import { Analisar } from "./analisar.js"
-import { Config, CONFIG_PADRAO, VERSAO } from "./config.js"
+import { carregarConfig, Config, CONFIG_PADRAO, salvarConfig, VERSAO } from "./config.js"
 import { Erro } from "./erro.js"
 import { Escrita } from "./escrita.js"
 import { State } from "./state.js"
@@ -19,8 +19,14 @@ console.log(
         "====================================================",
 )
 
+// Carregar as configurações
+carregarConfig()
+
 // Introdução
-Ui.exibir("Bem-vindo ao Analisador de Funções Matemáticas!", "Este programa analisa funções do tipo constante, afim, quadrática, exponencial e logarítmica — identificando suas propriedades e características. Para começar, informe os dados da função quando solicitado.")
+Ui.exibir(
+    "Bem-vindo ao Analisador de Funções Matemáticas!",
+    "Este programa analisa funções do tipo constante, afim, quadrática, exponencial e logarítmica — identificando suas propriedades e características. Para começar, informe os dados da função quando solicitado.",
+)
 
 // === OBJETOS GLOBAIS ===
 // Para alterar o HTML também, conforme a língua
@@ -594,6 +600,9 @@ do {
                     else if (escolha == 6) {
                     } */
                 }
+
+                // Salvar as configurações
+                salvarConfig()
             } while (escolha != 0)
         }
 
@@ -619,7 +628,7 @@ do {
         // Sair
         else if (State.tipo == 0 || State.tipo == "sair") {
             if (Config.confirmacoesSaida) {
-                State.loop = !Ui.confirmar("Tu queres sair?", "Obs.: Configurações voltarão ao padrão caso saias")
+                State.loop = !Ui.confirmar("Tu queres sair?", "Obs.: Configurações poderão voltar ao padrão caso saias")
             } else {
                 State.loop = false
             }

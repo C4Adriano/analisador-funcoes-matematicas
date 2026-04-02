@@ -1,4 +1,4 @@
-import { Config, VERSAO } from "./config.js"
+import { Config, resetarConfig, salvarConfig, VERSAO } from "./config.js"
 import { Escrita } from "./escrita.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
@@ -26,6 +26,13 @@ export const Comandos = {
         // === Ajuda ===
         if (["ajuda", "help", "a", "h", "cmd", "cmds", "c"].includes(cmd)) {
             return Comandos.ajuda(partes[1] || "")
+        }
+
+        // === Resetar ===
+        else if (["resetar", "reset", "restaurar", "restore"].includes(cmd)) {
+            resetarConfig()
+            Ui.aviso("Configurações restauradas para os valores padrão.")
+            return null
         }
 
         // === Configurações ===
@@ -123,6 +130,10 @@ export const Comandos = {
                 longa: "Exibe a lista de todos os comandos disponíveis.\nUso: /ajuda [comando]",
             },
             config: { curta: "abre as configurações", longa: "Abre o menu de configurações do programa." },
+            resetar: {
+                curta: "restaura as configurações",
+                longa: "Remove as configurações salvas e restaura os valores padrão.",
+            },
             inicio: { curta: "volta ao menu principal", longa: "Retorna ao menu inicial de seleção de função." },
             rever: {
                 curta: "mostra os coeficientes atuais",
@@ -209,6 +220,19 @@ export const Comandos = {
      */
     alterar(nome = "") {
         Config[nome] = !Config[nome]
+
+        if (nome == "capitalizadas" && Config.capitalizadas) {
+            Config.maiusculas = false
+            Config.minusculas = false
+        } else if (nome == "maiusculas" && Config.maiusculas) {
+            Config.capitalizadas = false
+            Config.minusculas = false
+        } else if (nome == "minusculas" && Config.minusculas) {
+            Config.capitalizadas = false
+            Config.maiusculas = false
+        }
+
+        salvarConfig()
         Ui.aviso(Escrita.itemConfig("Alterado: “" + nome + "”", nome))
         return null
     },

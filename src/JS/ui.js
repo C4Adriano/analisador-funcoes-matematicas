@@ -160,12 +160,10 @@ export const Ui = {
             valor = 0,
             valido = false
 
-        mensagem = Escrita.verificar(mensagem, explicacao)
-
         // Loop
         let limite = 0
         do {
-            bruto = prompt(mensagem)
+            bruto = prompt(Escrita.verificar(mensagem, explicacao))
 
             // Cancelar
             if (bruto == null) {
