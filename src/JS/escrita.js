@@ -360,7 +360,18 @@ export const Escrita = {
             ["“C”", "“c”"],
             ["'C'", "'c'"],
 
+            ["X²", "x²"],
+            ["X₁", "x₁"],
+            ["X₂", "x₂"],
+            ["X₃", "x₃"],
+            ["Y₁", "y₁"],
+            ["Y₂", "y₂"],
+            ["Y₃", "y₃"],
+
             ["1E-", "1e-"],
+            ["1E+", "1e+"],
+            ["1E ", "1e "],
+            ["1E\n", "1e\n"],
 
             // Casos especiais para palavras, por padrão, maiúsculas
             ["delta", "Delta"],
