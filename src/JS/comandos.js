@@ -37,6 +37,14 @@ export const Comandos = {
 
         // === Configurações ===
         else if (["config", "configuracoes", "conf", "settings", "cfg"].includes(cmd)) {
+            if (partes[1] != undefined) {
+                let canonico = Comandos.resolverCmd(partes[1])
+                if (canonico != null && Config[canonico] != undefined) {
+                    return Comandos.alterar(canonico)
+                }
+                Ui.erro("Configuração inválida", "/" + partes[1] + " não é uma configuração válida")
+                return null
+            }
             State.tipo = "config"
             return "config"
         }
@@ -45,6 +53,8 @@ export const Comandos = {
         else if (["sair", "exit", "//", "ex", "out"].includes(cmd)) {
             State.tipo = "sair"
             return "sair"
+        } else if (["end"].includes(cmd)) {
+            return "end"
         }
 
         // === Navegação ===
@@ -118,72 +128,158 @@ export const Comandos = {
         }
     },
 
-    /**
-     * Exibe a ajuda com todos os comandos disponíveis
-     * @returns {null}
-     * @since v6.1.0
-     */
-    ajuda(especifico = "") {
-        let cmds = {
+    listaCmds() {
+        return {
             ajuda: {
                 curta: "mostra essa mensagem",
                 longa: "Exibe a lista de todos os comandos disponíveis.\nUso: /ajuda [comando]",
+                variacoes: ["help", "a", "h", "cmd", "cmds", "c"],
             },
-            config: { curta: "abre as configurações", longa: "Abre o menu de configurações do programa." },
+            config: {
+                curta: "abre as configurações",
+                longa: "Abre o menu de configurações do programa.",
+                variacoes: ["configuracoes", "conf", "settings", "cfg"],
+            },
             resetar: {
                 curta: "restaura as configurações",
                 longa: "Remove as configurações salvas e restaura os valores padrão.",
+                variacoes: ["reset", "restaurar", "restore"],
             },
-            inicio: { curta: "volta ao menu principal", longa: "Retorna ao menu inicial de seleção de função." },
+            inicio: {
+                curta: "volta ao menu principal",
+                longa: "Retorna ao menu inicial de seleção de função.",
+                variacoes: ["start"],
+            },
             rever: {
                 curta: "mostra os coeficientes atuais",
                 longa: "Exibe os coeficientes inseridos na sessão atual.",
+                variacoes: ["review"],
             },
             alterar: {
                 curta: "muda os coeficientes",
                 longa: "Permite alterar os coeficientes sem reiniciar a análise.",
+                variacoes: ["change"],
             },
-            historico: { curta: "abre o histórico", longa: "Exibe o histórico de funções analisadas na sessão." },
-            versao: { curta: "mostra a versão", longa: "Exibe a versão atual do programa e informações de autoria." },
-            unicode: { curta: "alterna Unicode", longa: "Ativa ou desativa o uso de caracteres Unicode na saída." },
-            acentos: { curta: "alterna acentos", longa: "Ativa ou desativa acentos nas mensagens exibidas." },
+            historico: {
+                curta: "abre o histórico",
+                longa: "Exibe o histórico de funções analisadas na sessão.",
+                variacoes: ["history"],
+            },
+            versao: {
+                curta: "mostra a versão",
+                longa: "Exibe a versão atual do programa e informações de autoria.",
+                variacoes: ["version", "v"],
+            },
+            unicode: {
+                curta: "alterna Unicode",
+                longa: "Ativa ou desativa o uso de caracteres Unicode na saída.",
+                variacoes: [],
+            },
+            acentos: {
+                curta: "alterna acentos",
+                longa: "Ativa ou desativa acentos nas mensagens exibidas.",
+                variacoes: ["accents", "acento", "accent"],
+            },
             explicar: {
                 curta: "alterna explicações",
                 longa: "Ativa ou desativa as explicações detalhadas dos resultados.",
+                variacoes: ["explicacoes", "explain"],
             },
             capitalizar: {
                 curta: "alterna capitalização",
                 longa: "Ativa ou desativa a capitalização das primeiras letras.",
+                variacoes: ["capitalizadas", "capitalize", "capitalized", "cap"],
             },
-            maiusculas: { curta: "alterna maiúsculas", longa: "Ativa ou desativa a exibição em maiúsculas." },
-            minusculas: { curta: "alterna minúsculas", longa: "Ativa ou desativa a exibição em minúsculas." },
+            maiusculas: {
+                curta: "alterna maiúsculas",
+                longa: "Ativa ou desativa a exibição em maiúsculas.",
+                variacoes: ["maiuscula", "uppercase", "upper"],
+            },
+            minusculas: {
+                curta: "alterna minúsculas",
+                longa: "Ativa ou desativa a exibição em minúsculas.",
+                variacoes: ["minuscula", "lowercase", "lower"],
+            },
             decimal: {
                 curta: "alterna separador decimal",
                 longa: "Alterna o separador decimal entre ponto e vírgula.",
+                variacoes: ["separador", "separator", "sep"],
             },
-            multiplos: { curta: "alterna múltiplos simples", longa: "Ativa ou desativa a simplificação de múltiplos." },
+            multiplos: {
+                curta: "alterna múltiplos simples",
+                longa: "Ativa ou desativa a simplificação de múltiplos.",
+                variacoes: ["multiplo", "multiples", "multi"],
+            },
             confirmar: {
                 curta: "alterna confirmações de entrada",
                 longa: "Ativa ou desativa as confirmações ao inserir dados.",
+                variacoes: ["confirmacoes", "confirm", "confirmations", "confent", "confinp"],
             },
             confirmarsaida: {
                 curta: "alterna confirmações de saída",
                 longa: "Ativa ou desativa a confirmação ao sair do programa.",
+                variacoes: ["confirmsaida", "confirmexit", "confsaida", "confexit"],
             },
-            erros: { curta: "alterna exibição de erros", longa: "Ativa ou desativa a exibição de mensagens de erro." },
-            funcao: { curta: "alterna exibição da função", longa: "Ativa ou desativa a exibição da função analisada." },
-            graus: { curta: "alterna modo graus", longa: "Alterna entre graus e radianos nos cálculos." },
-            debug: { curta: "alterna modo debug", longa: "Ativa ou desativa o modo de depuração." },
-            teste: { curta: "executa testes", longa: "Executa a bateria de testes internos do programa." },
-            sair: { curta: "sai do programa", longa: "Encerra o programa. Confirmação pode ser solicitada." },
+            erros: {
+                curta: "alterna exibição de erros",
+                longa: "Ativa ou desativa a exibição de mensagens de erro.",
+                variacoes: ["erro", "errors", "error", "err"],
+            },
+            funcao: {
+                curta: "alterna exibição da função",
+                longa: "Ativa ou desativa a exibição da função analisada.",
+                variacoes: ["mostrarfuncao", "function", "showfunction", "func"],
+            },
+            graus: {
+                curta: "alterna modo graus",
+                longa: "Alterna entre graus e radianos nos cálculos.",
+                variacoes: ["grau", "degrees", "degree", "deg"],
+            },
+            debug: {
+                curta: "alterna modo debug",
+                longa: "Ativa ou desativa o modo de depuração.",
+                variacoes: ["dbg"],
+            },
+            teste: {
+                curta: "executa testes",
+                longa: "Executa a bateria de testes internos do programa.",
+                variacoes: [],
+            },
+            sair: {
+                curta: "sai do programa",
+                longa: "Encerra o programa. Confirmação pode ser solicitada.",
+                variacoes: ["exit", "//", "ex", "out"],
+            },
+        }
+    },
+
+    resolverCmd(especifico = "") {
+        let cmds = Comandos.listaCmds(),
+            chavesCmd = Object.keys(cmds),
+            canonico = especifico,
+            i = 0
+
+        while (i < chavesCmd.length && canonico == especifico) {
+            if (cmds[chavesCmd[i]].variacoes.includes(especifico)) {
+                canonico = chavesCmd[i]
+            }
+            i++
         }
 
-        if (especifico != "" && cmds[especifico] != undefined) {
-            Ui.aviso("/" + especifico + " — " + cmds[especifico].longa)
-            return null
-        }
+        return cmds[canonico] != undefined ? canonico : null
+    },
+
+    ajuda(especifico = "") {
+        let cmds = Comandos.listaCmds()
 
         if (especifico != "") {
+            let canonico = Comandos.resolverCmd(especifico)
+
+            if (canonico != null) {
+                Ui.aviso("/" + canonico + " — " + cmds[canonico].longa)
+                return null
+            }
+
             Ui.erro("Comando desconhecido", "/" + especifico + " não é um comando válido")
             return null
         }
@@ -210,7 +306,7 @@ export const Comandos = {
 
             menu += "\n----------------\n8 = Anterior | 9 = Próxima | 0 = Voltar"
 
-            resposta = Ui.intervalo(menu, "", 0, 9)
+            resposta = Ui.intervalo(menu, "", 0, 9, 0, true)
 
             if (resposta == 8) {
                 pagina--
@@ -228,11 +324,7 @@ export const Comandos = {
      * @since v6.1.0
      */
     versao() {
-        Ui.aviso(
-            "Mathematical Function Analyzer / Analisador de Funções Matemáticas\n" +
-                VERSAO +
-                " — Adriano Lima 2025 - 2026",
-        )
+        Ui.aviso("Analisador de Funções Matemáticas\n" + VERSAO + " — Adriano Lima 2025 - 2026")
         return null
     },
 

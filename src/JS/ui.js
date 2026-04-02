@@ -498,6 +498,11 @@ export const Ui = {
                 return valor
             }
 
+            // Encerrar intervalo
+            else if (valor == "end") {
+                return 0
+            }
+
             if (!(min <= valor && valor <= max)) {
                 // Se o valor não estiver entre o intervalo, mostra um erro
                 Erro.intervalo(min, max)
