@@ -397,6 +397,12 @@ export const Escrita = {
             ["portuguese", "Portuguese"],
             ["inglês", "Inglês"],
             ["english", "English"],
+
+            // Caso especial para o nome do programa
+            ["analisador de funções matemáticas", "Analisador de Funções Matemáticas"],
+            ["Analisador de funções matemáticas", "Analisador de Funções Matemáticas"],
+            ["mathematical function analyzer", "Mathematical Function Analyzer"],
+            ["Mathematical function analyzer", "Mathematical Function Analyzer"],
         ]
 
         texto = Escrita.substituirGrupo(texto, trocas)
@@ -491,6 +497,12 @@ export const Escrita = {
         } else if (Config.linguagem == "en") {
             // === TRADUÇÃO DE PORTUGUÊS PARA INGLÊS ===
             frasesCompletas = [
+                ["bem-vindo ao analisador de funções matemáticas", "welcome to the mathematical function analyzer"],
+                [
+                    "este programa analisa funções do tipo constante, afim, quadrática, exponencial e logarítmica — identificando suas propriedades e características. para começar, informe os dados da função quando solicitado",
+                    "this program analyzes functions of the following types: constant, affine, quadratic, exponential, and logarithmic — identifying their properties and characteristics. to get started, enter the function's data when prompted",
+                ],
+                ["analisador de funções matemáticas", "mathematical function analyzer"],
                 ["tu queres alterar a língua para", "do you want to change the language to"],
                 ["a função pode assumir qualquer", "the function can take any"],
                 ["a função só tem esse", "the function only has this"],
