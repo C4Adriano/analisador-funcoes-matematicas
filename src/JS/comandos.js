@@ -187,14 +187,38 @@ export const Comandos = {
             Ui.erro("Comando desconhecido", "/" + especifico + " não é um comando válido")
             return null
         }
-        let linhas = [],
-            chaves = Object.keys(cmds)
-        for (let i = 0; i < chaves.length; i++) {
-            let cmd = chaves[i]
-            linhas.push("/" + cmd + " — " + cmds[cmd].curta)
-        }
 
-        Ui.aviso("Comandos disponíveis:\n" + linhas.join("\n"))
+        let chaves = Object.keys(cmds),
+            total = Math.ceil(chaves.length / 7),
+            pagina = 1,
+            resposta = 0
+
+        do {
+            if (pagina < 1) {
+                pagina = 1
+            } else if (pagina > total) {
+                pagina = total
+            }
+
+            let inicio = (pagina - 1) * 7,
+                fim = Math.min(inicio + 7, chaves.length),
+                menu = "=== Ajuda ===\nPágina " + String(pagina) + "/" + String(total) + "\n"
+
+            for (let i = inicio; i < fim; i++) {
+                menu += "\n/" + chaves[i] + " — " + cmds[chaves[i]].curta
+            }
+
+            menu += "\n----------------\n8 = Anterior | 9 = Próxima | 0 = Voltar"
+
+            resposta = Ui.intervalo(menu, "", 0, 9)
+
+            if (resposta == 8) {
+                pagina--
+            } else if (resposta == 9) {
+                pagina++
+            }
+        } while (resposta != 0)
+
         return null
     },
 
