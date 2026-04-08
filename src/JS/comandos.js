@@ -16,116 +16,95 @@ export const Comandos = {
      * @since v6.1.0
      */
     processar(bruto = "") {
-        if (bruto[0] != "/") {
-            return null
-        }
+        if (bruto[0] != "/") return null
 
-        let partes = Escrita.semAcentos(bruto.slice(1).toLowerCase()).split(" "), // Partes do comando
-            cmd = partes[0] // Comando em si
+        let partes = Escrita.semAcentos(bruto.slice(1).toLowerCase()).split(" "),
+            cmd = partes[0],
+            arg = Comandos.parseBool(partes[1] || ""),
+            canonico = Comandos.resolverCmd(cmd),
+            cmds = Comandos.listaCmds()
 
-        // === Ajuda ===
-        if (["ajuda", "help", "a", "h", "cmd", "cmds", "c"].includes(cmd)) {
-            return Comandos.ajuda(partes[1] || "")
-        }
+        if (canonico === null) {
+            let sugestao = Comandos.sugerirCmd(cmd)
 
-        // === Resetar ===
-        else if (["resetar", "reset", "restaurar", "restore"].includes(cmd)) {
-            resetarConfig()
-            Ui.aviso("Configurações restauradas para os valores padrão.")
-            return null
-        }
-
-        // === Configurações ===
-        else if (["config", "configuracoes", "conf", "settings", "cfg"].includes(cmd)) {
-            if (partes[1] != undefined) {
-                let canonico = Comandos.resolverCmd(partes[1])
-                if (canonico != null && Config[canonico] != undefined) {
-                    return Comandos.alterar(canonico)
+            if (sugestao.tipo === "sugestao") {
+                let resposta = Ui.confirmar(
+                    "Você quis dizer: “/" + sugestao.canonico + "”?",
+                    "Comando não reconhecido: “/" +
+                        cmd +
+                        "”\nA sugestão mais próxima é “" +
+                        sugestao.canonico +
+                        "” (distância " +
+                        sugestao.distancia +
+                        ")\nDeseja executar essa sugestão?",
+                )
+                if (resposta === 1) {
+                    return Comandos.processar("/" + sugestao.canonico + " " + (partes[1] || ""))
                 }
-                Ui.erro("Configuração inválida", "/" + partes[1] + " não é uma configuração válida")
                 return null
             }
-            State.tipo = "config"
-            return "config"
+
+            Ui.erro("Comando inválido", cmd + " não é um comando válido\nDigite “/help” para ver todos os comandos")
+            return null
         }
 
-        // === Sair ===
-        else if (["sair", "exit", "//", "ex", "out"].includes(cmd)) {
-            State.tipo = "sair"
-            return "sair"
-        } else if (["end"].includes(cmd)) {
-            return "end"
+        return cmds[canonico].acao(arg, partes)
+    },
+
+    levenshtein(a, b) {
+        let linhas = b.length + 1,
+            colunas = a.length + 1,
+            matriz = [],
+            i = 0,
+            j = 0
+
+        for (i = 0; i < linhas; i++) {
+            matriz[i] = [i]
+        }
+        for (j = 0; j < colunas; j++) {
+            matriz[0][j] = j
         }
 
-        // === Navegação ===
-        else if (["inicio", "start"].includes(cmd)) {
-            State.tipo = "inicio"
-            return "inicio"
-        } else if (["rever", "review"].includes(cmd)) {
-            State.tipo = "rever"
-            return "rever"
-        } else if (["alterar", "change"].includes(cmd)) {
-            State.tipo = "alterar"
-            return "alterar"
-        } else if (["historico", "history"].includes(cmd)) {
-            State.tipo = "historico"
-            return "historico"
-        }
-
-        // === Versão ===
-        else if (["versao", "version", "v"].includes(cmd)) {
-            return Comandos.versao()
-        }
-
-        // === Atalhos de configuração ===
-        else if (["unicode"].includes(cmd)) {
-            return Comandos.alterar("unicode")
-        } else if (["explicar", "explicacoes", "explain"].includes(cmd)) {
-            return Comandos.alterar("explicacoes")
-        } else if (["acentos", "accents", "acento", "accent"].includes(cmd)) {
-            return Comandos.alterar("acentos")
-        } else if (["debug", "dbg"].includes(cmd)) {
-            return Comandos.alterar("debug")
-        } else if (["capitalizar", "capitalizadas", "capitalize", "capitalized", "cap"].includes(cmd)) {
-            return Comandos.alterar("capitalizadas")
-        } else if (["maiusculas", "maiuscula", "uppercase", "upper"].includes(cmd)) {
-            return Comandos.alterar("maiusculas")
-        } else if (["minusculas", "minuscula", "lowercase", "lower"].includes(cmd)) {
-            return Comandos.alterar("minusculas")
-        } else if (["decimal", "separador", "separator", "sep"].includes(cmd)) {
-            return Comandos.alterar("separadorDecimal")
-        } else if (["multiplos", "multiplo", "multiples", "multi"].includes(cmd)) {
-            return Comandos.alterar("multiSimples")
-        } else if (["confirmar", "confirmacoes", "confirm", "confirmations", "confent", "confinp"].includes(cmd)) {
-            return Comandos.alterar("confirmacoesEntrada")
-        } else if (["confirmarsaida", "confirmsaida", "confirmexit", "confsaida", "confexit"].includes(cmd)) {
-            return Comandos.alterar("confirmacoesSaida")
-        } else if (["erros", "erro", "errors", "error", "err"].includes(cmd)) {
-            return Comandos.alterar("erros")
-        } else if (["funcao", "mostrarfuncao", "function", "showfunction", "func"].includes(cmd)) {
-            return Comandos.alterar("mostrarFuncao")
-        } else if (["graus", "grau", "degrees", "degree", "deg"].includes(cmd)) {
-            return Comandos.alterar("graus")
-        }
-
-        // === Teste ===
-        else if (cmd == "teste") {
-            if (partes[1] == "1234") {
-                Teste.rodar()
-            } else {
-                Ui.erro("Senha inválida", String(partes[1]) + " não é uma senha válida")
+        for (i = 1; i < linhas; i++) {
+            for (j = 1; j < colunas; j++) {
+                if (b[i - 1] === a[j - 1]) {
+                    matriz[i][j] = matriz[i - 1][j - 1]
+                } else {
+                    matriz[i][j] = 1 + Math.min(matriz[i - 1][j], matriz[i][j - 1], matriz[i - 1][j - 1])
+                }
             }
-            return null
         }
 
-        // === Inválido ===
-        else {
-            Ui.erro(
-                "Comando inválido",
-                String(cmd) + " não é um comando válido\nDigite “/help” para ver todos os comandos",
-            )
-            return null
+        return matriz[linhas - 1][colunas - 1]
+    },
+
+    sugerirCmd(digitado = "") {
+        const LIMITE = 3
+        let cmds = Comandos.listaCmds(),
+            chaves = Object.keys(cmds),
+            melhor = "",
+            menorDist = Infinity,
+            i = 0,
+            j = 0,
+            candidatos = [],
+            dist = 0
+
+        for (i = 0; i < chaves.length; i++) {
+            // Testa a chave canônica + todas as variações
+            candidatos = [chaves[i]].concat(cmds[chaves[i]].variacoes)
+
+            for (j = 0; j < candidatos.length; j++) {
+                dist = Comandos.levenshtein(digitado, candidatos[j])
+                if (dist < menorDist) {
+                    menorDist = dist
+                    melhor = chaves[i] // sempre salva o canônico
+                }
+            }
         }
+
+        if (menorDist === 0) return { tipo: "exato", canonico: melhor, distancia: 0 }
+        if (menorDist <= LIMITE) return { tipo: "sugestao", canonico: melhor, distancia: menorDist }
+        return { tipo: "desconhecido", canonico: "", distancia: -1 }
     },
 
     listaCmds() {
@@ -134,121 +113,214 @@ export const Comandos = {
                 curta: "mostra essa mensagem",
                 longa: "Exibe a lista de todos os comandos disponíveis.\nUso: /ajuda [comando]",
                 variacoes: ["help", "a", "h", "cmd", "cmds", "c"],
+                acao(arg, partes) {
+                    return Comandos.ajuda(partes[1] || "")
+                },
             },
             config: {
                 curta: "abre as configurações",
                 longa: "Abre o menu de configurações do programa.",
                 variacoes: ["configuracoes", "conf", "settings", "cfg"],
+                acao(arg, partes) {
+                    if (partes[1] != undefined) {
+                        let canonico = Comandos.resolverCmd(partes[1])
+                        if (canonico != null && Config[canonico] != undefined) {
+                            return Comandos.alterar(canonico, arg)
+                        }
+                        Ui.erro("Configuração inválida", "“" + partes[1] + "” não é uma configuração válida")
+                        return null
+                    }
+                    State.tipo = "config"
+                    return "config"
+                },
             },
             resetar: {
                 curta: "restaura as configurações",
                 longa: "Remove as configurações salvas e restaura os valores padrão.",
                 variacoes: ["reset", "restaurar", "restore"],
+                acao() {
+                    resetarConfig()
+                    Ui.aviso("Configurações restauradas para os valores padrão.")
+                    return null
+                },
             },
             inicio: {
                 curta: "volta ao menu principal",
                 longa: "Retorna ao menu inicial de seleção de função.",
                 variacoes: ["start"],
+                acao() {
+                    State.tipo = "inicio"
+                    return "inicio"
+                },
             },
             rever: {
                 curta: "mostra os coeficientes atuais",
                 longa: "Exibe os coeficientes inseridos na sessão atual.",
                 variacoes: ["review"],
+                acao() {
+                    State.tipo = "rever"
+                    return "rever"
+                },
             },
             alterar: {
                 curta: "muda os coeficientes",
                 longa: "Permite alterar os coeficientes sem reiniciar a análise.",
                 variacoes: ["change"],
+                acao() {
+                    State.tipo = "alterar"
+                    return "alterar"
+                },
             },
             historico: {
                 curta: "abre o histórico",
                 longa: "Exibe o histórico de funções analisadas na sessão.",
                 variacoes: ["history"],
+                acao() {
+                    State.tipo = "historico"
+                    return "historico"
+                },
             },
             versao: {
                 curta: "mostra a versão",
                 longa: "Exibe a versão atual do programa e informações de autoria.",
                 variacoes: ["version", "v"],
+                acao() {
+                    return Comandos.versao()
+                },
             },
             unicode: {
                 curta: "alterna Unicode",
                 longa: "Ativa ou desativa o uso de caracteres Unicode na saída.",
                 variacoes: [],
+                acao(arg) {
+                    return Comandos.alterar("unicode", arg)
+                },
             },
             acentos: {
                 curta: "alterna acentos",
                 longa: "Ativa ou desativa acentos nas mensagens exibidas.",
                 variacoes: ["accents", "acento", "accent"],
+                acao(arg) {
+                    return Comandos.alterar("acentos", arg)
+                },
             },
             explicar: {
                 curta: "alterna explicações",
                 longa: "Ativa ou desativa as explicações detalhadas dos resultados.",
                 variacoes: ["explicacoes", "explain"],
+                acao(arg) {
+                    return Comandos.alterar("explicacoes", arg)
+                },
             },
             capitalizar: {
                 curta: "alterna capitalização",
                 longa: "Ativa ou desativa a capitalização das primeiras letras.",
                 variacoes: ["capitalizadas", "capitalize", "capitalized", "cap"],
+                acao(arg) {
+                    return Comandos.alterar("capitalizadas", arg)
+                },
             },
             maiusculas: {
                 curta: "alterna maiúsculas",
                 longa: "Ativa ou desativa a exibição em maiúsculas.",
                 variacoes: ["maiuscula", "uppercase", "upper"],
+                acao(arg) {
+                    return Comandos.alterar("maiusculas", arg)
+                },
             },
             minusculas: {
                 curta: "alterna minúsculas",
                 longa: "Ativa ou desativa a exibição em minúsculas.",
                 variacoes: ["minuscula", "lowercase", "lower"],
+                acao(arg) {
+                    return Comandos.alterar("minusculas", arg)
+                },
             },
             decimal: {
                 curta: "alterna separador decimal",
                 longa: "Alterna o separador decimal entre ponto e vírgula.",
                 variacoes: ["separador", "separator", "sep"],
+                acao(arg) {
+                    return Comandos.alterar("separadorDecimal", arg)
+                },
             },
             multiplos: {
                 curta: "alterna múltiplos simples",
                 longa: "Ativa ou desativa a simplificação de múltiplos.",
                 variacoes: ["multiplo", "multiples", "multi"],
+                acao(arg) {
+                    return Comandos.alterar("multiSimples", arg)
+                },
             },
             confirmar: {
                 curta: "alterna confirmações de entrada",
                 longa: "Ativa ou desativa as confirmações ao inserir dados.",
                 variacoes: ["confirmacoes", "confirm", "confirmations", "confent", "confinp"],
+                acao(arg) {
+                    return Comandos.alterar("confirmacoesEntrada", arg)
+                },
             },
             confirmarsaida: {
                 curta: "alterna confirmações de saída",
                 longa: "Ativa ou desativa a confirmação ao sair do programa.",
                 variacoes: ["confirmsaida", "confirmexit", "confsaida", "confexit"],
+                acao(arg) {
+                    return Comandos.alterar("confirmacoesSaida", arg)
+                },
             },
             erros: {
                 curta: "alterna exibição de erros",
                 longa: "Ativa ou desativa a exibição de mensagens de erro.",
                 variacoes: ["erro", "errors", "error", "err"],
+                acao(arg) {
+                    return Comandos.alterar("erros", arg)
+                },
             },
             funcao: {
                 curta: "alterna exibição da função",
                 longa: "Ativa ou desativa a exibição da função analisada.",
                 variacoes: ["mostrarfuncao", "function", "showfunction", "func"],
+                acao(arg) {
+                    return Comandos.alterar("mostrarFuncao", arg)
+                },
             },
             graus: {
                 curta: "alterna modo graus",
                 longa: "Alterna entre graus e radianos nos cálculos.",
                 variacoes: ["grau", "degrees", "degree", "deg"],
+                acao(arg) {
+                    return Comandos.alterar("graus", arg)
+                },
             },
             debug: {
                 curta: "alterna modo debug",
                 longa: "Ativa ou desativa o modo de depuração.",
                 variacoes: ["dbg"],
+                acao(arg) {
+                    return Comandos.alterar("debug", arg)
+                },
             },
             teste: {
                 curta: "executa testes",
                 longa: "Executa a bateria de testes internos do programa.",
                 variacoes: [],
+                acao(arg, partes) {
+                    if (partes[1] == "1234") {
+                        Teste.rodar()
+                    } else {
+                        Ui.erro("Senha inválida", "“" + String(partes[1]) + "” não é uma senha válida")
+                    }
+                    return null
+                },
             },
             sair: {
                 curta: "sai do programa",
                 longa: "Encerra o programa. Confirmação pode ser solicitada.",
                 variacoes: ["exit", "//", "ex", "out"],
+                acao() {
+                    State.tipo = "sair"
+                    return "sair"
+                },
             },
         }
     },
@@ -269,6 +341,16 @@ export const Comandos = {
         return cmds[canonico] != undefined ? canonico : null
     },
 
+    parseBool(texto = "") {
+        if (["true", "1", "sim", "yes", "on", "ativo"].includes(texto)) {
+            return true
+        }
+        if (["false", "0", "nao", "no", "off", "inativo"].includes(texto)) {
+            return false
+        }
+        return null
+    },
+
     ajuda(especifico = "") {
         let cmds = Comandos.listaCmds()
 
@@ -280,7 +362,7 @@ export const Comandos = {
                 return null
             }
 
-            Ui.erro("Comando desconhecido", "/" + especifico + " não é um comando válido")
+            Ui.erro("Comando desconhecido", "“/" + especifico + "” não é um comando válido")
             return null
         }
 
@@ -334,8 +416,12 @@ export const Comandos = {
      * @returns {null}
      * @since v6.1.0
      */
-    alterar(nome = "") {
-        Config[nome] = !Config[nome]
+    alterar(nome = "", valor = null) {
+        if (valor != null) {
+            Config[nome] = valor
+        } else {
+            Config[nome] = !Config[nome]
+        }
 
         if (nome == "capitalizadas" && Config.capitalizadas) {
             Config.maiusculas = false
