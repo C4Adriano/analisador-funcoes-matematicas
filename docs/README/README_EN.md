@@ -32,7 +32,7 @@ Built entirely in pure JavaScript, with no external libraries.
 ### How to use
 
 1. Clone or download the repository
-2. Open `index.html` in your browser
+2. Open [`index.html`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/index.html) in your browser
 3. Follow the menus in the `prompts` and `alerts`
 
 No installation required.
@@ -41,29 +41,29 @@ Or access directly: [![GitHub Pages](https://img.shields.io/badge/Access%20here-
 
 ### Code structure
 
-| Object     | Responsibility                                           |
-| ---------- | -------------------------------------------------------- |
-| `config`   | Global program settings                                  |
-| `helpers`  | Common calculations and result assembly                  |
-| `escrita`  | Formatting, translation, and text conversion             |
-| `ui`       | User interaction (menus, inputs, errors)                 |
-| `erro`     | Standardized error messages                              |
-| `algebra`  | Mathematical calculations (log, ln, safe division, etc.) |
-| `analisar` | Analysis of each function type                           |
+| Object                                                                                                 | Responsibility                                           |
+| ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| [`config`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/config.js)     | Global program settings                                  |
+| [`helpers`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/helpers.js)   | Common calculations and result assembly                  |
+| [`escrita`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/escrita.js)   | Formatting, translation, and text conversion             |
+| [`ui`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/ui.js)             | User interaction (menus, inputs, errors)                 |
+| [`erro`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/erro.js)         | Standardized error messages                              |
+| [`algebra`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/algebra.js)   | Mathematical calculations (log, ln, safe division, etc.) |
+| [`analisar`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/analisar.js) | Analysis of each function type                           |
 
 ### Version history
 
-| Version | Highlight                                          |
-| ------- | -------------------------------------------------- |
-| 1.0     | Quadratic, Linear, and Constant functions          |
-| 2.1     | Exponential functions                              |
-| 3.0     | Coefficients as unknowns                           |
-| 4.4     | Logarithmic functions                              |
-| 4.5     | Pre-release                                        |
-| 5.1     | Settings system                                    |
-| 5.2     | JS objects, settings standard                      |
-| 5.5     | `helpers` object, function history, EN translation |
-| 6.0     | Public release on GitHub                           |
+| Version                                                                                                                                                                             | Highlight                                          |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| [1.0](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md#version-10---quadratic-linear-and-constant-functions)                    | Quadratic, Linear, and Constant functions          |
+| [2.1](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md#version-21---exponential-function)                                       | Exponential functions                              |
+| [3.0](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md#version-30---variables-a-b-c-in-quadratic-linear-and-constant-functions) | Coefficients as unknowns                           |
+| [4.4](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md#version-44---logarithmic-functions)                                      | Logarithmic functions                              |
+| [4.5](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md#version-45---official-release)                                           | Pre-release                                        |
+| [5.1](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md#version-51---improvements)                                               | Settings system                                    |
+| [5.2](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md#version-52---objects-and-settings-improvements)                          | JS objects, settings standard                      |
+| [5.5](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md#version-55---improvements)                                               | `helpers` object, function history, EN translation |
+| [6.0](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md#version-60---release)                                                    | Public release on GitHub                           |
 
 Full changelog in [`CHANGELOG`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md).
 

@@ -16,8 +16,6 @@
 
 -
 
----
-
 ## Information / Informações
 
 - **Lines of code / Linhas de código:** `x`

@@ -2,11 +2,11 @@
 
 ## Versão — `MAJOR.MINOR.PATCH`
 
-| Número | Quando incrementar |
-| -------- | -------------------- |
-| `MAJOR` | Nova função matemática, reformulação pesada, breaking change |
+| Número  | Quando incrementar                                             |
+| ------- | -------------------------------------------------------------- |
+| `MAJOR` | Nova função matemática, reformulação pesada, breaking change   |
 | `MINOR` | Feature nova pequena, novo comando, nova opção de configuração |
-| `PATCH` | Bug fix, texto, tradução, refatoração, config |
+| `PATCH` | Bug fix, texto, tradução, refatoração, config                  |
 
 - Ao incrementar `MAJOR`, zera `MINOR` e `PATCH`
 - Ao incrementar `MINOR`, zera só `PATCH`
@@ -47,12 +47,12 @@
 
 ### Impacto na versão
 
-| Tipo | Impacto |
-| ------ | --------- |
-| `add` grande, `ovr`, `brk` | `MAJOR` |
-| `add` pequeno, `fix` de feature | `MINOR` |
-| `fix`, `rfr`, `txt`, `fmt`, `lng`, `cfg`, `doc` | `PATCH` |
-| `rmv` | `MINOR` ou `MAJOR` dependendo do impacto |
+| Tipo                                            | Impacto                                  |
+| ----------------------------------------------- | ---------------------------------------- |
+| `add` grande, `ovr`, `brk`                      | `MAJOR`                                  |
+| `add` pequeno, `fix` de feature                 | `MINOR`                                  |
+| `fix`, `rfr`, `txt`, `fmt`, `lng`, `cfg`, `doc` | `PATCH`                                  |
+| `rmv`                                           | `MINOR` ou `MAJOR` dependendo do impacto |
 
 ## Fluxo
 
