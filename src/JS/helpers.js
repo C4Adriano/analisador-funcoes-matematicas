@@ -516,4 +516,12 @@ export const Helpers = {
 
         return estourou
     },
+
+    calcPeriodo(coefC = 0) {
+        if (coefC != 0) {
+            Ui.exibir("Período: " + Escrita.decimal(2 * Math.PI / Math.abs(coefC)), "Período = 2π / |c|")
+        } else {
+            Ui.exibir("Período: ∞", "Se c = 0, a função é constante, então o período é infinito.")
+        }
+    },
 }
