@@ -6,34 +6,38 @@ import { State } from "./state.js"
 import { Ui } from "./ui.js"
 
 /**
- * Objeto base para as ajudas de código (repetições) e cálculos comuns
- * - Use as funções aqui para obter ajudas comuns, como o domínio, imagem, interseção com os eixos, estudo do sinal, etc. As funções de ajuda também são usadas para exibir os resultados, então as explicações são feitas automaticamente conforme as configurações.
+ * [FUNÇÃO] Objeto base para as ajudas de código (repetições) e cálculos comuns
+ * - Use as funções aqui para obter ajudas comuns, como o domínio, imagem, interseção com os eixos, estudo do sinal, etc.
+ * @since v6.1.0
  */
 export const Helpers = {
     /**
-     * Monta o domínio de uma função
-     * @param {string} pertence Intervalo de pertencimento
-     * @param {string} explicacao Explicação
+     * [FUNÇÃO] Monta o domínio de uma função
+     * @param {string} pertence - Intervalo de pertencimento
+     * @param {string} explicacao - Explicação
+     * @since v6.1.0
      */
     dominio(pertence = "∈ ℝ", explicacao = "A função pode assumir qualquer x real") {
         Ui.exibir("Domínio: x " + pertence, explicacao)
     },
 
     /**
-     * Monta a imagem de uma função
-     * @param {string} pertence Intervalo de pertencimento
-     * @param {string} intervalo Se a função deve assumir algum intervalo diferente
-     * @param {string} explicacao Explicação
+     * [FUNÇÃO] Monta a imagem de uma função
+     * @param {string} pertence - Intervalo de pertencimento
+     * @param {string} intervalo - Se a função deve assumir algum intervalo diferente
+     * @param {string} explicacao - Explicação
+     * @since v6.1.0
      */
     imagem(pertence = "∈ ℝ", intervalo = ".", explicacao = "A função pode assumir qualquer y real") {
         Ui.exibir("Imagem: y " + pertence, explicacao + intervalo)
     },
 
     /**
-     * Monta a intercessão com o eixo x de uma função
-     * @param {string} raiz Raiz da função
-     * @param {string} explicacao Explicação
-     * @param {string} naoHa Mensagem quando não há interseção com o eixo x
+     * [FUNÇÃO] Monta a intercessão com o eixo x de uma função
+     * @param {string} raiz - Raiz da função
+     * @param {string} explicacao - Explicação
+     * @param {string} naoHa - Mensagem quando não há interseção com o eixo x
+     * @since v6.1.0
      */
     eixoX(raiz = "0", explicacao = "c", naoHa = "Não existe raiz real, portanto não há interseção com o eixo x.") {
         let intersecao = "Interseção com o eixo x: "
@@ -60,10 +64,11 @@ export const Helpers = {
     },
 
     /**
-     * Monta a intercessão com o eixo y de uma função
-     * @param {string} ponto Ponto
-     * @param {string} funcao Função
-     * @param {string} explicacao Explicação
+     * [FUNÇÃO] Monta a intercessão com o eixo y de uma função
+     * @param {string} ponto - Ponto
+     * @param {string} funcao - Função
+     * @param {string} explicacao - Explicação
+     * @since v6.1.0
      */
     eixoY(ponto = "0", funcao = "c", explicacao = "c") {
         Ui.exibir(
@@ -73,12 +78,13 @@ export const Helpers = {
     },
 
     /**
-     * Monta o valor de y para o x dado
-     * @param {number} coefA Coeficiente a
-     * @param {number} coefB Coeficiente b
-     * @param {number} coefC Coeficiente c
-     * @param {boolean} funcExp Exponencial
-     * @param {boolean} funcLog Logarítmica
+     * [FUNÇÃO] Monta o valor de y para o x dado
+     * @param {number} coefA - Coeficiente a
+     * @param {number} coefB - Coeficiente b
+     * @param {number} coefC - Coeficiente c
+     * @param {boolean} funcExp - Exponencial
+     * @param {boolean} funcLog - Logarítmica
+     * @since v6.1.0
      */
     valoresX(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
         let x = Ui.entrada("x = ", "", true),
@@ -109,12 +115,13 @@ export const Helpers = {
     },
 
     /**
-     * Monta o valor de x para o y dado
-     * @param {number} coefA Coeficiente a
-     * @param {number} coefB Coeficiente b
-     * @param {number} coefC Coeficiente c
-     * @param {boolean} funcExp Exponencial
-     * @param {boolean} funcLog Logarítmica
+     * [FUNÇÃO] Monta o valor de x para o y dado
+     * @param {number} coefA - Coeficiente a
+     * @param {number} coefB - Coeficiente b
+     * @param {number} coefC - Coeficiente c
+     * @param {boolean} funcExp - Exponencial
+     * @param {boolean} funcLog - Logarítmica
+     * @since v6.1.0
      */
     valoresY(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
         let y = Ui.entrada("y = ", "", true),
@@ -168,12 +175,13 @@ export const Helpers = {
     },
 
     /**
-     * Monta o estudo do sinal de uma função
-     * @param {number} coefA Coeficiente a
-     * @param {number} coefB Coeficiente b
-     * @param {number} coefC Coeficiente c
-     * @param {boolean} funcExp Exponencial
-     * @param {boolean} funcLog Logarítmica
+     * [FUNÇÃO] Monta o estudo do sinal de uma função
+     * @param {number} coefA - Coeficiente a
+     * @param {number} coefB - Coeficiente b
+     * @param {number} coefC - Coeficiente c
+     * @param {boolean} funcExp - Exponencial
+     * @param {boolean} funcLog - Logarítmica
+     * @since v6.1.0
      */
     sinal(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
         let operacoes = [">", "<"],
@@ -342,12 +350,13 @@ export const Helpers = {
     },
 
     /**
-     * Monta a equação de duas funções
-     * @param {boolean} polinomial Polinomial
-     * @param {number} coefA Coeficiente a
-     * @param {number} coefB Coeficiente b
-     * @param {number} coefC Coeficiente c
-     * @returns Operação futura
+     * [FUNÇÃO] Monta a equação de duas funções
+     * @param {boolean} polinomial - Polinomial
+     * @param {number} coefA - Coeficiente a
+     * @param {number} coefB - Coeficiente b
+     * @param {number} coefC - Coeficiente c
+     * @returns {number} - Operação futura
+     * @since v6.1.0
      */
     equacoes(polinomial = true, coefA = 0, coefB = 0, coefC = 0) {
         if (polinomial) {
@@ -375,10 +384,11 @@ export const Helpers = {
     },
 
     /**
-     * Monta a curva de uma função
-     * @param {number} coefA Coeficiente a
-     * @param {number} coefB Coeficiente b
-     * @param {boolean} polinomial Polinomial
+     * [FUNÇÃO] Monta a curva de uma função
+     * @param {number} coefA - Coeficiente a
+     * @param {number} coefB - Coeficiente b
+     * @param {boolean} polinomial - Polinomial
+     * @since v6.1.0
      */
     curva(coefA = 0, coefB = 0, polinomial = true) {
         if (!polinomial) {
@@ -405,13 +415,14 @@ export const Helpers = {
     },
 
     /**
-     * Calcula a raiz de uma função
-     * @param {number} coefA Coeficiente a
-     * @param {number} coefB Coeficiente b
-     * @param {number} coefC Coeficiente c
-     * @param {boolean} funcExp Exponencial
-     * @param {boolean} funcLog Logarítmica
-     * @returns Raiz
+     * [FUNÇÃO] Calcula a raiz de uma função
+     * @param {number} coefA - Coeficiente a
+     * @param {number} coefB - Coeficiente b
+     * @param {number} coefC - Coeficiente c
+     * @param {boolean} funcExp - Exponencial
+     * @param {boolean} funcLog - Logarítmica
+     * @returns {number} - Raiz
+     * @since v6.1.0
      */
     calcRaiz(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
         if (!funcExp && !funcLog) {
@@ -437,10 +448,11 @@ export const Helpers = {
     },
 
     /**
-     * Mostra a raiz de uma função
-     * @param {string} raiz Raiz
-     * @param {string} explicacao Explicação
-     * @param {string} naoHa Mensagem quando não há raiz
+     * [FUNÇÃO] Mostra a raiz de uma função
+     * @param {string} raiz - Raiz
+     * @param {string} explicacao - Explicação
+     * @param {string} naoHa - Mensagem quando não há raiz
+     * @since v6.1.0
      */
     exibRaiz(raiz = "0", explicacao = "c", naoHa = "") {
         let intersecao = "Raiz real: "
@@ -452,11 +464,12 @@ export const Helpers = {
     },
 
     /**
-     * Calcula o Delta de uma função
-     * @param {number} coefA Coeficiente a
-     * @param {number} coefB Coeficiente b
-     * @param {number} coefC Coeficiente c
-     * @returns Delta
+     * [FUNÇÃO] Calcula o Delta de uma função
+     * @param {number} coefA - Coeficiente a
+     * @param {number} coefB - Coeficiente b
+     * @param {number} coefC - Coeficiente c
+     * @returns {number[]} - Delta
+     * @since v6.1.0
      */
     calcDelta(coefA = 0, coefB = 0, coefC = 0) {
         let array = [coefB ** 2 - 4 * coefA * coefC]
@@ -473,12 +486,13 @@ export const Helpers = {
     },
 
     /**
-     * Exibe o Delta de uma função
-     * @param {number} delta Delta
-     * @param {string} menor Mensagem para Delta < 0
-     * @param {string} igual Mensagem para Delta = 0
-     * @param {string} maior Mensagem para Delta > 0
-     * @param {boolean} temY Se é (c - y)
+     * [FUNÇÃO] Exibe o Delta de uma função
+     * @param {number} delta - Delta
+     * @param {string} menor - Mensagem para Delta < 0
+     * @param {string} igual - Mensagem para Delta = 0
+     * @param {string} maior - Mensagem para Delta > 0
+     * @param {boolean} temY - Se é (c - y)
+     * @since v6.1.0
      */
     exibDelta(delta = 0, menor = "", igual = "", maior = "", temY = false) {
         if (delta < 0) {
@@ -491,20 +505,22 @@ export const Helpers = {
     },
 
     /**
-     * Calcula o vértice de uma função
-     * @param {number} coefA Coeficiente a
-     * @param {number} coefB Coeficiente b
-     * @param {number} delta Delta
-     * @returns Vértice
+     * [FUNÇÃO] Calcula o vértice de uma função
+     * @param {number} coefA - Coeficiente a
+     * @param {number} coefB - Coeficiente b
+     * @param {number} delta - Delta
+     * @returns {number[]} - Vértice
+     * @since v6.1.0
      */
     vertice(coefA = 0, coefB = 0, delta = 0) {
         return [Algebra.divisao(-coefB, 2 * coefA), Algebra.divisao(-delta, 4 * coefA)]
     },
 
     /**
-     * Vê se estourou o limite
-     * @param {number} limite Limite
-     * @returns Se estourou o limite
+     * [FUNÇÃO] Vê se estourou o limite
+     * @param {number} limite - Limite
+     * @returns {boolean} - Se estourou o limite
+     * @since v6.1.0
      */
     estourouLimite(limite = Config.limiteInteracoes) {
         let estourou = limite >= Config.limiteInteracoes
@@ -517,9 +533,24 @@ export const Helpers = {
         return estourou
     },
 
+    /**
+     * [FUNÇÃO] Calcula o período de uma função
+     * @param {number} coefC - Coeficiente c
+     * @returns {number} - Período
+     * @since v6.1.0
+     */
     calcPeriodo(coefC = 0) {
+        return Escrita.decimal(2 * Math.PI / Math.abs(coefC))
+    },
+
+    /**
+     * [FUNÇÃO] Exibe o período de uma função
+     * @param {number} coefC - Coeficiente c
+     * @since v6.1.0
+     */
+    exibPeriodo(coefC = 0) {
         if (coefC != 0) {
-            Ui.exibir("Período: " + Escrita.decimal(2 * Math.PI / Math.abs(coefC)), "Período = 2π / |c|")
+            Ui.exibir("Período: " + Helpers.calcPeriodo(coefC), "Período = 2π / |c|")
         } else {
             Ui.exibir("Período: ∞", "Se c = 0, a função é constante, então o período é infinito.")
         }

@@ -7,14 +7,15 @@ import { State } from "./state.js"
 import { Comandos } from "./comandos.js"
 
 /**
- * Objeto base para as funções envolvendo UI / UX e interação com o usuário
- * - Use as funções aqui para exibir mensagens, menus, prompts e outras interações. As mensagens são formatadas automaticamente conforme as configurações, então use a função "escrita.verificar" para formatar as mensagens antes de exibi-las.
+ * [UI] Objeto base para as funções envolvendo UI / UX e interação com o usuário
+ * - Use as funções aqui para exibir mensagens, menus, prompts e outras interações.
  */
 export const Ui = {
     /**
-     * Exibe um alert personalizado
-     * @param {string} mensagem Mensagem
-     * @param {string} explicacao Explicação
+     * [UI] Exibe um alert personalizado
+     * @param {string} mensagem - Mensagem
+     * @param {string} explicacao - Explicação
+     * @since v6.1.0
      */
     exibir(mensagem = "", explicacao = "") {
         if (Config.debug) {
@@ -30,10 +31,11 @@ export const Ui = {
     },
 
     /**
-     * Exibe um confirm personalizado
-     * @param {string} mensagem Mensagem
-     * @param {string} explicacao Explicação
-     * @returns Sim / Não
+     * [UI] Exibe um confirm personalizado
+     * @param {string} mensagem - Mensagem
+     * @param {string} explicacao - Explicação
+     * @returns {boolean} - Sim / Não
+     * @since v6.1.0
      */
     confirmar(mensagem = "", explicacao = "") {
         if (Config.debug) {
@@ -46,9 +48,10 @@ export const Ui = {
     },
 
     /**
-     * Exibe uma mensagem de erro
-     * @param {string} mensagem Mensagem
-     * @param {string} explicacao Explicação
+     * [UI] Exibe uma mensagem de erro
+     * @param {string} mensagem - Mensagem
+     * @param {string} explicacao - Explicação
+     * @since v6.1.0
      */
     erro(mensagem = "", explicacao = "") {
         if (Config.erros) {
@@ -57,10 +60,11 @@ export const Ui = {
     },
 
     /**
-     * Exibe uma mensagem de aviso
-     * @param {string} mensagem Mensagem
-     * @param {string} explicacao Explicação
-     * @param {boolean} tipo Tipo da mensagem
+     * [UI] Exibe uma mensagem de aviso
+     * @param {string} mensagem - Mensagem
+     * @param {string} explicacao - Explicação
+     * @param {boolean} tipo - Tipo da mensagem
+     * @since v6.1.0
      */
     aviso(mensagem = "", explicacao = "", tipo = false) {
         if (!tipo) {
@@ -73,10 +77,11 @@ export const Ui = {
     },
 
     /**
-     * Formata um menu paginado
+     * [UI] Formata um menu paginado
      * @param {string[]} opcoes Array com todas as opções possíveis
      * @param {number} pagina Página atual
-     * @returns Retorna a resposta, a página atual, as opções por página
+     * @returns {number[]} - Retorna a resposta, a página atual, as opções por página
+     * @since v6.1.0
      */
     menu(opcoes = ["---"], pagina = 1) {
         let resposta = 0,
@@ -147,12 +152,12 @@ export const Ui = {
     },
 
     /**
-     * Exibe um prompt personalizado e verifica ele
-     * @param {string} mensagem Mensagem
-     * @param {string} explicacao Explicação
-     * @param {boolean} numero true = número, false = string
-     * @param {number} casas Casas para arredondar (0 = sem casas)
-     * @returns Valor verificado
+     * [UI] Exibe um prompt personalizado e verifica ele
+     * @param {string} mensagem - Mensagem
+     * @param {string} explicacao - Explicação
+     * @param {boolean} numero - true = número, false = string
+     * @param {number} casas - Casas para arredondar (0 = sem casas)
+     * @returns {string | number} - Valor verificado
      */
     entrada(mensagem = "", explicacao = "", numero = false, casas = Config.casasDecimais, aceitaComandos = false) {
         let bruto = "",
@@ -217,13 +222,14 @@ export const Ui = {
     },
 
     /**
-     * Formata uma função
-     * @param {number | string} coefA Coeficiente a
-     * @param {number | string} coefB Coeficiente b
-     * @param {number | string} coefC Coeficiente c
-     * @param {boolean} funcExp Exponencial
-     * @param {boolean} funcLog Logarítmica
-     * @param {boolean} mostrar Mostrará a função ou não, baseado na configuração
+     * [UI] Formata uma função
+     * @param {string | number} coefA - Coeficiente a
+     * @param {string | number} coefB - Coeficiente b
+     * @param {string | number} coefC - Coeficiente c
+     * @param {boolean} funcExp - Exponencial
+     * @param {boolean} funcLog - Logarítmica
+     * @param {boolean} mostrar - Mostrará a função ou não, baseado na configuração
+     * @since v6.1.0
      */
     funcao(
         coefA = 0,
@@ -477,13 +483,13 @@ export const Ui = {
     },
 
     /**
-     * Pede ao usuário um valor entre o intervalo
-     * @param {string} mensagem Mensagem
-     * @param {string} explicacao Explicação
-     * @param {number} min Mínimo
-     * @param {number} max Máximo
-     * @param {number} casas Casas decimais
-     * @returns Um valor escolhido entre o intervalo
+     * [UI] Pede ao usuário um valor entre o intervalo
+     * @param {string} mensagem - Mensagem
+     * @param {string} explicacao - Explicação
+     * @param {number} min - Mínimo
+     * @param {number} max - Máximo
+     * @param {number} casas - Casas decimais
+     * @returns {number} - Um valor escolhido entre o intervalo
      */
     intervalo(mensagem = "", explicacao = "", min = 0, max = 1, casas = 0, aceitaComandos = false) {
         let valor = 0

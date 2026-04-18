@@ -25,14 +25,16 @@ let opcoesBase = [
 // opcoesTan = ["Assíntotas verticais", "Período"].concat(opcoesBase)
 
 /**
- * Objeto base para as funções envolvendo funções matemáticas, seus estudos e características
- * - Use as funções aqui para montar as funções constantes, afins, quadráticas, exponenciais e logarítmicas. As funções de escrita são usadas para exibir os resultados, então as mensagens são formatadas automaticamente conforme as configurações.
+ * [FUNÇÃO] Objeto base para as funções envolvendo funções matemáticas, seus estudos e características
+ * - Use as funções aqui para montar as funções constantes, afins, quadráticas, etc.
+ * @since v6.1.0
  */
 export const Analisar = {
     /**
-     * Monta uma função constante: ƒ(x) = c
-     * @param {number} coefC Coeficiente c da função constante
-     * @returns Retorna: [coefC]
+     * [FUNÇÃO] Monta uma função constante: ƒ(x) = c
+     * @param {number} coefC - Coeficiente c da função constante
+     * @returns {number[]} - Retorna: [coefC]
+     * @since v6.1.0
      */
     constante(coefC = State.globalC) {
         let opcao = 0,
@@ -115,10 +117,11 @@ export const Analisar = {
     },
 
     /**
-     * Monta uma função afim: ƒ(x) = bx + c
-     * @param {number} coefB Coeficiente b da função afim
-     * @param {number} coefC Coeficiente c da função afim
-     * @returns Retorna: [coefB, coefC]
+     * [FUNÇÃO] Monta uma função afim: ƒ(x) = bx + c
+     * @param {number} coefB - Coeficiente b da função afim
+     * @param {number} coefC - Coeficiente c da função afim
+     * @returns {number[]} - Retorna: [coefB, coefC]
+     * @since v6.1.0
      */
     afim(coefB = State.globalB, coefC = State.globalC) {
         let opcao = 0,
@@ -214,11 +217,12 @@ export const Analisar = {
     },
 
     /**
-     * Monta uma função quadrática: ƒ(x) = ax² + bx + c
-     * @param {number} coefA Coeficiente a da função quadrática
-     * @param {number} coefB Coeficiente b da função quadrática
-     * @param {number} coefC Coeficiente c da função quadrática
-     * @returns Retorna: [coefA, coefB, coefC]
+     * [FUNÇÃO] Monta uma função quadrática: ƒ(x) = ax² + bx + c
+     * @param {number} coefA - Coeficiente a da função quadrática
+     * @param {number} coefB - Coeficiente b da função quadrática
+     * @param {number} coefC - Coeficiente c da função quadrática
+     * @returns {number[]} - Retorna: [coefA, coefB, coefC]
+     * @since v6.1.0
      */
     quadratica(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let opcao = 0,
@@ -344,11 +348,12 @@ export const Analisar = {
     },
 
     /**
-     * Monta uma função exponencial: ƒ(x) = b × aˣ + c
-     * @param {number} coefA Coeficiente a da função exponencial
-     * @param {number} coefB Coeficiente b da função exponencial
-     * @param {number} coefC Coeficiente c da função exponencial
-     * @returns Retorna: [coefA, coefB, coefC]
+     * [FUNÇÃO] Monta uma função exponencial: ƒ(x) = b × aˣ + c
+     * @param {number} coefA - Coeficiente a da função exponencial
+     * @param {number} coefB - Coeficiente b da função exponencial
+     * @param {number} coefC - Coeficiente c da função exponencial
+     * @returns {number[]} - Retorna: [coefA, coefB, coefC]
+     * @since v6.1.0
      */
     exponencial(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let opcao = 0,
@@ -456,11 +461,12 @@ export const Analisar = {
     },
 
     /**
-     * Monta a função logarítmica: b × logₐ(x) + c
-     * @param {number} coefA Coeficiente a da função logarítmica
-     * @param {number} coefB Coeficiente b da função logarítmica
-     * @param {number} coefC Coeficiente c da função logarítmica
-     * @returns Retorna: [coefA, coefB, coefC]
+     * [FUNÇÃO] Monta a função logarítmica: b × logₐ(x) + c
+     * @param {number} coefA - Coeficiente a da função logarítmica
+     * @param {number} coefB - Coeficiente b da função logarítmica
+     * @param {number} coefC - Coeficiente c da função logarítmica
+     * @returns {number[]} - Retorna: [coefA, coefB, coefC]
+     * @since v6.1.0
      */
     logaritmica(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let opcao = 0,

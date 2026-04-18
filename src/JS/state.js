@@ -1,6 +1,7 @@
 /**
- * Estado incial do programa
+ * [CONFIG] Estado incial do programa
  * - Use os valores daqui para mudar o estado do programa
+ * @since v6.1.0
  */
 export const State = {
     manterTipo: false, // Mantem o state.tipo, e não pergunta ele de novo

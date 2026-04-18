@@ -4,12 +4,13 @@ import { Ui } from "./ui.js"
 import { Analisar } from "./analisar.js"
 
 /**
- * Objeto de testes do programa
+ * [DEBUG] Objeto de testes do programa
  * - Use as funções aqui para testar as funcionalidades do programa.
+ * @since v6.1.0
  */
 export const Teste = {
     /**
-     * Executa os testes do programa
+     * [DEBUG] Executa os testes do programa
      * @since v6.1.0
      */
     rodar() {
@@ -39,7 +40,7 @@ export const Teste = {
     },
 
     /**
-     * Testa a função constante com diferentes coeficientes
+     * [DEBUG] Testa a função constante com diferentes coeficientes
      * @since v6.1.0
      */
     constante() {
@@ -50,7 +51,7 @@ export const Teste = {
     },
 
     /**
-     * Testa a função afim com diferentes coeficientes
+     * [DEBUG] Testa a função afim com diferentes coeficientes
      * @since v6.1.0
      */
     afim() {
@@ -63,7 +64,7 @@ export const Teste = {
     },
 
     /**
-     * Testa a função quadrática com diferentes coeficientes
+     * [DEBUG] Testa a função quadrática com diferentes coeficientes
      * @since v6.1.0
      */
     quadratica() {
@@ -76,7 +77,7 @@ export const Teste = {
     },
 
     /**
-     * Testa a função exponencial com diferentes coeficientes
+     * [DEBUG] Testa a função exponencial com diferentes coeficientes
      * @since v6.1.0
      */
     exponencial() {
@@ -91,7 +92,7 @@ export const Teste = {
     },
 
     /**
-     * Testa a função logarítmica com diferentes coeficientes
+     * [DEBUG] Testa a função logarítmica com diferentes coeficientes
      * @since v6.1.0
      */
     logaritmica() {
@@ -107,7 +108,7 @@ export const Teste = {
     },
 
     /**
-     * Testa as funções auxiliares do programa (arredondamento, divisão, logaritmos, delta, vértice, etc.)
+     * [DEBUG] Testa as funções auxiliares do programa (arredondamento, divisão, logaritmos, delta, vértice, etc.)
      * @since v6.1.0
      */
     contas() {

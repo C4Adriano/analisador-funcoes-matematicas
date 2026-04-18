@@ -2,26 +2,29 @@ import { Algebra } from "./algebra.js"
 import { Config, CONFIG_PADRAO } from "./config.js"
 
 /**
- * Objeto base para as funções envolvendo escrita e conversão de texto
- * - Use as funções aqui para converter os textos para o formato desejado, como sem acentos ou sem Unicode. As funções de escrita também são usadas para exibir os resultados, então as conversões são feitas automaticamente conforme as configurações.
+ * [TEXTO] Objeto base para as funções envolvendo escrita e conversão de texto
+ * - Use as funções aqui para converter os textos para o formato desejado, como sem acentos ou sem Unicode.
+ * @since v6.1.0
  */
 export const Escrita = {
     /**
-     * [SUBSTITUIÇÃO] - Substituição de strings
-     * @param {string} texto Texto
-     * @param {string} de O que será removido
-     * @param {string} para O que será colocado no lugar
-     * @returns Texto convertido
+     * [TEXTO] Substituição de strings
+     * @param {string} texto - Texto
+     * @param {string} de - O que será removido
+     * @param {string} para - O que será colocado no lugar
+     * @returns {string} - Texto convertido
+     * @since v6.1.0
      */
     substituir(texto = "", de = "", para = "") {
         return String(texto).split(de).join(para)
     },
 
     /**
-     * [SUBSTITUIÇÃO] - Substituição de várias strings
-     * @param {string} texto Texto
-     * @param {string[][]} lista Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
-     * @returns Texto convertido
+     * [TEXTO] Substituição de várias strings
+     * @param {string} texto - Texto
+     * @param {string[][]} lista - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
+     * @returns {string} - Texto convertido
+     * @since v6.1.0
      */
     substituirGrupo(texto = "", lista = [["", ""]]) {
         for (let i = 0; i < lista.length; i++) {
@@ -33,9 +36,10 @@ export const Escrita = {
     },
 
     /**
-     * [GRAFIA] - Substituição da grafia de Unicode
-     * @param {string} texto Texto
-     * @returns Texto convertido
+     * [TEXTO] Substituição da grafia de Unicode
+     * @param {string} texto - Texto
+     * @returns {string} - Texto convertido
+     * @since v6.1.0
      */
     semUnicode(texto = "") {
         let trocas = [
@@ -207,7 +211,7 @@ export const Escrita = {
     },
 
     /**
-     * [GRAFIA] - Substituição da grafia de acentos
+     * [TEXTO] Substituição da grafia de acentos
      * @param {string} texto Texto
      * @returns Texto convertido
      */
@@ -296,9 +300,10 @@ export const Escrita = {
     },
 
     /**
-     * [CAPITALIZAÇÃO] - Conversão para capitalização
-     * @param {string} texto Texto
-     * @returns Texto convertido
+     * [TEXTO] Conversão para capitalização
+     * @param {string} texto - Texto
+     * @returns {string} - Texto convertido
+     * @since v6.1.0
      */
     capitalizadas(texto = "") {
         let resultado = ""
@@ -411,9 +416,10 @@ export const Escrita = {
     },
 
     /**
-     * [CAIXA ALTA/BAIXA] - Conversão para minúsculas
-     * @param {string} texto Texto
-     * @returns Texto convertido
+     * [TEXTO] Conversão para minúsculas
+     * @param {string} texto - Texto
+     * @returns {string} - Texto convertido
+     * @since v6.1.0
      */
     minusculas(texto = "") {
         texto = texto.toLowerCase()
@@ -424,9 +430,10 @@ export const Escrita = {
     },
 
     /**
-     * [CAIXA ALTA/BAIXA] - Conversão para maiúsculas
-     * @param {string} texto Texto
-     * @returns Texto convertido
+     * [TEXTO] Conversão para maiúsculas
+     * @param {string} texto - Texto
+     * @returns {string} - Texto convertido
+     * @since v6.1.0
      */
     maiusculas(texto = "") {
         texto = texto.toUpperCase()
@@ -437,12 +444,13 @@ export const Escrita = {
     },
 
     /**
-     * [SEPARADORES] - Manipulação de separadores decimais
-     * @param {string | number} numero Número
-     * @param {boolean} inverter Para inverter e não afetar nas contas
-     * @param {boolean} arredondar Arredondar
-     * @param {number} casas Casas decimais
-     * @returns Número convertido
+     * [TEXTO] Manipulação de separadores decimais
+     * @param {string | number} numero - Número
+     * @param {boolean} inverter - Para inverter e não afetar nas contas
+     * @param {boolean} arredondar - Arredondar
+     * @param {number} casas - Casas decimais
+     * @returns {string} - Número convertido
+     * @since v6.1.0
      */
     decimal(numero = 0, inverter = false, arredondar = true, casas = Config.casasDecimais) {
         numero = String(numero)
@@ -466,18 +474,20 @@ export const Escrita = {
     },
 
     /**
-     * [MULTIPLICAÇÃO] - Simplificação de símbolos de multiplicação
-     * @param {string} texto Texto
-     * @returns Texto convertido
+     * [TEXTO] Simplificação de símbolos de multiplicação
+     * @param {string} texto - Texto
+     * @returns {string} - Texto convertido
+     * @since v6.1.0
      */
     multiSimples(texto = "") {
         return Escrita.substituir(texto, " · ", "")
     },
 
     /**
-     * [TRADUÇÃO] - Conversão de texto para a linguagem configurada
-     * @param {string} texto Texto
-     * @returns Texto convertido
+     * [TEXTO] Tradução de texto para a linguagem configurada
+     * @param {string} texto - Texto
+     * @returns {string} - Texto traduzido
+     * @since v6.1.0
      */
     traduzir(texto = "") {
         texto = Escrita.minusculas(texto)
@@ -905,6 +915,11 @@ export const Escrita = {
         return texto
     },
 
+    /**
+     * [TEXTO] Tradução de texto sem Unicode para a linguagem configurada
+     * @param {string} texto - Texto
+     * @returns {string} - Texto traduzido
+     */
     traduzirUnicode(texto = "") {
         let trocas = [
             ["alfa", "alpha"],
@@ -947,10 +962,11 @@ export const Escrita = {
     },
 
     /**
-     * [FORMATAÇÃO] - Formatação geral de mensagens
-     * @param {string} mensagem Mensagem
-     * @param {string} explicacao Mensagem para a explicação
-     * @returns Mensagem formatada
+     * [TEXTO] Formatação geral de mensagens
+     * @param {string} mensagem - Mensagem
+     * @param {string} explicacao - Mensagem para a explicação
+     * @returns {string} - Mensagem formatada
+     * @since v6.1.0
      */
     verificar(mensagem = "", explicacao = "") {
         // === ADIÇÃO DE EXPLICAÇÕES ===
@@ -1000,9 +1016,10 @@ export const Escrita = {
     },
 
     /**
-     * [ÍNDICES] - Conversão para sobrescrito
-     * @param {string | number} texto Número
-     * @returns Número convertido
+     * [TEXTO] Conversão para sobrescrito
+     * @param {string | number} texto - Número
+     * @returns {string} - Número convertido
+     * @since v6.1.0
      */
     expoente(texto = "") {
         // Se Unicode está desativado, retorna o texto com um símbolo de sobrescrito simples
@@ -1032,9 +1049,10 @@ export const Escrita = {
     },
 
     /**
-     * [ÍNDICES] - Conversão para subscrito
-     * @param {string | number} texto Número
-     * @returns Número subscrito
+     * [TEXTO] Conversão para subscrito
+     * @param {string | number} texto - Número
+     * @returns {string} - Número subscrito
+     * @since v6.1.0
      */
     base(texto = "") {
         // Se Unicode está desativado, retorna o texto com um símbolo de subscrito simples
@@ -1064,10 +1082,10 @@ export const Escrita = {
     },
 
     /**
-     * [FORMATAÇÃO] - Formatação de valores booleanos
-     * Formata um valor
-     * @param {boolean | string | number} valor Valor
-     * @returns "Sim" ou "Não" se for boolean, ou a string do valor
+     * [TEXTO] Formatação de valores booleanos
+     * @param {boolean | string | number} valor - Valor
+     * @returns {string} - Valor formatado
+     * @since v6.1.0
      */
     formatar(valor = true) {
         if (valor == true || valor == false) {
@@ -1078,11 +1096,11 @@ export const Escrita = {
     },
 
     /**
-     * [CONFIGURAÇÕES] - Formatação de itens de configuração
-     * Formata um item para as configurações
-     * @param {string} mensagem Mensagem
-     * @param {string} nome Nome em "config"
-     * @returns Mensagem formatada
+     * [TEXTO] Formatação de itens de configuração
+     * @param {string} mensagem - Mensagem
+     * @param {string} nome - Nome em "config"
+     * @returns {string} - Mensagem formatada
+     * @since v6.1.0
      */
     itemConfig(mensagem = "", nome = "") {
         return (

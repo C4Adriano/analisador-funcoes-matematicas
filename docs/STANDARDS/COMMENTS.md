@@ -21,12 +21,16 @@
 // ─── Tipos disponíveis ───────────────────────────────────────────────────────
 
 /**
-  [ALGEBRA]   - Cálculos, coeficientes e matemática pura
-  [ANALISE]   - Parsing e interpretação da entrada do usuário
-  [CONFIG]    - Configurações do sistema e seus valores padrão
-  [UI]        - Renderização e interação com a tela
-  [TEXTO]     - Strings exibidas ao usuário e traduções PT-BR/EN
-  [DEBUG]     - Ferramentas de teste e depuração
+ * [TEXTO] - Tudo que mexe com Strings
+ * [NUMÉRICO] - Tudo que mexe com números
+ * [FUNÇÃO] - Tudo que mexe com funções matemáticas
+ * [JS] - Tudo que o usuário não vê (contas, variáveis, etc.)
+ * [UI] - Tudo que o usuário vê (entradas, confirmações, alertas, etc.)
+ * [CONFIG] - Tudo relacionado às configurações do Analisador
+ * [ERRO] - Tudo relacionado a erros
+ * [DEBUG] - Tudo relacionado a depuração
+
+ * - A base de todos é: entra e sai o mesmo tipo. Por exemplo: [NUMÉRICO] recebe números e retorna números, [TEXTO] recebe texto e retorna texto, etc.
 
   @experimental - Tag adicional para código ainda não finalizado
 */

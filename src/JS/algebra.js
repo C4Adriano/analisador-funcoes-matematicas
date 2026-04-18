@@ -6,15 +6,17 @@ import { State } from "./state.js"
 import { Ui } from "./ui.js"
 
 /**
- * Objeto base para as funções envolvendo algebra
- * - Use as funções aqui para fazer cálculos, pedir variáveis, pontos e outras coisas relacionadas a álgebra. As funções de escrita são usadas para exibir os resultados, então as mensagens são formatadas automaticamente conforme as configurações.
+ * [NUMÉRICO] Objeto base para as funções envolvendo algebra
+ * - Use as funções daqui para fazer cálculos, arredondar números, pedir variáveis e pontos, etc.
+ * @since v6.1.0
  */
 export const Algebra = {
     /**
-     * Arredonda um número
-     * @param {number} numero Número
-     * @param {number} casas Casas decimais
-     * @returns Número arredondado
+     * [NUMÉRICO] Arredonda um número
+     * @param {number} numero - Número
+     * @param {number} casas - Casas decimais
+     * @returns {number} - Número arredondado
+     * @since v6.1.0
      */
     arredonda(numero = 0, casas = Config.casasDecimais) {
         numero = Escrita.decimal(numero, true)
@@ -30,9 +32,10 @@ export const Algebra = {
     },
 
     /**
-     * Pede uma variável
-     * @param {string} nome Nome da variável
-     * @returns Se a variável tiver valor numérico, retorna o valor. Se não, retorna o nome
+     * [UI] Pede uma variável
+     * @param {string} nome - Nome da variável
+     * @returns {string | number} - Se a variável tiver valor numérico, retorna o valor. Se não, retorna o nome
+     * @since v6.1.0
      */
     variaveis(nome = "x") {
         let valor = Ui.entrada(nome + " = ", "Digite “" + nome + "” caso queira que “" + nome + "” seja uma incógnita.")
@@ -45,9 +48,10 @@ export const Algebra = {
     },
 
     /**
-     * Pede um(ns) ponto(s)
-     * @param {number} tipo Quantos pontos vão ser pedidos (1, 2 ou 3)
-     * @returns Um array com os pontos, na ordem: [x₁, y₁, x₂, y₂, x₃, y₃]
+     * [UI] Pede um(ns) ponto(s)
+     * @param {number} tipo - Quantos pontos vão ser pedidos (1, 2 ou 3)
+     * @returns {number[]} - Um array com os pontos, na ordem: [x₁, y₁, x₂, y₂, x₃, y₃]
+     * @since v6.1.0
      */
     ponto(tipo = 1) {
         let array = [],
@@ -79,9 +83,10 @@ export const Algebra = {
     },
 
     /**
-     * Vê se as funções têm pontos de encontro
-     * @param {number[]} func1 Primeira função [a, b, c]
-     * @param {number[]} func2 Segunda função [a, b, c]
+     * [UI] Vê se as funções têm pontos de encontro
+     * @param {number[]} func1 - Primeira função [a, b, c]
+     * @param {number[]} func2 - Segunda função [a, b, c]
+     * @since v6.1.0
      */
     equacoes(func1 = [0, 0, 0], func2 = [0, 0, 0]) {
         let coefA = func1[0] - func2[0],
@@ -123,13 +128,14 @@ export const Algebra = {
     },
 
     /**
-     * Descobre quais são as incógnitas
-     * @param {string | number} coefA Coeficiente a
-     * @param {string | number} coefB Coeficiente b
-     * @param {string | number} coefC Coeficiente c
-     * @param {boolean} funcExp Se é exponencial
-     * @param {boolean} funcLog Se é logarítmica
-     * @returns Retorna os coeficientes em formato de array numérico [a, b, c]
+     * [NUMÉRICO] Descobre quais são as incógnitas
+     * @param {string | number} coefA - Coeficiente a
+     * @param {string | number} coefB - Coeficiente b
+     * @param {string | number} coefC - Coeficiente c
+     * @param {boolean} funcExp - Se é exponencial
+     * @param {boolean} funcLog - Se é logarítmica
+     * @returns {number[]} - Retorna os coeficientes em formato de array numérico [a, b, c]
+     * @since v6.1.0
      */
     incognita(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, tipo = 0) {
         let repetir = false,
@@ -489,11 +495,12 @@ export const Algebra = {
     },
 
     /**
-     * Log de x na base
-     * @param {number} x Número
-     * @param {number} base Base
-     * @param {number} precisao Casas decimais
-     * @returns Resultado
+     * [NUMÉRICO] Log de x na base
+     * @param {number} x - Número
+     * @param {number} base - Base
+     * @param {number} precisao - Casas decimais
+     * @returns {number} - Resultado
+     * @since v6.1.0
      */
     log(x = 0, base = Math.E, precisao = Config.logPrecisao) {
         let y = x > 1 ? 1 : -1,
@@ -538,10 +545,11 @@ export const Algebra = {
     },
 
     /**
-     * Log de x na base E
-     * @param {number} x Número
-     * @param {number} precisao Casas decimais
-     * @returns Resultado
+     * [NUMÉRICO] Log de x na base E
+     * @param {number} x - Número
+     * @param {number} precisao - Casas decimais
+     * @returns {number} - Resultado
+     * @since v6.1.0
      */
     ln(x = 0, precisao = Config.logPrecisao) {
         let y = x > 1 ? 1 : -1,
@@ -570,12 +578,13 @@ export const Algebra = {
     },
 
     /**
-     * Divide dois números
-     * @param {number} numerador Parte de cima da fração
-     * @param {number} denominador Parte de baixo da fração
-     * @param {boolean} arredondar Se irá arredondar
-     * @param {number} precisao Precisão do arredondamento
-     * @returns a/b
+     * [NUMÉRICO] Divide dois números
+     * @param {number} numerador - Parte de cima da fração
+     * @param {number} denominador - Parte de baixo da fração
+     * @param {boolean} arredondar - Se irá arredondar
+     * @param {number} precisao - Precisão do arredondamento
+     * @returns {number} - Resultado
+     * @since v6.1.0
      */
     divisao(numerador = 0, denominador = 1, arredondar = true, precisao = Config.divPrecisao) {
         let resultado = 0

@@ -1,14 +1,15 @@
 import { Ui } from "./ui.js"
 
 /**
- * Mensagens de erro padronizadas do programa
+ * [ERRO] Mensagens de erro padronizadas do programa
  * - Use as funções aqui para exibir erros ao usuário. Nunca chame ui.erro() diretamente
+ * @since v6.1.0
  */
 export const Erro = {
     /**
-     * Exibe um erro de valor fora do intervalo permitido
-     * @param {number} min Valor mínimo permitido
-     * @param {number} max Valor máximo permitido
+     * [ERRO] Exibe um erro de valor fora do intervalo permitido
+     * @param {number} min - Valor mínimo permitido
+     * @param {number} max - Valor máximo permitido
      * @since v6.1.0
      */
     intervalo(min = 0, max = 1) {
@@ -23,8 +24,8 @@ export const Erro = {
     },
 
     /**
-     * Exibe um erro de divisão por zero
-     * @param {string} motivo Motivo da divisão por zero, para exibir uma mensagem mais específica (opcional)
+     * [ERRO] Exibe um erro de divisão por zero
+     * @param {string} motivo - Motivo da divisão por zero, para exibir uma mensagem mais específica (opcional)
      * @since v6.1.0
      */
     divZero(motivo = "") {
@@ -35,7 +36,7 @@ export const Erro = {
     },
 
     /**
-     * Exibe um erro de limite de interações estourado
+     * [ERRO] Exibe um erro de limite de interações estourado
      * @since v6.1.0
      */
     limiteEstourado() {
@@ -43,8 +44,8 @@ export const Erro = {
     },
 
     /**
-     * Exibe um erro de função que se torna constante pelos coeficientes dados
-     * @param {string} tipo Tipo
+     * [ERRO] Exibe um erro de função que se torna constante pelos coeficientes dados
+     * @param {string} tipo - Tipo
      * @since v6.1.0
      */
     funcaoConstante(tipo = "") {
@@ -52,8 +53,8 @@ export const Erro = {
     },
 
     /**
-     * Exibe um erro de função inválida pelos coeficientes dados
-     * @param {string} tipo Tipo
+     * [ERRO] Exibe um erro de função inválida pelos coeficientes dados
+     * @param {string} tipo - Tipo
      * @since v6.1.0
      */
     funcaoInvalida(tipo = "") {
@@ -61,9 +62,9 @@ export const Erro = {
     },
 
     /**
-     * Exibe um erro de logaritmo inválido
-     * @param {string} tipo Tipo de logaritmo (log, ln, etc.), para exibir uma mensagem mais específica (opcional)
-     * @param {string} motivo Motivo do erro, para exibir uma mensagem mais específica (opcional)
+     * [ERRO] Exibe um erro de logaritmo inválido
+     * @param {string} tipo - Tipo de logaritmo (log, ln, etc.), para exibir uma mensagem mais específica (opcional)
+     * @param {string} motivo - Motivo do erro, para exibir uma mensagem mais específica (opcional)
      * @since v6.1.0
      */
     logInvalido(tipo = "log", motivo = "") {

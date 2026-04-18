@@ -5,14 +5,15 @@ import { Ui } from "./ui.js"
 import { Teste } from "./teste.js"
 
 /**
- * Processamento de comandos do usuário
+ * [JS] Processamento de comandos do usuário
  * - Use o comando "/help" para ver todos os comandos disponíveis
+ * @since v6.1.0
  */
 export const Comandos = {
     /**
-     * Processa um comando slash
-     * @param {string} bruto Texto digitado pelo usuário
-     * @returns {string | null} Ação a executar, ou null se não for comando
+     * [JS] Processa um comando slash
+     * @param {string} bruto - Texto digitado pelo usuário
+     * @returns {string | null} - Ação a executar, ou null se não for comando
      * @since v6.1.0
      */
     processar(bruto = "") {
@@ -51,26 +52,33 @@ export const Comandos = {
         return cmds[canonico].acao(arg, partes)
     },
 
-    levenshtein(a, b) {
-        let linhas = b.length + 1,
-            colunas = a.length + 1,
+    /**
+     * [JS] Calcula a distância de Levenshtein entre duas strings
+     * @param {string} errado - A string digitada pelo usuário
+     * @param {string} correto - A string de um comando conhecido
+     * @returns {number}
+     * @since v6.1.0
+     */
+    levenshtein(errado = "", correto = "") {
+        let linhas = correto.length + 1,
+            colunas = errado.length + 1,
             matriz = [],
-            i = 0,
-            j = 0
+            linha = 0,
+            coluna = 0
 
-        for (i = 0; i < linhas; i++) {
-            matriz[i] = [i]
+        for (linha = 0; linha < linhas; linha++) {
+            matriz[linha] = [linha]
         }
-        for (j = 0; j < colunas; j++) {
-            matriz[0][j] = j
+        for (coluna = 0; coluna < colunas; coluna++) {
+            matriz[0][coluna] = coluna
         }
 
-        for (i = 1; i < linhas; i++) {
-            for (j = 1; j < colunas; j++) {
-                if (b[i - 1] === a[j - 1]) {
-                    matriz[i][j] = matriz[i - 1][j - 1]
+        for (linha = 1; linha < linhas; linha++) {
+            for (coluna = 1; coluna < colunas; coluna++) {
+                if (correto[linha - 1] == errado[coluna - 1]) {
+                    matriz[linha][coluna] = matriz[linha - 1][coluna - 1]
                 } else {
-                    matriz[i][j] = 1 + Math.min(matriz[i - 1][j], matriz[i][j - 1], matriz[i - 1][j - 1])
+                    matriz[linha][coluna] = 1 + Math.min(matriz[linha - 1][coluna], matriz[linha][coluna - 1], matriz[linha - 1][coluna - 1])
                 }
             }
         }
@@ -78,6 +86,12 @@ export const Comandos = {
         return matriz[linhas - 1][colunas - 1]
     },
 
+    /**
+     * [JS] Sugere um comando baseado no digitado pelo usuário usando distância de Levenshtein
+     * @param {string} digitado - O digitado pelo usuário
+     * @returns {object} - A sugestão de comando
+     * @since v6.1.0
+     */
     sugerirCmd(digitado = "") {
         const LIMITE = 3
         let cmds = Comandos.listaCmds(),
@@ -107,6 +121,11 @@ export const Comandos = {
         return { tipo: "desconhecido", canonico: "", distancia: -1 }
     },
 
+    /**
+     * [JS] Retorna a lista de comandos disponíveis
+     * @returns {object} - Lista de comandos com suas descrições, variações e ações
+     * @since v6.1.0
+     */
     listaCmds() {
         return {
             ajuda: {
@@ -325,6 +344,12 @@ export const Comandos = {
         }
     },
 
+    /**
+     * [JS] Resolve um comando específico para seu nome canônico
+     * @param {string} especifico - Comando específico
+     * @returns {string | null} - Nome canônico do comando, ou null se não for encontrado
+     * @since v6.1.0
+     */
     resolverCmd(especifico = "") {
         let cmds = Comandos.listaCmds(),
             chavesCmd = Object.keys(cmds),
@@ -341,6 +366,12 @@ export const Comandos = {
         return cmds[canonico] != undefined ? canonico : null
     },
 
+    /**
+     * [JS] Converte um texto em um valor booleano
+     * @param {string} texto - Texto
+     * @returns {boolean | null} - Se é parecido com um valor booeano verdadeiro, falso ou se não é reconhecido
+     * @since v6.1.0
+     */
     parseBool(texto = "") {
         if (["true", "1", "sim", "yes", "on", "ativo"].includes(texto)) {
             return true
@@ -351,6 +382,12 @@ export const Comandos = {
         return null
     },
 
+    /**
+     * [JS] Exibe ajuda sobre um comando específico
+     * @param {string} especifico - Específico
+     * @returns {boolean | null} - Se o comando foi encontrado
+     * @since v6.1.0
+     */
     ajuda(especifico = "") {
         let cmds = Comandos.listaCmds()
 
@@ -401,7 +438,7 @@ export const Comandos = {
     },
 
     /**
-     * Exibe a versão do programa
+     * [JS] Exibe a versão do programa
      * @returns {null}
      * @since v6.1.0
      */
@@ -411,8 +448,9 @@ export const Comandos = {
     },
 
     /**
-     * Altera uma configuração do programa
-     * @param {string} nome Nome em config
+     * [JS] Altera uma configuração do programa
+     * @param {string} nome - Nome da configuração
+     * @param {any} valor - Novo valor para a configuração
      * @returns {null}
      * @since v6.1.0
      */
@@ -440,8 +478,8 @@ export const Comandos = {
     },
 
     /**
-     * Retorna uma lista com os nomes dos comandos disponíveis
-     * @returns {string[]}
+     * [JS] Retorna uma lista com os nomes dos comandos disponíveis
+     * @returns {string[]} - Lista de nomes canônicos dos comandos disponíveis
      * @since v6.1.0
      */
     nomes() {

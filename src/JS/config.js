@@ -1,6 +1,7 @@
 /**
- * Configurações do programa
+ * [CONFIG] Configurações do programa
  * - Edite os valores aqui para mudar os valores padrões das configurações. Porém tente não ultrapassar os limites ou alterar os tipos dos valores
+ * @since v6.1.0
  */
 export const Config = {
     linguagem: "en", // Linguagem para as mensagens do programa (em construção, por enquanto só pt-br / en)
@@ -28,7 +29,8 @@ export const Config = {
 }
 
 /**
- * Carrega as configurações salvas no localStorage (se existirem)
+ * [CONFIG] Carrega as configurações salvas no localStorage (se existirem)
+ * @since v6.1.0
  */
 export function carregarConfig() {
     let salvo = localStorage.getItem("config"),
@@ -57,7 +59,8 @@ export function carregarConfig() {
 }
 
 /**
- * Salva as configurações atuais no localStorage
+ * [CONFIG] Salva as configurações atuais no localStorage
+ * @since v6.1.0
  */
 export function salvarConfig() {
     localStorage.setItem("config", JSON.stringify(Config))
@@ -66,7 +69,8 @@ export function salvarConfig() {
 }
 
 /**
- * Remove as configurações salvas no localStorage, restaurando os padrões
+ * [CONFIG] Remove as configurações salvas no localStorage, restaurando os padrões
+ * @since v6.1.0
  */
 export function resetarConfig() {
     localStorage.removeItem("config")
@@ -78,11 +82,13 @@ export function resetarConfig() {
 }
 
 /**
- * Configurações padrão do programa (para restaurar as configurações)
+ * [CONFIG] Configurações padrão do programa (para restaurar as configurações)
+ * @since v6.1.0
  */
 export const CONFIG_PADRAO = JSON.parse(JSON.stringify(Config))
 
 /**
- * Versão do programa (MAJOR.MINOR.PATCH)
+ * [CONFIG] Versão do programa (MAJOR.MINOR.PATCH)
+ * @since v6.1.0
  */
 export const VERSAO = "v6.1.1"
