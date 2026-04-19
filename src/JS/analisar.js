@@ -70,7 +70,7 @@ export const Analisar = {
 
                 // Interseção com o eixo x
                 else if (opcao == 3) {
-                    Helpers.eixoX("0", coefC)
+                    Helpers.eixoX(0, coefC)
                 }
 
                 // Interseção com o eixo y
@@ -568,7 +568,7 @@ export const Analisar = {
             menuResp = [0, ""]
 
         // Mostra
-        ui.funcao(coefA, coefB, coefC, false, false, 1)
+        Ui.funcao(coefA, coefB, coefC, false, false, 1)
     },
 
     cosseno(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
@@ -577,7 +577,7 @@ export const Analisar = {
             menuResp = [0, ""]
 
         // Mostra
-        ui.funcao(coefA, coefB, coefC, false, false, 2)
+        Ui.funcao(coefA, coefB, coefC, false, false, 2)
     },
 
     tangente(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
@@ -586,6 +586,6 @@ export const Analisar = {
             menuResp = [0, ""]
 
         // Mostra
-        ui.funcao(coefA, coefB, coefC, false, false, 3)
+        Ui.funcao(coefA, coefB, coefC, false, false, 3)
     }, */
 }

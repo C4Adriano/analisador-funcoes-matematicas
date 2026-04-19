@@ -1083,7 +1083,7 @@ export const Escrita = {
 
     /**
      * [TEXTO] Formatação de valores booleanos
-     * @param {boolean | string | number} valor - Valor
+     * @param {string | number | boolean} valor - Valor
      * @returns {string} - Valor formatado
      * @since v6.1.0
      */

@@ -34,15 +34,15 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Monta a intercessão com o eixo x de uma função
-     * @param {string} raiz - Raiz da função
+     * @param {number} raiz - Raiz
      * @param {string} explicacao - Explicação
      * @param {string} naoHa - Mensagem quando não há interseção com o eixo x
      * @since v6.1.0
      */
-    eixoX(raiz = "0", explicacao = "c", naoHa = "Não existe raiz real, portanto não há interseção com o eixo x.") {
+    eixoX(raiz = 0, explicacao = "c", naoHa = "Não existe raiz real, portanto não há interseção com o eixo x.") {
         let intersecao = "Interseção com o eixo x: "
 
-        if (raiz == "0") {
+        if (raiz == 0) {
             // Constante
             if (explicacao == 0) {
                 // Se c = 0, a função é nula, então existe infinitas raízes
@@ -65,12 +65,12 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Monta a intercessão com o eixo y de uma função
-     * @param {string} ponto - Ponto
+     * @param {string | number} ponto - Ponto
      * @param {string} funcao - Função
      * @param {string} explicacao - Explicação
      * @since v6.1.0
      */
-    eixoY(ponto = "0", funcao = "c", explicacao = "c") {
+    eixoY(ponto = 0, funcao = "c", explicacao = "c") {
         Ui.exibir(
             "Interseção com o eixo y: " + (ponto != "∄" ? "(0, " + Escrita.decimal(ponto) + ")" : "∄"),
             "Como y = " + funcao + (ponto != "∄" ? ", o ponto é sempre (0, " + explicacao + ")" : explicacao),
@@ -454,7 +454,7 @@ export const Helpers = {
      * @param {string} naoHa - Mensagem quando não há raiz
      * @since v6.1.0
      */
-    exibRaiz(raiz = "0", explicacao = "c", naoHa = "") {
+    exibRaiz(raiz = 0, explicacao = "c", naoHa = "") {
         let intersecao = "Raiz real: "
         if (isNaN(raiz)) {
             Ui.exibir(intersecao + "∄! x ∈ ℝ", naoHa)

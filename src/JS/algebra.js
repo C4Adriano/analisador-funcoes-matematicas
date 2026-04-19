@@ -502,7 +502,7 @@ export const Algebra = {
      * @returns {number} - Resultado
      * @since v6.1.0
      */
-    log(x = 0, base = Math.E, precisao = Config.logPrecisao) {
+    log(x = 1, base = Math.E, precisao = Config.logPrecisao) {
         let y = x > 1 ? 1 : -1,
             numero = 0,
             delta = 0,
@@ -551,7 +551,7 @@ export const Algebra = {
      * @returns {number} - Resultado
      * @since v6.1.0
      */
-    ln(x = 0, precisao = Config.logPrecisao) {
+    ln(x = 1, precisao = Config.logPrecisao) {
         let y = x > 1 ? 1 : -1,
             base = Math.E,
             delta = Algebra.divisao(base ** y - x, base ** y, false)
