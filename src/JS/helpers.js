@@ -540,7 +540,7 @@ export const Helpers = {
      * @since v6.1.0
      */
     calcPeriodo(coefC = 0) {
-        return Escrita.decimal(2 * Math.PI / Math.abs(coefC))
+        return Escrita.decimal((2 * Math.PI) / Math.abs(coefC))
     },
 
     /**

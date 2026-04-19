@@ -78,7 +78,9 @@ export const Comandos = {
                 if (correto[linha - 1] == errado[coluna - 1]) {
                     matriz[linha][coluna] = matriz[linha - 1][coluna - 1]
                 } else {
-                    matriz[linha][coluna] = 1 + Math.min(matriz[linha - 1][coluna], matriz[linha][coluna - 1], matriz[linha - 1][coluna - 1])
+                    matriz[linha][coluna] =
+                        1 +
+                        Math.min(matriz[linha - 1][coluna], matriz[linha][coluna - 1], matriz[linha - 1][coluna - 1])
                 }
             }
         }
