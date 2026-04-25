@@ -75,9 +75,9 @@ export function saveConfig() {
 export function resetConfig() {
     localStorage.removeItem("config")
 
-    let chaves = Object.keys(DEFAULT_CONFIG)
-    for (let i = 0; i < chaves.length; i++) {
-        Config[chaves[i]] = DEFAULT_CONFIG[chaves[i]]
+    let keys = Object.keys(DEFAULT_CONFIG)
+    for (let i = 0; i < keys.length; i++) {
+        Config[keys[i]] = DEFAULT_CONFIG[keys[i]]
     }
 }
 

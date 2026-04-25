@@ -2,7 +2,7 @@ import { Config, resetConfig, saveConfig, VERSION } from "./config.js"
 import { Escrita } from "./escrita.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
-import { Teste } from "./teste.js"
+import { Test } from "./teste.js"
 
 /**
  * [JS] Processamento de comandos do usuário
@@ -327,7 +327,7 @@ export const Comandos = {
                 variacoes: [],
                 acao(arg, partes) {
                     if (partes[1] == "1234") {
-                        Teste.rodar()
+                        Test.start()
                     } else {
                         Ui.error("Senha inválida", "“" + String(partes[1]) + "” não é uma senha válida")
                     }

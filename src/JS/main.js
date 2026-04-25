@@ -1,7 +1,7 @@
 import { Algebra } from "./algebra.js"
 import { Analisar } from "./analisar.js"
-import { carregarConfig, Config, CONFIG_PADRAO, salvarConfig, VERSAO } from "./config.js"
-import { Erro } from "./erro.js"
+import { loadConfig, Config, DEFAULT_CONFIG, saveConfig, VERSION } from "./config.js"
+import { Error } from "./erro.js"
 import { Escrita } from "./escrita.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
@@ -12,7 +12,7 @@ console.log(
         "====================================================" +
         "\n" +
         "Mathematical Function Analyzer / Analisador de Funções Matemáticas — " +
-        VERSAO +
+        VERSION +
         "\n" +
         "All rights reserved / Todos os direitos reservados © Adriano Lima 2025 — 2026" +
         "\n" +
@@ -20,7 +20,7 @@ console.log(
 )
 
 // Carregar as configurações
-carregarConfig()
+loadConfig()
 
 // Introdução
 Ui.exibir(
@@ -34,7 +34,7 @@ document.title = Config.linguagem == "en" ? "Mathematical Function Analyzer" : "
 document.querySelector("h1").textContent = Config.linguagem == "en" ? "Mathematics" : "Matemática"
 document.documentElement.lang = Config.linguagem
 
-let subtipo = 0,
+let subType = 0,
     loopSub = false,
     escolha = 0,
     pagina = 1
@@ -46,7 +46,7 @@ let subtipo = 0,
 // Código principal
 do {
     // Variáveis globais
-    if (State.pedirCoefs) {
+    if (State.askCoeffs) {
         State.globalA = Algebra.variaveis("a")
         State.globalB = Algebra.variaveis("b")
         State.globalC = Algebra.variaveis("c")
@@ -59,15 +59,15 @@ do {
         State.globalC != State.funcAtual[2]
     ) {
         ;((State.funcAtual = [State.globalA, State.globalB, State.globalC]),
-            State.historico.push(State.funcAtual.slice()))
-        if (State.historico.length > 9) {
-            State.historico.shift()
+            State.history.push(State.funcAtual.slice()))
+        if (State.history.length > 9) {
+            State.history.shift()
         }
     }
 
     // Tipo de função
-    if (!State.manterTipo || State.tipo == "inicio") {
-        State.tipo = Ui.entrada(
+    if (!State.keepType || State.type == "inicio") {
+        State.type = Ui.entrada(
             "=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair",
             "",
             true,
@@ -76,23 +76,23 @@ do {
         )
     }
 
-    State.manterTipo = false
-    State.pedirCoefs = false
+    State.keepType = false
+    State.askCoeffs = false
     State.loop = false
 
     if (
-        (0 <= State.tipo && State.tipo <= 2) ||
-        (6 <= State.tipo && State.tipo <= 9) ||
-        Comandos.nomes().includes(State.tipo)
+        (0 <= State.type && State.type <= 2) ||
+        (6 <= State.type && State.type <= 9) ||
+        Comandos.nomes().includes(State.type)
     ) {
         // Polinomiais
-        if (State.tipo == 1) {
+        if (State.type == 1) {
             // Incógnitas
             if (!isFinite(State.globalA) || !isFinite(State.globalB) || !isFinite(State.globalC)) {
-                State.coeficientes = Algebra.incognita(State.globalA, State.globalB, State.globalC)
-                State.globalA = Algebra.arredonda(State.coeficientes[0])
-                State.globalB = Algebra.arredonda(State.coeficientes[1])
-                State.globalC = Algebra.arredonda(State.coeficientes[2])
+                State.coefficients = Algebra.incognita(State.globalA, State.globalB, State.globalC)
+                State.globalA = Algebra.arredonda(State.coefficients[0])
+                State.globalB = Algebra.arredonda(State.coefficients[1])
+                State.globalC = Algebra.arredonda(State.coefficients[2])
             }
 
             // Números
@@ -108,10 +108,10 @@ do {
         }
 
         // Não polinomial
-        else if (State.tipo == 2) {
+        else if (State.type == 2) {
             // Loop do menu
             do {
-                subtipo = Ui.entrada(
+                subType = Ui.entrada(
                     "=== Menu ===\nO que queres?\n1 = Função exponencial\n2 = Função logarítmica\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Voltar",
                     "",
                     true,
@@ -122,18 +122,18 @@ do {
                 loopSub = false
 
                 if (
-                    (0 <= subtipo && subtipo <= 2) ||
-                    (6 <= subtipo && subtipo <= 9) ||
-                    Comandos.nomes().includes(subtipo)
+                    (0 <= subType && subType <= 2) ||
+                    (6 <= subType && subType <= 9) ||
+                    Comandos.nomes().includes(subType)
                 ) {
                     // Exponencial
-                    if (subtipo == 1) {
+                    if (subType == 1) {
                         // Incógnitas
                         if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
-                            State.coeficientes = Algebra.incognita(State.globalA, State.globalB, State.globalC, true)
-                            State.globalA = Algebra.arredonda(State.coeficientes[0])
-                            State.globalB = Algebra.arredonda(State.coeficientes[1])
-                            State.globalC = Algebra.arredonda(State.coeficientes[2])
+                            State.coefficients = Algebra.incognita(State.globalA, State.globalB, State.globalC, true)
+                            State.globalA = Algebra.arredonda(State.coefficients[0])
+                            State.globalB = Algebra.arredonda(State.coefficients[1])
+                            State.globalC = Algebra.arredonda(State.coefficients[2])
                         }
 
                         // Números
@@ -144,42 +144,42 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalA == 1 || State.globalB == 0) {
-                                Erro.funcaoConstante("exponencial")
+                                Error.constantFunc("exponencial")
 
                                 if (State.globalA == 1) {
                                     State.globalC += State.globalB
                                 }
                                 State.globalA = 0
                                 State.globalB = 0
-                                State.tipo = 1
-                                State.manterTipo = true
+                                State.type = 1
+                                State.keepType = true
                                 State.loop = true
                             }
 
-                            // Erro de base
+                            // Error de base
                             else if (State.globalA < 0) {
-                                Erro.funcaoInvalida("exponencial")
+                                Error.invalidFunc("exponencial")
 
-                                State.pedirCoefs = true
+                                State.askCoeffs = true
                                 State.loop = true
                             }
                         }
                     }
 
                     // Logarítmica
-                    else if (subtipo == 2) {
+                    else if (subType == 2) {
                         // Incógnitas
                         if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
-                            State.coeficientes = Algebra.incognita(
+                            State.coefficients = Algebra.incognita(
                                 State.globalA,
                                 State.globalB,
                                 State.globalC,
                                 false,
                                 true,
                             )
-                            State.globalA = Algebra.arredonda(State.coeficientes[0])
-                            State.globalB = Algebra.arredonda(State.coeficientes[1])
-                            State.globalC = Algebra.arredonda(State.coeficientes[2])
+                            State.globalA = Algebra.arredonda(State.coefficients[0])
+                            State.globalB = Algebra.arredonda(State.coefficients[1])
+                            State.globalC = Algebra.arredonda(State.coefficients[2])
                         }
 
                         // Números
@@ -190,42 +190,42 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalA == 1 || State.globalB == 0) {
-                                Erro.funcaoConstante("logarítmica")
+                                Error.constantFunc("logarítmica")
                                 if (State.globalA == 1) {
                                     State.globalC += State.globalB
                                 }
                                 State.globalA = 0
                                 State.globalB = 0
-                                State.tipo = 1
-                                State.manterTipo = true
+                                State.type = 1
+                                State.keepType = true
                                 State.loop = true
                             }
 
-                            // Erro de base
+                            // Error de base
                             else if (State.globalA < 0) {
-                                Erro.funcaoInvalida("logarítmica")
-                                State.pedirCoefs = true
+                                Error.invalidFunc("logarítmica")
+                                State.askCoeffs = true
                                 State.loop = true
                             }
                         }
                     }
 
                     // Manter
-                    else if ((6 <= subtipo && subtipo <= 9) || Comandos.nomes().includes(subtipo)) {
-                        State.tipo = subtipo
+                    else if ((6 <= subType && subType <= 9) || Comandos.nomes().includes(subType)) {
+                        State.type = subType
                         State.loop = true
-                        if (subtipo != "sair") {
-                            State.manterTipo = true
+                        if (subType != "sair") {
+                            State.keepType = true
                         }
                     }
 
                     // Voltar
-                    else if (subtipo == 0) {
+                    else if (subType == 0) {
                         State.loop = true
                     }
                 }
 
-                // Erro
+                // Error
                 else {
                     loopSub = true
                 }
@@ -233,11 +233,11 @@ do {
         }
 
         // Histórico
-        else if (State.tipo == 6 || State.tipo == "historico") {
+        else if (State.type == 6 || State.type == "historico") {
             State.loop = true
 
-            // Erro de histórico
-            if (State.historico.length == 1) {
+            // Error de histórico
+            if (State.history.length == 1) {
                 Ui.exibir(
                     "Não há histórico o suficiente para mudanças.",
                     "Escrevestes apenas uma função até agora. Use “alterar” para escrever outra função.",
@@ -248,27 +248,27 @@ do {
                     opcao = 1
 
                 // Mostra histórico
-                for (let func = State.historico.length - 1; func >= 0; func--) {
+                for (let func = State.history.length - 1; func >= 0; func--) {
                     mensagem +=
                         String(opcao) +
                         " ⇒ “a” = " +
-                        Escrita.decimal(State.historico[func][0]) +
+                        Escrita.decimal(State.history[func][0]) +
                         "; “b” = " +
-                        Escrita.decimal(State.historico[func][1]) +
+                        Escrita.decimal(State.history[func][1]) +
                         "; “c” = " +
-                        Escrita.decimal(State.historico[func][2]) +
+                        Escrita.decimal(State.history[func][2]) +
                         "\n"
                     opcao++
                 }
 
                 // Escolha
-                resposta = Ui.intervalo(mensagem, "", 0, State.historico.length - 1)
+                resposta = Ui.intervalo(mensagem, "", 0, State.history.length - 1)
 
                 // Restaura função
-                let indice = State.historico.length - 1 - resposta
-                ;((State.globalA = State.historico[indice][0]),
-                    (State.globalB = State.historico[indice][1]),
-                    (State.globalC = State.historico[indice][2]))
+                let indice = State.history.length - 1 - resposta
+                ;((State.globalA = State.history[indice][0]),
+                    (State.globalB = State.history[indice][1]),
+                    (State.globalC = State.history[indice][2]))
                 if (
                     State.globalA != State.funcAtual[0] ||
                     State.globalB != State.funcAtual[1] ||
@@ -280,11 +280,11 @@ do {
         }
 
         // Configurações
-        else if (State.tipo == 7 || State.tipo == "config") {
+        else if (State.type == 7 || State.type == "config") {
             pagina = 1
             // Loop
             do {
-                State.tipo = -1
+                State.type = -1
                 State.loop = true
 
                 // Menu de configurações
@@ -342,7 +342,7 @@ do {
                 escolha = Ui.intervalo(texto, "", 0, 9, 0, true)
                 if (escolha == 7) {
                     // Padrão
-                    if (JSON.stringify(Config) == JSON.stringify(CONFIG_PADRAO)) {
+                    if (JSON.stringify(Config) == JSON.stringify(DEFAULT_CONFIG)) {
                         Ui.aviso("Todas as configurações já estão na forma padrão.", "Não há necessidade de restaurar.")
                     } else {
                         let mensagem = "Voltar às configurações padrão?\nConfigurações afetadas:\n",
@@ -350,7 +350,7 @@ do {
 
                         // Mostra configurações afetadas
                         for (let i = 0; i < chaves.length; i++) {
-                            mensagem += Config[chaves[i]] != CONFIG_PADRAO[chaves[i]] ? chaves[i] + ", " : ""
+                            mensagem += Config[chaves[i]] != DEFAULT_CONFIG[chaves[i]] ? chaves[i] + ", " : ""
                         }
 
                         // Remove última vírgula e espaço
@@ -365,7 +365,7 @@ do {
                             )
                         ) {
                             for (let i = 0; i < chaves.length; i++) {
-                                Config[chaves[i]] = CONFIG_PADRAO[chaves[i]]
+                                Config[chaves[i]] = DEFAULT_CONFIG[chaves[i]]
                             }
                         }
                     }
@@ -381,7 +381,7 @@ do {
                     escolha = -1
                 } else if (escolha == "sair") {
                     escolha = 0
-                    State.tipo = "sair"
+                    State.type = "sair"
                 }
 
                 // Página 1
@@ -489,7 +489,7 @@ do {
                         )
                     }
 
-                    // Erros
+                    // Errors
                     else if (escolha == 5) {
                         Config.erros = Ui.confirmar(
                             Escrita.itemConfig("Ativar mensagens de erro?", "erros"),
@@ -602,12 +602,12 @@ do {
                 }
 
                 // Salvar as configurações
-                salvarConfig()
+                saveConfig()
             } while (escolha != 0)
         }
 
         // Rever
-        else if (State.tipo == 8 || State.tipo == "rever") {
+        else if (State.type == 8 || State.type == "rever") {
             Ui.exibir(
                 "Valores:\n“a” = " +
                     Escrita.decimal(State.globalA) +
@@ -620,13 +620,13 @@ do {
         }
 
         // Mudar
-        else if (State.tipo == 9 || State.tipo == "alterar") {
+        else if (State.type == 9 || State.type == "alterar") {
             State.loop = true
-            State.pedirCoefs = true
+            State.askCoeffs = true
         }
 
         // Sair
-        else if (State.tipo == 0 || State.tipo == "sair") {
+        else if (State.type == 0 || State.type == "sair") {
             if (Config.confirmacoesSaida) {
                 State.loop = !Ui.confirmar("Tu queres sair?", "Obs.: Configurações poderão voltar ao padrão caso saias")
             } else {
@@ -635,7 +635,7 @@ do {
         }
     }
 
-    // Erro
+    // Error
     else {
         State.loop = true
     }

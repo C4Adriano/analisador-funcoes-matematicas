@@ -8,42 +8,42 @@ import { Analisar } from "./analisar.js"
  * - Use as funções aqui para testar as funcionalidades do programa.
  * @since v6.1.0
  */
-export const Teste = {
+export const Test = {
     /**
      * [DEBUG] Executa os testes do programa
      * @since v6.1.0
      */
-    rodar() {
-        let opcao = 0
+    start() {
+        let option = 0
         do {
-            opcao = Ui.intervalo(
+            option = Ui.intervalo(
                 "=== Testes ===\n1 = Constante\n2 = Afim\n3 = Quadrática\n4 = Exponencial\n5 = Logarítmica\n6 = Contas\n0 = Sair",
                 "",
                 0,
                 6,
             )
 
-            if (opcao == 1) {
-                Teste.constante()
-            } else if (opcao == 2) {
-                Teste.afim()
-            } else if (opcao == 3) {
-                Teste.quadratica()
-            } else if (opcao == 4) {
-                Teste.exponencial()
-            } else if (opcao == 5) {
-                Teste.logaritmica()
-            } else if (opcao == 6) {
-                Teste.contas()
+            if (option == 1) {
+                Test.constant()
+            } else if (option == 2) {
+                Test.affine()
+            } else if (option == 3) {
+                Test.quadratic()
+            } else if (option == 4) {
+                Test.exponential()
+            } else if (option == 5) {
+                Test.logarithmic()
+            } else if (option == 6) {
+                Test.math()
             }
-        } while (opcao != 0)
+        } while (option != 0)
     },
 
     /**
      * [DEBUG] Testa a função constante com diferentes coeficientes
      * @since v6.1.0
      */
-    constante() {
+    constant() {
         Ui.exibir("Testando constante...")
         Analisar.constante(5) // Normal
         Analisar.constante(0) // Nula
@@ -54,7 +54,7 @@ export const Teste = {
      * [DEBUG] Testa a função afim com diferentes coeficientes
      * @since v6.1.0
      */
-    afim() {
+    affine() {
         Ui.exibir("Testando afim...")
         Analisar.afim(1, 0) // Identidade: x
         Analisar.afim(-1, 0) // Oposta: -x
@@ -67,7 +67,7 @@ export const Teste = {
      * [DEBUG] Testa a função quadrática com diferentes coeficientes
      * @since v6.1.0
      */
-    quadratica() {
+    quadratic() {
         Ui.exibir("Testando quadrática...")
         Analisar.quadratica(1, 0, 0) // Pura: x²
         Analisar.quadratica(1, -3, 2) // Δ > 0: raízes em x = 1 e x = 2
@@ -80,7 +80,7 @@ export const Teste = {
      * [DEBUG] Testa a função exponencial com diferentes coeficientes
      * @since v6.1.0
      */
-    exponencial() {
+    exponential() {
         Ui.exibir("Testando exponencial...")
         Analisar.exponencial(2, 1, 0) // Pura: 2ˣ
         Analisar.exponencial(2, 1, -1) // Com assíntota em y = -1
@@ -95,7 +95,7 @@ export const Teste = {
      * [DEBUG] Testa a função logarítmica com diferentes coeficientes
      * @since v6.1.0
      */
-    logaritmica() {
+    logarithmic() {
         Ui.exibir("Testando logarítmica...")
         Analisar.logaritmica(2, 1, 0) // Pura: log₂(x)
         Analisar.logaritmica(10, 1, 0) // Decimal: log₁₀(x)
@@ -111,72 +111,72 @@ export const Teste = {
      * [DEBUG] Testa as funções auxiliares do programa (arredondamento, divisão, logaritmos, delta, vértice, etc.)
      * @since v6.1.0
      */
-    contas() {
-        let resultados = [],
-            erros = 0
+    math() {
+        let result = [],
+            errors = 0
 
         // algebra.arredonda
-        resultados.push(["arredonda(3.14159, 2)", Algebra.arredonda(3.14159, 2), 3.14])
-        resultados.push(["arredonda(-0, 2)", Algebra.arredonda(-0, 2), 0])
-        resultados.push(["arredonda(1.005, 2)", Algebra.arredonda(1.005, 2), 1.01])
-        resultados.push(["arredonda(1.005, 2)", Algebra.arredonda(1.005, 2), 1.01])
-        resultados.push(["arredonda(1.045, 2)", Algebra.arredonda(1.045, 2), 1.05])
-        resultados.push(["arredonda(1.055, 2)", Algebra.arredonda(1.055, 2), 1.06])
+        result.push(["arredonda(3.14159, 2)", Algebra.arredonda(3.14159, 2), 3.14])
+        result.push(["arredonda(-0, 2)", Algebra.arredonda(-0, 2), 0])
+        result.push(["arredonda(1.005, 2)", Algebra.arredonda(1.005, 2), 1.01])
+        result.push(["arredonda(1.005, 2)", Algebra.arredonda(1.005, 2), 1.01])
+        result.push(["arredonda(1.045, 2)", Algebra.arredonda(1.045, 2), 1.05])
+        result.push(["arredonda(1.055, 2)", Algebra.arredonda(1.055, 2), 1.06])
 
         // algebra.divisao
-        resultados.push(["divisao(10, 3)", Algebra.divisao(10, 3), 3.333333])
-        resultados.push(["divisao(1, 0)", Algebra.divisao(1, 0), NaN])
-        resultados.push(["divisao(0, 5)", Algebra.divisao(0, 5), 0])
+        result.push(["divisao(10, 3)", Algebra.divisao(10, 3), 3.333333])
+        result.push(["divisao(1, 0)", Algebra.divisao(1, 0), NaN])
+        result.push(["divisao(0, 5)", Algebra.divisao(0, 5), 0])
 
         // algebra.log
-        resultados.push(["log(100, 10)", Algebra.log(100, 10), 2])
-        resultados.push(["log(8, 2)", Algebra.log(8, 2), 3])
-        resultados.push(["log(1, 10)", Algebra.log(1, 10), 0])
-        resultados.push(["log(-1, 10)", Algebra.log(-1, 10), NaN])
+        result.push(["log(100, 10)", Algebra.log(100, 10), 2])
+        result.push(["log(8, 2)", Algebra.log(8, 2), 3])
+        result.push(["log(1, 10)", Algebra.log(1, 10), 0])
+        result.push(["log(-1, 10)", Algebra.log(-1, 10), NaN])
 
         // algebra.ln
-        resultados.push(["ln(1)", Algebra.ln(1), 0])
-        resultados.push(["ln(Math.E)", Algebra.ln(Math.E), 1])
-        resultados.push(["ln(0)", Algebra.ln(0), NaN])
+        result.push(["ln(1)", Algebra.ln(1), 0])
+        result.push(["ln(Math.E)", Algebra.ln(Math.E), 1])
+        result.push(["ln(0)", Algebra.ln(0), NaN])
 
         // helpers.calcDelta
         let d1 = Helpers.calcDelta(1, -3, 2)
-        resultados.push(["calcDelta(1,-3,2)[0]", d1[0], 1]) // Δ = 1
-        resultados.push(["calcDelta(1,-3,2)[1]", d1[1], 1]) // x₁ = 1
-        resultados.push(["calcDelta(1,-3,2)[2]", d1[2], 2]) // x₂ = 2
+        result.push(["calcDelta(1,-3,2)[0]", d1[0], 1]) // Δ = 1
+        result.push(["calcDelta(1,-3,2)[1]", d1[1], 1]) // x₁ = 1
+        result.push(["calcDelta(1,-3,2)[2]", d1[2], 2]) // x₂ = 2
 
         let d2 = Helpers.calcDelta(1, -2, 1)
-        resultados.push(["calcDelta(1,-2,1)[0]", d2[0], 0]) // Δ = 0
+        result.push(["calcDelta(1,-2,1)[0]", d2[0], 0]) // Δ = 0
 
         let d3 = Helpers.calcDelta(1, 0, 1)
-        resultados.push(["calcDelta(1,0,1)[0]", d3[0], -4]) // Δ < 0
+        result.push(["calcDelta(1,0,1)[0]", d3[0], -4]) // Δ < 0
 
         // helpers.vertice
         let v = Helpers.vertice(1, -2, 0)
-        resultados.push(["vertice(1,-2,0)[0]", v[0], 1]) // x do vértice
-        resultados.push(["vertice(1,-2,0)[1]", v[1], 0]) // y do vértice
+        result.push(["vertice(1,-2,0)[0]", v[0], 1]) // x do vértice
+        result.push(["vertice(1,-2,0)[1]", v[1], 0]) // y do vértice
 
         // Monta relatório
-        let relatorio = "=== Relatório de Contas ===\n"
-        for (let i = 0; i < resultados.length; i++) {
-            let nome = resultados[i][0],
-                obtido = resultados[i][1],
-                esperado = resultados[i][2]
-            let passou = isNaN(esperado) ? isNaN(obtido) : obtido == esperado
-            if (!passou) {
-                erros++
+        let logs = "=== Relatório de Contas ===\n"
+        for (let i = 0; i < result.length; i++) {
+            let name = result[i][0],
+                gated = result[i][1],
+                waited = result[i][2]
+            let pass = isNaN(waited) ? isNaN(gated) : gated == waited
+            if (!pass) {
+                errors++
             }
-            relatorio +=
-                (passou ? "✓" : "✗") +
+            logs +=
+                (pass ? "✓" : "✗") +
                 " " +
-                nome +
+                name +
                 " → " +
-                obtido +
-                (passou ? "" : " (esperado: " + esperado + ")") +
+                gated +
+                (pass ? "" : " (esperado: " + waited + ")") +
                 "\n"
         }
 
-        relatorio += "\n" + (erros == 0 ? "✓ Todos os testes passaram!" : "✗ " + erros + " erro(s) encontrado(s)")
-        Ui.exibir(relatorio)
+        logs += "\n" + (errors == 0 ? "✓ Todos os testes passaram!" : "✗ " + errors + " erro(s) encontrado(s)")
+        Ui.exibir(logs)
     },
 }
