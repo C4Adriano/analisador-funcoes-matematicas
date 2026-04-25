@@ -1,4 +1,4 @@
-import { Config, resetarConfig, salvarConfig, VERSAO } from "./config.js"
+import { Config, resetConfig, saveConfig, VERSION } from "./config.js"
 import { Escrita } from "./escrita.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
@@ -45,7 +45,7 @@ export const Comandos = {
                 return null
             }
 
-            Ui.erro("Comando inválido", cmd + " não é um comando válido\nDigite “/help” para ver todos os comandos")
+            Ui.error("Comando inválido", cmd + " não é um comando válido\nDigite “/help” para ver todos os comandos")
             return null
         }
 
@@ -148,10 +148,10 @@ export const Comandos = {
                         if (canonico != null && Config[canonico] != undefined) {
                             return Comandos.alterar(canonico, arg)
                         }
-                        Ui.erro("Configuração inválida", "“" + partes[1] + "” não é uma configuração válida")
+                        Ui.error("Configuração inválida", "“" + partes[1] + "” não é uma configuração válida")
                         return null
                     }
-                    State.tipo = "config"
+                    State.type = "config"
                     return "config"
                 },
             },
@@ -160,7 +160,7 @@ export const Comandos = {
                 longa: "Remove as configurações salvas e restaura os valores padrão.",
                 variacoes: ["reset", "restaurar", "restore"],
                 acao() {
-                    resetarConfig()
+                    resetConfig()
                     Ui.aviso("Configurações restauradas para os valores padrão.")
                     return null
                 },
@@ -170,7 +170,7 @@ export const Comandos = {
                 longa: "Retorna ao menu inicial de seleção de função.",
                 variacoes: ["start"],
                 acao() {
-                    State.tipo = "inicio"
+                    State.type = "inicio"
                     return "inicio"
                 },
             },
@@ -179,7 +179,7 @@ export const Comandos = {
                 longa: "Exibe os coeficientes inseridos na sessão atual.",
                 variacoes: ["review"],
                 acao() {
-                    State.tipo = "rever"
+                    State.type = "rever"
                     return "rever"
                 },
             },
@@ -188,7 +188,7 @@ export const Comandos = {
                 longa: "Permite alterar os coeficientes sem reiniciar a análise.",
                 variacoes: ["change"],
                 acao() {
-                    State.tipo = "alterar"
+                    State.type = "alterar"
                     return "alterar"
                 },
             },
@@ -197,7 +197,7 @@ export const Comandos = {
                 longa: "Exibe o histórico de funções analisadas na sessão.",
                 variacoes: ["history"],
                 acao() {
-                    State.tipo = "historico"
+                    State.type = "historico"
                     return "historico"
                 },
             },
@@ -329,7 +329,7 @@ export const Comandos = {
                     if (partes[1] == "1234") {
                         Teste.rodar()
                     } else {
-                        Ui.erro("Senha inválida", "“" + String(partes[1]) + "” não é uma senha válida")
+                        Ui.error("Senha inválida", "“" + String(partes[1]) + "” não é uma senha válida")
                     }
                     return null
                 },
@@ -339,7 +339,7 @@ export const Comandos = {
                 longa: "Encerra o programa. Confirmação pode ser solicitada.",
                 variacoes: ["exit", "//", "ex", "out"],
                 acao() {
-                    State.tipo = "sair"
+                    State.type = "sair"
                     return "sair"
                 },
             },
@@ -401,7 +401,7 @@ export const Comandos = {
                 return null
             }
 
-            Ui.erro("Comando desconhecido", "“/" + especifico + "” não é um comando válido")
+            Ui.error("Comando desconhecido", "“/" + especifico + "” não é um comando válido")
             return null
         }
 
@@ -445,7 +445,7 @@ export const Comandos = {
      * @since v6.1.0
      */
     versao() {
-        Ui.aviso("Analisador de Funções Matemáticas\n" + VERSAO + " — Adriano Lima 2025 - 2026")
+        Ui.aviso("Analisador de Funções Matemáticas\n" + VERSION + " — Adriano Lima 2025 - 2026")
         return null
     },
 
@@ -463,18 +463,18 @@ export const Comandos = {
             Config[nome] = !Config[nome]
         }
 
-        if (nome == "capitalizadas" && Config.capitalizadas) {
-            Config.maiusculas = false
-            Config.minusculas = false
-        } else if (nome == "maiusculas" && Config.maiusculas) {
-            Config.capitalizadas = false
-            Config.minusculas = false
-        } else if (nome == "minusculas" && Config.minusculas) {
-            Config.capitalizadas = false
-            Config.maiusculas = false
+        if (nome == "capitalizadas" && Config.capitalized) {
+            Config.uppercase = false
+            Config.lowercase = false
+        } else if (nome == "maiusculas" && Config.uppercase) {
+            Config.capitalized = false
+            Config.lowercase = false
+        } else if (nome == "minusculas" && Config.lowercase) {
+            Config.capitalized = false
+            Config.uppercase = false
         }
 
-        salvarConfig()
+        saveConfig()
         Ui.aviso(Escrita.itemConfig("Alterado: “" + nome + "”", nome))
         return null
     },

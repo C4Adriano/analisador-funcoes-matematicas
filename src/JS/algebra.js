@@ -1,5 +1,5 @@
 import { Config } from "./config.js"
-import { Erro } from "./erro.js"
+import { Error } from "./erro.js"
 import { Escrita } from "./escrita.js"
 import { Helpers } from "./helpers.js"
 import { State } from "./state.js"
@@ -18,7 +18,7 @@ export const Algebra = {
      * @returns {number} - Número arredondado
      * @since v6.1.0
      */
-    arredonda(numero = 0, casas = Config.casasDecimais) {
+    arredonda(numero = 0, casas = Config.decimalPlaces) {
         numero = Escrita.decimal(numero, true)
 
         if (isFinite(numero)) {
@@ -194,7 +194,7 @@ export const Algebra = {
                             if (pts[0] != 0) {
                                 coefB = Algebra.divisao(pts[1] - coefC, pts[0])
                             } else {
-                                Erro.divZero("x ≠ 0")
+                                Error.divZero("x ≠ 0")
                                 repetir = true
                             }
                         }
@@ -208,7 +208,7 @@ export const Algebra = {
                             coefB = Algebra.divisao(pts[3] - pts[1], pts[2] - pts[0])
                             coefC = pts[1] - coefB * pts[0]
                         } else {
-                            Erro.divZero("x ≠ 0 e x₁ ≠ x₂")
+                            Error.divZero("x ≠ 0 e x₁ ≠ x₂")
                             repetir = true
                         }
                     }
@@ -225,7 +225,7 @@ export const Algebra = {
                         if (pts[0] != 0) {
                             coefA = Algebra.divisao(pts[1] - coefB * pts[0] - coefC, pts[0] * pts[0])
                         } else {
-                            Erro.divZero("x ≠ 0")
+                            Error.divZero("x ≠ 0")
                             repetir = true
                         }
                     }
@@ -237,7 +237,7 @@ export const Algebra = {
                         if (pts[0] != 0) {
                             coefB = Algebra.divisao(pts[1] - coefA * (pts[0] * pts[0]) - coefC, pts[0])
                         } else {
-                            Erro.divZero("x ≠ 0")
+                            Error.divZero("x ≠ 0")
                             repetir = true
                         }
                     }
@@ -263,7 +263,7 @@ export const Algebra = {
                                 denominador,
                             )
                         } else {
-                            Erro.divZero("x ≠ 0 e x₁ ≠ x₂")
+                            Error.divZero("x ≠ 0 e x₁ ≠ x₂")
                             repetir = true
                         }
                     }
@@ -277,7 +277,7 @@ export const Algebra = {
                             coefA = Algebra.divisao(pts[1] - coefB * pts[0] - (pts[3] - coefB * pts[2]), denominador)
                             coefC = pts[1] - coefA * (pts[0] * pts[0]) - coefB * pts[0]
                         } else {
-                            Erro.divZero("x₁ ≠ x₂")
+                            Error.divZero("x₁ ≠ x₂")
                             repetir = true
                         }
                     }
@@ -293,7 +293,7 @@ export const Algebra = {
                             )
                             coefC = pts[1] - coefA * (pts[0] * pts[0]) - coefB * pts[0]
                         } else {
-                            Erro.divZero("x₁ ≠ x₂")
+                            Error.divZero("x₁ ≠ x₂")
                             repetir = true
                         }
                     }
@@ -315,7 +315,7 @@ export const Algebra = {
                             coefB = Algebra.divisao(term1 * dif2 - dif1 * term3, denominador)
                             coefC = pts[1] - coefA * (pts[0] * pts[0]) - coefB * pts[0]
                         } else {
-                            Erro.divZero("x₁ ≠ x₂")
+                            Error.divZero("x₁ ≠ x₂")
                             repetir = true
                         }
                     }
@@ -458,7 +458,7 @@ export const Algebra = {
 
             // Erro
             if (!isFinite(coefA) || !isFinite(coefB) || !isFinite(coefC)) {
-                Erro.divZero("Valores inválidos.")
+                Error.divZero("Valores inválidos.")
                 if (
                     Ui.confirmar(
                         "Queres mudar os valores dos coeficientes?",
@@ -468,7 +468,7 @@ export const Algebra = {
                     coefA = "a"
                     coefB = "b"
                     coefC = "c"
-                    State.pedirCoefs = true
+                    State.askCoeffs = true
                     State.loop = true
                     repetir = false
                 } else {
@@ -502,7 +502,7 @@ export const Algebra = {
      * @returns {number} - Resultado
      * @since v6.1.0
      */
-    log(x = 1, base = Math.E, precisao = Config.logPrecisao) {
+    log(x = 1, base = Math.E, precisao = Config.logPrecision) {
         let y = x > 1 ? 1 : -1,
             numero = 0,
             delta = 0,
@@ -511,7 +511,7 @@ export const Algebra = {
 
         // Valida
         if (x <= 0 || base <= 0 || base == 1) {
-            Erro.logInvalido("log", "x > 0 e base > 0, base ≠ 1")
+            Error.invalidLog("log", "x > 0 e base > 0, base ≠ 1")
             return NaN
         }
 
@@ -531,7 +531,7 @@ export const Algebra = {
 
         // Loop
         let limite = 0
-        while (Math.abs(delta) > precisao && limite < Config.limiteInteracoes) {
+        while (Math.abs(delta) > precisao && limite < Config.interactionLimit) {
             delta = Algebra.divisao(base ** y - x, base ** y * numero, false)
             y -= delta
 
@@ -551,20 +551,20 @@ export const Algebra = {
      * @returns {number} - Resultado
      * @since v6.1.0
      */
-    ln(x = 1, precisao = Config.logPrecisao) {
+    ln(x = 1, precisao = Config.logPrecision) {
         let y = x > 1 ? 1 : -1,
             base = Math.E,
             delta = Algebra.divisao(base ** y - x, base ** y, false)
 
         // Valida
         if (x <= 0) {
-            Erro.logInvalido("ln", "x > 0")
+            Error.invalidLog("ln", "x > 0")
             return NaN
         }
 
         // Loop
         let limite = 0
-        while (Math.abs(delta) > precisao && limite < Config.limiteInteracoes) {
+        while (Math.abs(delta) > precisao && limite < Config.interactionLimit) {
             delta = Algebra.divisao(base ** y - x, base ** y, false)
             y -= delta
 
@@ -586,7 +586,7 @@ export const Algebra = {
      * @returns {number} - Resultado
      * @since v6.1.0
      */
-    divisao(numerador = 0, denominador = 1, arredondar = true, precisao = Config.divPrecisao) {
+    divisao(numerador = 0, denominador = 1, arredondar = true, precisao = Config.divPrecision) {
         let resultado = 0
 
         // Valida

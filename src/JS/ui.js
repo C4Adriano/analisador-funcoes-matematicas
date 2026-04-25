@@ -1,6 +1,6 @@
 import { Algebra } from "./algebra.js"
 import { Config } from "./config.js"
-import { Erro } from "./erro.js"
+import { Error } from "./erro.js"
 import { Escrita } from "./escrita.js"
 import { Helpers } from "./helpers.js"
 import { State } from "./state.js"
@@ -53,8 +53,8 @@ export const Ui = {
      * @param {string} explicacao - Explicação
      * @since v6.1.0
      */
-    erro(mensagem = "", explicacao = "") {
-        if (Config.erros) {
+    error(mensagem = "", explicacao = "") {
+        if (Config.errors) {
             Ui.exibir("=== Erro ===\n" + mensagem, explicacao)
         }
     },
@@ -121,11 +121,11 @@ export const Ui = {
             resposta = Ui.intervalo(menu, "", 0, 9, 0, true)
             if (resposta == 0) {
                 // Voltar
-                State.pedirCoefs = false
+                State.askCoeffs = false
                 State.loop = true
             } else if (resposta == 7) {
                 // Alterar
-                State.pedirCoefs = true
+                State.askCoeffs = true
                 State.loop = true
                 resposta = 0
             } else if (resposta == 8) {
@@ -138,7 +138,7 @@ export const Ui = {
                 pagina += 1
             } else if (Comandos.nomes().includes(resposta)) {
                 State.loop = true
-                State.manterTipo = true
+                State.keepType = true
             }
 
             // Limite
@@ -159,7 +159,7 @@ export const Ui = {
      * @param {number} casas - Casas para arredondar (0 = sem casas)
      * @returns {string | number} - Valor verificado
      */
-    entrada(mensagem = "", explicacao = "", numero = false, casas = Config.casasDecimais, aceitaComandos = false) {
+    entrada(mensagem = "", explicacao = "", numero = false, casas = Config.decimalPlaces, aceitaComandos = false) {
         let bruto = "",
             texto = "",
             valor = 0,
@@ -196,7 +196,7 @@ export const Ui = {
             }
 
             // Confirma
-            if (valido && Config.confirmacoesEntrada) {
+            if (valido && Config.inputConfirm) {
                 valido = Ui.aviso(
                     "Tu digitaste: “" + (numero ? Escrita.decimal(valor) : texto) + "”\nTens certeza?",
                     "Obs.₁: Se essa for uma variável e o que foi digitado não for um número, ela será transformada no nome da variável, não no que foi digitado\nObs.₂: Essas mensagens podem ser desativadas nas configurações, em “Confirmações de entrada”",
@@ -238,7 +238,7 @@ export const Ui = {
         funcExp = false,
         funcLog = false,
         funcTrig = 0,
-        mostrar = Config.mostrarFuncao,
+        mostrar = Config.showFunction,
     ) {
         if (!mostrar) {
             // Não mostrar
@@ -511,7 +511,7 @@ export const Ui = {
 
             if (!(min <= valor && valor <= max)) {
                 // Se o valor não estiver entre o intervalo, mostra um erro
-                Erro.intervalo(min, max)
+                Error.range(min, max)
             }
         } while (!(min <= valor && valor <= max))
 

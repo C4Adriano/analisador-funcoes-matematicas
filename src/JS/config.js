@@ -4,56 +4,56 @@
  * @since v6.1.0
  */
 export const Config = {
-    linguagem: "en", // Linguagem para as mensagens do programa (em construção, por enquanto só pt-br / en)
+    language: "en", // Linguagem para as mensagens do programa (em construção, por enquanto só pt-br / en)
     debug: false, // Exibir mensagens de debug detalhadas para o desenvolvedor (como os passos intermediários dos cálculos)
 
     unicode: true, // Usar Unicode para deixar bonitinhas as frases / expressões (como Δ, ∈, etc.)
-    explicacoes: true, // Exibir explicações detalhadas junto com os resultados
-    acentos: false, // Usar acentos nas palavras (como "raízes" em vez de "raizes")
-    capitalizadas: true, // Forma normal de texto, com a primeira letra de cada frase em maiúscula
-    maiusculas: false, // Todas as letras em maiúscula
-    minusculas: false, // Todas as letras em minúscula
+    explanations: true, // Exibir explicações detalhadas junto com os resultados
+    accents: false, // Usar acentos nas palavras
+    capitalized: true, // Forma normal de texto, com a primeira letra de cada frase em maiúscula
+    uppercase: false, // Todas as letras em maiúscula
+    lowercase: false, // Todas as letras em minúscula
 
-    separadorDecimal: false, // Usar vírgula como separador decimal (em vez de ponto)
-    multiSimples: true, // Juntar letras em multiplos (como "2x" em vez de "2 · x")
-    confirmacoesEntrada: false, // Exibir mensagens de confirmação para as entradas do usuário
-    confirmacoesSaida: true, // Exibir mensagem de confirmação para sair do programa
-    erros: true, // Exibir mensagens de erro detalhadas para o usuário
-    mostrarFuncao: true, // Exibir a função que está sendo analisada antes dos resultados
+    decimalSeparator: false, // Usar vírgula como separador decimal (em vez de ponto)
+    simpleMulti: true, // Juntar letras em múltiplos (como "2x" em vez de "2 · x")
+    inputConfirm: false, // Exibir mensagens de confirmação para as entradas do usuário
+    outputConfirm: true, // Exibir mensagem de confirmação para sair do programa
+    errors: true, // Exibir mensagens de erro detalhadas para o usuário
+    showFunction: true, // Exibir a função que está sendo analisada antes dos resultados
 
-    casasDecimais: 6, // Número de casas decimais para arredondar os resultados numéricos
-    logPrecisao: 1e-12, // Precisão para cálculos logarítmicos (para evitar erros de arredondamento)
-    divPrecisao: 1e-12, // Precisão para cálculos de divisão (para evitar divisão por zero)
-    limiteInteracoes: 1000, // Limite de interações para evitar state.loops infinitos (como no estudo do sinal de uma função sem raízes reais, onde o programa pode tentar testar infinitos valores de x para encontrar as raízes)
-    graus: false, // Usar graus ou radianos
+    decimalPlaces: 6, // Número de casas decimais para arredondar os resultados numéricos
+    logPrecision: 1e-12, // Precisão para cálculos logarítmicos (para evitar erros de arredondamento)
+    divPrecision: 1e-12, // Precisão para cálculos de divisão (para evitar divisão por zero)
+    interactionLimit: 1000, // Limite de interações para evitar state.loops infinitos (como no estudo do sinal de uma função sem raízes reais, onde o programa pode tentar testar infinitos valores de x para encontrar as raízes)
+    degrees: false, // Usar graus ou radianos
 }
 
 /**
  * [CONFIG] Carrega as configurações salvas no localStorage (se existirem)
  * @since v6.1.0
  */
-export function carregarConfig() {
-    let salvo = localStorage.getItem("config"),
-        versaoSalva = localStorage.getItem("configVersao")
+export function loadConfig() {
+    let saved = localStorage.getItem("config"),
+        savedVersion = localStorage.getItem("configVersion")
 
-    if (salvo == null) {
+    if (saved == null) {
         return
     }
 
-    if (versaoSalva !== VERSAO) {
+    if (savedVersion !== VERSION) {
         // Versão diferente: descarta o salvo e começa do zero
         localStorage.removeItem("config")
-        localStorage.removeItem("configVersao")
+        localStorage.removeItem("configVersion")
         return
     }
 
-    let configSalva = JSON.parse(salvo),
-        chaves = Object.keys(configSalva)
+    let savedConfig = JSON.parse(saved),
+        keys = Object.keys(savedConfig)
 
-    for (let i = 0; i < chaves.length; i++) {
-        let chave = chaves[i]
-        if (Config[chave] !== undefined) {
-            Config[chave] = configSalva[chave]
+    for (let i = 0; i < keys.length; i++) {
+        let key = keys[i]
+        if (Config[key] !== undefined) {
+            Config[key] = savedConfig[key]
         }
     }
 }
@@ -62,9 +62,9 @@ export function carregarConfig() {
  * [CONFIG] Salva as configurações atuais no localStorage
  * @since v6.1.0
  */
-export function salvarConfig() {
+export function saveConfig() {
     localStorage.setItem("config", JSON.stringify(Config))
-    localStorage.setItem("configVersao", VERSAO)
+    localStorage.setItem("configVersion", VERSION)
     console.log("Configurações salvas:", Config)
 }
 
@@ -72,12 +72,12 @@ export function salvarConfig() {
  * [CONFIG] Remove as configurações salvas no localStorage, restaurando os padrões
  * @since v6.1.0
  */
-export function resetarConfig() {
+export function resetConfig() {
     localStorage.removeItem("config")
 
-    let chaves = Object.keys(CONFIG_PADRAO)
+    let chaves = Object.keys(DEFAULT_CONFIG)
     for (let i = 0; i < chaves.length; i++) {
-        Config[chaves[i]] = CONFIG_PADRAO[chaves[i]]
+        Config[chaves[i]] = DEFAULT_CONFIG[chaves[i]]
     }
 }
 
@@ -85,10 +85,10 @@ export function resetarConfig() {
  * [CONFIG] Configurações padrão do programa (para restaurar as configurações)
  * @since v6.1.0
  */
-export const CONFIG_PADRAO = JSON.parse(JSON.stringify(Config))
+export const DEFAULT_CONFIG = JSON.parse(JSON.stringify(Config))
 
 /**
  * [CONFIG] Versão do programa (MAJOR.MINOR.PATCH)
  * @since v6.1.0
  */
-export const VERSAO = "v6.1.1"
+export const VERSION = "v6.1.1"

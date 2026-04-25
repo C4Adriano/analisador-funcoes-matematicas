@@ -1,6 +1,6 @@
 import { Algebra } from "./algebra.js"
 import { Config } from "./config.js"
-import { Erro } from "./erro.js"
+import { Error } from "./erro.js"
 import { Escrita } from "./escrita.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
@@ -361,17 +361,17 @@ export const Helpers = {
     equacoes(polinomial = true, coefA = 0, coefB = 0, coefC = 0) {
         if (polinomial) {
             // Polinomial
-            if (State.funcBase.length == 0) {
+            if (State.baseFunc.length == 0) {
                 // Salvar a primeira função para comparar depois
-                State.funcBase = [coefA, coefB, coefC]
-                State.pedirCoefs = true
+                State.baseFunc = [coefA, coefB, coefC]
+                State.askCoeffs = true
                 State.loop = true
                 Ui.aviso("ƒ₁(x) salva.", "Digite ƒ₂(x) para comparar.")
                 return 0
             } else {
                 // Comparar as duas funções
-                Algebra.equacoes(State.funcBase, [coefA, coefB, coefC])
-                State.funcBase = []
+                Algebra.equacoes(State.baseFunc, [coefA, coefB, coefC])
+                State.baseFunc = []
                 return 1
             }
         } else {
@@ -522,12 +522,12 @@ export const Helpers = {
      * @returns {boolean} - Se estourou o limite
      * @since v6.1.0
      */
-    estourouLimite(limite = Config.limiteInteracoes) {
-        let estourou = limite >= Config.limiteInteracoes
+    estourouLimite(limite = Config.interactionLimit) {
+        let estourou = limite >= Config.interactionLimit
 
         // Exibe o erro se estourou o limite
         if (estourou) {
-            Erro.limiteEstourado()
+            Error.limitExceeded()
         }
 
         return estourou

@@ -1,5 +1,5 @@
 import { Algebra } from "./algebra.js"
-import { Config, CONFIG_PADRAO } from "./config.js"
+import { Config, DEFAULT_CONFIG } from "./config.js"
 
 /**
  * [TEXTO] Objeto base para as funções envolvendo escrita e conversão de texto
@@ -452,7 +452,7 @@ export const Escrita = {
      * @returns {string} - Número convertido
      * @since v6.1.0
      */
-    decimal(numero = 0, inverter = false, arredondar = true, casas = Config.casasDecimais) {
+    decimal(numero = 0, inverter = false, arredondar = true, casas = Config.decimalPlaces) {
         numero = String(numero)
 
         // Se inverter é verdadeiro, troca vírgulas por pontos para não afetar nas contas
@@ -466,7 +466,7 @@ export const Escrita = {
         }
 
         // Se separadorDecimal é verdadeiro, troca pontos por vírgulas para exibição
-        if (Config.separadorDecimal) {
+        if (Config.decimalSeparator) {
             return Escrita.substituir(numero, ".", ",")
         }
 
@@ -497,14 +497,14 @@ export const Escrita = {
             palavras = [["", ""]],
             conectores = [["", ""]]
 
-        if (Config.linguagem == "pt-br") {
+        if (Config.language == "pt-br") {
             // === TRADUÇÃO DE INGLÊS PARA PORTUGUÊS ===
             palavras = [
                 ["undefined", "indefinido"],
                 ["nan", "não é um número"],
                 ["infinity", "infinito"],
             ]
-        } else if (Config.linguagem == "en") {
+        } else if (Config.language == "en") {
             // === TRADUÇÃO DE PORTUGUÊS PARA INGLÊS ===
             frasesCompletas = [
                 ["bem-vindo ao analisador de funções matemáticas", "welcome to the mathematical function analyzer"],
@@ -971,19 +971,19 @@ export const Escrita = {
     verificar(mensagem = "", explicacao = "") {
         // === ADIÇÃO DE EXPLICAÇÕES ===
         // Se explicações estão ativadas e há uma explicação, adiciona à mensagem
-        if (Config.explicacoes && explicacao != "") {
+        if (Config.explanations && explicacao != "") {
             mensagem += "\n\n" + explicacao
         }
 
         // === SIMPLIFICAÇÃO DE MULTIPLICAÇÃO ===
         // Substitui símbolos de multiplicação complexos por simples, se ativado
-        if (Config.multiSimples) {
+        if (Config.simpleMulti) {
             mensagem = Escrita.multiSimples(mensagem)
         }
 
         // === TRADUÇÃO ===
         // Traduz a mensagem para a linguagem configurada
-        if (Config.linguagem != "pt-br") {
+        if (Config.language != "pt-br") {
             mensagem = Escrita.traduzir(mensagem)
         }
 
@@ -991,24 +991,24 @@ export const Escrita = {
         // Remove símbolos Unicode especiais, se desativado
         if (!Config.unicode) {
             mensagem = Escrita.semUnicode(mensagem)
-            if (Config.linguagem != "pt-br") {
+            if (Config.language != "pt-br") {
                 mensagem = Escrita.traduzirUnicode(mensagem)
             }
         }
 
         // === REMOÇÃO DE ACENTOS ===
         // Remove acentos das letras, se desativado
-        if (!Config.acentos) {
+        if (!Config.accents) {
             mensagem = Escrita.semAcentos(mensagem)
         }
 
         // === AJUSTE DE CASE (MAIÚSCULAS/MINÚSCULAS) ===
         // Aplica transformação de case baseada nas configurações
-        if (Config.capitalizadas) {
+        if (Config.capitalized) {
             mensagem = Escrita.capitalizadas(mensagem)
-        } else if (Config.minusculas) {
+        } else if (Config.lowercase) {
             mensagem = Escrita.minusculas(mensagem)
-        } else if (Config.maiusculas) {
+        } else if (Config.uppercase) {
             mensagem = Escrita.maiusculas(mensagem)
         }
 
@@ -1108,7 +1108,7 @@ export const Escrita = {
             " | Atual: “" +
             Escrita.formatar(Config[nome]) +
             "” | Padrão: “" +
-            Escrita.formatar(CONFIG_PADRAO[nome]) +
+            Escrita.formatar(DEFAULT_CONFIG[nome]) +
             "”"
         )
     },
