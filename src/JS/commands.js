@@ -1,8 +1,8 @@
-import { Config, resetConfig, saveConfig, VERSION } from "./config.js"
-import { Writing } from "./escrita.js"
+import { Config, VERSION, saveConfig, resetConfig } from "./config.js"
 import { State } from "./state.js"
-import { Ui } from "./ui.js"
 import { Test } from "./teste.js"
+import { Ui } from "./ui.js"
+import { Writing } from "./writing.js"
 
 /**
  * [JS] Processamento de comandos do usuário

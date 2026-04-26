@@ -1,9 +1,9 @@
 import { Algebra } from "./algebra.js"
-import { Writing } from "./escrita.js"
+import { Commands } from "./commands.js"
 import { Helpers } from "./helpers.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
-import { Commands } from "./comandos.js"
+import { Writing } from "./writing.js"
 
 let baseOptions = [
         "Domínio",
@@ -29,7 +29,7 @@ let baseOptions = [
  * - Use as funções aqui para montar as funções constantes, afins, quadráticas, etc.
  * @since v6.1.0
  */
-export const Analisar = {
+export const Analyze = {
     /**
      * [FUNÇÃO] Monta uma função constante: ƒ(x) = c
      * @param {number} coefC - Coeficiente c da função constante

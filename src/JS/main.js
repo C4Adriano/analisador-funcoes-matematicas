@@ -1,11 +1,11 @@
 import { Algebra } from "./algebra.js"
-import { Analisar } from "./analisar.js"
-import { loadConfig, Config, DEFAULT_CONFIG, saveConfig, VERSION } from "./config.js"
-import { Error } from "./erro.js"
-import { Writing } from "./escrita.js"
+import { Analyze } from "./analyze.js"
+import { Commands } from "./commands.js"
+import { Config, DEFAULT_CONFIG, VERSION, saveConfig, loadConfig } from "./config.js"
+import { Error } from "./error.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
-import { Commands } from "./comandos.js"
+import { Writing } from "./writing.js"
 
 console.log(
     "" +
@@ -99,11 +99,11 @@ do {
             // Números
             if (isFinite(State.globalA) && isFinite(State.globalB) && isFinite(State.globalC)) {
                 if (State.globalA == 0 && State.globalB == 0) {
-                    Analisar.constant(State.globalC)
+                    Analyze.constant(State.globalC)
                 } else if (State.globalA == 0 && State.globalB != 0) {
-                    Analisar.affine(State.globalB, State.globalC)
+                    Analyze.affine(State.globalB, State.globalC)
                 } else if (State.globalA != 0) {
-                    Analisar.quadratic(State.globalA, State.globalB, State.globalC)
+                    Analyze.quadratic(State.globalA, State.globalB, State.globalC)
                 }
             }
         }
@@ -140,7 +140,7 @@ do {
                         // Números
                         if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
                             if (State.globalA > 0 && State.globalA != 1 && State.globalB != 0) {
-                                Analisar.exponential(State.globalA, State.globalB, State.globalC)
+                                Analyze.exponential(State.globalA, State.globalB, State.globalC)
                             }
 
                             // Constante
@@ -186,7 +186,7 @@ do {
                         // Números
                         if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
                             if (State.globalA > 0 && State.globalA != 1 && State.globalB != 0) {
-                                Analisar.logarithmic(State.globalA, State.globalB, State.globalC)
+                                Analyze.logarithmic(State.globalA, State.globalB, State.globalC)
                             }
 
                             // Constante

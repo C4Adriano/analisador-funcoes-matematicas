@@ -1,9 +1,9 @@
 import { Config } from "./config.js"
-import { Error } from "./erro.js"
-import { Writing } from "./escrita.js"
+import { Error } from "./error.js"
 import { Helpers } from "./helpers.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
+import { Writing } from "./writing.js"
 
 /**
  * [NUMÉRICO] Objeto base para as funções envolvendo algebra

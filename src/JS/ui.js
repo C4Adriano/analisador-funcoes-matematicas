@@ -1,10 +1,10 @@
 import { Algebra } from "./algebra.js"
+import { Commands } from "./commands.js"
 import { Config } from "./config.js"
-import { Error } from "./erro.js"
-import { Writing } from "./escrita.js"
+import { Error } from "./error.js"
 import { Helpers } from "./helpers.js"
 import { State } from "./state.js"
-import { Commands } from "./comandos.js"
+import { Writing } from "./writing.js"
 
 /**
  * [UI] Objeto base para as funções envolvendo UI / UX e interação com o usuário

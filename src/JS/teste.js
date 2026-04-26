@@ -1,7 +1,7 @@
 import { Algebra } from "./algebra.js"
+import { Analyze } from "./analyze.js"
 import { Helpers } from "./helpers.js"
 import { Ui } from "./ui.js"
-import { Analisar } from "./analisar.js"
 
 /**
  * [DEBUG] Objeto de testes do programa
@@ -45,9 +45,9 @@ export const Test = {
      */
     constant() {
         Ui.display("Testando constante...")
-        Analisar.constant(5) // Normal
-        Analisar.constant(0) // Nula
-        Analisar.constant(-3) // Negativa
+        Analyze.constant(5) // Normal
+        Analyze.constant(0) // Nula
+        Analyze.constant(-3) // Negativa
     },
 
     /**
@@ -56,11 +56,11 @@ export const Test = {
      */
     affine() {
         Ui.display("Testando afim...")
-        Analisar.affine(1, 0) // Identidade: x
-        Analisar.affine(-1, 0) // Oposta: -x
-        Analisar.affine(2, -4) // Raiz em x = 2
-        Analisar.affine(1, 1) // Crescente com c positivo
-        Analisar.affine(-2, 6) // Decrescente com raiz em x = 3
+        Analyze.affine(1, 0) // Identidade: x
+        Analyze.affine(-1, 0) // Oposta: -x
+        Analyze.affine(2, -4) // Raiz em x = 2
+        Analyze.affine(1, 1) // Crescente com c positivo
+        Analyze.affine(-2, 6) // Decrescente com raiz em x = 3
     },
 
     /**
@@ -69,11 +69,11 @@ export const Test = {
      */
     quadratic() {
         Ui.display("Testando quadrática...")
-        Analisar.quadratic(1, 0, 0) // Pura: x²
-        Analisar.quadratic(1, -3, 2) // Δ > 0: raízes em x = 1 e x = 2
-        Analisar.quadratic(1, -2, 1) // Δ = 0: raiz dupla em x = 1
-        Analisar.quadratic(1, 0, 1) // Δ < 0: sem raízes reais
-        Analisar.quadratic(-1, 0, 4) // Concavidade para baixo
+        Analyze.quadratic(1, 0, 0) // Pura: x²
+        Analyze.quadratic(1, -3, 2) // Δ > 0: raízes em x = 1 e x = 2
+        Analyze.quadratic(1, -2, 1) // Δ = 0: raiz dupla em x = 1
+        Analyze.quadratic(1, 0, 1) // Δ < 0: sem raízes reais
+        Analyze.quadratic(-1, 0, 4) // Concavidade para baixo
     },
 
     /**
@@ -82,10 +82,10 @@ export const Test = {
      */
     exponential() {
         Ui.display("Testando exponencial...")
-        Analisar.exponential(2, 1, 0) // Pura: 2ˣ
-        Analisar.exponential(2, 1, -1) // Com assíntota em y = -1
-        Analisar.exponential(0.5, 1, 0) // Base < 1: decrescente
-        Analisar.exponential(2, -1, 0) // b negativo: decrescente
+        Analyze.exponential(2, 1, 0) // Pura: 2ˣ
+        Analyze.exponential(2, 1, -1) // Com assíntota em y = -1
+        Analyze.exponential(0.5, 1, 0) // Base < 1: decrescente
+        Analyze.exponential(2, -1, 0) // b negativo: decrescente
         // Casos de erro esperados:
         // analisar.exponencial(1, 1, 0) → constante (a = 1)
         // analisar.exponencial(-2, 1, 0) → inválida (a < 0)
@@ -97,11 +97,11 @@ export const Test = {
      */
     logarithmic() {
         Ui.display("Testando logarítmica...")
-        Analisar.logarithmic(2, 1, 0) // Pura: log₂(x)
-        Analisar.logarithmic(10, 1, 0) // Decimal: log₁₀(x)
-        Analisar.logarithmic(Math.E, 1, 0) // Natural: ln(x)
-        Analisar.logarithmic(2, 1, -1) // Com deslocamento
-        Analisar.logarithmic(0.5, 1, 0) // Base < 1: decrescente
+        Analyze.logarithmic(2, 1, 0) // Pura: log₂(x)
+        Analyze.logarithmic(10, 1, 0) // Decimal: log₁₀(x)
+        Analyze.logarithmic(Math.E, 1, 0) // Natural: ln(x)
+        Analyze.logarithmic(2, 1, -1) // Com deslocamento
+        Analyze.logarithmic(0.5, 1, 0) // Base < 1: decrescente
         // Casos de erro esperados:
         // Analisar.logarithmic(1, 1, 0) → constante (a = 1)
         // Analisar.logarithmic(-2, 1, 0) → inválida (a < 0)
