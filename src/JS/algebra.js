@@ -134,10 +134,11 @@ export const Algebra = {
      * @param {string | number} coefC - Coeficiente c
      * @param {boolean} funcExp - Se é exponencial
      * @param {boolean} funcLog - Se é logarítmica
+     * @param {string} funcTrig - Se é trigonométrica, e qual (sin, cos, tan)
      * @returns {number[]} - Retorna os coeficientes em formato de array numérico [a, b, c]
      * @since v6.1.0
      */
-    unknown(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, type = 0) {
+    unknown(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
         let repeat = false,
             points = [0],
             denominator = 0,
@@ -166,7 +167,7 @@ export const Algebra = {
         }
 
         // Mostra
-        Ui.function(coefA, coefB, coefC, funcExp, funcLog, type)
+        Ui.function(coefA, coefB, coefC, funcExp, funcLog, funcTrig)
 
         // Loop
         let limit = 0
@@ -542,7 +543,7 @@ export const Algebra = {
 
         // Loop
         let limit = 0
-        while (Math.abs(delta) > precision && limit < Config.interactionLimit) {
+        while (Algebra.absolute(delta) > precision && limit < Config.interactionLimit) {
             delta = Algebra.division(base ** y - x, base ** y * number, false)
             y -= delta
 
@@ -575,7 +576,7 @@ export const Algebra = {
 
         // Loop
         let limit = 0
-        while (Math.abs(delta) > precision && limit < Config.interactionLimit) {
+        while (Algebra.absolute(delta) > precision && limit < Config.interactionLimit) {
             delta = Algebra.division(base ** y - x, base ** y, false)
             y -= delta
 
@@ -606,7 +607,7 @@ export const Algebra = {
         }
 
         // Denominador pequeno
-        if (Math.abs(denominator) <= precision) {
+        if (Algebra.absolute(denominator) <= precision) {
             return NaN
         }
 
@@ -623,5 +624,23 @@ export const Algebra = {
         }
 
         return result
+    },
+
+    /**
+     * [NUMÉRICO] Calcula o valor absoluto de um número
+     * @param {string | number} number - Número
+     * @param {boolean} round - Se irá arredondar
+     * @param {number} precision - Precisão do arredondamento
+     * @returns {number} - Número absoluto
+     */
+    absolute(number = 0, round = true, precision = Config.decimalPlaces) {
+        number = Writing.decimal(number, true, round, precision)
+
+        // Valida
+        if (!isFinite(number)) {
+            return NaN
+        }
+
+        return Math.abs(number)
     },
 }

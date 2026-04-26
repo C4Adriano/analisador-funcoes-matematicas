@@ -159,7 +159,14 @@ export const Ui = {
      * @param {number} places - Casas para arredondar (0 = sem casas)
      * @returns {string | number} - Valor verificado
      */
-    input(message = "", explanation = "", number = false, places = Config.decimalPlaces, allowCommands = false) {
+    input(
+        message = "",
+        explanation = "",
+        number = false,
+        places = Config.decimalPlaces,
+        allowCommands = false,
+        angle = false
+    ) {
         let raw = "",
             text = "",
             value = 0,
@@ -189,16 +196,20 @@ export const Ui = {
 
             // Número
             if (valid && number) {
-                value = Number(Writing.decimal(text, true))
-                if (!isFinite(value)) {
-                    valid = false
+                if (angle) {
+                    value = Writing.parseAngle(text)
+                } else {
+                    value = Number(Writing.decimal(text, true))
                 }
+                valid = isFinite(value)
             }
 
             // Confirma
             if (valid && Config.inputConfirm) {
                 valid = Ui.warning(
-                    "Tu digitaste: “" + (number ? Writing.decimal(value) : text) + "”\nTens certeza?",
+                    "Tu digitaste: “" +
+                        (number ? (angle ? Writing.formatAngle(value) : Writing.decimal(value)) : text) +
+                        "”\nTens certeza?",
                     "Obs.₁: Se essa for uma variável e o que foi digitado não for um número, ela será transformada no nome da variável, não no que foi digitado\nObs.₂: Essas mensagens podem ser desativadas nas configurações, em “Confirmações de entrada”",
                     true
                 )
@@ -228,6 +239,7 @@ export const Ui = {
      * @param {string | number} coefC - Coeficiente c
      * @param {boolean} funcExp - Exponencial
      * @param {boolean} funcLog - Logarítmica
+     * @param {string} funcTrig - Trigonométrica (sin, cos, tan)
      * @param {boolean} show - Mostrará a função ou não, baseado na configuração
      * @since v6.1.0
      */
@@ -237,7 +249,7 @@ export const Ui = {
         coefC = 0,
         funcExp = false,
         funcLog = false,
-        funcTrig = 0,
+        funcTrig = "",
         show = Config.showFunction
     ) {
         if (!show) {
@@ -247,7 +259,7 @@ export const Ui = {
 
         let funcStr = "A função: ƒ(x) = "
 
-        if (!funcExp && !funcLog && funcTrig == 0) {
+        if (!funcExp && !funcLog && funcTrig == "") {
             // Polinomial
             if (coefA == 0 && coefB == 0) {
                 // Constante
@@ -273,14 +285,14 @@ export const Ui = {
                     funcStr += "b · x"
                 } else if (coefB != "b") {
                     // Não variável
-                    if (Math.abs(coefB) == 1) {
+                    if (Algebra.absolute(coefB) == 1) {
                         // Se for 1 ou -1, não mostra o número, só o sinal
                         if (coefB == -1) {
                             // Se for -1, mostra o sinal de menos
                             funcStr += "−"
                         }
                         funcStr += "x"
-                    } else if (Math.abs(coefB) != 1) {
+                    } else if (Algebra.absolute(coefB) != 1) {
                         // Se for diferente de 1 ou -1, mostra o número
                         funcStr += String(coefB) + " · x"
                     }
@@ -320,14 +332,14 @@ export const Ui = {
                     funcStr += "a · x²"
                 } else if (coefA != "a") {
                     // Não variável
-                    if (Math.abs(coefA) == 1) {
+                    if (Algebra.absolute(coefA) == 1) {
                         // Se for 1 ou -1, não mostra o número, só o sinal
                         if (coefA == -1) {
                             // Se for -1, mostra o sinal de menos
                             funcStr += "−"
                         }
                         funcStr += "x²"
-                    } else if (Math.abs(coefA) != 1) {
+                    } else if (Algebra.absolute(coefA) != 1) {
                         // Se for diferente de 1 ou -1, mostra o número
                         funcStr += String(coefA) + " · x²"
                     }
@@ -346,12 +358,12 @@ export const Ui = {
                         funcStr += " − "
                     }
 
-                    if (Math.abs(coefB) == 1) {
+                    if (Algebra.absolute(coefB) == 1) {
                         // Se for 1 ou -1, não mostra o número, só o sinal
                         funcStr += "x"
-                    } else if (Math.abs(coefB) != 1) {
+                    } else if (Algebra.absolute(coefB) != 1) {
                         // Se for diferente de 1 ou -1, mostra o número
-                        funcStr += String(Math.abs(coefB)) + " · x"
+                        funcStr += String(Algebra.absolute(coefB)) + " · x"
                     }
                 }
 
@@ -383,7 +395,7 @@ export const Ui = {
                     funcStr += " / incompleta (sem termo constante)"
                 }
             }
-        } else if (funcExp && funcTrig == 0) {
+        } else if (funcExp && funcTrig == "") {
             // Exponencial
             if (coefB != "b") {
                 // Não variável
@@ -429,7 +441,7 @@ export const Ui = {
                 // Se o coeficiente a for igual a e, é uma função exponencial natural
                 funcStr += " / natural"
             }
-        } else if (funcLog && funcTrig == 0) {
+        } else if (funcLog && funcTrig == "") {
             // Logarítmica
             if (coefB != "b") {
                 // Não variável
@@ -476,6 +488,38 @@ export const Ui = {
             } else if (coefA == 10) {
                 // Se o coeficiente a for igual a 10, é uma função logarítmica decimal
                 funcStr += " / decimal"
+            }
+        } else if (funcTrig != "") {
+            // Trigonométrica
+            if (coefB != "b") {
+                // Não variável
+                if (coefB != 1) {
+                    funcStr += String(coefB) + " × "
+                }
+            } else if (coefB == "b") {
+                // Variável
+                funcStr += "b × "
+            }
+
+            if (coefA != "a") {
+                // Não variável
+                funcStr += funcTrig + "(" + String(coefA) + " · x)"
+            } else if (coefA == "a") {
+                funcStr += funcTrig + "(a · x)"
+            }
+
+            if (coefC != "c") {
+                // Não variável
+                if (coefC > 0) {
+                    // Se for positivo, mostra o sinal de mais
+                    funcStr += " + " + String(coefC)
+                } else if (coefC < 0) {
+                    // Se for negativo, mostra o sinal de menos e o número positivo
+                    funcStr += " − " + String(-coefC)
+                }
+            } else if (coefC == "c") {
+                // Variável
+                funcStr += " + c"
             }
         }
 

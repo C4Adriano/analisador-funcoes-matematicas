@@ -19,10 +19,10 @@ let baseOptions = [
     affineOptions = ["Inclinação", "Raiz"].concat(baseOptions),
     quadOptions = ["Concavidade", "Raízes", "Vértice"].concat(baseOptions),
     expOptions = ["Curva", "Raiz", "Assíntota"].concat(baseOptions),
-    logOptions = ["Curva", "Raiz"].concat(baseOptions)
-// sinOptions = ["Amplitude", "Período"].concat(baseOptions),
-// cosOptions = ["Amplitude", "Período"].concat(baseOptions),
-// tanOptions = ["Assíntotas verticais", "Período"].concat(baseOptions)
+    logOptions = ["Curva", "Raiz"].concat(baseOptions),
+    sinOptions = ["Amplitude", "Período"].concat(baseOptions),
+    cosOptions = ["Amplitude", "Período"].concat(baseOptions),
+    tanOptions = ["Assíntotas verticais", "Período"].concat(baseOptions)
 
 /**
  * [FUNÇÃO] Objeto base para as funções envolvendo funções matemáticas, seus estudos e características
@@ -561,31 +561,217 @@ export const Analyze = {
         return [coefA, coefB, coefC]
     },
 
-    /*
-    sin(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
+    sine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
             menuResp = [0, ""]
 
         // Mostra
-        Ui.function(coefA, coefB, coefC, false, false, 1)
+        Ui.function(coefA, coefB, coefC, false, false, "sin")
+
+        // Cálculo
+        let root = Algebra.round(Math.asin(Algebra.division(-coefC, coefB)) / coefA)
+
+        // Loop
+        let limit = 0
+        do {
+            menuResp = Ui.menu(sinOptions, page)
+            option = menuResp[0]
+            page = menuResp[1]
+            if (Commands.names().includes(menuResp[0])) {
+                option = 0
+                page = 1
+            }
+
+            // Página 1
+            if (page == 1) {
+                if (option == 1) {
+                    Helpers.amplitude(coefB)
+                } else if (option == 2) {
+                    Helpers.showPeriod(coefA)
+                } else if (option == 3) {
+                    Helpers.domain()
+                } else if (option == 4) {
+                    Helpers.range(
+                        "∈ [" +
+                            Writing.decimal(-Algebra.absolute(coefB) + coefC) +
+                            ", " +
+                            Writing.decimal(Algebra.absolute(coefB) + coefC) +
+                            "]",
+                        "",
+                        "Entre −|b| + c e |b| + c"
+                    )
+                } else if (option == 5) {
+                    Helpers.xAxis(root, "arcsin(−c / b) / a", "|(−c / b)| > 1, sem raiz real")
+                }
+            }
+
+            // Página 2
+            else if (page == 2) {
+                if (option == 1) {
+                    Helpers.yAxis(coefC, "b × sin(a · x) + c", "c")
+                } else if (option == 2) {
+                    Helpers.xValues(coefA, coefB, coefC, false, false, 1)
+                } else if (option == 3) {
+                    Helpers.yValues(coefA, coefB, coefC, false, false, 1)
+                } else if (option == 4) {
+                    Helpers.sign(coefA, coefB, coefC, false, false, 1)
+                } else if (option == 5) {
+                    Helpers.equations(false)
+                }
+            }
+
+            // Rever
+            if (option == 6) {
+                Ui.function(coefA, coefB, coefC, false, false, "sin", true)
+            }
+
+            // Limite
+            if (Helpers.exceededLimit(++limit)) {
+                option = 0
+            }
+        } while (option != 0)
+
+        return [coefA, coefB, coefC]
     },
 
-    cosine(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
+    cosine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
             menuResp = [0, ""]
 
         // Mostra
-        Ui.function(coefA, coefB, coefC, false, false, 2)
+        Ui.function(coefA, coefB, coefC, false, false, "cos")
+
+        // Cálculo
+        let root = Algebra.round(Math.acos(Algebra.division(-coefC, coefB)) / coefA)
+
+        // Loop
+        let limit = 0
+        do {
+            menuResp = Ui.menu(cosOptions, page)
+            option = menuResp[0]
+            page = menuResp[1]
+            if (Commands.names().includes(menuResp[0])) {
+                option = 0
+                page = 1
+            }
+
+            // Página 1
+            if (page == 1) {
+                if (option == 1) {
+                    Helpers.amplitude(coefB)
+                } else if (option == 2) {
+                    Helpers.showPeriod(coefA)
+                } else if (option == 3) {
+                    Helpers.domain()
+                } else if (option == 4) {
+                    Helpers.range(
+                        "∈ [" +
+                            Writing.decimal(-Algebra.absolute(coefB) + coefC) +
+                            ", " +
+                            Writing.decimal(Algebra.absolute(coefB) + coefC) +
+                            "]",
+                        "",
+                        "Entre −|b| + c e |b| + c"
+                    )
+                } else if (option == 5) {
+                    Helpers.xAxis(root, "arccos(−c / b) / a", "|(−c / b)| > 1, sem raiz real")
+                }
+            }
+
+            // Página 2
+            else if (page == 2) {
+                if (option == 1) {
+                    Helpers.yAxis(coefB + coefC, "b × cos(a · x) + c", "b + c")
+                } else if (option == 2) {
+                    Helpers.xValues(coefA, coefB, coefC, false, false, 2)
+                } else if (option == 3) {
+                    Helpers.yValues(coefA, coefB, coefC, false, false, 2)
+                } else if (option == 4) {
+                    Helpers.sign(coefA, coefB, coefC, false, false, 2)
+                } else if (option == 5) {
+                    Helpers.equations(false)
+                }
+            }
+
+            // Rever
+            if (option == 6) {
+                Ui.function(coefA, coefB, coefC, false, false, "cos", true)
+            }
+
+            // Limite
+            if (Helpers.exceededLimit(++limit)) {
+                option = 0
+            }
+        } while (option != 0)
+
+        return [coefA, coefB, coefC]
     },
 
-    tangent(coefA = state.globalA, coefB = state.globalB, coefC = state.globalC) {
+    tangent(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
             menuResp = [0, ""]
 
         // Mostra
-        Ui.function(coefA, coefB, coefC, false, false, 3)
-    }, */
+        Ui.function(coefA, coefB, coefC, false, false, "tan")
+
+        // Cálculo
+        let root = Algebra.round(Math.atan(Algebra.division(-coefC, coefB)) / coefA)
+
+        // Loop
+        let limit = 0
+        do {
+            menuResp = Ui.menu(tanOptions, page)
+            option = menuResp[0]
+            page = menuResp[1]
+            if (Commands.names().includes(menuResp[0])) {
+                option = 0
+                page = 1
+            }
+
+            // Página 1
+            if (page == 1) {
+                if (option == 1) {
+                    Helpers.verticalAsymptotes(coefA)
+                } else if (option == 2) {
+                    Helpers.showPeriod(coefA, true)
+                } else if (option == 3) {
+                    Helpers.domain()
+                } else if (option == 4) {
+                    Helpers.range()
+                } else if (option == 5) {
+                    Helpers.xAxis(root, "arctan(−c / b) / a")
+                }
+            }
+
+            // Página 2
+            else if (page == 2) {
+                if (option == 1) {
+                    Helpers.yAxis(coefC, "b × tan(a · x) + c", "c")
+                } else if (option == 2) {
+                    Helpers.xValues(coefA, coefB, coefC, false, false, 3)
+                } else if (option == 3) {
+                    Helpers.yValues(coefA, coefB, coefC, false, false, 3)
+                } else if (option == 4) {
+                    Helpers.sign(coefA, coefB, coefC, false, false, 3)
+                } else if (option == 5) {
+                    Helpers.equations(false)
+                }
+            }
+
+            // Rever
+            if (option == 6) {
+                Ui.function(coefA, coefB, coefC, false, false, "tan", true)
+            }
+
+            // Limite
+            if (Helpers.exceededLimit(++limit)) {
+                option = 0
+            }
+        } while (option != 0)
+
+        return [coefA, coefB, coefC]
+    },
 }

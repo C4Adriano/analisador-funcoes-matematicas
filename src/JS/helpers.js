@@ -541,24 +541,54 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Calcula o período de uma função
-     * @param {number} coefC - Coeficiente c
+     * @param {number} coefA - Coeficiente a (frequência angular)
+     * @param {boolean} funcTan - Se é função tangente (tan tem período π / |a|)
      * @returns {number} - Período
      * @since v6.1.0
      */
-    calcPeriod(coefC = 0) {
-        return Writing.decimal((2 * Math.PI) / Math.abs(coefC))
+    calcPeriod(coefA = 0, funcTan = false) {
+        return Writing.decimal((funcTan ? Math.PI : 2 * Math.PI) / Algebra.absolute(coefA))
     },
 
     /**
      * [FUNÇÃO] Exibe o período de uma função
-     * @param {number} coefC - Coeficiente c
+     * @param {number} coefA - Coeficiente a (frequência angular)
+     * @param {boolean} funcTan - Se é função tangente
      * @since v6.1.0
      */
-    showPeriod(coefC = 0) {
-        if (coefC != 0) {
-            Ui.display("Período: " + Helpers.calcPeriod(coefC), "Período = 2π / |c|")
+    showPeriod(coefA = 0, funcTan = false) {
+        if (coefA != 0) {
+            Ui.display(
+                "Período: " + Helpers.calcPeriod(coefA, funcTan),
+                "Período = " + (funcTan ? "π" : "2π") + " / |a|"
+            )
         } else {
-            Ui.display("Período: ∞", "Se c = 0, a função é constante, então o período é infinito.")
+            Ui.display("Período: ∞", "Se a = 0, a função é constante, então o período é infinito.")
+        }
+    },
+
+    /**
+     * [FUNÇÃO] Exibe a amplitude de uma função
+     * @param {number} coefB - Coeficiente b (amplitude)
+     * @since v6.1.0
+     */
+    amplitude(coefB = 0) {
+        Ui.display("Amplitude: " + Writing.decimal(Algebra.absolute(coefB)), "Amplitude = |b|")
+    },
+
+    /**
+     * [FUNÇÃO] Exibe as assíntotas verticais da tangente
+     * @param {number} coefA - Coeficiente a (frequência angular)
+     * @since v6.1.0
+     */
+    verticalAsymptotes(coefA = 0) {
+        if (coefA != 0) {
+            Ui.display(
+                "Assíntotas verticais: x = (π / 2 + n · π) / a,  n ∈ ℤ",
+                "tan(a · x) é indefinida quando cos(a · x) = 0, ou seja, a · x = π / 2 + n · π"
+            )
+        } else {
+            Ui.display("Assíntotas verticais: ∄", "Se a = 0, a função é constante, então não há assíntotas.")
         }
     },
 }

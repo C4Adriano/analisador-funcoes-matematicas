@@ -69,7 +69,7 @@ do {
     // Tipo de função
     if (!State.keepType || State.type == "inicio") {
         State.type = Ui.input(
-            "=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair",
+            "=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n3 = Funções trigonométricas\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair",
             "",
             true,
             0,
@@ -82,7 +82,7 @@ do {
     State.loop = false
 
     if (
-        (0 <= State.type && State.type <= 2) ||
+        (0 <= State.type && State.type <= 3) ||
         (6 <= State.type && State.type <= 9) ||
         Commands.names().includes(State.type)
     ) {
@@ -145,7 +145,7 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalA == 1 || State.globalB == 0) {
-                                Error.constantFunc("exponencial")
+                                Error.constantFunction("exponencial")
 
                                 if (State.globalA == 1) {
                                     State.globalC += State.globalB
@@ -159,7 +159,7 @@ do {
 
                             // Error de base
                             else if (State.globalA < 0) {
-                                Error.invalidFunc("exponencial")
+                                Error.invalidFunction("exponencial")
 
                                 State.askCoeffs = true
                                 State.loop = true
@@ -191,7 +191,7 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalA == 1 || State.globalB == 0) {
-                                Error.constantFunc("logarítmica")
+                                Error.constantFunction("logarítmica")
                                 if (State.globalA == 1) {
                                     State.globalC += State.globalB
                                 }
@@ -204,7 +204,7 @@ do {
 
                             // Error de base
                             else if (State.globalA < 0) {
-                                Error.invalidFunc("logarítmica")
+                                Error.invalidFunction("logarítmica")
                                 State.askCoeffs = true
                                 State.loop = true
                             }
@@ -212,7 +212,159 @@ do {
                     }
 
                     // Manter
-                    else if ((6 <= subType && subType <= 9) || Commands.nomes().includes(subType)) {
+                    else if ((6 <= subType && subType <= 9) || Commands.names().includes(subType)) {
+                        State.type = subType
+                        State.loop = true
+                        if (subType != "sair") {
+                            State.keepType = true
+                        }
+                    }
+
+                    // Voltar
+                    else if (subType == 0) {
+                        State.loop = true
+                    }
+                }
+
+                // Error
+                else {
+                    subLoop = true
+                }
+            } while (subLoop)
+        }
+
+        // Trigonométrica
+        else if (State.type == 3) {
+            // Loop do menu
+            do {
+                subType = Ui.input(
+                    "=== Menu ===\nO que queres?\n1 = Função seno\n2 = Função cosseno\n3 = Função tangente\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Voltar",
+                    "",
+                    true,
+                    0,
+                    true
+                )
+
+                subLoop = false
+
+                if (
+                    (0 <= subType && subType <= 2) ||
+                    (6 <= subType && subType <= 9) ||
+                    Commands.names().includes(subType)
+                ) {
+                    // Seno
+                    if (subType == 1) {
+                        // Incógnitas
+                        if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
+                            State.coefficients = Algebra.unknown(
+                                State.globalA,
+                                State.globalB,
+                                State.globalC,
+                                false,
+                                false,
+                                "sin"
+                            )
+                            State.globalA = Algebra.round(State.coefficients[0])
+                            State.globalB = Algebra.round(State.coefficients[1])
+                            State.globalC = Algebra.round(State.coefficients[2])
+                        }
+
+                        // Números
+                        if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
+                            if (State.globalA != 0 && State.globalB != 0) {
+                                Analyze.sine(State.globalA, State.globalB, State.globalC)
+                            }
+
+                            // Constante
+                            else if (State.globalA == 0 || State.globalB == 0) {
+                                Error.constantFunction("seno")
+
+                                State.globalA = 0
+                                State.globalB = 0
+                                State.type = 1
+                                State.keepType = true
+                                State.loop = true
+                            }
+                        }
+                    }
+
+                    // Cosseno
+                    else if (subType == 2) {
+                        // Incógnitas
+                        if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
+                            State.coefficients = Algebra.unknown(
+                                State.globalA,
+                                State.globalB,
+                                State.globalC,
+                                false,
+                                false,
+                                "cos"
+                            )
+                            State.globalA = Algebra.round(State.coefficients[0])
+                            State.globalB = Algebra.round(State.coefficients[1])
+                            State.globalC = Algebra.round(State.coefficients[2])
+                        }
+
+                        // Números
+                        if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
+                            if (State.globalA != 0 && State.globalB != 0) {
+                                Analyze.cosine(State.globalA, State.globalB, State.globalC)
+                            }
+
+                            // Constante
+                            else if (State.globalA == 0 || State.globalB == 0) {
+                                Error.constantFunction("cosseno")
+
+                                if (State.globalA == 0) {
+                                    State.globalC += State.globalB
+                                }
+                                State.globalA = 0
+                                State.globalB = 0
+                                State.type = 1
+                                State.keepType = true
+                                State.loop = true
+                            }
+                        }
+                    }
+
+                    // Tangente
+                    else if (subType == 3) {
+                        // Incógnitas
+                        if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
+                            State.coefficients = Algebra.unknown(
+                                State.globalA,
+                                State.globalB,
+                                State.globalC,
+                                false,
+                                false,
+                                "tan"
+                            )
+                            State.globalA = Algebra.round(State.coefficients[0])
+                            State.globalB = Algebra.round(State.coefficients[1])
+                            State.globalC = Algebra.round(State.coefficients[2])
+                        }
+
+                        // Números
+                        if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
+                            if (State.globalA != 0 && State.globalB != 0) {
+                                Analyze.tangent(State.globalA, State.globalB, State.globalC)
+                            }
+
+                            // Constante
+                            else if (State.globalA == 0 || State.globalB == 0) {
+                                Error.constantFunction("tangente")
+
+                                State.globalA = 0
+                                State.globalB = 0
+                                State.type = 1
+                                State.keepType = true
+                                State.loop = true
+                            }
+                        }
+                    }
+
+                    // Manter
+                    else if ((6 <= subType && subType <= 9) || Commands.names().includes(subType)) {
                         State.type = subType
                         State.loop = true
                         if (subType != "sair") {
@@ -309,6 +461,7 @@ do {
                     Writing.itemConfig("Precisão da divisão", "divPrecision"),
                     Writing.itemConfig("Limite de interações", "interactionLimit"),
                     Writing.itemConfig("Linguagem", "language"),
+                    Writing.itemConfig("Graus", "degrees"),
                 ]
 
                 // Preenche com separadores
@@ -600,9 +753,13 @@ do {
                         }
                     }
 
-                    /* Comandos
+                    // Graus
                     else if (choice == 6) {
-                    } */
+                        Config.degrees = Ui.confirm(
+                            Writing.itemConfig("Usar graus em vez de radianos?", "degrees"),
+                            "Obs.₁: Isso irá afetar as funções trigonométricas, tais como seno, cosseno e tangente\nObs.₂: Ativar isso irá fazer com que os ângulos sejam interpretados como graus, e não π radianos"
+                        )
+                    }
                 }
 
                 // Salvar as configurações

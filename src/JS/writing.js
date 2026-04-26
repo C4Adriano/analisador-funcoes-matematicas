@@ -503,6 +503,7 @@ export const Writing = {
                 ["undefined", "indefinido"],
                 ["nan", "não é um número"],
                 ["infinity", "infinito"],
+                ["sin(", "sen("],
             ]
         } else if (Config.language == "en") {
             // === TRADUÇÃO DE PORTUGUÊS PARA INGLÊS ===
@@ -884,6 +885,7 @@ export const Writing = {
                 ["digitaste", "typed"],
                 ["digite", "type"],
                 ["interações", "iterations"],
+                ["sen(", "sin("],
             ]
 
             connectors = [
@@ -1111,5 +1113,44 @@ export const Writing = {
             Writing.formatValue(DEFAULT_CONFIG[name]) +
             "”"
         )
+    },
+
+    parseDegree(text = "") {
+        let degrees = parseFloat(Writing.replace(text, "°", ""))
+        return degrees * (Math.PI / 180)
+    },
+
+    parseRadian(text = "") {
+        let parts = text.split("/"),
+            denominator = parts[1] ? parseFloat(parts[1]) : 1,
+            multiParts = parts[0].split("*"),
+            multiplier = multiParts.length > 1 ? parseFloat(multiParts[0]) : 1
+        return (multiplier * Math.PI) / denominator
+    },
+
+    parseAngle(text = "") {
+        if (text.includes("°")) {
+            return Writing.parseDegree(text)
+        } else {
+            return Writing.parseRadian(text)
+        }
+    },
+
+    formatAngle(value = 0) {
+        let ratio = value / Math.PI // PI/6 → ratio = 1/6 ≈ 0.1666...
+
+        // Testa denominadores comuns (1 a 12 cobre os casos típicos)
+        for (let denominator = 1; denominator <= 12; denominator++) {
+            let numerator = Algebra.round(ratio * denominator, 0)
+            if (Algebra.absolute(numerator / denominator - ratio) < 1e-9) {
+                // Achou uma fração exata
+                if (numerator == 0) return "0"
+                if (denominator == 1) return numerator == 1 ? "PI" : numerator + "*PI"
+                return (numerator == 1 ? "" : numerator + "*") + "PI/" + denominator
+            }
+        }
+
+        // Se não achou fração simples, retorna decimal normal
+        return Writing.decimal(value)
     },
 }
