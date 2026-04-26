@@ -743,7 +743,7 @@ export const Writing = {
                 ["se encontram em", "meet at"],
                 ["escolha um valor entre", "choose a value between"],
                 ["ou selecione 0 para voltar / sair", "or select 0 to go back / exit"],
-                ["configurações voltarão ao padrão caso saias", "settings will revert to default if you exit"],
+                ["configurações poderão voltar ao padrão caso saias", "settings may revert to default if you exit"],
                 ["restaurar padrão", "restore defaults"],
                 ["configurações afetadas", "affected settings"],
                 ["para escrever outra função", "to write another function"],
