@@ -187,14 +187,14 @@ export const Helpers = {
      * @since v6.1.0
      */
     sign(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
-        let operations = [">", "<"],
-            words = ["positiva", "negativa"]
+        let operations = { positive: ">", negative: "<" },
+            words = { positive: "positiva", negative: "negativa" }
 
         if (!funcExp && !funcLog) {
             // Polinomial
             if (coefA == 0 && coefB == 0) {
                 // Constante
-                let op = coefC > 0 ? 0 : 1
+                let op = coefC > 0 ? "positive" : "negative"
                 Ui.display(
                     "ƒ(x) " + (coefC != 0 ? operations[op] : "=") + " 0, ∀ x ∈ ℝ",
                     "A função será sempre " +
@@ -206,7 +206,7 @@ export const Helpers = {
             } else if (coefA == 0 && coefB != 0) {
                 // Afim
                 let affineRoot = Helpers.calcRoot(0, coefB, coefC),
-                    op = coefB > 0 ? 0 : 1
+                    op = coefB > 0 ? "positive" : "negative"
                 Ui.display(
                     "ƒ(x) " +
                         operations[op] +
@@ -227,7 +227,7 @@ export const Helpers = {
             } else if (coefA != 0) {
                 // Quadrática
                 let quadRoot = Helpers.calcRoot(coefA, coefB, coefC),
-                    op = coefA > 0 ? 0 : 1
+                    op = coefA > 0 ? "positive" : "negative"
                 if (quadRoot[1] > quadRoot[2]) {
                     // Inverte para ficar de menor a maior
                     let temp = quadRoot[2]
