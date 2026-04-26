@@ -200,7 +200,7 @@ export const Ui = {
                 valid = Ui.warning(
                     "Tu digitaste: “" + (number ? Writing.decimal(value) : text) + "”\nTens certeza?",
                     "Obs.₁: Se essa for uma variável e o que foi digitado não for um número, ela será transformada no nome da variável, não no que foi digitado\nObs.₂: Essas mensagens podem ser desativadas nas configurações, em “Confirmações de entrada”",
-                    true,
+                    true
                 )
             }
 
@@ -238,7 +238,7 @@ export const Ui = {
         funcExp = false,
         funcLog = false,
         funcTrig = 0,
-        show = Config.showFunction,
+        show = Config.showFunction
     ) {
         if (!show) {
             // Não mostrar

@@ -20,7 +20,7 @@ export const Test = {
                 "=== Testes ===\n1 = Constante\n2 = Afim\n3 = Quadrática\n4 = Exponencial\n5 = Logarítmica\n6 = Contas\n0 = Sair",
                 "",
                 0,
-                6,
+                6
             )
 
             if (option == 1) {

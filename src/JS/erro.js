@@ -19,7 +19,7 @@ export const Error = {
                 " e " +
                 String(max) +
                 (min == 0 ? " ou selecione 0 para voltar / sair" : ""),
-            "Tu escolheste algo fora do intervalo.",
+            "Tu escolheste algo fora do intervalo."
         )
     },
 
@@ -31,7 +31,7 @@ export const Error = {
     divZero(reason = "") {
         Ui.error(
             "ERRO-002: Divisão por zero",
-            reason != "" ? "Motivo: " + reason : "Tu tentaste dividir um número por zero, o que não é possível.",
+            reason != "" ? "Motivo: " + reason : "Tu tentaste dividir um número por zero, o que não é possível."
         )
     },
 
@@ -72,7 +72,7 @@ export const Error = {
             "ERRO-006: " + type + " inválido",
             reason != ""
                 ? "Motivo: " + reason
-                : "Tu tentaste calcular um logaritmo com base menor ou igual a 1, o que não é possível.",
+                : "Tu tentaste calcular um logaritmo com base menor ou igual a 1, o que não é possível."
         )
     },
 }

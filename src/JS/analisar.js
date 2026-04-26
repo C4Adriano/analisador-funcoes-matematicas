@@ -261,7 +261,7 @@ export const Analisar = {
                         delta[0],
                         "Não há raízes reais.",
                         "Raiz real: x₁ = x₂ = " + Writing.decimal(delta[1]),
-                        "Raízes reais: x₁ = " + Writing.decimal(delta[1]) + ", x₂ = " + Writing.decimal(delta[2]),
+                        "Raízes reais: x₁ = " + Writing.decimal(delta[1]) + ", x₂ = " + Writing.decimal(delta[2])
                     )
                 }
 
@@ -269,7 +269,7 @@ export const Analisar = {
                 else if (option == 3) {
                     Ui.display(
                         "Vértice: (" + Writing.decimal(vertex[0]) + ", " + Writing.decimal(vertex[1]) + ")",
-                        "Ponto mais baixo (ou mais alto, conforme a concavidade) da função. Ponto (-b / (2 · a), -Δ / (4 · a))",
+                        "Ponto mais baixo (ou mais alto, conforme a concavidade) da função. Ponto (-b / (2 · a), -Δ / (4 · a))"
                     )
                 }
 
@@ -300,7 +300,7 @@ export const Analisar = {
                             Writing.decimal(delta[1]) +
                             ", 0) e (" +
                             Writing.decimal(delta[2]) +
-                            ", 0)",
+                            ", 0)"
                     )
                 }
 

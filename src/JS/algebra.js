@@ -99,12 +99,12 @@ export const Algebra = {
             if (coefC == 0) {
                 Ui.display(
                     "As funções coincidem: ƒ₁(x) = ƒ₂(x), ∀ x ∈ ℝ",
-                    "Porque as funções são iguais, em todos os pontos, elas se encontram.",
+                    "Porque as funções são iguais, em todos os pontos, elas se encontram."
                 )
             } else if (coefC != 0) {
                 Ui.display(
                     "As funções nunca se encontrarão: ƒ₁(x) ≠ ƒ₂(x), ∀ x ∈ ℝ",
-                    "Porque as funções são diferentes, não há ponto em que elas se encontrarão.",
+                    "Porque as funções são diferentes, não há ponto em que elas se encontrarão."
                 )
             }
         }
@@ -122,7 +122,7 @@ export const Algebra = {
                 delta[0],
                 "As funções não possuem pontos de interseção reais",
                 "As funções se encontram em: x = " + Writing.decimal(delta[1]),
-                "As funções se encontram em: x₁ = " + Writing.decimal(delta[1]) + ", x₂ = " + Writing.decimal(delta[2]),
+                "As funções se encontram em: x₁ = " + Writing.decimal(delta[1]) + ", x₂ = " + Writing.decimal(delta[2])
             )
         }
     },
@@ -259,12 +259,12 @@ export const Algebra = {
                             denominator = points[0] * points[2] * (points[0] - points[2])
                             coefA = Algebra.division(
                                 (points[1] - coefC) * points[2] - (points[3] - coefC) * points[0],
-                                denominator,
+                                denominator
                             )
                             coefB = Algebra.division(
                                 (points[3] - coefC) * points[0] * points[0] -
                                     (points[1] - coefC) * points[2] * points[2],
-                                denominator,
+                                denominator
                             )
                         } else {
                             Error.divZero("x ≠ 0 e x₁ ≠ x₂")
@@ -280,7 +280,7 @@ export const Algebra = {
                         if (denominator != 0) {
                             coefA = Algebra.division(
                                 points[1] - coefB * points[0] - (points[3] - coefB * points[2]),
-                                denominator,
+                                denominator
                             )
                             coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0]
                         } else {
@@ -296,7 +296,7 @@ export const Algebra = {
                         if (points[0] != points[2]) {
                             coefB = Algebra.division(
                                 points[3] - coefA * points[2] * points[2] - (points[1] - coefA * points[0] * points[0]),
-                                points[2] - points[0],
+                                points[2] - points[0]
                             )
                             coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0]
                         } else {
@@ -338,7 +338,7 @@ export const Algebra = {
                     points = Algebra.point()
 
                     coefA = Algebra.round(
-                        Algebra.division(points[1] - coefC, coefB, false) ** Algebra.division(1, points[0], false),
+                        Algebra.division(points[1] - coefC, coefB, false) ** Algebra.division(1, points[0], false)
                     )
                 }
 
@@ -364,7 +364,7 @@ export const Algebra = {
 
                     coefA = Algebra.round(
                         Algebra.division(points[1] - coefC, points[3] - coefC, false) **
-                            Algebra.division(1, points[0] - points[2], false),
+                            Algebra.division(1, points[0] - points[2], false)
                     )
                     coefB = Algebra.division(points[1] - coefC, coefA ** points[0])
                 }
@@ -440,7 +440,7 @@ export const Algebra = {
 
                     coefA = Algebra.round(
                         Algebra.division(points[0], points[2], false) **
-                            Algebra.division(coefB, points[1] - points[3], false),
+                            Algebra.division(coefB, points[1] - points[3], false)
                     )
                     coefC = points[1] - coefB * Algebra.log(points[0], coefA)
                 }
@@ -451,7 +451,7 @@ export const Algebra = {
 
                     coefB = Algebra.division(
                         points[1] - points[3],
-                        Algebra.log(points[0], coefA) - Algebra.log(points[2], coefA),
+                        Algebra.log(points[0], coefA) - Algebra.log(points[2], coefA)
                     )
                     coefC = points[1] - coefB * Algebra.log(points[0], coefA)
                 }
@@ -473,7 +473,7 @@ export const Algebra = {
                 if (
                     Ui.confirm(
                         "Queres mudar os valores dos coeficientes?",
-                        "Se quiser alterar os valores dos pontos, escolha “Cancelar”",
+                        "Se quiser alterar os valores dos pontos, escolha “Cancelar”"
                     )
                 ) {
                     coefA = "a"

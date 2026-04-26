@@ -60,7 +60,7 @@ export const Helpers = {
                 // Afim
                 Ui.display(
                     intersection + "(" + Writing.decimal(root) + ", 0)",
-                    "Ponto da raiz, (" + explanation + ", 0)",
+                    "Ponto da raiz, (" + explanation + ", 0)"
                 )
             }
         }
@@ -76,7 +76,7 @@ export const Helpers = {
     yAxis(point = 0, func = "c", explanation = "c") {
         Ui.display(
             "Interseção com o eixo y: " + (point != "∄" ? "(0, " + Writing.decimal(point) + ")" : "∄"),
-            "Como y = " + func + (point != "∄" ? ", o ponto é sempre (0, " + explanation + ")" : explanation),
+            "Como y = " + func + (point != "∄" ? ", o ponto é sempre (0, " + explanation + ")" : explanation)
         )
     },
 
@@ -97,7 +97,7 @@ export const Helpers = {
             // Polinomial
             Ui.display(
                 message + "y = " + Writing.decimal(coefA * x ** 2 + coefB * x + coefC),
-                "y = " + (coefA != 0 ? "a · x² + " : "") + (coefB != 0 ? "b · x + " : "") + "c",
+                "y = " + (coefA != 0 ? "a · x² + " : "") + (coefB != 0 ? "b · x + " : "") + "c"
             )
         } else if (funcExp) {
             // Exponencial
@@ -108,7 +108,7 @@ export const Helpers = {
                 // O logaritmo só é definido para x > 0
                 Ui.display(
                     message + "y = " + Writing.decimal(coefB * Algebra.log(x, coefA) + coefC),
-                    "y = b × logₐ(x) + c",
+                    "y = b × logₐ(x) + c"
                 )
             } else {
                 // Se x ≤ 0, o logaritmo não é definido, então a função não tem valor real para esse x
@@ -152,7 +152,7 @@ export const Helpers = {
                     message + "∄! x ∈ ℝ",
                     message + "x = " + Writing.decimal(delta[1]),
                     message + "x₁ = " + Writing.decimal(delta[1]) + ", x₂ = " + Writing.decimal(delta[2]),
-                    true,
+                    true
                 )
             }
         } else {
@@ -164,7 +164,7 @@ export const Helpers = {
                     // Se (y - c) / b > 0, então o logaritmo é definido, então a função tem valor real para esse y
                     Ui.display(
                         message + "x = " + Writing.decimal(Algebra.division(Algebra.ln(exponent), Algebra.ln(coefA))),
-                        "x = ln((y - c) / b) / ln(a)",
+                        "x = ln((y - c) / b) / ln(a)"
                     )
                 } else {
                     // Se (y - c) / b ≤ 0, o logaritmo não é definido, então a função não tem valor real para esse y
@@ -201,7 +201,7 @@ export const Helpers = {
                         (coefC != 0 ? words[op] : "nula") +
                         ", pois c " +
                         (coefC != 0 ? operations[op] : "=") +
-                        " 0",
+                        " 0"
                 )
             } else if (coefA == 0 && coefB != 0) {
                 // Afim
@@ -222,7 +222,7 @@ export const Helpers = {
                         affineRoot +
                         "\nƒ(x) = 0 em x = " +
                         affineRoot,
-                    "Pois b " + operations[op] + " 0.",
+                    "Pois b " + operations[op] + " 0."
                 )
             } else if (coefA != 0) {
                 // Quadrática
@@ -238,13 +238,13 @@ export const Helpers = {
                     // Sem raiz
                     Ui.display(
                         "ƒ(x) " + operations[op] + " 0, ∀ x ∈ ℝ",
-                        "Conforme a concavidade e as raízes, a " + operations[op] + " 0 e Δ < 0.",
+                        "Conforme a concavidade e as raízes, a " + operations[op] + " 0 e Δ < 0."
                     )
                 } else if (quadRoot[0] == 0) {
                     // Uma raiz
                     Ui.display(
                         "ƒ(x) " + operations[op] + " 0, exceto em x = " + Writing.decimal(quadRoot[1]),
-                        "Conforme a concavidade e a raiz, a " + operations[op] + " 0 e Δ = 0.",
+                        "Conforme a concavidade e a raiz, a " + operations[op] + " 0 e Δ = 0."
                     )
                 } else {
                     // Duas raízes
@@ -263,7 +263,7 @@ export const Helpers = {
                                 Writing.decimal(quadRoot[1]) +
                                 ", " +
                                 Writing.decimal(quadRoot[2]),
-                            "Conforme a concavidade e as raízes, a < 0 e Δ > 0.",
+                            "Conforme a concavidade e as raízes, a < 0 e Δ > 0."
                         )
                     } else {
                         // Concavidade para cima
@@ -280,7 +280,7 @@ export const Helpers = {
                                 Writing.decimal(quadRoot[1]) +
                                 ", " +
                                 Writing.decimal(quadRoot[2]),
-                            "Conforme a concavidade e as raízes, a > 0 e Δ > 0.",
+                            "Conforme a concavidade e as raízes, a > 0 e Δ > 0."
                         )
                     }
                 }
@@ -301,7 +301,7 @@ export const Helpers = {
                                 Writing.decimal(expRoot) +
                                 "\nƒ(x) = 0 em x = " +
                                 Writing.decimal(expRoot),
-                            "Conforme a curva e a raiz, neste caso, crescente e (−c) / b > 0.",
+                            "Conforme a curva e a raiz, neste caso, crescente e (−c) / b > 0."
                         )
                     } else if ((coefA > 1 && coefB < 0) || (coefA < 1 && coefB > 0)) {
                         // Curva para baixo
@@ -312,7 +312,7 @@ export const Helpers = {
                                 Writing.decimal(expRoot) +
                                 "\nƒ(x) = 0 em x = " +
                                 Writing.decimal(expRoot),
-                            "Conforme a curva e a raiz, neste caso, decrescente e (−c) / b > 0.",
+                            "Conforme a curva e a raiz, neste caso, decrescente e (−c) / b > 0."
                         )
                     }
                 } else if (coefB > 0) {
@@ -334,7 +334,7 @@ export const Helpers = {
                             Writing.decimal(logRoot) +
                             "\nƒ(x) = 0 em x = " +
                             Writing.decimal(logRoot),
-                        "Conforme a curva (crescente)",
+                        "Conforme a curva (crescente)"
                     )
                 } else if ((coefA > 1 && coefB < 0) || (coefA < 1 && coefB > 0)) {
                     // Curva para baixo
@@ -345,7 +345,7 @@ export const Helpers = {
                             Writing.decimal(logRoot) +
                             "\nƒ(x) = 0 em x = " +
                             Writing.decimal(logRoot),
-                        "Conforme a curva (decrescente)",
+                        "Conforme a curva (decrescente)"
                     )
                 }
             }
@@ -381,7 +381,7 @@ export const Helpers = {
             // Não polinomial
             Ui.warning(
                 "Ainda não posso resolver equações com funções não polinomiais.",
-                "Em construção, use valores para x e y por enquanto.",
+                "Em construção, use valores para x e y por enquanto."
             )
         }
     },
@@ -505,7 +505,7 @@ export const Helpers = {
         } else {
             Ui.display(
                 higher,
-                "Δ = b² - 4 · a · " + (hasY ? "(c - y)" : "c") + " ⇒ Δ > 0 ⇒ x₁, x₂ = (-b ± √Δ) / (2 · a)",
+                "Δ = b² - 4 · a · " + (hasY ? "(c - y)" : "c") + " ⇒ Δ > 0 ⇒ x₁, x₂ = (-b ± √Δ) / (2 · a)"
             )
         }
     },

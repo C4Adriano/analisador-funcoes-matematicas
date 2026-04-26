@@ -37,7 +37,7 @@ export const Commands = {
                         suggestion.canonical +
                         "” (distância " +
                         suggestion.distance +
-                        ")\nDeseja executar essa sugestão?",
+                        ")\nDeseja executar essa sugestão?"
                 )
                 if (answer === 1) {
                     return Commands.process("/" + suggestion.canonical + " " + (parts[1] || ""))
