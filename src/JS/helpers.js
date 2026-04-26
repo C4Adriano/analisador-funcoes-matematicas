@@ -1,7 +1,7 @@
 import { Algebra } from "./algebra.js"
 import { Config } from "./config.js"
 import { Error } from "./erro.js"
-import { Escrita } from "./escrita.js"
+import { Writing } from "./escrita.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
 
@@ -13,67 +13,70 @@ import { Ui } from "./ui.js"
 export const Helpers = {
     /**
      * [FUNÇÃO] Monta o domínio de uma função
-     * @param {string} pertence - Intervalo de pertencimento
-     * @param {string} explicacao - Explicação
+     * @param {string} belongs - Intervalo de pertencimento
+     * @param {string} explanation - Explicação
      * @since v6.1.0
      */
-    dominio(pertence = "∈ ℝ", explicacao = "A função pode assumir qualquer x real") {
-        Ui.exibir("Domínio: x " + pertence, explicacao)
+    domain(belongs = "∈ ℝ", explanation = "A função pode assumir qualquer x real") {
+        Ui.display("Domínio: x " + belongs, explanation)
     },
 
     /**
      * [FUNÇÃO] Monta a imagem de uma função
-     * @param {string} pertence - Intervalo de pertencimento
-     * @param {string} intervalo - Se a função deve assumir algum intervalo diferente
-     * @param {string} explicacao - Explicação
+     * @param {string} belongs - Intervalo de pertencimento
+     * @param {string} interval - Se a função deve assumir algum intervalo diferente
+     * @param {string} explanation - Explicação
      * @since v6.1.0
      */
-    imagem(pertence = "∈ ℝ", intervalo = ".", explicacao = "A função pode assumir qualquer y real") {
-        Ui.exibir("Imagem: y " + pertence, explicacao + intervalo)
+    range(belongs = "∈ ℝ", interval = ".", explanation = "A função pode assumir qualquer y real") {
+        Ui.display("Imagem: y " + belongs, explanation + interval)
     },
 
     /**
      * [FUNÇÃO] Monta a intercessão com o eixo x de uma função
-     * @param {number} raiz - Raiz
-     * @param {string} explicacao - Explicação
-     * @param {string} naoHa - Mensagem quando não há interseção com o eixo x
+     * @param {number} root - Raiz
+     * @param {string} explanation - Explicação
+     * @param {string} noHave - Mensagem quando não há interseção com o eixo x
      * @since v6.1.0
      */
-    eixoX(raiz = 0, explicacao = "c", naoHa = "Não existe raiz real, portanto não há interseção com o eixo x.") {
-        let intersecao = "Interseção com o eixo x: "
+    xAxis(root = 0, explanation = "c", noHave = "Não existe raiz real, portanto não há interseção com o eixo x.") {
+        let intersection = "Interseção com o eixo x: "
 
-        if (raiz == 0) {
+        if (root == 0) {
             // Constante
-            if (explicacao == 0) {
+            if (explanation == 0) {
                 // Se c = 0, a função é nula, então existe infinitas raízes
-                Ui.exibir(intersecao + "∃∞ x ∈ ℝ", "y = 0, ∀ x ∈ ℝ")
+                Ui.display(intersection + "∃∞ x ∈ ℝ", "y = 0, ∀ x ∈ ℝ")
             } else {
                 // Se c ≠ 0, então não existe raiz
-                Ui.exibir(intersecao + "∄! x ∈ ℝ", "y = c; se c ≠ 0 ⇒ ∄ x")
+                Ui.display(intersection + "∄! x ∈ ℝ", "y = c; se c ≠ 0 ⇒ ∄ x")
             }
         } else {
             // Outras funções
-            if (isNaN(raiz)) {
+            if (isNaN(root)) {
                 // Não polinomial
-                Ui.exibir(intersecao + "∄", naoHa)
+                Ui.display(intersection + "∄", noHave)
             } else {
                 // Afim
-                Ui.exibir(intersecao + "(" + Escrita.decimal(raiz) + ", 0)", "Ponto da raiz, (" + explicacao + ", 0)")
+                Ui.display(
+                    intersection + "(" + Writing.decimal(root) + ", 0)",
+                    "Ponto da raiz, (" + explanation + ", 0)",
+                )
             }
         }
     },
 
     /**
      * [FUNÇÃO] Monta a intercessão com o eixo y de uma função
-     * @param {string | number} ponto - Ponto
-     * @param {string} funcao - Função
-     * @param {string} explicacao - Explicação
+     * @param {string | number} point - Ponto
+     * @param {string} function - Função
+     * @param {string} explanation - Explicação
      * @since v6.1.0
      */
-    eixoY(ponto = 0, funcao = "c", explicacao = "c") {
-        Ui.exibir(
-            "Interseção com o eixo y: " + (ponto != "∄" ? "(0, " + Escrita.decimal(ponto) + ")" : "∄"),
-            "Como y = " + funcao + (ponto != "∄" ? ", o ponto é sempre (0, " + explicacao + ")" : explicacao),
+    yAxis(point = 0, func = "c", explanation = "c") {
+        Ui.display(
+            "Interseção com o eixo y: " + (point != "∄" ? "(0, " + Writing.decimal(point) + ")" : "∄"),
+            "Como y = " + func + (point != "∄" ? ", o ponto é sempre (0, " + explanation + ")" : explanation),
         )
     },
 
@@ -86,30 +89,30 @@ export const Helpers = {
      * @param {boolean} funcLog - Logarítmica
      * @since v6.1.0
      */
-    valoresX(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
-        let x = Ui.entrada("x = ", "", true),
-            mensagem = "Para x = " + Escrita.decimal(x) + ", "
+    xValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
+        let x = Ui.input("x = ", "", true),
+            message = "Para x = " + Writing.decimal(x) + ", "
 
         if (!funcExp && !funcLog) {
             // Polinomial
-            Ui.exibir(
-                mensagem + "y = " + Escrita.decimal(coefA * x ** 2 + coefB * x + coefC),
+            Ui.display(
+                message + "y = " + Writing.decimal(coefA * x ** 2 + coefB * x + coefC),
                 "y = " + (coefA != 0 ? "a · x² + " : "") + (coefB != 0 ? "b · x + " : "") + "c",
             )
         } else if (funcExp) {
             // Exponencial
-            Ui.exibir(mensagem + "y = " + Escrita.decimal(coefB * coefA ** x + coefC), "y = b × aˣ + c")
+            Ui.display(message + "y = " + Writing.decimal(coefB * coefA ** x + coefC), "y = b × aˣ + c")
         } else if (funcLog) {
             // Logarítmica
             if (x > 0) {
                 // O logaritmo só é definido para x > 0
-                Ui.exibir(
-                    mensagem + "y = " + Escrita.decimal(coefB * Algebra.log(x, coefA) + coefC),
+                Ui.display(
+                    message + "y = " + Writing.decimal(coefB * Algebra.log(x, coefA) + coefC),
                     "y = b × logₐ(x) + c",
                 )
             } else {
                 // Se x ≤ 0, o logaritmo não é definido, então a função não tem valor real para esse x
-                Ui.exibir(mensagem + "∄! y ∈ ℝ", "x ≤ 0 ⇒ logₐ(x) ∉ ℝ")
+                Ui.display(message + "∄! y ∈ ℝ", "x ≤ 0 ⇒ logₐ(x) ∉ ℝ")
             }
         }
     },
@@ -123,9 +126,9 @@ export const Helpers = {
      * @param {boolean} funcLog - Logarítmica
      * @since v6.1.0
      */
-    valoresY(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
-        let y = Ui.entrada("y = ", "", true),
-            mensagem = "Para y = " + Escrita.decimal(y) + ", "
+    yValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
+        let y = Ui.input("y = ", "", true),
+            message = "Para y = " + Writing.decimal(y) + ", "
 
         if (!funcExp && !funcLog) {
             // Polinomial
@@ -133,43 +136,43 @@ export const Helpers = {
                 // Constante
                 if (y == coefC) {
                     // Se y = c, então existe infinitas soluções
-                    Ui.exibir(mensagem + "∃∞ x ∈ ℝ", "y = c, ∀ x ∈ ℝ")
+                    Ui.display(message + "∃∞ x ∈ ℝ", "y = c, ∀ x ∈ ℝ")
                 } else {
                     // Se y ≠ c, então não existe solução
-                    Ui.exibir(mensagem + "∄! x ∈ ℝ", "y = c; se y ≠ c ⇒ ∄ x")
+                    Ui.display(message + "∄! x ∈ ℝ", "y = c; se y ≠ c ⇒ ∄ x")
                 }
             } else if (coefA == 0 && coefB != 0) {
                 // Afim
-                Ui.exibir(mensagem + "x = " + Escrita.decimal(Algebra.divisao(y - coefC, coefB)), "x = (y - c) / b")
+                Ui.display(message + "x = " + Writing.decimal(Algebra.division(y - coefC, coefB)), "x = (y - c) / b")
             } else if (coefA != 0) {
                 // Quadrática
                 let delta = Helpers.calcDelta(coefA, coefB, coefC - y)
-                Helpers.exibDelta(
+                Helpers.showDelta(
                     delta[0],
-                    mensagem + "∄! x ∈ ℝ",
-                    mensagem + "x = " + Escrita.decimal(delta[1]),
-                    mensagem + "x₁ = " + Escrita.decimal(delta[1]) + ", x₂ = " + Escrita.decimal(delta[2]),
+                    message + "∄! x ∈ ℝ",
+                    message + "x = " + Writing.decimal(delta[1]),
+                    message + "x₁ = " + Writing.decimal(delta[1]) + ", x₂ = " + Writing.decimal(delta[2]),
                     true,
                 )
             }
         } else {
             // Não polinomial
-            let expoente = Algebra.divisao(y - coefC, coefB, false) // (y - c) / b
+            let exponent = Algebra.division(y - coefC, coefB, false) // (y - c) / b
             if (funcExp) {
                 // Exponencial
-                if (expoente > 0) {
+                if (exponent > 0) {
                     // Se (y - c) / b > 0, então o logaritmo é definido, então a função tem valor real para esse y
-                    Ui.exibir(
-                        mensagem + "x = " + Escrita.decimal(Algebra.divisao(Algebra.ln(expoente), Algebra.ln(coefA))),
+                    Ui.display(
+                        message + "x = " + Writing.decimal(Algebra.division(Algebra.ln(exponent), Algebra.ln(coefA))),
                         "x = ln((y - c) / b) / ln(a)",
                     )
                 } else {
                     // Se (y - c) / b ≤ 0, o logaritmo não é definido, então a função não tem valor real para esse y
-                    Ui.exibir(mensagem + "∄! x ∈ ℝ", "(y - c) / b ≤ 0")
+                    Ui.display(message + "∄! x ∈ ℝ", "(y - c) / b ≤ 0")
                 }
             } else if (funcLog) {
                 // Logarítmica
-                Ui.exibir(mensagem + "x = " + Escrita.decimal(coefA ** expoente), "x = a⁽⁽ʸ⁻ᶜ⁾⁄ᵇ⁾")
+                Ui.display(message + "x = " + Writing.decimal(coefA ** exponent), "x = a⁽⁽ʸ⁻ᶜ⁾⁄ᵇ⁾")
             }
         }
     },
@@ -183,100 +186,100 @@ export const Helpers = {
      * @param {boolean} funcLog - Logarítmica
      * @since v6.1.0
      */
-    sinal(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
-        let operacoes = [">", "<"],
-            palavras = ["positiva", "negativa"]
+    sign(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
+        let operations = [">", "<"],
+            words = ["positiva", "negativa"]
 
         if (!funcExp && !funcLog) {
             // Polinomial
             if (coefA == 0 && coefB == 0) {
                 // Constante
                 let op = coefC > 0 ? 0 : 1
-                Ui.exibir(
-                    "ƒ(x) " + (coefC != 0 ? operacoes[op] : "=") + " 0, ∀ x ∈ ℝ",
+                Ui.display(
+                    "ƒ(x) " + (coefC != 0 ? operations[op] : "=") + " 0, ∀ x ∈ ℝ",
                     "A função será sempre " +
-                        (coefC != 0 ? palavras[op] : "nula") +
+                        (coefC != 0 ? words[op] : "nula") +
                         ", pois c " +
-                        (coefC != 0 ? operacoes[op] : "=") +
+                        (coefC != 0 ? operations[op] : "=") +
                         " 0",
                 )
             } else if (coefA == 0 && coefB != 0) {
                 // Afim
-                let raizAfim = Helpers.calcRaiz(0, coefB, coefC),
+                let affineRoot = Helpers.calcRoot(0, coefB, coefC),
                     op = coefB > 0 ? 0 : 1
-                Ui.exibir(
+                Ui.display(
                     "ƒ(x) " +
-                        operacoes[op] +
+                        operations[op] +
                         " 0 se x " +
-                        operacoes[(op + (coefB < 0 ? 1 : 0)) % 2] +
+                        operations[(op + (coefB < 0 ? 1 : 0)) % 2] +
                         " " +
-                        raizAfim +
+                        affineRoot +
                         "\nƒ(x) " +
-                        operacoes[1 - op] +
+                        operations[1 - op] +
                         " 0 se x " +
-                        operacoes[(1 - op + (coefB < 0 ? 1 : 0)) % 2] +
+                        operations[(1 - op + (coefB < 0 ? 1 : 0)) % 2] +
                         " " +
-                        raizAfim +
+                        affineRoot +
                         "\nƒ(x) = 0 em x = " +
-                        raizAfim,
-                    "Pois b " + operacoes[op] + " 0.",
+                        affineRoot,
+                    "Pois b " + operations[op] + " 0.",
                 )
             } else if (coefA != 0) {
                 // Quadrática
-                let raizQuad = Helpers.calcRaiz(coefA, coefB, coefC),
+                let quadRoot = Helpers.calcRoot(coefA, coefB, coefC),
                     op = coefA > 0 ? 0 : 1
-                if (raizQuad[1] > raizQuad[2]) {
+                if (quadRoot[1] > quadRoot[2]) {
                     // Inverte para ficar de menor a maior
-                    let temp = raizQuad[2]
-                    raizQuad[2] = raizQuad[1]
-                    raizQuad[1] = temp
+                    let temp = quadRoot[2]
+                    quadRoot[2] = quadRoot[1]
+                    quadRoot[1] = temp
                 }
-                if (raizQuad[0] < 0) {
+                if (quadRoot[0] < 0) {
                     // Sem raiz
-                    Ui.exibir(
-                        "ƒ(x) " + operacoes[op] + " 0, ∀ x ∈ ℝ",
-                        "Conforme a concavidade e as raízes, a " + operacoes[op] + " 0 e Δ < 0.",
+                    Ui.display(
+                        "ƒ(x) " + operations[op] + " 0, ∀ x ∈ ℝ",
+                        "Conforme a concavidade e as raízes, a " + operations[op] + " 0 e Δ < 0.",
                     )
-                } else if (raizQuad[0] == 0) {
+                } else if (quadRoot[0] == 0) {
                     // Uma raiz
-                    Ui.exibir(
-                        "ƒ(x) " + operacoes[op] + " 0, exceto em x = " + Escrita.decimal(raizQuad[1]),
-                        "Conforme a concavidade e a raiz, a " + operacoes[op] + " 0 e Δ = 0.",
+                    Ui.display(
+                        "ƒ(x) " + operations[op] + " 0, exceto em x = " + Writing.decimal(quadRoot[1]),
+                        "Conforme a concavidade e a raiz, a " + operations[op] + " 0 e Δ = 0.",
                     )
                 } else {
                     // Duas raízes
                     if (coefA < 0) {
                         // Concavidade para baixo
-                        Ui.exibir(
+                        Ui.display(
                             "ƒ(x) > 0 se " +
-                                Escrita.decimal(raizQuad[1]) +
+                                Writing.decimal(quadRoot[1]) +
                                 " < x < " +
-                                Escrita.decimal(raizQuad[2]) +
+                                Writing.decimal(quadRoot[2]) +
                                 "\nƒ(x) < 0 se (x < " +
-                                Escrita.decimal(raizQuad[1]) +
+                                Writing.decimal(quadRoot[1]) +
                                 ") ∨ (x > " +
-                                Escrita.decimal(raizQuad[2]) +
+                                Writing.decimal(quadRoot[2]) +
                                 ")\nƒ(x) = 0 em x = " +
-                                Escrita.decimal(raizQuad[1]) +
+                                Writing.decimal(quadRoot[1]) +
                                 ", " +
-                                Escrita.decimal(raizQuad[2]),
+                                Writing.decimal(quadRoot[2]),
                             "Conforme a concavidade e as raízes, a < 0 e Δ > 0.",
                         )
                     } else {
                         // Concavidade para cima
-                        Ui.exibir(
+                        Ui.display(
                             "ƒ(x) > 0 se (x < " +
-                                Escrita.decimal(raizQuad[1]) +
+                                Writing.decimal(quadRoot[1]) +
                                 ") ∨ (x > " +
-                                Escrita.decimal(raizQuad[2]) +
+                                Writing.decimal(quadRoot[2]) +
                                 ")\nƒ(x) < 0 se " +
-                                Escrita.decimal(raizQuad[1]) +
+                                Writing.decimal(quadRoot[1]) +
                                 " < x < " +
-                                Escrita.decimal(raizQuad[2]) +
+                                Writing.decimal(quadRoot[2]) +
                                 "\nƒ(x) = 0 em x = " +
-                                Escrita.decimal(raizQuad[1]) +
+                                Writing.decimal(quadRoot[1]) +
                                 ", " +
-                                Escrita.decimal(raizQuad[2]),
+                                Writing.decimal(quadRoot[2]),
                             "Conforme a concavidade e as raízes, a > 0 e Δ > 0.",
                         )
                     }
@@ -286,62 +289,62 @@ export const Helpers = {
             // Não polinomial
             if (funcExp) {
                 // Exponencial
-                if (Algebra.divisao(-coefC, coefB, false) > 0) {
+                if (Algebra.division(-coefC, coefB, false) > 0) {
                     // Raiz
-                    let raizExp = Helpers.calcRaiz(coefA, coefB, coefC, true)
+                    let expRoot = Helpers.calcRoot(coefA, coefB, coefC, true)
                     if ((coefA < 1 && coefB < 0) || (coefA > 1 && coefB > 0)) {
                         // Curva para cima
-                        Ui.exibir(
+                        Ui.display(
                             "ƒ(x) > 0 se x > " +
-                                Escrita.decimal(raizExp) +
+                                Writing.decimal(expRoot) +
                                 "\nƒ(x) < 0 se x < " +
-                                Escrita.decimal(raizExp) +
+                                Writing.decimal(expRoot) +
                                 "\nƒ(x) = 0 em x = " +
-                                Escrita.decimal(raizExp),
+                                Writing.decimal(expRoot),
                             "Conforme a curva e a raiz, neste caso, crescente e (−c) / b > 0.",
                         )
                     } else if ((coefA > 1 && coefB < 0) || (coefA < 1 && coefB > 0)) {
                         // Curva para baixo
-                        Ui.exibir(
+                        Ui.display(
                             "ƒ(x) > 0 se x < " +
-                                Escrita.decimal(raizExp) +
+                                Writing.decimal(expRoot) +
                                 "\nƒ(x) < 0 se x > " +
-                                Escrita.decimal(raizExp) +
+                                Writing.decimal(expRoot) +
                                 "\nƒ(x) = 0 em x = " +
-                                Escrita.decimal(raizExp),
+                                Writing.decimal(expRoot),
                             "Conforme a curva e a raiz, neste caso, decrescente e (−c) / b > 0.",
                         )
                     }
                 } else if (coefB > 0) {
                     // Sem raiz, mas curva para cima
-                    Ui.exibir("ƒ(x) > 0, ∀ x ∈ ℝ", "Conforme b > 0 e (−c) / b ≤ 0.")
+                    Ui.display("ƒ(x) > 0, ∀ x ∈ ℝ", "Conforme b > 0 e (−c) / b ≤ 0.")
                 } else {
                     // Sem raiz, mas curva para baixo
-                    Ui.exibir("ƒ(x) < 0, ∀ x ∈ ℝ", "Conforme b < 0 e (−c) / b ≤ 0.")
+                    Ui.display("ƒ(x) < 0, ∀ x ∈ ℝ", "Conforme b < 0 e (−c) / b ≤ 0.")
                 }
             } else if (funcLog) {
                 // Logarítmica
-                let raizLog = Helpers.calcRaiz(coefA, coefB, coefC, false, true)
+                let logRoot = Helpers.calcRoot(coefA, coefB, coefC, false, true)
                 if ((coefA < 1 && coefB < 0) || (coefA > 1 && coefB > 0)) {
                     // Curva para cima
-                    Ui.exibir(
+                    Ui.display(
                         "ƒ(x) > 0 se x > " +
-                            Escrita.decimal(raizLog) +
+                            Writing.decimal(logRoot) +
                             "\nƒ(x) < 0 se x < " +
-                            Escrita.decimal(raizLog) +
+                            Writing.decimal(logRoot) +
                             "\nƒ(x) = 0 em x = " +
-                            Escrita.decimal(raizLog),
+                            Writing.decimal(logRoot),
                         "Conforme a curva (crescente)",
                     )
                 } else if ((coefA > 1 && coefB < 0) || (coefA < 1 && coefB > 0)) {
                     // Curva para baixo
-                    Ui.exibir(
+                    Ui.display(
                         "ƒ(x) > 0 se x < " +
-                            Escrita.decimal(raizLog) +
+                            Writing.decimal(logRoot) +
                             "\nƒ(x) < 0 se x > " +
-                            Escrita.decimal(raizLog) +
+                            Writing.decimal(logRoot) +
                             "\nƒ(x) = 0 em x = " +
-                            Escrita.decimal(raizLog),
+                            Writing.decimal(logRoot),
                         "Conforme a curva (decrescente)",
                     )
                 }
@@ -358,7 +361,7 @@ export const Helpers = {
      * @returns {number} - Operação futura
      * @since v6.1.0
      */
-    equacoes(polinomial = true, coefA = 0, coefB = 0, coefC = 0) {
+    equations(polinomial = true, coefA = 0, coefB = 0, coefC = 0) {
         if (polinomial) {
             // Polinomial
             if (State.baseFunc.length == 0) {
@@ -366,17 +369,17 @@ export const Helpers = {
                 State.baseFunc = [coefA, coefB, coefC]
                 State.askCoeffs = true
                 State.loop = true
-                Ui.aviso("ƒ₁(x) salva.", "Digite ƒ₂(x) para comparar.")
+                Ui.warning("ƒ₁(x) salva.", "Digite ƒ₂(x) para comparar.")
                 return 0
             } else {
                 // Comparar as duas funções
-                Algebra.equacoes(State.baseFunc, [coefA, coefB, coefC])
+                Algebra.equations(State.baseFunc, [coefA, coefB, coefC])
                 State.baseFunc = []
                 return 1
             }
         } else {
             // Não polinomial
-            Ui.aviso(
+            Ui.warning(
                 "Ainda não posso resolver equações com funções não polinomiais.",
                 "Em construção, use valores para x e y por enquanto.",
             )
@@ -387,28 +390,28 @@ export const Helpers = {
      * [FUNÇÃO] Monta a curva de uma função
      * @param {number} coefA - Coeficiente a
      * @param {number} coefB - Coeficiente b
-     * @param {boolean} polinomial - Polinomial
+     * @param {boolean} polynomial - Polinomial
      * @since v6.1.0
      */
-    curva(coefA = 0, coefB = 0, polinomial = true) {
-        if (!polinomial) {
+    curve(coefA = 0, coefB = 0, polynomial = true) {
+        if (!polynomial) {
             if ((coefA < 1 && coefB < 0) || (coefA > 1 && coefB > 0)) {
-                Ui.exibir("Crescente", "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)")
+                Ui.display("Crescente", "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)")
             } else if ((coefA > 1 && coefB < 0) || (coefA < 1 && coefB > 0)) {
-                Ui.exibir("Decrescente", "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)")
+                Ui.display("Decrescente", "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)")
             }
         } else {
             if (coefB != 0) {
                 if (coefB > 0) {
-                    Ui.exibir("Crescente", "Aponta para cima, pois b > 0")
+                    Ui.display("Crescente", "Aponta para cima, pois b > 0")
                 } else if (coefB < 0) {
-                    Ui.exibir("Decrescente", "Aponta para baixo, pois b < 0")
+                    Ui.display("Decrescente", "Aponta para baixo, pois b < 0")
                 }
             } else if (coefA != 0) {
                 if (coefA > 0) {
-                    Ui.exibir("Concavidade para cima", "a > 0")
+                    Ui.display("Concavidade para cima", "a > 0")
                 } else if (coefA < 0) {
-                    Ui.exibir("Concavidade para baixo", "a < 0")
+                    Ui.display("Concavidade para baixo", "a < 0")
                 }
             }
         }
@@ -424,42 +427,42 @@ export const Helpers = {
      * @returns {number} - Raiz
      * @since v6.1.0
      */
-    calcRaiz(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
+    calcRoot(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
         if (!funcExp && !funcLog) {
             if (coefA == 0 && coefB == 0) {
                 return NaN
             } else if (coefA == 0 && coefB != 0) {
-                return Algebra.divisao(-coefC, coefB)
+                return Algebra.division(-coefC, coefB)
             } else if (coefA != 0) {
                 return Helpers.calcDelta(coefA, coefB, coefC)
             }
         } else {
-            let expoente = Algebra.divisao(-coefC, coefB, false)
+            let exponent = Algebra.division(-coefC, coefB, false)
             if (funcExp) {
-                if (expoente > 0) {
-                    return Algebra.divisao(Algebra.ln(expoente), Algebra.ln(coefA))
+                if (exponent > 0) {
+                    return Algebra.division(Algebra.ln(exponent), Algebra.ln(coefA))
                 } else {
                     return NaN
                 }
             } else if (funcLog) {
-                return Algebra.arredonda(coefA ** expoente)
+                return Algebra.round(coefA ** exponent)
             }
         }
     },
 
     /**
      * [FUNÇÃO] Mostra a raiz de uma função
-     * @param {string} raiz - Raiz
-     * @param {string} explicacao - Explicação
-     * @param {string} naoHa - Mensagem quando não há raiz
+     * @param {string} root - Raiz
+     * @param {string} explanation - Explicação
+     * @param {string} noHave - Mensagem quando não há raiz
      * @since v6.1.0
      */
-    exibRaiz(raiz = 0, explicacao = "c", naoHa = "") {
-        let intersecao = "Raiz real: "
-        if (isNaN(raiz)) {
-            Ui.exibir(intersecao + "∄! x ∈ ℝ", naoHa)
+    showRoot(root = 0, explanation = "c", noHave = "") {
+        let intersection = "Raiz real: "
+        if (isNaN(root)) {
+            Ui.display(intersection + "∄! x ∈ ℝ", noHave)
         } else {
-            Ui.exibir(intersecao + "x = " + Escrita.decimal(raiz), "A raiz é x = " + explicacao)
+            Ui.display(intersection + "x = " + Writing.decimal(root), "A raiz é x = " + explanation)
         }
     },
 
@@ -473,8 +476,8 @@ export const Helpers = {
      */
     calcDelta(coefA = 0, coefB = 0, coefC = 0) {
         let array = [coefB ** 2 - 4 * coefA * coefC]
-        array.push(array[0] >= 0 ? Algebra.divisao(-coefB + Math.sqrt(array[0]), 2 * coefA) : NaN)
-        array.push(array[0] > 0 ? Algebra.divisao(-coefB - Math.sqrt(array[0]), 2 * coefA) : NaN)
+        array.push(array[0] >= 0 ? Algebra.division(-coefB + Math.sqrt(array[0]), 2 * coefA) : NaN)
+        array.push(array[0] > 0 ? Algebra.division(-coefB - Math.sqrt(array[0]), 2 * coefA) : NaN)
 
         if (array[0] > 0 && array[1] > array[2]) {
             let temp = array[2]
@@ -488,19 +491,22 @@ export const Helpers = {
     /**
      * [FUNÇÃO] Exibe o Delta de uma função
      * @param {number} delta - Delta
-     * @param {string} menor - Mensagem para Delta < 0
-     * @param {string} igual - Mensagem para Delta = 0
-     * @param {string} maior - Mensagem para Delta > 0
-     * @param {boolean} temY - Se é (c - y)
+     * @param {string} lower - Mensagem para Delta < 0
+     * @param {string} equal - Mensagem para Delta = 0
+     * @param {string} higher - Mensagem para Delta > 0
+     * @param {boolean} hasY - Se é (c - y)
      * @since v6.1.0
      */
-    exibDelta(delta = 0, menor = "", igual = "", maior = "", temY = false) {
+    showDelta(delta = 0, lower = "", equal = "", higher = "", hasY = false) {
         if (delta < 0) {
-            Ui.exibir(menor, "Δ = b² - 4 · a · " + (temY ? "(c - y)" : "c") + " ⇒ Δ < 0 ⇒ x ∉ ℝ")
+            Ui.display(lower, "Δ = b² - 4 · a · " + (hasY ? "(c - y)" : "c") + " ⇒ Δ < 0 ⇒ x ∉ ℝ")
         } else if (delta == 0) {
-            Ui.exibir(igual, "Δ = b² - 4 · a · " + (temY ? "(c - y)" : "c") + " ⇒ Δ = 0 ⇒ x = (-b) / (2 · a)")
+            Ui.display(equal, "Δ = b² - 4 · a · " + (hasY ? "(c - y)" : "c") + " ⇒ Δ = 0 ⇒ x = (-b) / (2 · a)")
         } else {
-            Ui.exibir(maior, "Δ = b² - 4 · a · " + (temY ? "(c - y)" : "c") + " ⇒ Δ > 0 ⇒ x₁, x₂ = (-b ± √Δ) / (2 · a)")
+            Ui.display(
+                higher,
+                "Δ = b² - 4 · a · " + (hasY ? "(c - y)" : "c") + " ⇒ Δ > 0 ⇒ x₁, x₂ = (-b ± √Δ) / (2 · a)",
+            )
         }
     },
 
@@ -512,25 +518,25 @@ export const Helpers = {
      * @returns {number[]} - Vértice
      * @since v6.1.0
      */
-    vertice(coefA = 0, coefB = 0, delta = 0) {
-        return [Algebra.divisao(-coefB, 2 * coefA), Algebra.divisao(-delta, 4 * coefA)]
+    vertex(coefA = 0, coefB = 0, delta = 0) {
+        return [Algebra.division(-coefB, 2 * coefA), Algebra.division(-delta, 4 * coefA)]
     },
 
     /**
      * [FUNÇÃO] Vê se estourou o limite
-     * @param {number} limite - Limite
+     * @param {number} limit - Limite
      * @returns {boolean} - Se estourou o limite
      * @since v6.1.0
      */
-    estourouLimite(limite = Config.interactionLimit) {
-        let estourou = limite >= Config.interactionLimit
+    exceededLimit(limit = Config.interactionLimit) {
+        let exceeded = limit >= Config.interactionLimit
 
         // Exibe o erro se estourou o limite
-        if (estourou) {
+        if (exceeded) {
             Error.limitExceeded()
         }
 
-        return estourou
+        return exceeded
     },
 
     /**
@@ -539,8 +545,8 @@ export const Helpers = {
      * @returns {number} - Período
      * @since v6.1.0
      */
-    calcPeriodo(coefC = 0) {
-        return Escrita.decimal((2 * Math.PI) / Math.abs(coefC))
+    calcPeriod(coefC = 0) {
+        return Writing.decimal((2 * Math.PI) / Math.abs(coefC))
     },
 
     /**
@@ -548,11 +554,11 @@ export const Helpers = {
      * @param {number} coefC - Coeficiente c
      * @since v6.1.0
      */
-    exibPeriodo(coefC = 0) {
+    showPeriod(coefC = 0) {
         if (coefC != 0) {
-            Ui.exibir("Período: " + Helpers.calcPeriodo(coefC), "Período = 2π / |c|")
+            Ui.display("Período: " + Helpers.calcPeriod(coefC), "Período = 2π / |c|")
         } else {
-            Ui.exibir("Período: ∞", "Se c = 0, a função é constante, então o período é infinito.")
+            Ui.display("Período: ∞", "Se c = 0, a função é constante, então o período é infinito.")
         }
     },
 }

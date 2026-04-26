@@ -1,5 +1,5 @@
 import { Config, resetConfig, saveConfig, VERSION } from "./config.js"
-import { Escrita } from "./escrita.js"
+import { Writing } from "./escrita.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Test } from "./teste.js"
@@ -9,38 +9,38 @@ import { Test } from "./teste.js"
  * - Use o comando "/help" para ver todos os comandos disponíveis
  * @since v6.1.0
  */
-export const Comandos = {
+export const Commands = {
     /**
      * [JS] Processa um comando slash
-     * @param {string} bruto - Texto digitado pelo usuário
+     * @param {string} raw - Texto digitado pelo usuário
      * @returns {string | null} - Ação a executar, ou null se não for comando
      * @since v6.1.0
      */
-    processar(bruto = "") {
-        if (bruto[0] != "/") return null
+    process(raw = "") {
+        if (raw[0] != "/") return null
 
-        let partes = Escrita.semAcentos(bruto.slice(1).toLowerCase()).split(" "),
-            cmd = partes[0],
-            arg = Comandos.parseBool(partes[1] || ""),
-            canonico = Comandos.resolverCmd(cmd),
-            cmds = Comandos.listaCmds()
+        let parts = Writing.noAccents(raw.slice(1).toLowerCase()).split(" "),
+            cmd = parts[0],
+            arg = Commands.parseBool(parts[1] || ""),
+            canonical = Commands.resolveCmd(cmd),
+            cmds = Commands.listCmd()
 
-        if (canonico === null) {
-            let sugestao = Comandos.sugerirCmd(cmd)
+        if (canonical === null) {
+            let suggestion = Commands.suggestCmd(cmd)
 
-            if (sugestao.tipo === "sugestao") {
-                let resposta = Ui.confirmar(
-                    "Você quis dizer: “/" + sugestao.canonico + "”?",
+            if (suggestion.tipo === "suggestion") {
+                let answer = Ui.confirm(
+                    "Você quis dizer: “/" + suggestion.canonical + "”?",
                     "Comando não reconhecido: “/" +
                         cmd +
                         "”\nA sugestão mais próxima é “" +
-                        sugestao.canonico +
+                        suggestion.canonical +
                         "” (distância " +
-                        sugestao.distancia +
+                        suggestion.distance +
                         ")\nDeseja executar essa sugestão?",
                 )
-                if (resposta === 1) {
-                    return Comandos.processar("/" + sugestao.canonico + " " + (partes[1] || ""))
+                if (answer === 1) {
+                    return Commands.process("/" + suggestion.canonical + " " + (parts[1] || ""))
                 }
                 return null
             }
@@ -49,78 +49,77 @@ export const Comandos = {
             return null
         }
 
-        return cmds[canonico].acao(arg, partes)
+        return cmds[canonical].action(arg, parts)
     },
 
     /**
      * [JS] Calcula a distância de Levenshtein entre duas strings
-     * @param {string} errado - A string digitada pelo usuário
-     * @param {string} correto - A string de um comando conhecido
+     * @param {string} wrong - A string digitada pelo usuário
+     * @param {string} correct - A string de um comando conhecido
      * @returns {number}
      * @since v6.1.0
      */
-    levenshtein(errado = "", correto = "") {
-        let linhas = correto.length + 1,
-            colunas = errado.length + 1,
-            matriz = [],
-            linha = 0,
-            coluna = 0
+    levenshtein(wrong = "", correct = "") {
+        let rows = correct.length + 1,
+            cols = wrong.length + 1,
+            matrix = [],
+            row = 0,
+            col = 0
 
-        for (linha = 0; linha < linhas; linha++) {
-            matriz[linha] = [linha]
+        for (row = 0; row < rows; row++) {
+            matrix[row] = [row]
         }
-        for (coluna = 0; coluna < colunas; coluna++) {
-            matriz[0][coluna] = coluna
+        for (col = 0; col < cols; col++) {
+            matrix[0][col] = col
         }
 
-        for (linha = 1; linha < linhas; linha++) {
-            for (coluna = 1; coluna < colunas; coluna++) {
-                if (correto[linha - 1] == errado[coluna - 1]) {
-                    matriz[linha][coluna] = matriz[linha - 1][coluna - 1]
+        for (row = 1; row < rows; row++) {
+            for (col = 1; col < cols; col++) {
+                if (correct[row - 1] == wrong[col - 1]) {
+                    matrix[row][col] = matrix[row - 1][col - 1]
                 } else {
-                    matriz[linha][coluna] =
-                        1 +
-                        Math.min(matriz[linha - 1][coluna], matriz[linha][coluna - 1], matriz[linha - 1][coluna - 1])
+                    matrix[row][col] =
+                        1 + Math.min(matrix[row - 1][col], matrix[row][col - 1], matrix[row - 1][col - 1])
                 }
             }
         }
 
-        return matriz[linhas - 1][colunas - 1]
+        return matrix[rows - 1][cols - 1]
     },
 
     /**
      * [JS] Sugere um comando baseado no digitado pelo usuário usando distância de Levenshtein
-     * @param {string} digitado - O digitado pelo usuário
+     * @param {string} typed - O digitado pelo usuário
      * @returns {object} - A sugestão de comando
      * @since v6.1.0
      */
-    sugerirCmd(digitado = "") {
-        const LIMITE = 3
-        let cmds = Comandos.listaCmds(),
-            chaves = Object.keys(cmds),
-            melhor = "",
-            menorDist = Infinity,
+    suggestCmd(typed = "") {
+        const LIMIT = 3
+        let cmds = Commands.listCmd(),
+            keys = Object.keys(cmds),
+            best = "",
+            lowerDist = Infinity,
             i = 0,
             j = 0,
-            candidatos = [],
+            candidates = [],
             dist = 0
 
-        for (i = 0; i < chaves.length; i++) {
+        for (i = 0; i < keys.length; i++) {
             // Testa a chave canônica + todas as variações
-            candidatos = [chaves[i]].concat(cmds[chaves[i]].variacoes)
+            candidates = [keys[i]].concat(cmds[keys[i]].variations)
 
-            for (j = 0; j < candidatos.length; j++) {
-                dist = Comandos.levenshtein(digitado, candidatos[j])
-                if (dist < menorDist) {
-                    menorDist = dist
-                    melhor = chaves[i] // sempre salva o canônico
+            for (j = 0; j < candidates.length; j++) {
+                dist = Commands.levenshtein(typed, candidates[j])
+                if (dist < lowerDist) {
+                    lowerDist = dist
+                    best = keys[i] // sempre salva o canônico
                 }
             }
         }
 
-        if (menorDist === 0) return { tipo: "exato", canonico: melhor, distancia: 0 }
-        if (menorDist <= LIMITE) return { tipo: "sugestao", canonico: melhor, distancia: menorDist }
-        return { tipo: "desconhecido", canonico: "", distancia: -1 }
+        if (lowerDist === 0) return { type: "exact", canonical: best, distance: 0 }
+        if (lowerDist <= LIMIT) return { type: "suggestion", canonical: best, distance: lowerDist }
+        return { type: "unknown", canonical: "", distance: -1 }
     },
 
     /**
@@ -128,217 +127,233 @@ export const Comandos = {
      * @returns {object} - Lista de comandos com suas descrições, variações e ações
      * @since v6.1.0
      */
-    listaCmds() {
+    listCmd() {
         return {
-            ajuda: {
-                curta: "mostra essa mensagem",
-                longa: "Exibe a lista de todos os comandos disponíveis.\nUso: /ajuda [comando]",
-                variacoes: ["help", "a", "h", "cmd", "cmds", "c"],
-                acao(arg, partes) {
-                    return Comandos.ajuda(partes[1] || "")
+            help: {
+                short: "mostra essa mensagem",
+                long: "Exibe a lista de todos os comandos disponíveis.\nUso: /ajuda [comando]",
+                variations: ["ajuda", "help", "a", "h", "cmd", "cmds", "c"],
+                action(arg, parts) {
+                    return Commands.help(parts[1] || "")
                 },
             },
             config: {
-                curta: "abre as configurações",
-                longa: "Abre o menu de configurações do programa.",
-                variacoes: ["configuracoes", "conf", "settings", "cfg"],
-                acao(arg, partes) {
-                    if (partes[1] != undefined) {
-                        let canonico = Comandos.resolverCmd(partes[1])
-                        if (canonico != null && Config[canonico] != undefined) {
-                            return Comandos.alterar(canonico, arg)
+                short: "abre as configurações",
+                long: "Abre o menu de configurações do programa.",
+                variations: ["config", "configuracoes", "conf", "settings", "cfg"],
+                action(arg, parts) {
+                    if (parts[1] != undefined) {
+                        let canonical = Commands.resolveCmd(parts[1])
+                        if (canonical != null && Config[canonical] != undefined) {
+                            return Commands.change(canonical, arg)
                         }
-                        Ui.error("Configuração inválida", "“" + partes[1] + "” não é uma configuração válida")
+                        Ui.error("Configuração inválida", "“" + parts[1] + "” não é uma configuração válida")
                         return null
                     }
                     State.type = "config"
                     return "config"
                 },
             },
-            resetar: {
-                curta: "restaura as configurações",
-                longa: "Remove as configurações salvas e restaura os valores padrão.",
-                variacoes: ["reset", "restaurar", "restore"],
-                acao() {
+            reset: {
+                short: "restaura as configurações",
+                long: "Remove as configurações salvas e restaura os valores padrão.",
+                variations: ["resetar", "reset", "restaurar", "restore"],
+                action() {
                     resetConfig()
-                    Ui.aviso("Configurações restauradas para os valores padrão.")
+                    Ui.warning("Configurações restauradas para os valores padrão.")
                     return null
                 },
             },
-            inicio: {
-                curta: "volta ao menu principal",
-                longa: "Retorna ao menu inicial de seleção de função.",
-                variacoes: ["start"],
-                acao() {
+            start: {
+                short: "volta ao menu principal",
+                long: "Retorna ao menu inicial de seleção de função.",
+                variations: ["inicio", "start"],
+                action() {
                     State.type = "inicio"
                     return "inicio"
                 },
             },
-            rever: {
-                curta: "mostra os coeficientes atuais",
-                longa: "Exibe os coeficientes inseridos na sessão atual.",
-                variacoes: ["review"],
-                acao() {
+            review: {
+                short: "mostra os coeficientes atuais",
+                long: "Exibe os coeficientes inseridos na sessão atual.",
+                variations: ["rever", "review"],
+                action() {
                     State.type = "rever"
                     return "rever"
                 },
             },
-            alterar: {
-                curta: "muda os coeficientes",
-                longa: "Permite alterar os coeficientes sem reiniciar a análise.",
-                variacoes: ["change"],
-                acao() {
+            change: {
+                short: "muda os coeficientes",
+                long: "Permite alterar os coeficientes sem reiniciar a análise.",
+                variations: ["alterar", "change"],
+                action() {
                     State.type = "alterar"
                     return "alterar"
                 },
             },
-            historico: {
-                curta: "abre o histórico",
-                longa: "Exibe o histórico de funções analisadas na sessão.",
-                variacoes: ["history"],
-                acao() {
+            history: {
+                short: "abre o histórico",
+                long: "Exibe o histórico de funções analisadas na sessão.",
+                variations: ["historico", "history"],
+                action() {
                     State.type = "historico"
                     return "historico"
                 },
             },
-            versao: {
-                curta: "mostra a versão",
-                longa: "Exibe a versão atual do programa e informações de autoria.",
-                variacoes: ["version", "v"],
-                acao() {
-                    return Comandos.versao()
+            version: {
+                short: "mostra a versão",
+                long: "Exibe a versão atual do programa e informações de autoria.",
+                variations: ["versao", "version", "v"],
+                action() {
+                    return Commands.version()
                 },
             },
             unicode: {
-                curta: "alterna Unicode",
-                longa: "Ativa ou desativa o uso de caracteres Unicode na saída.",
-                variacoes: [],
-                acao(arg) {
-                    return Comandos.alterar("unicode", arg)
+                short: "alterna Unicode",
+                long: "Ativa ou desativa o uso de caracteres Unicode na saída.",
+                variations: ["unicode"],
+                action(arg) {
+                    return Commands.change("unicode", arg)
                 },
             },
-            acentos: {
-                curta: "alterna acentos",
-                longa: "Ativa ou desativa acentos nas mensagens exibidas.",
-                variacoes: ["accents", "acento", "accent"],
-                acao(arg) {
-                    return Comandos.alterar("acentos", arg)
+            accents: {
+                short: "alterna acentos",
+                long: "Ativa ou desativa acentos nas mensagens exibidas.",
+                variations: ["acentos", "accents", "acento", "accent"],
+                action(arg) {
+                    return Commands.change("accents", arg)
                 },
             },
-            explicar: {
-                curta: "alterna explicações",
-                longa: "Ativa ou desativa as explicações detalhadas dos resultados.",
-                variacoes: ["explicacoes", "explain"],
-                acao(arg) {
-                    return Comandos.alterar("explicacoes", arg)
+            explain: {
+                short: "alterna explicações",
+                long: "Ativa ou desativa as explicações detalhadas dos resultados.",
+                variations: ["explicar", "explicacoes", "explain"],
+                action(arg) {
+                    return Commands.change("explanations", arg)
                 },
             },
-            capitalizar: {
-                curta: "alterna capitalização",
-                longa: "Ativa ou desativa a capitalização das primeiras letras.",
-                variacoes: ["capitalizadas", "capitalize", "capitalized", "cap"],
-                acao(arg) {
-                    return Comandos.alterar("capitalizadas", arg)
+            capitalize: {
+                short: "alterna capitalização",
+                long: "Ativa ou desativa a capitalização das primeiras letras.",
+                variations: ["capitalizar", "capitalizadas", "capitalize", "capitalized", "cap"],
+                action(arg) {
+                    return Commands.change("capitalized", arg)
                 },
             },
-            maiusculas: {
-                curta: "alterna maiúsculas",
-                longa: "Ativa ou desativa a exibição em maiúsculas.",
-                variacoes: ["maiuscula", "uppercase", "upper"],
-                acao(arg) {
-                    return Comandos.alterar("maiusculas", arg)
+            uppercase: {
+                short: "alterna maiúsculas",
+                long: "Ativa ou desativa a exibição em maiúsculas.",
+                variations: ["maiuscula", "uppercase", "upper"],
+                action(arg) {
+                    return Commands.change("uppercase", arg)
                 },
             },
-            minusculas: {
-                curta: "alterna minúsculas",
-                longa: "Ativa ou desativa a exibição em minúsculas.",
-                variacoes: ["minuscula", "lowercase", "lower"],
-                acao(arg) {
-                    return Comandos.alterar("minusculas", arg)
+            lowercase: {
+                short: "alterna minúsculas",
+                long: "Ativa ou desativa a exibição em minúsculas.",
+                variations: ["minuscula", "lowercase", "lower"],
+                action(arg) {
+                    return Commands.change("lowercase", arg)
                 },
             },
-            decimal: {
-                curta: "alterna separador decimal",
-                longa: "Alterna o separador decimal entre ponto e vírgula.",
-                variacoes: ["separador", "separator", "sep"],
-                acao(arg) {
-                    return Comandos.alterar("separadorDecimal", arg)
+            separator: {
+                short: "alterna separador decimal",
+                long: "Alterna o separador decimal entre ponto e vírgula.",
+                variations: ["decimal", "separador", "separator", "sep"],
+                action(arg) {
+                    return Commands.change("decimalSeparator", arg)
                 },
             },
-            multiplos: {
-                curta: "alterna múltiplos simples",
-                longa: "Ativa ou desativa a simplificação de múltiplos.",
-                variacoes: ["multiplo", "multiples", "multi"],
-                acao(arg) {
-                    return Comandos.alterar("multiSimples", arg)
+            multiples: {
+                short: "alterna múltiplos simples",
+                long: "Ativa ou desativa a simplificação de múltiplos.",
+                variations: ["multiplos", "multiplo", "multiples", "multi"],
+                action(arg) {
+                    return Commands.change("simpleMulti", arg)
                 },
             },
-            confirmar: {
-                curta: "alterna confirmações de entrada",
-                longa: "Ativa ou desativa as confirmações ao inserir dados.",
-                variacoes: ["confirmacoes", "confirm", "confirmations", "confent", "confinp"],
-                acao(arg) {
-                    return Comandos.alterar("confirmacoesEntrada", arg)
+            confirm: {
+                short: "alterna confirmações de entrada",
+                long: "Ativa ou desativa as confirmações ao inserir dados.",
+                variations: ["confirmacoes", "confirm", "confirmations", "confent", "confinp"],
+                action(arg) {
+                    return Commands.change("inputConfirm", arg)
                 },
             },
-            confirmarsaida: {
-                curta: "alterna confirmações de saída",
-                longa: "Ativa ou desativa a confirmação ao sair do programa.",
-                variacoes: ["confirmsaida", "confirmexit", "confsaida", "confexit"],
-                acao(arg) {
-                    return Comandos.alterar("confirmacoesSaida", arg)
+            confirmExit: {
+                short: "alterna confirmações de saída",
+                long: "Ativa ou desativa a confirmação ao sair do programa.",
+                variations: [
+                    "confirmarSaida",
+                    "confirmExit",
+                    "confirmarsaida",
+                    "confirmsaida",
+                    "confirmexit",
+                    "confsaida",
+                    "confexit",
+                ],
+                action(arg) {
+                    return Commands.change("outputConfirm", arg)
                 },
             },
-            erros: {
-                curta: "alterna exibição de erros",
-                longa: "Ativa ou desativa a exibição de mensagens de erro.",
-                variacoes: ["erro", "errors", "error", "err"],
-                acao(arg) {
-                    return Comandos.alterar("erros", arg)
+            errors: {
+                short: "alterna exibição de erros",
+                long: "Ativa ou desativa a exibição de mensagens de erro.",
+                variations: ["erros", "erro", "errors", "error", "err"],
+                action(arg) {
+                    return Commands.change("errors", arg)
                 },
             },
-            funcao: {
-                curta: "alterna exibição da função",
-                longa: "Ativa ou desativa a exibição da função analisada.",
-                variacoes: ["mostrarfuncao", "function", "showfunction", "func"],
-                acao(arg) {
-                    return Comandos.alterar("mostrarFuncao", arg)
+            function: {
+                short: "alterna exibição da função",
+                long: "Ativa ou desativa a exibição da função analisada.",
+                variations: [
+                    "funcao",
+                    "mostrarfuncao",
+                    "mostrarFuncao",
+                    "function",
+                    "showfunction",
+                    "showFunction",
+                    "func",
+                ],
+                action(arg) {
+                    return Commands.change("showFunction", arg)
                 },
             },
-            graus: {
-                curta: "alterna modo graus",
-                longa: "Alterna entre graus e radianos nos cálculos.",
-                variacoes: ["grau", "degrees", "degree", "deg"],
-                acao(arg) {
-                    return Comandos.alterar("graus", arg)
+            degrees: {
+                short: "alterna modo graus",
+                long: "Alterna entre graus e radianos nos cálculos.",
+                variations: ["graus", "grau", "degrees", "degree", "deg"],
+                action(arg) {
+                    return Commands.change("degrees", arg)
                 },
             },
             debug: {
-                curta: "alterna modo debug",
-                longa: "Ativa ou desativa o modo de depuração.",
-                variacoes: ["dbg"],
-                acao(arg) {
-                    return Comandos.alterar("debug", arg)
+                short: "alterna modo debug",
+                long: "Ativa ou desativa o modo de depuração.",
+                variations: ["debug", "dbg"],
+                action(arg) {
+                    return Commands.change("debug", arg)
                 },
             },
-            teste: {
-                curta: "executa testes",
-                longa: "Executa a bateria de testes internos do programa.",
-                variacoes: [],
-                acao(arg, partes) {
-                    if (partes[1] == "1234") {
+            test: {
+                short: "executa testes",
+                long: "Executa a bateria de testes internos do programa.",
+                variations: ["teste", "test"],
+                action(arg, parts) {
+                    if (parts[1] == "1234") {
                         Test.start()
                     } else {
-                        Ui.error("Senha inválida", "“" + String(partes[1]) + "” não é uma senha válida")
+                        Ui.error("Senha inválida", "“" + String(parts[1]) + "” não é uma senha válida")
                     }
                     return null
                 },
             },
-            sair: {
-                curta: "sai do programa",
-                longa: "Encerra o programa. Confirmação pode ser solicitada.",
-                variacoes: ["exit", "//", "ex", "out"],
-                acao() {
+            exit: {
+                short: "sai do programa",
+                long: "Encerra o programa. Confirmação pode ser solicitada.",
+                variations: ["sair", "exit", "//", "ex", "out"],
+                action() {
                     State.type = "sair"
                     return "sair"
                 },
@@ -348,37 +363,37 @@ export const Comandos = {
 
     /**
      * [JS] Resolve um comando específico para seu nome canônico
-     * @param {string} especifico - Comando específico
+     * @param {string} specific - Comando específico
      * @returns {string | null} - Nome canônico do comando, ou null se não for encontrado
      * @since v6.1.0
      */
-    resolverCmd(especifico = "") {
-        let cmds = Comandos.listaCmds(),
-            chavesCmd = Object.keys(cmds),
-            canonico = especifico,
+    resolveCmd(specific = "") {
+        let cmds = Commands.listCmd(),
+            cmdKeys = Object.keys(cmds),
+            canonical = specific,
             i = 0
 
-        while (i < chavesCmd.length && canonico == especifico) {
-            if (cmds[chavesCmd[i]].variacoes.includes(especifico)) {
-                canonico = chavesCmd[i]
+        while (i < cmdKeys.length && canonical == specific) {
+            if (cmds[cmdKeys[i]].variations.includes(specific)) {
+                canonical = cmdKeys[i]
             }
             i++
         }
 
-        return cmds[canonico] != undefined ? canonico : null
+        return cmds[canonical] != undefined ? canonical : null
     },
 
     /**
-     * [JS] Converte um texto em um valor booleano
-     * @param {string} texto - Texto
-     * @returns {boolean | null} - Se é parecido com um valor booeano verdadeiro, falso ou se não é reconhecido
+     * [JS] Converte um texto em um valor boolean
+     * @param {string} text - Texto
+     * @returns {boolean | null} - Se é parecido com um valor boolean verdadeiro / falso ou se não é reconhecido
      * @since v6.1.0
      */
-    parseBool(texto = "") {
-        if (["true", "1", "sim", "yes", "on", "ativo"].includes(texto)) {
+    parseBool(text = "") {
+        if (["true", "1", "sim", "yes", "on", "ativo"].includes(text)) {
             return true
         }
-        if (["false", "0", "nao", "no", "off", "inativo"].includes(texto)) {
+        if (["false", "0", "nao", "no", "off", "inativo"].includes(text)) {
             return false
         }
         return null
@@ -386,55 +401,55 @@ export const Comandos = {
 
     /**
      * [JS] Exibe ajuda sobre um comando específico
-     * @param {string} especifico - Específico
+     * @param {string} specific - Específico
      * @returns {boolean | null} - Se o comando foi encontrado
      * @since v6.1.0
      */
-    ajuda(especifico = "") {
-        let cmds = Comandos.listaCmds()
+    help(specific = "") {
+        let cmds = Commands.listCmd()
 
-        if (especifico != "") {
-            let canonico = Comandos.resolverCmd(especifico)
+        if (specific != "") {
+            let canonical = Commands.resolveCmd(specific)
 
-            if (canonico != null) {
-                Ui.aviso("/" + canonico + " — " + cmds[canonico].longa)
+            if (canonical != null) {
+                Ui.warning("/" + canonical + " — " + cmds[canonical].long)
                 return null
             }
 
-            Ui.error("Comando desconhecido", "“/" + especifico + "” não é um comando válido")
+            Ui.error("Comando desconhecido", "“/" + specific + "” não é um comando válido")
             return null
         }
 
-        let chaves = Object.keys(cmds),
-            total = Math.ceil(chaves.length / 7),
-            pagina = 1,
-            resposta = 0
+        let key = Object.keys(cmds),
+            total = Math.ceil(key.length / 7),
+            page = 1,
+            answer = 0
 
         do {
-            if (pagina < 1) {
-                pagina = 1
-            } else if (pagina > total) {
-                pagina = total
+            if (page < 1) {
+                page = 1
+            } else if (page > total) {
+                page = total
             }
 
-            let inicio = (pagina - 1) * 7,
-                fim = Math.min(inicio + 7, chaves.length),
-                menu = "=== Ajuda ===\nPágina " + String(pagina) + "/" + String(total) + "\n"
+            let start = (page - 1) * 7,
+                end = Math.min(start + 7, key.length),
+                menu = "=== Ajuda ===\nPágina " + String(page) + "/" + String(total) + "\n"
 
-            for (let i = inicio; i < fim; i++) {
-                menu += "\n/" + chaves[i] + " — " + cmds[chaves[i]].curta
+            for (let i = start; i < end; i++) {
+                menu += "\n/" + key[i] + " — " + cmds[key[i]].short
             }
 
             menu += "\n----------------\n8 = Anterior | 9 = Próxima | 0 = Voltar"
 
-            resposta = Ui.intervalo(menu, "", 0, 9, 0, true)
+            answer = Ui.intervalo(menu, "", 0, 9, 0, true)
 
-            if (resposta == 8) {
-                pagina--
-            } else if (resposta == 9) {
-                pagina++
+            if (answer == 8) {
+                page--
+            } else if (answer == 9) {
+                page++
             }
-        } while (resposta != 0)
+        } while (answer != 0)
 
         return null
     },
@@ -444,38 +459,38 @@ export const Comandos = {
      * @returns {null}
      * @since v6.1.0
      */
-    versao() {
-        Ui.aviso("Analisador de Funções Matemáticas\n" + VERSION + " — Adriano Lima 2025 - 2026")
+    version() {
+        Ui.warning("Analisador de Funções Matemáticas\n" + VERSION + " — Adriano Lima 2025 - 2026")
         return null
     },
 
     /**
      * [JS] Altera uma configuração do programa
-     * @param {string} nome - Nome da configuração
-     * @param {any} valor - Novo valor para a configuração
+     * @param {string} name - Nome da configuração
+     * @param {any} value - Novo valor para a configuração
      * @returns {null}
      * @since v6.1.0
      */
-    alterar(nome = "", valor = null) {
-        if (valor != null) {
-            Config[nome] = valor
+    change(name = "", value = null) {
+        if (value != null) {
+            Config[name] = value
         } else {
-            Config[nome] = !Config[nome]
+            Config[name] = !Config[name]
         }
 
-        if (nome == "capitalizadas" && Config.capitalized) {
+        if (name == "capitalizadas" && Config.capitalized) {
             Config.uppercase = false
             Config.lowercase = false
-        } else if (nome == "maiusculas" && Config.uppercase) {
+        } else if (name == "maiusculas" && Config.uppercase) {
             Config.capitalized = false
             Config.lowercase = false
-        } else if (nome == "minusculas" && Config.lowercase) {
+        } else if (name == "minusculas" && Config.lowercase) {
             Config.capitalized = false
             Config.uppercase = false
         }
 
         saveConfig()
-        Ui.aviso(Escrita.itemConfig("Alterado: “" + nome + "”", nome))
+        Ui.warning(Writing.configItem("Alterado: “" + name + "”", name))
         return null
     },
 
@@ -484,7 +499,7 @@ export const Comandos = {
      * @returns {string[]} - Lista de nomes canônicos dos comandos disponíveis
      * @since v6.1.0
      */
-    nomes() {
+    names() {
         return ["config", "sair", "inicio", "rever", "historico", "alterar"]
     },
 }

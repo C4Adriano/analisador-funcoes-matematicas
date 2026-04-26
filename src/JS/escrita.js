@@ -6,43 +6,43 @@ import { Config, DEFAULT_CONFIG } from "./config.js"
  * - Use as funções aqui para converter os textos para o formato desejado, como sem acentos ou sem Unicode.
  * @since v6.1.0
  */
-export const Escrita = {
+export const Writing = {
     /**
      * [TEXTO] Substituição de strings
-     * @param {string} texto - Texto
-     * @param {string} de - O que será removido
-     * @param {string} para - O que será colocado no lugar
+     * @param {string} text - Texto
+     * @param {string} from - O que será removido
+     * @param {string} to - O que será colocado no lugar
      * @returns {string} - Texto convertido
      * @since v6.1.0
      */
-    substituir(texto = "", de = "", para = "") {
-        return String(texto).split(de).join(para)
+    replace(text = "", from = "", to = "") {
+        return String(text).split(from).join(to)
     },
 
     /**
      * [TEXTO] Substituição de várias strings
-     * @param {string} texto - Texto
-     * @param {string[][]} lista - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
+     * @param {string} text - Texto
+     * @param {string[][]} list - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
      * @returns {string} - Texto convertido
      * @since v6.1.0
      */
-    substituirGrupo(texto = "", lista = [["", ""]]) {
-        for (let i = 0; i < lista.length; i++) {
-            if (lista[i][0] != undefined && lista[i][1] != undefined) {
-                texto = Escrita.substituir(texto, lista[i][0], lista[i][1])
+    replaceGroup(text = "", list = [["", ""]]) {
+        for (let i = 0; i < list.length; i++) {
+            if (list[i][0] != undefined && list[i][1] != undefined) {
+                text = Writing.replace(text, list[i][0], list[i][1])
             }
         }
-        return texto
+        return text
     },
 
     /**
      * [TEXTO] Substituição da grafia de Unicode
-     * @param {string} texto - Texto
+     * @param {string} text - Texto
      * @returns {string} - Texto convertido
      * @since v6.1.0
      */
-    semUnicode(texto = "") {
-        let trocas = [
+    noUnicode(text = "") {
+        let replacements = [
             // === LETRAS / SÍMBOLOS ESPECIAIS ===
             ["Δ", "Delta"],
             ["π", "pi"],
@@ -205,18 +205,18 @@ export const Escrita = {
             ["•", "*"],
         ]
 
-        texto = Escrita.substituirGrupo(texto, trocas)
+        text = Writing.replaceGroup(text, replacements)
 
-        return texto
+        return text
     },
 
     /**
      * [TEXTO] Substituição da grafia de acentos
-     * @param {string} texto Texto
+     * @param {string} text Texto
      * @returns Texto convertido
      */
-    semAcentos(texto = "") {
-        let trocas = [
+    noAccents(text = "") {
+        let replacements = [
             // === AGUDOS (´) ===
             ["á", "a"], // A agudo (espanhol, português)
             ["Á", "A"],
@@ -294,50 +294,50 @@ export const Escrita = {
             ["Ç", "C"],
         ]
 
-        texto = Escrita.substituirGrupo(texto, trocas)
+        text = Writing.replaceGroup(text, replacements)
 
-        return texto
+        return text
     },
 
     /**
      * [TEXTO] Conversão para capitalização
-     * @param {string} texto - Texto
+     * @param {string} text - Texto
      * @returns {string} - Texto convertido
      * @since v6.1.0
      */
-    capitalizadas(texto = "") {
-        let resultado = ""
-        let capitalizar = true
+    capitalized(text = "") {
+        let result = "",
+            capitalize = true
 
-        for (let i = 0; i < texto.length; i++) {
-            let atual = texto[i],
-                letra = Escrita.semAcentos(atual).toLowerCase()
+        for (let i = 0; i < text.length; i++) {
+            let current = text[i],
+                letter = Writing.noAccents(current).toLowerCase()
 
             if (
-                atual == "." ||
-                atual == "!" ||
-                atual == "?" ||
-                atual == "\n" ||
-                atual == "|" ||
-                atual == "“" ||
-                atual == "'"
+                current == "." ||
+                current == "!" ||
+                current == "?" ||
+                current == "\n" ||
+                current == "|" ||
+                current == "“" ||
+                current == "'"
             ) {
-                capitalizar = true
-            } else if (atual == "/") {
-                capitalizar = false
+                capitalize = true
+            } else if (current == "/") {
+                capitalize = false
             }
 
-            if (capitalizar && "a" <= letra && letra <= "z") {
-                resultado += atual.toUpperCase()
-                capitalizar = false
+            if (capitalize && "a" <= letter && letter <= "z") {
+                result += current.toUpperCase()
+                capitalize = false
             } else {
-                resultado += atual
+                result += current
             }
         }
 
-        texto = resultado
+        text = result
 
-        let trocas = [
+        let replacements = [
             // Caso especial para a letra latina f, que matematicamente tem uma forma diferente em maiúscula e minúscula
             ["Ƒ", "ƒ"],
             ["F(x)", "f(x)"],
@@ -410,103 +410,103 @@ export const Escrita = {
             ["Mathematical function analyzer", "Mathematical Function Analyzer"],
         ]
 
-        texto = Escrita.substituirGrupo(texto, trocas)
+        text = Writing.replaceGroup(text, replacements)
 
-        return texto
+        return text
     },
 
     /**
      * [TEXTO] Conversão para minúsculas
-     * @param {string} texto - Texto
+     * @param {string} text - Texto
      * @returns {string} - Texto convertido
      * @since v6.1.0
      */
-    minusculas(texto = "") {
-        texto = texto.toLowerCase()
+    lowercase(text = "") {
+        text = text.toLowerCase()
         // Caso especial para a letra grega delta, que matematicamente tem uma forma diferente em maiúscula e minúscula
-        texto = Escrita.substituir(texto, "δ", "Δ")
+        text = Writing.replace(text, "δ", "Δ")
 
-        return texto
+        return text
     },
 
     /**
      * [TEXTO] Conversão para maiúsculas
-     * @param {string} texto - Texto
+     * @param {string} text - Texto
      * @returns {string} - Texto convertido
      * @since v6.1.0
      */
-    maiusculas(texto = "") {
-        texto = texto.toUpperCase()
+    uppercase(text = "") {
+        text = text.toUpperCase()
         // Caso especial para a letra latina f, que matematicamente tem uma forma diferente em maiúscula e minúscula
-        texto = Escrita.substituir(texto, "Ƒ", "ƒ")
+        text = Writing.replace(text, "Ƒ", "ƒ")
 
-        return texto
+        return text
     },
 
     /**
      * [TEXTO] Manipulação de separadores decimais
-     * @param {string | number} numero - Número
-     * @param {boolean} inverter - Para inverter e não afetar nas contas
-     * @param {boolean} arredondar - Arredondar
-     * @param {number} casas - Casas decimais
+     * @param {string | number} number - Número
+     * @param {boolean} invert - Para inverter e não afetar nas contas
+     * @param {boolean} round - Arredondar
+     * @param {number} places - Casas decimais
      * @returns {string} - Número convertido
      * @since v6.1.0
      */
-    decimal(numero = 0, inverter = false, arredondar = true, casas = Config.decimalPlaces) {
-        numero = String(numero)
+    decimal(number = 0, invert = false, round = true, places = Config.decimalPlaces) {
+        number = String(number)
 
         // Se inverter é verdadeiro, troca vírgulas por pontos para não afetar nas contas
-        if (inverter) {
-            return Escrita.substituir(numero, ",", ".")
+        if (invert) {
+            return Writing.replace(number, ",", ".")
         }
 
         // Se arredondar é verdadeiro, arredonda o número para o número de casas decimais configurado
-        if (arredondar) {
-            numero = Algebra.arredonda(numero, casas)
+        if (round) {
+            number = Algebra.round(number, places)
         }
 
         // Se separadorDecimal é verdadeiro, troca pontos por vírgulas para exibição
         if (Config.decimalSeparator) {
-            return Escrita.substituir(numero, ".", ",")
+            return Writing.replace(number, ".", ",")
         }
 
-        return numero
+        return number
     },
 
     /**
      * [TEXTO] Simplificação de símbolos de multiplicação
-     * @param {string} texto - Texto
+     * @param {string} text - Texto
      * @returns {string} - Texto convertido
      * @since v6.1.0
      */
-    multiSimples(texto = "") {
-        return Escrita.substituir(texto, " · ", "")
+    multiSimples(text = "") {
+        return Writing.replace(text, " · ", "")
     },
 
     /**
      * [TEXTO] Tradução de texto para a linguagem configurada
-     * @param {string} texto - Texto
+     * @param {string} text - Texto
      * @returns {string} - Texto traduzido
      * @since v6.1.0
      */
-    traduzir(texto = "") {
-        texto = Escrita.minusculas(texto)
+    translate(text = "") {
+        text = Writing.lowercase(text)
 
-        let frasesCompletas = [["", ""]],
-            frasesParciais = [["", ""]],
-            palavras = [["", ""]],
-            conectores = [["", ""]]
+        let completeSentences = [["", ""]],
+            partialSentences = [["", ""]],
+            words = [["", ""]],
+            connectors = [["", ""]]
 
         if (Config.language == "pt-br") {
             // === TRADUÇÃO DE INGLÊS PARA PORTUGUÊS ===
-            palavras = [
+            words = [
                 ["undefined", "indefinido"],
                 ["nan", "não é um número"],
                 ["infinity", "infinito"],
             ]
         } else if (Config.language == "en") {
             // === TRADUÇÃO DE PORTUGUÊS PARA INGLÊS ===
-            frasesCompletas = [
+            completeSentences = [
                 ["bem-vindo ao analisador de funções matemáticas", "welcome to the mathematical function analyzer"],
                 [
                     "este programa analisa funções do tipo constante, afim, quadrática, exponencial e logarítmica — identificando suas propriedades e características. para começar, informe os dados da função quando solicitado",
@@ -728,7 +728,7 @@ export const Escrita = {
                 ["isso irá alterar a língua do sistema inteiro.", "this will change the entire system language."],
             ]
 
-            frasesParciais = [
+            partialSentences = [
                 ["em construção", "under construction"],
                 ["o que queres", "what do you want"],
                 ["tu digitaste", "you typed"],
@@ -802,11 +802,11 @@ export const Escrita = {
                 ["pois y", "since y"],
             ]
 
-            palavras = [
+            words = [
                 ["histórico", "history"],
                 ["erro", "error"],
                 ["equações", "equations"],
-                ["exceto", "execpt"],
+                ["exceto", "except"],
                 ["português brasileiro", "brazilian portuguese"],
                 ["raiz real", "real root"],
                 ["raízes reais", "real roots"],
@@ -886,7 +886,7 @@ export const Escrita = {
                 ["interações", "iterations"],
             ]
 
-            conectores = [
+            connectors = [
                 ["“cancelar”", "“cancel”"],
                 ["“sim”", "“yes”"],
                 ["“não”", "“no”"],
@@ -910,18 +910,18 @@ export const Escrita = {
             ]
         }
 
-        texto = Escrita.substituirGrupo(texto, [].concat(frasesCompletas, frasesParciais, palavras, conectores))
+        text = Writing.replaceGroup(text, [].concat(completeSentences, partialSentences, words, connectors))
 
-        return texto
+        return text
     },
 
     /**
      * [TEXTO] Tradução de texto sem Unicode para a linguagem configurada
-     * @param {string} texto - Texto
+     * @param {string} text - Texto
      * @returns {string} - Texto traduzido
      */
-    traduzirUnicode(texto = "") {
-        let trocas = [
+    translateUnicode(text = "") {
+        let replacements = [
             ["alfa", "alpha"],
             ["para todo", "for all"],
             ["não existe", "does not exist"],
@@ -956,78 +956,78 @@ export const Escrita = {
             ["produto", "product"],
         ]
 
-        texto = Escrita.substituirGrupo(texto, trocas)
+        text = Writing.replaceGroup(text, replacements)
 
-        return texto
+        return text
     },
 
     /**
      * [TEXTO] Formatação geral de mensagens
-     * @param {string} mensagem - Mensagem
-     * @param {string} explicacao - Mensagem para a explicação
+     * @param {string} message - Mensagem
+     * @param {string} explanation - Mensagem para a explicação
      * @returns {string} - Mensagem formatada
      * @since v6.1.0
      */
-    verificar(mensagem = "", explicacao = "") {
+    format(message = "", explanation = "") {
         // === ADIÇÃO DE EXPLICAÇÕES ===
         // Se explicações estão ativadas e há uma explicação, adiciona à mensagem
-        if (Config.explanations && explicacao != "") {
-            mensagem += "\n\n" + explicacao
+        if (Config.explanations && explanation != "") {
+            message += "\n\n" + explanation
         }
 
         // === SIMPLIFICAÇÃO DE MULTIPLICAÇÃO ===
         // Substitui símbolos de multiplicação complexos por simples, se ativado
         if (Config.simpleMulti) {
-            mensagem = Escrita.multiSimples(mensagem)
+            message = Writing.multiSimples(message)
         }
 
         // === TRADUÇÃO ===
         // Traduz a mensagem para a linguagem configurada
         if (Config.language != "pt-br") {
-            mensagem = Escrita.traduzir(mensagem)
+            message = Writing.translate(message)
         }
 
         // === REMOÇÃO DE UNICODE ===
         // Remove símbolos Unicode especiais, se desativado
         if (!Config.unicode) {
-            mensagem = Escrita.semUnicode(mensagem)
+            message = Writing.noUnicode(message)
             if (Config.language != "pt-br") {
-                mensagem = Escrita.traduzirUnicode(mensagem)
+                message = Writing.translateUnicode(message)
             }
         }
 
         // === REMOÇÃO DE ACENTOS ===
         // Remove acentos das letras, se desativado
         if (!Config.accents) {
-            mensagem = Escrita.semAcentos(mensagem)
+            message = Writing.noAccents(message)
         }
 
         // === AJUSTE DE CASE (MAIÚSCULAS/MINÚSCULAS) ===
         // Aplica transformação de case baseada nas configurações
         if (Config.capitalized) {
-            mensagem = Escrita.capitalizadas(mensagem)
+            message = Writing.capitalized(message)
         } else if (Config.lowercase) {
-            mensagem = Escrita.minusculas(mensagem)
+            message = Writing.lowercase(message)
         } else if (Config.uppercase) {
-            mensagem = Escrita.maiusculas(mensagem)
+            message = Writing.uppercase(message)
         }
 
-        return mensagem
+        return message
     },
 
     /**
      * [TEXTO] Conversão para sobrescrito
-     * @param {string | number} texto - Número
+     * @param {string | number} text - Número
      * @returns {string} - Número convertido
      * @since v6.1.0
      */
-    expoente(texto = "") {
+    superscript(text = "") {
         // Se Unicode está desativado, retorna o texto com um símbolo de sobrescrito simples
         if (!Config.unicode) {
-            return "^" + texto
+            return "^" + text
         }
 
-        let trocas = [
+        let replacements = [
             ["0", "⁰"],
             ["1", "¹"],
             ["2", "²"],
@@ -1043,24 +1043,24 @@ export const Escrita = {
         ]
 
         // Substitui os números por seus equivalentes em sobrescrito
-        texto = Escrita.substituirGrupo(texto, trocas)
+        text = Writing.replaceGroup(text, replacements)
 
-        return texto
+        return text
     },
 
     /**
      * [TEXTO] Conversão para subscrito
-     * @param {string | number} texto - Número
+     * @param {string | number} text - Número
      * @returns {string} - Número subscrito
      * @since v6.1.0
      */
-    base(texto = "") {
+    subscript(text = "") {
         // Se Unicode está desativado, retorna o texto com um símbolo de subscrito simples
         if (!Config.unicode) {
-            return "_" + texto
+            return "_" + text
         }
 
-        let trocas = [
+        let replacements = [
             ["0", "₀"],
             ["1", "₁"],
             ["2", "₂"],
@@ -1076,39 +1076,39 @@ export const Escrita = {
         ]
 
         // Substitui os números por seus equivalentes em subscrito
-        texto = Escrita.substituirGrupo(texto, trocas)
+        text = Writing.replaceGroup(text, replacements)
 
-        return texto
+        return text
     },
 
     /**
-     * [TEXTO] Formatação de valores booleanos
-     * @param {string | number | boolean} valor - Valor
+     * [TEXTO] Formatação de valores booleans
+     * @param {string | number | boolean} value - Valor
      * @returns {string} - Valor formatado
      * @since v6.1.0
      */
-    formatar(valor = true) {
-        if (valor == true || valor == false) {
-            return valor ? "Sim" : "Não"
+    formatValue(value = true) {
+        if (value == true || value == false) {
+            return value ? "Sim" : "Não"
         }
 
-        return String(valor)
+        return String(value)
     },
 
     /**
      * [TEXTO] Formatação de itens de configuração
-     * @param {string} mensagem - Mensagem
-     * @param {string} nome - Nome em "config"
+     * @param {string} message - Mensagem
+     * @param {string} name - Nome em "config"
      * @returns {string} - Mensagem formatada
      * @since v6.1.0
      */
-    itemConfig(mensagem = "", nome = "") {
+    configItem(message = "", name = "") {
         return (
-            mensagem +
+            message +
             " | Atual: “" +
-            Escrita.formatar(Config[nome]) +
+            Writing.formatValue(Config[name]) +
             "” | Padrão: “" +
-            Escrita.formatar(DEFAULT_CONFIG[nome]) +
+            Writing.formatValue(DEFAULT_CONFIG[name]) +
             "”"
         )
     },

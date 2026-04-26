@@ -1,6 +1,6 @@
 import { Config } from "./config.js"
 import { Error } from "./erro.js"
-import { Escrita } from "./escrita.js"
+import { Writing } from "./escrita.js"
 import { Helpers } from "./helpers.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
@@ -13,47 +13,47 @@ import { Ui } from "./ui.js"
 export const Algebra = {
     /**
      * [NUMÉRICO] Arredonda um número
-     * @param {number} numero - Número
-     * @param {number} casas - Casas decimais
+     * @param {number} number - Número
+     * @param {number} places - Casas decimais
      * @returns {number} - Número arredondado
      * @since v6.1.0
      */
-    arredonda(numero = 0, casas = Config.decimalPlaces) {
-        numero = Escrita.decimal(numero, true)
+    round(number = 0, places = Config.decimalPlaces) {
+        number = Writing.decimal(number, true)
 
-        if (isFinite(numero)) {
-            numero = Math.round(numero * 10 ** casas) / 10 ** casas
-            if (numero == "-0") {
-                numero = 0
+        if (isFinite(number)) {
+            number = Math.round(number * 10 ** places) / 10 ** places
+            if (number == "-0") {
+                number = 0
             }
         }
 
-        return numero
+        return number
     },
 
     /**
      * [UI] Pede uma variável
-     * @param {string} nome - Nome da variável
+     * @param {string} name - Nome da variável
      * @returns {string | number} - Se a variável tiver valor numérico, retorna o valor. Se não, retorna o nome
      * @since v6.1.0
      */
-    variaveis(nome = "x") {
-        let valor = Ui.entrada(nome + " = ", "Digite “" + nome + "” caso queira que “" + nome + "” seja uma incógnita.")
+    variables(name = "x") {
+        let value = Ui.input(name + " = ", "Digite “" + name + "” caso queira que “" + name + "” seja uma incógnita.")
 
-        if (isFinite(Escrita.decimal(valor, true))) {
-            return Algebra.arredonda(valor)
+        if (isFinite(Writing.decimal(value, true))) {
+            return Algebra.round(value)
         }
 
-        return nome
+        return name
     },
 
     /**
      * [UI] Pede um(ns) ponto(s)
-     * @param {number} tipo - Quantos pontos vão ser pedidos (1, 2 ou 3)
+     * @param {number} type - Quantos pontos vão ser pedidos (1, 2 ou 3)
      * @returns {number[]} - Um array com os pontos, na ordem: [x₁, y₁, x₂, y₂, x₃, y₃]
      * @since v6.1.0
      */
-    ponto(tipo = 1) {
+    point(type = 1) {
         let array = [],
             x1 = 0,
             x2 = 0,
@@ -63,18 +63,18 @@ export const Algebra = {
             y3 = 0
 
         // Pergunta
-        x1 = Ui.entrada("x₁ = ", "", true)
-        y1 = Ui.entrada("y₁ = ", "", true)
+        x1 = Ui.input("x₁ = ", "", true)
+        y1 = Ui.input("y₁ = ", "", true)
         array.push(x1, y1)
 
-        if (tipo == 2 || tipo == 3) {
-            x2 = Ui.entrada("x₂ = ", "", true)
-            y2 = Ui.entrada("y₂ = ", "", true)
+        if (type == 2 || type == 3) {
+            x2 = Ui.input("x₂ = ", "", true)
+            y2 = Ui.input("y₂ = ", "", true)
             array.push(x2, y2)
 
-            if (tipo == 3) {
-                x3 = Ui.entrada("x₃ = ", "", true)
-                y3 = Ui.entrada("y₃ = ", "", true)
+            if (type == 3) {
+                x3 = Ui.input("x₃ = ", "", true)
+                y3 = Ui.input("y₃ = ", "", true)
                 array.push(x3, y3)
             }
         }
@@ -88,7 +88,7 @@ export const Algebra = {
      * @param {number[]} func2 - Segunda função [a, b, c]
      * @since v6.1.0
      */
-    equacoes(func1 = [0, 0, 0], func2 = [0, 0, 0]) {
+    equations(func1 = [0, 0, 0], func2 = [0, 0, 0]) {
         let coefA = func1[0] - func2[0],
             coefB = func1[1] - func2[1],
             coefC = func1[2] - func2[2],
@@ -97,12 +97,12 @@ export const Algebra = {
         // Constante
         if (coefA == 0 && coefB == 0) {
             if (coefC == 0) {
-                Ui.exibir(
+                Ui.display(
                     "As funções coincidem: ƒ₁(x) = ƒ₂(x), ∀ x ∈ ℝ",
                     "Porque as funções são iguais, em todos os pontos, elas se encontram.",
                 )
             } else if (coefC != 0) {
-                Ui.exibir(
+                Ui.display(
                     "As funções nunca se encontrarão: ƒ₁(x) ≠ ƒ₂(x), ∀ x ∈ ℝ",
                     "Porque as funções são diferentes, não há ponto em que elas se encontrarão.",
                 )
@@ -111,18 +111,18 @@ export const Algebra = {
 
         // Afim
         else if (coefA == 0 && coefB != 0) {
-            x = Algebra.divisao(-coefC, coefB)
-            Ui.exibir("As funções se encontram em: x = " + Escrita.decimal(x), "x = −c / b")
+            x = Algebra.division(-coefC, coefB)
+            Ui.display("As funções se encontram em: x = " + Writing.decimal(x), "x = −c / b")
         }
 
         // Quadrática
         else if (coefA != 0) {
             let delta = Helpers.calcDelta(coefA, coefB, coefC)
-            Helpers.exibDelta(
+            Helpers.showDelta(
                 delta[0],
                 "As funções não possuem pontos de interseção reais",
-                "As funções se encontram em: x = " + Escrita.decimal(delta[1]),
-                "As funções se encontram em: x₁ = " + Escrita.decimal(delta[1]) + ", x₂ = " + Escrita.decimal(delta[2]),
+                "As funções se encontram em: x = " + Writing.decimal(delta[1]),
+                "As funções se encontram em: x₁ = " + Writing.decimal(delta[1]) + ", x₂ = " + Writing.decimal(delta[2]),
             )
         }
     },
@@ -137,12 +137,12 @@ export const Algebra = {
      * @returns {number[]} - Retorna os coeficientes em formato de array numérico [a, b, c]
      * @since v6.1.0
      */
-    incognita(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, tipo = 0) {
-        let repetir = false,
-            pts = [0],
-            denominador = 0,
-            dif1 = 0,
-            dif2 = 0,
+    unknown(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, type = 0) {
+        let repeat = false,
+            points = [0],
+            denominator = 0,
+            diff1 = 0,
+            diff2 = 0,
             term1 = 0,
             term2 = 0,
             term3 = 0,
@@ -166,50 +166,50 @@ export const Algebra = {
         }
 
         // Mostra
-        Ui.funcao(coefA, coefB, coefC, funcExp, funcLog, tipo)
+        Ui.function(coefA, coefB, coefC, funcExp, funcLog, type)
 
         // Loop
-        let limite = 0
+        let limit = 0
         do {
-            repetir = false
+            repeat = false
 
             // Polinomial
             if (!funcExp && !funcLog) {
                 // Constante
                 if (coefA == 0 && coefB == 0) {
-                    pts = Algebra.ponto()
+                    points = Algebra.point()
 
-                    coefC = pts[1]
+                    coefC = points[1]
                 }
 
                 // Afim
                 else if (coefA == 0 && coefB != 0) {
                     // Únicas
                     if ((coefB == "b" && coefC != "c") || (coefC == "c" && coefB != "b")) {
-                        pts = Algebra.ponto()
+                        points = Algebra.point()
 
                         if (coefC == "c") {
-                            coefC = pts[1] - coefB * pts[0]
+                            coefC = points[1] - coefB * points[0]
                         } else if (coefB == "b") {
-                            if (pts[0] != 0) {
-                                coefB = Algebra.divisao(pts[1] - coefC, pts[0])
+                            if (points[0] != 0) {
+                                coefB = Algebra.division(points[1] - coefC, points[0])
                             } else {
                                 Error.divZero("x ≠ 0")
-                                repetir = true
+                                repeat = true
                             }
                         }
                     }
 
                     // Duplas
                     else if (coefB == "b" && coefC == "c") {
-                        pts = Algebra.ponto(2)
+                        points = Algebra.point(2)
 
-                        if (pts[0] != pts[2] && (pts[0] != 0 || pts[2] != 0)) {
-                            coefB = Algebra.divisao(pts[3] - pts[1], pts[2] - pts[0])
-                            coefC = pts[1] - coefB * pts[0]
+                        if (points[0] != points[2] && (points[0] != 0 || points[2] != 0)) {
+                            coefB = Algebra.division(points[3] - points[1], points[2] - points[0])
+                            coefC = points[1] - coefB * points[0]
                         } else {
                             Error.divZero("x ≠ 0 e x₁ ≠ x₂")
-                            repetir = true
+                            repeat = true
                         }
                     }
                 }
@@ -220,103 +220,110 @@ export const Algebra = {
 
                     // a
                     if (coefA == "a" && coefB != "b" && coefC != "c") {
-                        pts = Algebra.ponto()
+                        points = Algebra.point()
 
-                        if (pts[0] != 0) {
-                            coefA = Algebra.divisao(pts[1] - coefB * pts[0] - coefC, pts[0] * pts[0])
+                        if (points[0] != 0) {
+                            coefA = Algebra.division(points[1] - coefB * points[0] - coefC, points[0] * points[0])
                         } else {
                             Error.divZero("x ≠ 0")
-                            repetir = true
+                            repeat = true
                         }
                     }
 
                     // b
                     else if (coefB == "b" && coefA != "a" && coefC != "c") {
-                        pts = Algebra.ponto()
+                        points = Algebra.point()
 
-                        if (pts[0] != 0) {
-                            coefB = Algebra.divisao(pts[1] - coefA * (pts[0] * pts[0]) - coefC, pts[0])
+                        if (points[0] != 0) {
+                            coefB = Algebra.division(points[1] - coefA * (points[0] * points[0]) - coefC, points[0])
                         } else {
                             Error.divZero("x ≠ 0")
-                            repetir = true
+                            repeat = true
                         }
                     }
 
                     // c
                     else if (coefC == "c" && coefB != "b" && coefA != "a") {
-                        pts = Algebra.ponto()
+                        points = Algebra.point()
 
-                        coefC = pts[1] - coefA * (pts[0] * pts[0]) - coefB * pts[0]
+                        coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0]
                     }
 
                     // Duplas
 
                     // a, b
                     else if (coefA == "a" && coefB == "b" && coefC != "c") {
-                        pts = Algebra.ponto(2)
+                        points = Algebra.point(2)
 
-                        if (pts[0] != 0 && pts[0] != pts[2]) {
-                            denominador = pts[0] * pts[2] * (pts[0] - pts[2])
-                            coefA = Algebra.divisao((pts[1] - coefC) * pts[2] - (pts[3] - coefC) * pts[0], denominador)
-                            coefB = Algebra.divisao(
-                                (pts[3] - coefC) * pts[0] * pts[0] - (pts[1] - coefC) * pts[2] * pts[2],
-                                denominador,
+                        if (points[0] != 0 && points[0] != points[2]) {
+                            denominator = points[0] * points[2] * (points[0] - points[2])
+                            coefA = Algebra.division(
+                                (points[1] - coefC) * points[2] - (points[3] - coefC) * points[0],
+                                denominator,
+                            )
+                            coefB = Algebra.division(
+                                (points[3] - coefC) * points[0] * points[0] -
+                                    (points[1] - coefC) * points[2] * points[2],
+                                denominator,
                             )
                         } else {
                             Error.divZero("x ≠ 0 e x₁ ≠ x₂")
-                            repetir = true
+                            repeat = true
                         }
                     }
 
                     // a, c
                     else if (coefA == "a" && coefB != "b" && coefC == "c") {
-                        pts = Algebra.ponto(2)
+                        points = Algebra.point(2)
 
-                        denominador = pts[0] * pts[0] - pts[2] * pts[2]
-                        if (denominador != 0) {
-                            coefA = Algebra.divisao(pts[1] - coefB * pts[0] - (pts[3] - coefB * pts[2]), denominador)
-                            coefC = pts[1] - coefA * (pts[0] * pts[0]) - coefB * pts[0]
+                        denominator = points[0] * points[0] - points[2] * points[2]
+                        if (denominator != 0) {
+                            coefA = Algebra.division(
+                                points[1] - coefB * points[0] - (points[3] - coefB * points[2]),
+                                denominator,
+                            )
+                            coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0]
                         } else {
                             Error.divZero("x₁ ≠ x₂")
-                            repetir = true
+                            repeat = true
                         }
                     }
 
                     // b, c
                     else if (coefA != "a" && coefB == "b" && coefC == "c") {
-                        pts = Algebra.ponto(2)
+                        points = Algebra.point(2)
 
-                        if (pts[0] != pts[2]) {
-                            coefB = Algebra.divisao(
-                                pts[3] - coefA * pts[2] * pts[2] - (pts[1] - coefA * pts[0] * pts[0]),
-                                pts[2] - pts[0],
+                        if (points[0] != points[2]) {
+                            coefB = Algebra.division(
+                                points[3] - coefA * points[2] * points[2] - (points[1] - coefA * points[0] * points[0]),
+                                points[2] - points[0],
                             )
-                            coefC = pts[1] - coefA * (pts[0] * pts[0]) - coefB * pts[0]
+                            coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0]
                         } else {
                             Error.divZero("x₁ ≠ x₂")
-                            repetir = true
+                            repeat = true
                         }
                     }
 
                     // Triplas
                     else if (coefA == "a" && coefB == "b" && coefC == "c") {
-                        pts = Algebra.ponto(3)
+                        points = Algebra.point(3)
 
-                        dif1 = pts[3] - pts[1]
-                        dif2 = pts[5] - pts[1]
-                        term1 = pts[2] * pts[2] - pts[0] * pts[0]
-                        term2 = pts[2] - pts[0]
-                        term3 = pts[4] * pts[4] - pts[0] * pts[0]
-                        term4 = pts[4] - pts[0]
-                        denominador = term1 * term4 - term2 * term3
+                        diff1 = points[3] - points[1]
+                        diff2 = points[5] - points[1]
+                        term1 = points[2] * points[2] - points[0] * points[0]
+                        term2 = points[2] - points[0]
+                        term3 = points[4] * points[4] - points[0] * points[0]
+                        term4 = points[4] - points[0]
+                        denominator = term1 * term4 - term2 * term3
 
-                        if (denominador != 0) {
-                            coefA = Algebra.divisao(dif1 * term4 - term2 * dif2, denominador)
-                            coefB = Algebra.divisao(term1 * dif2 - dif1 * term3, denominador)
-                            coefC = pts[1] - coefA * (pts[0] * pts[0]) - coefB * pts[0]
+                        if (denominator != 0) {
+                            coefA = Algebra.division(diff1 * term4 - term2 * diff2, denominator)
+                            coefB = Algebra.division(term1 * diff2 - diff1 * term3, denominator)
+                            coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0]
                         } else {
                             Error.divZero("x₁ ≠ x₂")
-                            repetir = true
+                            repeat = true
                         }
                     }
                 }
@@ -328,62 +335,62 @@ export const Algebra = {
 
                 // a
                 if (coefA == "a" && coefB != "b" && coefC != "c") {
-                    pts = Algebra.ponto()
+                    points = Algebra.point()
 
-                    coefA = Algebra.arredonda(
-                        Algebra.divisao(pts[1] - coefC, coefB, false) ** Algebra.divisao(1, pts[0], false),
+                    coefA = Algebra.round(
+                        Algebra.division(points[1] - coefC, coefB, false) ** Algebra.division(1, points[0], false),
                     )
                 }
 
                 // b
                 else if (coefB == "b" && coefA != "a" && coefC != "c") {
-                    pts = Algebra.ponto()
+                    points = Algebra.point()
 
-                    coefB = Algebra.divisao(pts[1] - coefC, coefA ** pts[0])
+                    coefB = Algebra.division(points[1] - coefC, coefA ** points[0])
                 }
 
                 // c
                 else if (coefC == "c" && coefB != "b" && coefA != "a") {
-                    pts = Algebra.ponto()
+                    points = Algebra.point()
 
-                    coefC = pts[1] - coefB * coefA ** pts[0]
+                    coefC = points[1] - coefB * coefA ** points[0]
                 }
 
                 // Duplas
 
                 // a, b
                 else if (coefA == "a" && coefB == "b" && coefC != "c") {
-                    pts = Algebra.ponto(2)
+                    points = Algebra.point(2)
 
-                    coefA = Algebra.arredonda(
-                        Algebra.divisao(pts[1] - coefC, pts[3] - coefC, false) **
-                            Algebra.divisao(1, pts[0] - pts[2], false),
+                    coefA = Algebra.round(
+                        Algebra.division(points[1] - coefC, points[3] - coefC, false) **
+                            Algebra.division(1, points[0] - points[2], false),
                     )
-                    coefB = Algebra.divisao(pts[1] - coefC, coefA ** pts[0])
+                    coefB = Algebra.division(points[1] - coefC, coefA ** points[0])
                 }
 
                 // a, c
                 else if (coefA == "a" && coefB != "b" && coefC == "c") {
                     // pontoExp = algebra.ponto(2)
 
-                    Ui.aviso("Não posso ainda descobrir o valor de a e c quando tenho somente o b", "Em construção.")
+                    Ui.warning("Não posso ainda descobrir o valor de a e c quando tenho somente o b", "Em construção.")
                     coefA = -1
                     coefC = 0
                 }
 
                 // b, c
                 else if (coefA != "a" && coefB == "b" && coefC == "c") {
-                    pts = Algebra.ponto(2)
+                    points = Algebra.point(2)
 
-                    coefB = Algebra.divisao(pts[3] - pts[1], coefA ** pts[2] - coefA ** pts[0])
-                    coefC = pts[1] - coefB * coefA ** pts[0]
+                    coefB = Algebra.division(points[3] - points[1], coefA ** points[2] - coefA ** points[0])
+                    coefC = points[1] - coefB * coefA ** points[0]
                 }
 
                 // Triplas
                 else if (coefA == "a" && coefB == "b" && coefC == "c") {
                     // pontoExp = algebra.ponto(3)
 
-                    Ui.aviso("Não posso ainda descobrir o valor de a, b e c tendo somente pontos", "Em construção.")
+                    Ui.warning("Não posso ainda descobrir o valor de a, b e c tendo somente pontos", "Em construção.")
                     coefA = -1
                     coefB = 1
                     coefC = 0
@@ -396,23 +403,23 @@ export const Algebra = {
 
                 // a
                 if (coefA == "a" && coefB != "b" && coefC != "c") {
-                    pts = Algebra.ponto()
+                    points = Algebra.point()
 
-                    coefA = Algebra.arredonda(pts[0] ** Algebra.divisao(coefB, pts[1] - coefC, false))
+                    coefA = Algebra.round(points[0] ** Algebra.division(coefB, points[1] - coefC, false))
                 }
 
                 // b
                 else if (coefA != "a" && coefB == "b" && coefC != "c") {
-                    pts = Algebra.ponto()
+                    points = Algebra.point()
 
-                    coefB = Algebra.divisao(pts[1] - coefC, Algebra.log(pts[0], coefA))
+                    coefB = Algebra.division(points[1] - coefC, Algebra.log(points[0], coefA))
                 }
 
                 // c
                 else if (coefA != "a" && coefB != "b" && coefC == "c") {
-                    pts = Algebra.ponto()
+                    points = Algebra.point()
 
-                    coefC = pts[1] - Algebra.arredonda(coefB * Algebra.log(pts[0], coefA))
+                    coefC = points[1] - Algebra.round(coefB * Algebra.log(points[0], coefA))
                 }
 
                 // Duplas
@@ -421,7 +428,7 @@ export const Algebra = {
                 else if (coefA == "a" && coefB == "b" && coefC != "c") {
                     // pontoLog = algebra.ponto(2)
 
-                    Ui.aviso("Não posso ainda descobrir o valor de a e b quando tenho somente o c", "Em construção.")
+                    Ui.warning("Não posso ainda descobrir o valor de a e b quando tenho somente o c", "Em construção.")
                     coefA = -1
                     coefB = 1
                     coefC = 0
@@ -429,27 +436,31 @@ export const Algebra = {
 
                 // a, c
                 else if (coefA == "a" && coefB != "b" && coefC == "c") {
-                    pts = Algebra.ponto(2)
+                    points = Algebra.point(2)
 
-                    coefA = Algebra.arredonda(
-                        Algebra.divisao(pts[0], pts[2], false) ** Algebra.divisao(coefB, pts[1] - pts[3], false),
+                    coefA = Algebra.round(
+                        Algebra.division(points[0], points[2], false) **
+                            Algebra.division(coefB, points[1] - points[3], false),
                     )
-                    coefC = pts[1] - coefB * Algebra.log(pts[0], coefA)
+                    coefC = points[1] - coefB * Algebra.log(points[0], coefA)
                 }
 
                 // b, c
                 else if (coefA != "a" && coefB == "b" && coefC == "c") {
-                    pts = Algebra.ponto(2)
+                    points = Algebra.point(2)
 
-                    coefB = Algebra.divisao(pts[1] - pts[3], Algebra.log(pts[0], coefA) - Algebra.log(pts[2], coefA))
-                    coefC = pts[1] - coefB * Algebra.log(pts[0], coefA)
+                    coefB = Algebra.division(
+                        points[1] - points[3],
+                        Algebra.log(points[0], coefA) - Algebra.log(points[2], coefA),
+                    )
+                    coefC = points[1] - coefB * Algebra.log(points[0], coefA)
                 }
 
                 // Triplas
                 else if (coefA == "a" && coefB == "b" && coefC == "c") {
                     // pontoLog = algebra.ponto(3)
 
-                    Ui.aviso("Não posso ainda descobrir o valor de a, b e c tendo somente pontos", "Em construção.")
+                    Ui.warning("Não posso ainda descobrir o valor de a, b e c tendo somente pontos", "Em construção.")
                     coefA = -1
                     coefB = 1
                     coefC = 0
@@ -460,7 +471,7 @@ export const Algebra = {
             if (!isFinite(coefA) || !isFinite(coefB) || !isFinite(coefC)) {
                 Error.divZero("Valores inválidos.")
                 if (
-                    Ui.confirmar(
+                    Ui.confirm(
                         "Queres mudar os valores dos coeficientes?",
                         "Se quiser alterar os valores dos pontos, escolha “Cancelar”",
                     )
@@ -470,7 +481,7 @@ export const Algebra = {
                     coefC = "c"
                     State.askCoeffs = true
                     State.loop = true
-                    repetir = false
+                    repeat = false
                 } else {
                     if (!isFinite(coefA)) {
                         coefA = "a"
@@ -481,15 +492,15 @@ export const Algebra = {
                     if (!isFinite(coefC)) {
                         coefC = "c"
                     }
-                    repetir = true
+                    repeat = true
                 }
             }
 
             // Limite
-            if (Helpers.estourouLimite(++limite)) {
-                repetir = false
+            if (Helpers.exceededLimit(++limit)) {
+                repeat = false
             }
-        } while (repetir)
+        } while (repeat)
 
         return [coefA, coefB, coefC]
     },
@@ -498,13 +509,13 @@ export const Algebra = {
      * [NUMÉRICO] Log de x na base
      * @param {number} x - Número
      * @param {number} base - Base
-     * @param {number} precisao - Casas decimais
+     * @param {number} precision - Casas decimais
      * @returns {number} - Resultado
      * @since v6.1.0
      */
-    log(x = 1, base = Math.E, precisao = Config.logPrecision) {
+    log(x = 1, base = Math.E, precision = Config.logPrecision) {
         let y = x > 1 ? 1 : -1,
-            numero = 0,
+            number = 0,
             delta = 0,
             lnX = 0,
             lnBase = 0
@@ -515,8 +526,8 @@ export const Algebra = {
             return NaN
         }
 
-        numero = Algebra.ln(base)
-        delta = Algebra.divisao(base ** y - x, base ** y * numero, false)
+        number = Algebra.ln(base)
+        delta = Algebra.division(base ** y - x, base ** y * number, false)
 
         // Mudança de base
         if (base < 1) {
@@ -526,35 +537,35 @@ export const Algebra = {
                 return NaN
             }
 
-            return Algebra.divisao(lnX, lnBase)
+            return Algebra.division(lnX, lnBase)
         }
 
         // Loop
-        let limite = 0
-        while (Math.abs(delta) > precisao && limite < Config.interactionLimit) {
-            delta = Algebra.divisao(base ** y - x, base ** y * numero, false)
+        let limit = 0
+        while (Math.abs(delta) > precision && limit < Config.interactionLimit) {
+            delta = Algebra.division(base ** y - x, base ** y * number, false)
             y -= delta
 
             // Limite
-            if (Helpers.estourouLimite(++limite)) {
+            if (Helpers.exceededLimit(++limit)) {
                 return NaN
             }
         }
 
-        return Algebra.arredonda(y)
+        return Algebra.round(y)
     },
 
     /**
      * [NUMÉRICO] Log de x na base E
      * @param {number} x - Número
-     * @param {number} precisao - Casas decimais
+     * @param {number} precision - Casas decimais
      * @returns {number} - Resultado
      * @since v6.1.0
      */
-    ln(x = 1, precisao = Config.logPrecision) {
+    ln(x = 1, precision = Config.logPrecision) {
         let y = x > 1 ? 1 : -1,
             base = Math.E,
-            delta = Algebra.divisao(base ** y - x, base ** y, false)
+            delta = Algebra.division(base ** y - x, base ** y, false)
 
         // Valida
         if (x <= 0) {
@@ -563,54 +574,54 @@ export const Algebra = {
         }
 
         // Loop
-        let limite = 0
-        while (Math.abs(delta) > precisao && limite < Config.interactionLimit) {
-            delta = Algebra.divisao(base ** y - x, base ** y, false)
+        let limit = 0
+        while (Math.abs(delta) > precision && limit < Config.interactionLimit) {
+            delta = Algebra.division(base ** y - x, base ** y, false)
             y -= delta
 
             // Limite
-            if (Helpers.estourouLimite(++limite)) {
+            if (Helpers.exceededLimit(++limit)) {
                 return NaN
             }
         }
 
-        return Algebra.arredonda(y)
+        return Algebra.round(y)
     },
 
     /**
      * [NUMÉRICO] Divide dois números
-     * @param {number} numerador - Parte de cima da fração
-     * @param {number} denominador - Parte de baixo da fração
-     * @param {boolean} arredondar - Se irá arredondar
-     * @param {number} precisao - Precisão do arredondamento
+     * @param {number} numerator - Parte de cima da fração
+     * @param {number} denominator - Parte de baixo da fração
+     * @param {boolean} round - Se irá arredondar
+     * @param {number} precision - Precisão do arredondamento
      * @returns {number} - Resultado
      * @since v6.1.0
      */
-    divisao(numerador = 0, denominador = 1, arredondar = true, precisao = Config.divPrecision) {
-        let resultado = 0
+    division(numerator = 0, denominator = 1, round = true, precision = Config.divPrecision) {
+        let result = 0
 
         // Valida
-        if (denominador == 0 || !isFinite(numerador) || !isFinite(denominador)) {
+        if (denominator == 0 || !isFinite(numerator) || !isFinite(denominator)) {
             return NaN
         }
 
         // Denominador pequeno
-        if (Math.abs(denominador) <= precisao) {
+        if (Math.abs(denominator) <= precision) {
             return NaN
         }
 
-        resultado = numerador / denominador
+        result = numerator / denominator
 
         // Infinito
-        if (!isFinite(resultado)) {
+        if (!isFinite(result)) {
             return NaN
         }
 
         // Arredonda
-        if (arredondar) {
-            return Algebra.arredonda(resultado)
+        if (round) {
+            return Algebra.round(result)
         }
 
-        return resultado
+        return result
     },
 }

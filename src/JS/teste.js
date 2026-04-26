@@ -16,7 +16,7 @@ export const Test = {
     start() {
         let option = 0
         do {
-            option = Ui.intervalo(
+            option = Ui.range(
                 "=== Testes ===\n1 = Constante\n2 = Afim\n3 = Quadrática\n4 = Exponencial\n5 = Logarítmica\n6 = Contas\n0 = Sair",
                 "",
                 0,
@@ -44,10 +44,10 @@ export const Test = {
      * @since v6.1.0
      */
     constant() {
-        Ui.exibir("Testando constante...")
-        Analisar.constante(5) // Normal
-        Analisar.constante(0) // Nula
-        Analisar.constante(-3) // Negativa
+        Ui.display("Testando constante...")
+        Analisar.constant(5) // Normal
+        Analisar.constant(0) // Nula
+        Analisar.constant(-3) // Negativa
     },
 
     /**
@@ -55,12 +55,12 @@ export const Test = {
      * @since v6.1.0
      */
     affine() {
-        Ui.exibir("Testando afim...")
-        Analisar.afim(1, 0) // Identidade: x
-        Analisar.afim(-1, 0) // Oposta: -x
-        Analisar.afim(2, -4) // Raiz em x = 2
-        Analisar.afim(1, 1) // Crescente com c positivo
-        Analisar.afim(-2, 6) // Decrescente com raiz em x = 3
+        Ui.display("Testando afim...")
+        Analisar.affine(1, 0) // Identidade: x
+        Analisar.affine(-1, 0) // Oposta: -x
+        Analisar.affine(2, -4) // Raiz em x = 2
+        Analisar.affine(1, 1) // Crescente com c positivo
+        Analisar.affine(-2, 6) // Decrescente com raiz em x = 3
     },
 
     /**
@@ -68,12 +68,12 @@ export const Test = {
      * @since v6.1.0
      */
     quadratic() {
-        Ui.exibir("Testando quadrática...")
-        Analisar.quadratica(1, 0, 0) // Pura: x²
-        Analisar.quadratica(1, -3, 2) // Δ > 0: raízes em x = 1 e x = 2
-        Analisar.quadratica(1, -2, 1) // Δ = 0: raiz dupla em x = 1
-        Analisar.quadratica(1, 0, 1) // Δ < 0: sem raízes reais
-        Analisar.quadratica(-1, 0, 4) // Concavidade para baixo
+        Ui.display("Testando quadrática...")
+        Analisar.quadratic(1, 0, 0) // Pura: x²
+        Analisar.quadratic(1, -3, 2) // Δ > 0: raízes em x = 1 e x = 2
+        Analisar.quadratic(1, -2, 1) // Δ = 0: raiz dupla em x = 1
+        Analisar.quadratic(1, 0, 1) // Δ < 0: sem raízes reais
+        Analisar.quadratic(-1, 0, 4) // Concavidade para baixo
     },
 
     /**
@@ -81,11 +81,11 @@ export const Test = {
      * @since v6.1.0
      */
     exponential() {
-        Ui.exibir("Testando exponencial...")
-        Analisar.exponencial(2, 1, 0) // Pura: 2ˣ
-        Analisar.exponencial(2, 1, -1) // Com assíntota em y = -1
-        Analisar.exponencial(0.5, 1, 0) // Base < 1: decrescente
-        Analisar.exponencial(2, -1, 0) // b negativo: decrescente
+        Ui.display("Testando exponencial...")
+        Analisar.exponential(2, 1, 0) // Pura: 2ˣ
+        Analisar.exponential(2, 1, -1) // Com assíntota em y = -1
+        Analisar.exponential(0.5, 1, 0) // Base < 1: decrescente
+        Analisar.exponential(2, -1, 0) // b negativo: decrescente
         // Casos de erro esperados:
         // analisar.exponencial(1, 1, 0) → constante (a = 1)
         // analisar.exponencial(-2, 1, 0) → inválida (a < 0)
@@ -96,15 +96,15 @@ export const Test = {
      * @since v6.1.0
      */
     logarithmic() {
-        Ui.exibir("Testando logarítmica...")
-        Analisar.logaritmica(2, 1, 0) // Pura: log₂(x)
-        Analisar.logaritmica(10, 1, 0) // Decimal: log₁₀(x)
-        Analisar.logaritmica(Math.E, 1, 0) // Natural: ln(x)
-        Analisar.logaritmica(2, 1, -1) // Com deslocamento
-        Analisar.logaritmica(0.5, 1, 0) // Base < 1: decrescente
+        Ui.display("Testando logarítmica...")
+        Analisar.logarithmic(2, 1, 0) // Pura: log₂(x)
+        Analisar.logarithmic(10, 1, 0) // Decimal: log₁₀(x)
+        Analisar.logarithmic(Math.E, 1, 0) // Natural: ln(x)
+        Analisar.logarithmic(2, 1, -1) // Com deslocamento
+        Analisar.logarithmic(0.5, 1, 0) // Base < 1: decrescente
         // Casos de erro esperados:
-        // analisar.logaritmica(1, 1, 0) → constante (a = 1)
-        // analisar.logaritmica(-2, 1, 0) → inválida (a < 0)
+        // Analisar.logarithmic(1, 1, 0) → constante (a = 1)
+        // Analisar.logarithmic(-2, 1, 0) → inválida (a < 0)
     },
 
     /**
@@ -115,18 +115,18 @@ export const Test = {
         let result = [],
             errors = 0
 
-        // algebra.arredonda
-        result.push(["arredonda(3.14159, 2)", Algebra.arredonda(3.14159, 2), 3.14])
-        result.push(["arredonda(-0, 2)", Algebra.arredonda(-0, 2), 0])
-        result.push(["arredonda(1.005, 2)", Algebra.arredonda(1.005, 2), 1.01])
-        result.push(["arredonda(1.005, 2)", Algebra.arredonda(1.005, 2), 1.01])
-        result.push(["arredonda(1.045, 2)", Algebra.arredonda(1.045, 2), 1.05])
-        result.push(["arredonda(1.055, 2)", Algebra.arredonda(1.055, 2), 1.06])
+        // algebra.round
+        result.push(["round(3.14159, 2)", Algebra.round(3.14159, 2), 3.14])
+        result.push(["round(-0, 2)", Algebra.round(-0, 2), 0])
+        result.push(["round(1.005, 2)", Algebra.round(1.005, 2), 1.01])
+        result.push(["round(1.005, 2)", Algebra.round(1.005, 2), 1.01])
+        result.push(["round(1.045, 2)", Algebra.round(1.045, 2), 1.05])
+        result.push(["round(1.055, 2)", Algebra.round(1.055, 2), 1.06])
 
-        // algebra.divisao
-        result.push(["divisao(10, 3)", Algebra.divisao(10, 3), 3.333333])
-        result.push(["divisao(1, 0)", Algebra.divisao(1, 0), NaN])
-        result.push(["divisao(0, 5)", Algebra.divisao(0, 5), 0])
+        // algebra.division
+        result.push(["division(10, 3)", Algebra.division(10, 3), 3.333333])
+        result.push(["division(1, 0)", Algebra.division(1, 0), NaN])
+        result.push(["division(0, 5)", Algebra.division(0, 5), 0])
 
         // algebra.log
         result.push(["log(100, 10)", Algebra.log(100, 10), 2])
@@ -151,10 +151,10 @@ export const Test = {
         let d3 = Helpers.calcDelta(1, 0, 1)
         result.push(["calcDelta(1,0,1)[0]", d3[0], -4]) // Δ < 0
 
-        // helpers.vertice
-        let v = Helpers.vertice(1, -2, 0)
-        result.push(["vertice(1,-2,0)[0]", v[0], 1]) // x do vértice
-        result.push(["vertice(1,-2,0)[1]", v[1], 0]) // y do vértice
+        // helpers.vertex
+        let v = Helpers.vertex(1, -2, 0)
+        result.push(["vertex(1,-2,0)[0]", v[0], 1]) // x do vértice
+        result.push(["vertex(1,-2,0)[1]", v[1], 0]) // y do vértice
 
         // Monta relatório
         let logs = "=== Relatório de Contas ===\n"
@@ -166,17 +166,10 @@ export const Test = {
             if (!pass) {
                 errors++
             }
-            logs +=
-                (pass ? "✓" : "✗") +
-                " " +
-                name +
-                " → " +
-                gated +
-                (pass ? "" : " (esperado: " + waited + ")") +
-                "\n"
+            logs += (pass ? "✓" : "✗") + " " + name + " → " + gated + (pass ? "" : " (esperado: " + waited + ")") + "\n"
         }
 
         logs += "\n" + (errors == 0 ? "✓ Todos os testes passaram!" : "✗ " + errors + " erro(s) encontrado(s)")
-        Ui.exibir(logs)
+        Ui.display(logs)
     },
 }

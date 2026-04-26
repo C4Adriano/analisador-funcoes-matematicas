@@ -1,10 +1,10 @@
 import { Algebra } from "./algebra.js"
 import { Config } from "./config.js"
 import { Error } from "./erro.js"
-import { Escrita } from "./escrita.js"
+import { Writing } from "./escrita.js"
 import { Helpers } from "./helpers.js"
 import { State } from "./state.js"
-import { Comandos } from "./comandos.js"
+import { Commands } from "./comandos.js"
 
 /**
  * [UI] Objeto base para as funções envolvendo UI / UX e interação com o usuário
@@ -13,212 +13,212 @@ import { Comandos } from "./comandos.js"
 export const Ui = {
     /**
      * [UI] Exibe um alert personalizado
-     * @param {string} mensagem - Mensagem
-     * @param {string} explicacao - Explicação
+     * @param {string} message - Mensagem
+     * @param {string} explanation - Explicação
      * @since v6.1.0
      */
-    exibir(mensagem = "", explicacao = "") {
-        if (Config.debug) {
-            console.log("Mensagem:", mensagem)
-            if (explicacao != "") {
-                console.log("Explicação:", explicacao)
+    display(message = "", explanation = "", debug = Config.debug) {
+        if (debug) {
+            console.log("Mensagem:", message)
+            if (explanation != "") {
+                console.log("Explicação:", explanation)
             } else {
                 console.log("Sem explicação")
             }
         } else {
-            alert(Escrita.verificar(mensagem, explicacao))
+            alert(Writing.format(message, explanation))
         }
     },
 
     /**
      * [UI] Exibe um confirm personalizado
-     * @param {string} mensagem - Mensagem
-     * @param {string} explicacao - Explicação
+     * @param {string} message - Mensagem
+     * @param {string} explanation - Explicação
      * @returns {boolean} - Sim / Não
      * @since v6.1.0
      */
-    confirmar(mensagem = "", explicacao = "") {
-        if (Config.debug) {
-            console.log("Mensagem:", mensagem)
-            console.log("Explicação:", explicacao)
+    confirm(message = "", explanation = "", debug = Config.debug) {
+        if (debug) {
+            console.log("Mensagem:", message)
+            console.log("Explicação:", explanation)
             return true
         } else {
-            return confirm(Escrita.verificar(mensagem, explicacao + "\n\n“Ok” = “Sim” | “Cancelar” = “Não”"))
+            return confirm(Writing.format(message, explanation + "\n\n“Ok” = “Sim” | “Cancelar” = “Não”"))
         }
     },
 
     /**
      * [UI] Exibe uma mensagem de erro
-     * @param {string} mensagem - Mensagem
-     * @param {string} explicacao - Explicação
+     * @param {string} message - Mensagem
+     * @param {string} explanation - Explicação
      * @since v6.1.0
      */
-    error(mensagem = "", explicacao = "") {
+    error(message = "", explanation = "") {
         if (Config.errors) {
-            Ui.exibir("=== Erro ===\n" + mensagem, explicacao)
+            Ui.display("=== Erro ===\n" + message, explanation)
         }
     },
 
     /**
      * [UI] Exibe uma mensagem de aviso
-     * @param {string} mensagem - Mensagem
-     * @param {string} explicacao - Explicação
-     * @param {boolean} tipo - Tipo da mensagem
+     * @param {string} message - Mensagem
+     * @param {string} explanation - Explicação
+     * @param {boolean} type - Tipo da mensagem
      * @since v6.1.0
      */
-    aviso(mensagem = "", explicacao = "", tipo = false) {
-        if (!tipo) {
+    warning(message = "", explanation = "", type = false) {
+        if (!type) {
             // Se tipo for falso, é um aviso simples, como um alert
-            Ui.exibir("=== Aviso ===\n" + mensagem, explicacao)
+            Ui.display("=== Aviso ===\n" + message, explanation)
         } else {
             // Se tipo for verdadeiro, é um aviso de confirmação, como um confirm
-            return Ui.confirmar("=== Aviso ===\n" + mensagem, explicacao)
+            return Ui.confirm("=== Aviso ===\n" + message, explanation)
         }
     },
 
     /**
      * [UI] Formata um menu paginado
-     * @param {string[]} opcoes Array com todas as opções possíveis
-     * @param {number} pagina Página atual
+     * @param {string[]} options Array com todas as opções possíveis
+     * @param {number} page Página atual
      * @returns {number[]} - Retorna a resposta, a página atual, as opções por página
      * @since v6.1.0
      */
-    menu(opcoes = ["---"], pagina = 1) {
-        let resposta = 0,
+    menu(options = ["---"], page = 1) {
+        let answer = 0,
             menu = "",
-            opcao = 1,
+            option = 1,
             total = 0,
-            lista = [].concat(opcoes)
+            list = [].concat(options)
 
         // Organiza
-        while (lista.length % 5 != 0 || lista.length == 0) {
-            lista.push("---")
+        while (list.length % 5 != 0 || list.length == 0) {
+            list.push("---")
         }
-        total = Math.ceil(lista.length / 5)
+        total = Math.ceil(list.length / 5)
 
         // Loop
-        let limite = 0
+        let limit = 0
         do {
             // Arruma
-            if (pagina < 1) {
-                pagina = 1
-            } else if (pagina > total) {
-                pagina = total
+            if (page < 1) {
+                page = 1
+            } else if (page > total) {
+                page = total
             }
 
             // Pergunta
-            menu = "=== Menu ===\nPágina " + String(pagina) + "/" + String(total) + "\nO que queres?"
+            menu = "=== Menu ===\nPágina " + String(page) + "/" + String(total) + "\nO que queres?"
 
-            while (opcao <= 5) {
-                menu += "\n" + String(opcao) + " = " + String(lista[opcao - 1 + 5 * (pagina - 1)])
-                opcao++
+            while (option <= 5) {
+                menu += "\n" + String(option) + " = " + String(list[option - 1 + 5 * (page - 1)])
+                option++
             }
 
-            opcao = 1
+            option = 1
             menu += "\n----------------\n6 = Rever | 7 = Alterar | 8 = Anterior | 9 = Próxima | 0 = Voltar"
 
             // Responde
-            resposta = Ui.intervalo(menu, "", 0, 9, 0, true)
-            if (resposta == 0) {
+            answer = Ui.range(menu, "", 0, 9, 0, true)
+            if (answer == 0) {
                 // Voltar
                 State.askCoeffs = false
                 State.loop = true
-            } else if (resposta == 7) {
+            } else if (answer == 7) {
                 // Alterar
                 State.askCoeffs = true
                 State.loop = true
-                resposta = 0
-            } else if (resposta == 8) {
+                answer = 0
+            } else if (answer == 8) {
                 // -1
-                resposta = -1
-                pagina -= 1
-            } else if (resposta == 9) {
+                answer = -1
+                page -= 1
+            } else if (answer == 9) {
                 // +1
-                resposta = -1
-                pagina += 1
-            } else if (Comandos.nomes().includes(resposta)) {
+                answer = -1
+                page += 1
+            } else if (Commands.names().includes(answer)) {
                 State.loop = true
                 State.keepType = true
             }
 
             // Limite
-            if (Helpers.estourouLimite(++limite)) {
-                resposta = 0
+            if (Helpers.exceededLimit(++limit)) {
+                answer = 0
                 State.loop = true
             }
-        } while (!(0 <= resposta && resposta <= 9) && !Comandos.nomes().includes(resposta))
+        } while (!(0 <= answer && answer <= 9) && !Commands.names().includes(answer))
 
-        return [resposta, pagina]
+        return [answer, page]
     },
 
     /**
      * [UI] Exibe um prompt personalizado e verifica ele
-     * @param {string} mensagem - Mensagem
-     * @param {string} explicacao - Explicação
-     * @param {boolean} numero - true = número, false = string
-     * @param {number} casas - Casas para arredondar (0 = sem casas)
+     * @param {string} message - Mensagem
+     * @param {string} explanation - Explicação
+     * @param {boolean} number - true = número, false = string
+     * @param {number} places - Casas para arredondar (0 = sem casas)
      * @returns {string | number} - Valor verificado
      */
-    entrada(mensagem = "", explicacao = "", numero = false, casas = Config.decimalPlaces, aceitaComandos = false) {
-        let bruto = "",
-            texto = "",
-            valor = 0,
-            valido = false
+    input(message = "", explanation = "", number = false, places = Config.decimalPlaces, allowCommands = false) {
+        let raw = "",
+            text = "",
+            value = 0,
+            valid = false
 
         // Loop
-        let limite = 0
+        let limit = 0
         do {
-            bruto = prompt(Escrita.verificar(mensagem, explicacao))
+            raw = prompt(Writing.format(message, explanation))
 
             // Cancelar
-            if (bruto == null) {
-                valido = false
+            if (raw == null) {
+                valid = false
             } else {
-                texto = String(bruto).trim()
-                valido = texto != ""
+                text = String(raw).trim()
+                valid = text != ""
             }
 
             // Comandos
-            if (valido && bruto[0] == "/" && aceitaComandos) {
-                let acao = Comandos.processar(bruto)
-                if (acao != null) {
-                    return acao
+            if (valid && raw[0] == "/" && allowCommands) {
+                let action = Commands.process(raw)
+                if (action != null) {
+                    return action
                 }
-                valido = false
+                valid = false
             }
 
             // Número
-            if (valido && numero) {
-                valor = Number(Escrita.decimal(texto, true))
-                if (!isFinite(valor)) {
-                    valido = false
+            if (valid && number) {
+                value = Number(Writing.decimal(text, true))
+                if (!isFinite(value)) {
+                    valid = false
                 }
             }
 
             // Confirma
-            if (valido && Config.inputConfirm) {
-                valido = Ui.aviso(
-                    "Tu digitaste: “" + (numero ? Escrita.decimal(valor) : texto) + "”\nTens certeza?",
+            if (valid && Config.inputConfirm) {
+                valid = Ui.warning(
+                    "Tu digitaste: “" + (number ? Writing.decimal(value) : text) + "”\nTens certeza?",
                     "Obs.₁: Se essa for uma variável e o que foi digitado não for um número, ela será transformada no nome da variável, não no que foi digitado\nObs.₂: Essas mensagens podem ser desativadas nas configurações, em “Confirmações de entrada”",
                     true,
                 )
             }
 
             // Retorna
-            if (valido) {
-                if (numero) {
-                    return Algebra.arredonda(valor, casas)
+            if (valid) {
+                if (number) {
+                    return Algebra.round(value, places)
                 }
-                return texto
+                return text
             }
 
             // Limite
-            if (Helpers.estourouLimite(++limite)) {
-                valido = true
+            if (Helpers.exceededLimit(++limit)) {
+                valid = true
             }
-        } while (!valido)
+        } while (!valid)
 
-        return numero ? 0 : ""
+        return number ? 0 : ""
     },
 
     /**
@@ -228,24 +228,24 @@ export const Ui = {
      * @param {string | number} coefC - Coeficiente c
      * @param {boolean} funcExp - Exponencial
      * @param {boolean} funcLog - Logarítmica
-     * @param {boolean} mostrar - Mostrará a função ou não, baseado na configuração
+     * @param {boolean} show - Mostrará a função ou não, baseado na configuração
      * @since v6.1.0
      */
-    funcao(
+    function(
         coefA = 0,
         coefB = 0,
         coefC = 0,
         funcExp = false,
         funcLog = false,
         funcTrig = 0,
-        mostrar = Config.showFunction,
+        show = Config.showFunction,
     ) {
-        if (!mostrar) {
+        if (!show) {
             // Não mostrar
             return ""
         }
 
-        let func = "A função: ƒ(x) = "
+        let funcStr = "A função: ƒ(x) = "
 
         if (!funcExp && !funcLog && funcTrig == 0) {
             // Polinomial
@@ -253,134 +253,134 @@ export const Ui = {
                 // Constante
                 if (coefC == "c") {
                     // Variável
-                    func += "c"
+                    funcStr += "c"
                 } else if (coefC != "c") {
                     // Não variável
-                    func += String(coefC)
+                    funcStr += String(coefC)
                 }
 
-                func += " é constante"
+                funcStr += " é constante"
 
                 // Especiais
                 if (coefC == 0) {
                     // Se for zero, é a função nula
-                    func += " / nula"
+                    funcStr += " / nula"
                 }
             } else if (coefA == 0 && coefB != 0) {
                 // Afim
                 if (coefB == "b") {
                     // Variável
-                    func += "b · x"
+                    funcStr += "b · x"
                 } else if (coefB != "b") {
                     // Não variável
                     if (Math.abs(coefB) == 1) {
                         // Se for 1 ou -1, não mostra o número, só o sinal
                         if (coefB == -1) {
                             // Se for -1, mostra o sinal de menos
-                            func += "−"
+                            funcStr += "−"
                         }
-                        func += "x"
+                        funcStr += "x"
                     } else if (Math.abs(coefB) != 1) {
                         // Se for diferente de 1 ou -1, mostra o número
-                        func += String(coefB) + " · x"
+                        funcStr += String(coefB) + " · x"
                     }
                 }
 
                 if (coefC == "c") {
                     // Variável
-                    func += " + c"
+                    funcStr += " + c"
                 } else if (coefC != "c") {
                     // Não variável
                     if (coefC > 0) {
                         // Se for positivo, mostra o sinal de mais
-                        func += " + " + String(coefC)
+                        funcStr += " + " + String(coefC)
                     } else if (coefC < 0) {
                         // Se for negativo, mostra o sinal de menos e o número positivo
-                        func += " − " + String(-coefC)
+                        funcStr += " − " + String(-coefC)
                     }
                 }
 
-                func += " é afim"
+                funcStr += " é afim"
 
                 // Especiais
                 if (coefB != 1 && coefC == 0) {
                     // Se o coeficiente b for diferente de 1 e o coeficiente c for zero, é uma função linear
-                    func += " / linear"
+                    funcStr += " / linear"
                 } else if (coefB == 1 && coefC == 0) {
                     // Se o coeficiente b for 1 e o coeficiente c for zero, é a função identidade
-                    func += " / identidade"
+                    funcStr += " / identidade"
                 } else if (coefB == -1) {
                     // Se o coeficiente b for -1, é a função oposta da identidade
-                    func += " / oposta"
+                    funcStr += " / oposta"
                 }
             } else if (coefA != 0) {
                 // Quadrática
                 if (coefA == "a") {
                     // Variável
-                    func += "a · x²"
+                    funcStr += "a · x²"
                 } else if (coefA != "a") {
                     // Não variável
                     if (Math.abs(coefA) == 1) {
                         // Se for 1 ou -1, não mostra o número, só o sinal
                         if (coefA == -1) {
                             // Se for -1, mostra o sinal de menos
-                            func += "−"
+                            funcStr += "−"
                         }
-                        func += "x²"
+                        funcStr += "x²"
                     } else if (Math.abs(coefA) != 1) {
                         // Se for diferente de 1 ou -1, mostra o número
-                        func += String(coefA) + " · x²"
+                        funcStr += String(coefA) + " · x²"
                     }
                 }
 
                 if (coefB == "b") {
                     // Variável
-                    func += " + b · x"
+                    funcStr += " + b · x"
                 } else if (coefB != "b" && coefB != 0) {
                     // Não variável e diferente de zero
                     if (coefB > 0) {
                         // Se for positivo, mostra o sinal de mais
-                        func += " + "
+                        funcStr += " + "
                     } else if (coefB < 0) {
                         // Se for negativo, mostra o sinal de menos e o número positivo
-                        func += " − "
+                        funcStr += " − "
                     }
 
                     if (Math.abs(coefB) == 1) {
                         // Se for 1 ou -1, não mostra o número, só o sinal
-                        func += "x"
+                        funcStr += "x"
                     } else if (Math.abs(coefB) != 1) {
                         // Se for diferente de 1 ou -1, mostra o número
-                        func += String(Math.abs(coefB)) + " · x"
+                        funcStr += String(Math.abs(coefB)) + " · x"
                     }
                 }
 
                 if (coefC == "c") {
                     // Variável
-                    func += " + c"
+                    funcStr += " + c"
                 } else if (coefC != "c") {
                     // Não variável
                     if (coefC > 0) {
                         // Se for positivo, mostra o sinal de mais
-                        func += " + " + String(coefC)
+                        funcStr += " + " + String(coefC)
                     } else if (coefC < 0) {
                         // Se for negativo, mostra o sinal de menos e o número positivo
-                        func += " − " + String(-coefC)
+                        funcStr += " − " + String(-coefC)
                     }
                 }
 
-                func += " é quadrática"
+                funcStr += " é quadrática"
 
                 // Especiais
                 if (coefB == 0 && coefC == 0) {
                     // Se os coeficientes b e c forem zero, é uma função quadrática pura
-                    func += " / pura"
+                    funcStr += " / pura"
                 } else if (coefB == 0) {
                     // Se o coeficiente b for zero, é uma função incompleta sem termo linear
-                    func += " / incompleta (sem termo linear)"
+                    funcStr += " / incompleta (sem termo linear)"
                 } else if (coefC == 0) {
                     // Se o coeficiente c for zero, é uma função incompleta sem termo constante
-                    func += " / incompleta (sem termo constante)"
+                    funcStr += " / incompleta (sem termo constante)"
                 }
             }
         } else if (funcExp && funcTrig == 0) {
@@ -389,132 +389,132 @@ export const Ui = {
                 // Não variável
                 if (coefB != 1) {
                     // Se for diferente de 1, mostra o número
-                    func += String(coefB) + " × "
+                    funcStr += String(coefB) + " × "
                 }
             } else if (coefB == "b") {
                 // Variável
-                func += "b × "
+                funcStr += "b × "
             }
 
             if (coefA != "a") {
                 // Não variável
-                func += String(coefA) + "ˣ"
+                funcStr += String(coefA) + "ˣ"
             } else if (coefA == "a") {
                 // Variável
-                func += "aˣ"
+                funcStr += "aˣ"
             }
 
             if (coefC != "c") {
                 // Não variável
                 if (coefC > 0) {
                     // Se for positivo, mostra o sinal de mais
-                    func += " + " + String(coefC)
+                    funcStr += " + " + String(coefC)
                 } else if (coefC < 0) {
                     // Se for negativo, mostra o sinal de menos e o número positivo
-                    func += " − " + String(-coefC)
+                    funcStr += " − " + String(-coefC)
                 }
             } else if (coefC == "c") {
                 // Variável
-                func += " + c"
+                funcStr += " + c"
             }
 
-            func += " é exponencial"
+            funcStr += " é exponencial"
 
             // Especiais
             if (coefB == 1 && coefC == 0) {
                 // Se o coeficiente b for 1 e o coeficiente c for zero, é uma função exponencial pura
-                func += " / pura"
+                funcStr += " / pura"
             }
-            if (coefA == Algebra.arredonda(Math.E)) {
+            if (coefA == Algebra.round(Math.E)) {
                 // Se o coeficiente a for igual a e, é uma função exponencial natural
-                func += " / natural"
+                funcStr += " / natural"
             }
         } else if (funcLog && funcTrig == 0) {
             // Logarítmica
             if (coefB != "b") {
                 // Não variável
                 if (coefB != 1) {
-                    func += String(coefB) + " × "
+                    funcStr += String(coefB) + " × "
                 }
             } else if (coefB == "b") {
                 // Variável
-                func += "b × "
+                funcStr += "b × "
             }
 
             if (coefA != "a") {
                 // Não variável
-                func += "log" + Escrita.base(coefA) + "(x)"
+                funcStr += "log" + Writing.subscript(coefA) + "(x)"
             } else if (coefA == "a") {
                 // Variável
-                func += "logₐ(x)"
+                funcStr += "logₐ(x)"
             }
 
             if (coefC != "c") {
                 // Não variável
                 if (coefC > 0) {
                     // Se for positivo, mostra o sinal de mais
-                    func += " + " + String(coefC)
+                    funcStr += " + " + String(coefC)
                 } else if (coefC < 0) {
                     // Se for negativo, mostra o sinal de menos e o número positivo
-                    func += " − " + String(-coefC)
+                    funcStr += " − " + String(-coefC)
                 }
             } else if (coefC == "c") {
                 // Variável
-                func += " + c"
+                funcStr += " + c"
             }
 
-            func += " é logarítmica"
+            funcStr += " é logarítmica"
 
             // Especiais
             if (coefB == 1 && coefC == 0) {
                 // Se o coeficiente b for 1 e o coeficiente c for zero, é uma função logarítmica pura
-                func += " / pura"
+                funcStr += " / pura"
             }
-            if (coefA == Algebra.arredonda(Math.E)) {
+            if (coefA == Algebra.round(Math.E)) {
                 // Se o coeficiente a for igual a e, é uma função logarítmica natural
-                func += " / natural"
+                funcStr += " / natural"
             } else if (coefA == 10) {
                 // Se o coeficiente a for igual a 10, é uma função logarítmica decimal
-                func += " / decimal"
+                funcStr += " / decimal"
             }
         }
 
-        Ui.exibir("=== Função Atual ===\n" + Escrita.decimal(func))
+        Ui.display("=== Função Atual ===\n" + Writing.decimal(funcStr))
     },
 
     /**
      * [UI] Pede ao usuário um valor entre o intervalo
-     * @param {string} mensagem - Mensagem
-     * @param {string} explicacao - Explicação
+     * @param {string} message - Mensagem
+     * @param {string} explanation - Explicação
      * @param {number} min - Mínimo
      * @param {number} max - Máximo
-     * @param {number} casas - Casas decimais
+     * @param {number} places - Casas decimais
      * @returns {number} - Um valor escolhido entre o intervalo
      */
-    intervalo(mensagem = "", explicacao = "", min = 0, max = 1, casas = 0, aceitaComandos = false) {
-        let valor = 0
+    range(message = "", explanation = "", min = 0, max = 1, places = 0, allowCommands = false) {
+        let value = 0
 
         // Loop
         do {
             // Pede um valor
-            valor = Ui.entrada(mensagem, explicacao, true, casas, aceitaComandos)
+            value = Ui.input(message, explanation, true, places, allowCommands)
 
             // Comandos
-            if (Comandos.nomes().includes(valor)) {
-                return valor
+            if (Commands.names().includes(value)) {
+                return value
             }
 
             // Encerrar intervalo
-            else if (valor == "end") {
+            else if (value == "end") {
                 return 0
             }
 
-            if (!(min <= valor && valor <= max)) {
+            if (!(min <= value && value <= max)) {
                 // Se o valor não estiver entre o intervalo, mostra um erro
                 Error.range(min, max)
             }
-        } while (!(min <= valor && valor <= max))
+        } while (!(min <= value && value <= max))
 
-        return valor
+        return value
     },
 }
