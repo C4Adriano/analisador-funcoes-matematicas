@@ -54,12 +54,12 @@ do {
 
     // Salva histórico
     if (
-        State.globalA != State.funcAtual[0] ||
-        State.globalB != State.funcAtual[1] ||
-        State.globalC != State.funcAtual[2]
+        State.globalA != State.currentFunc[0] ||
+        State.globalB != State.currentFunc[1] ||
+        State.globalC != State.currentFunc[2]
     ) {
-        State.funcAtual = [State.globalA, State.globalB, State.globalC]
-        State.history.push(State.funcAtual.slice())
+        State.currentFunc = [State.globalA, State.globalB, State.globalC]
+        State.history.push(State.currentFunc.slice())
 
         if (State.history.length > 9) {
             State.history.shift()
@@ -271,11 +271,11 @@ do {
                     (State.globalB = State.history[index][1]),
                     (State.globalC = State.history[index][2]))
                 if (
-                    State.globalA != State.funcAtual[0] ||
-                    State.globalB != State.funcAtual[1] ||
-                    State.globalC != State.funcAtual[2]
+                    State.globalA != State.currentFunc[0] ||
+                    State.globalB != State.currentFunc[1] ||
+                    State.globalC != State.currentFunc[2]
                 ) {
-                    State.funcAtual = [State.globalA, State.globalB, State.globalC]
+                    State.currentFunc = [State.globalA, State.globalB, State.globalC]
                 }
             }
         }
