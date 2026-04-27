@@ -1115,11 +1115,21 @@ export const Writing = {
         )
     },
 
+    /**
+     * [TEXTO] Análise de texto para conversão de graus para radianos
+     * @param {string} text - Texto
+     * @returns {number} - Ângulo em radianos
+     */
     parseDegree(text = "") {
         let degrees = parseFloat(Writing.replace(text, "°", ""))
         return degrees * (Math.PI / 180)
     },
 
+    /**
+     * [TEXTO] Análise de texto para conversão de radianos para graus
+     * @param {string} text - Texto
+     * @returns {number} - Ângulo em radianos
+     */
     parseRadian(text = "") {
         let parts = text.split("/"),
             denominator = parts[1] ? parseFloat(parts[1]) : 1,
@@ -1128,6 +1138,11 @@ export const Writing = {
         return (multiplier * Math.PI) / denominator
     },
 
+    /**
+     * [TEXTO] Análise de texto para conversão de ângulos
+     * @param {string} text - Texto
+     * @returns {number} - Ângulo
+     */
     parseAngle(text = "") {
         if (text.includes("°")) {
             return Writing.parseDegree(text)
@@ -1136,6 +1151,11 @@ export const Writing = {
         }
     },
 
+    /**
+     * [TEXTO] Formatação de ângulos para exibição
+     * @param {number} value - Ângulo em radianos
+     * @returns {string} - Ângulo formatado
+     */
     formatAngle(value = 0) {
         let ratio = value / Math.PI // PI/6 → ratio = 1/6 ≈ 0.1666...
 
@@ -1144,9 +1164,13 @@ export const Writing = {
             let numerator = Algebra.round(ratio * denominator, 0)
             if (Algebra.absolute(numerator / denominator - ratio) < 1e-9) {
                 // Achou uma fração exata
-                if (numerator == 0) return "0"
-                if (denominator == 1) return numerator == 1 ? "PI" : numerator + "*PI"
-                return (numerator == 1 ? "" : numerator + "*") + "PI/" + denominator
+                if (numerator == 0) {
+                    return "0"
+                } else if (denominator == 1) {
+                    return numerator == 1 ? "PI" : numerator + " * PI"
+                } else {
+                    return (numerator == 1 ? "" : numerator + " * ") + "PI / " + denominator
+                }
             }
         }
 

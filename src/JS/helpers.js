@@ -89,11 +89,11 @@ export const Helpers = {
      * @param {boolean} funcLog - Logarítmica
      * @since v6.1.0
      */
-    xValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
+    xValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
         let x = Ui.input("x = ", "", true),
             message = "Para x = " + Writing.decimal(x) + ", "
 
-        if (!funcExp && !funcLog) {
+        if (!funcExp && !funcLog && funcTrig == "") {
             // Polinomial
             Ui.display(
                 message + "y = " + Writing.decimal(coefA * x ** 2 + coefB * x + coefC),
@@ -114,6 +114,24 @@ export const Helpers = {
                 // Se x ≤ 0, o logaritmo não é definido, então a função não tem valor real para esse x
                 Ui.display(message + "∄! y ∈ ℝ", "x ≤ 0 ⇒ logₐ(x) ∉ ℝ")
             }
+        } else if (funcTrig != "") {
+            // Trigonométrica
+            Ui.display(
+                message +
+                    "y = " +
+                    Writing.decimal(
+                        coefB *
+                            (funcTrig == "sin"
+                                ? Math.sin(x)
+                                : funcTrig == "cos"
+                                  ? Math.cos(x)
+                                  : funcTrig == "tan"
+                                    ? Math.tan(x)
+                                    : 0) +
+                            coefC
+                    ),
+                "y = b × " + funcTrig + "(x) + c"
+            )
         }
     },
 
@@ -126,11 +144,11 @@ export const Helpers = {
      * @param {boolean} funcLog - Logarítmica
      * @since v6.1.0
      */
-    yValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
+    yValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
         let y = Ui.input("y = ", "", true),
             message = "Para y = " + Writing.decimal(y) + ", "
 
-        if (!funcExp && !funcLog) {
+        if (!funcExp && !funcLog && funcTrig == "") {
             // Polinomial
             if (coefA == 0 && coefB == 0) {
                 // Constante
@@ -155,7 +173,7 @@ export const Helpers = {
                     true
                 )
             }
-        } else {
+        } else if (funcExp || funcLog) {
             // Não polinomial
             let exponent = Algebra.division(y - coefC, coefB, false) // (y - c) / b
             if (funcExp) {
@@ -174,6 +192,9 @@ export const Helpers = {
                 // Logarítmica
                 Ui.display(message + "x = " + Writing.decimal(coefA ** exponent), "x = a⁽⁽ʸ⁻ᶜ⁾⁄ᵇ⁾")
             }
+        } else if (funcTrig != "") {
+            // Trigonométrica
+            Ui.display("Valor de x para y ainda não disponível para funções trigonométricas.", "Em construção.")
         }
     },
 
@@ -184,13 +205,14 @@ export const Helpers = {
      * @param {number} coefC - Coeficiente c
      * @param {boolean} funcExp - Exponencial
      * @param {boolean} funcLog - Logarítmica
+     * @param {string} funcTrig - Trigonométrica (sin, cos ou tan)
      * @since v6.1.0
      */
-    sign(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
+    sign(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
         let operations = { positive: ">", negative: "<" },
             words = { positive: "positiva", negative: "negativa" }
 
-        if (!funcExp && !funcLog) {
+        if (!funcExp && !funcLog && funcTrig == "") {
             // Polinomial
             if (coefA == 0 && coefB == 0) {
                 // Constante
@@ -285,7 +307,7 @@ export const Helpers = {
                     }
                 }
             }
-        } else {
+        } else if (funcExp || funcLog) {
             // Não polinomial
             if (funcExp) {
                 // Exponencial
@@ -349,6 +371,9 @@ export const Helpers = {
                     )
                 }
             }
+        } else if (funcTrig != "") {
+            // Trigonométrica
+            Ui.display("Estudo do sinal para funções trigonométricas ainda não disponível.", "Em construção.")
         }
     },
 

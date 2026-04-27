@@ -611,11 +611,11 @@ export const Analyze = {
                 if (option == 1) {
                     Helpers.yAxis(coefC, "b × sin(a · x) + c", "c")
                 } else if (option == 2) {
-                    Helpers.xValues(coefA, coefB, coefC, false, false, 1)
+                    Helpers.xValues(coefA, coefB, coefC, false, false, "sin")
                 } else if (option == 3) {
-                    Helpers.yValues(coefA, coefB, coefC, false, false, 1)
+                    Helpers.yValues(coefA, coefB, coefC, false, false, "sin")
                 } else if (option == 4) {
-                    Helpers.sign(coefA, coefB, coefC, false, false, 1)
+                    Helpers.sign(coefA, coefB, coefC, false, false, "sin")
                 } else if (option == 5) {
                     Helpers.equations(false)
                 }
@@ -685,11 +685,11 @@ export const Analyze = {
                 if (option == 1) {
                     Helpers.yAxis(coefB + coefC, "b × cos(a · x) + c", "b + c")
                 } else if (option == 2) {
-                    Helpers.xValues(coefA, coefB, coefC, false, false, 2)
+                    Helpers.xValues(coefA, coefB, coefC, false, false, "cos")
                 } else if (option == 3) {
-                    Helpers.yValues(coefA, coefB, coefC, false, false, 2)
+                    Helpers.yValues(coefA, coefB, coefC, false, false, "cos")
                 } else if (option == 4) {
-                    Helpers.sign(coefA, coefB, coefC, false, false, 2)
+                    Helpers.sign(coefA, coefB, coefC, false, false, "cos")
                 } else if (option == 5) {
                     Helpers.equations(false)
                 }
@@ -751,11 +751,11 @@ export const Analyze = {
                 if (option == 1) {
                     Helpers.yAxis(coefC, "b × tan(a · x) + c", "c")
                 } else if (option == 2) {
-                    Helpers.xValues(coefA, coefB, coefC, false, false, 3)
+                    Helpers.xValues(coefA, coefB, coefC, false, false, "tan")
                 } else if (option == 3) {
-                    Helpers.yValues(coefA, coefB, coefC, false, false, 3)
+                    Helpers.yValues(coefA, coefB, coefC, false, false, "tan")
                 } else if (option == 4) {
-                    Helpers.sign(coefA, coefB, coefC, false, false, 3)
+                    Helpers.sign(coefA, coefB, coefC, false, false, "tan")
                 } else if (option == 5) {
                     Helpers.equations(false)
                 }
