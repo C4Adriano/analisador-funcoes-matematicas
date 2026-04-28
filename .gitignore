@@ -45,6 +45,7 @@ TODO.md
 node_modules/
 *-lock.json
 *.txt
+parse.html
 teste.html
 
 # === CREDENCIAIS ===

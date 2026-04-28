@@ -42,3 +42,5 @@ assignees: C4Adriano
 
 - **Browser / Navegador:**
 - **OS / Sistema Operacional:**
+
+---

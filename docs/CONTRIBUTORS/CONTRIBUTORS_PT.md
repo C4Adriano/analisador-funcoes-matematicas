@@ -14,7 +14,12 @@ Obrigado a todos que contribuíram com este projeto.
 
 ---
 
-| Nome         | Função                | GitHub                                               |
-| ------------ | --------------------- | ---------------------------------------------------- |
-| Adriano Lima | Autor e Desenvolvedor | [@C4Adriano](https://github.com/C4Adriano)           |
-| Caio César   | HTML e CSS            | [@caius-caesaris](https://github.com/caius-caesaris) |
+| Nome           | Função                | GitHub                                               |
+| -------------- | --------------------- | ---------------------------------------------------- |
+| Adriano Lima   | Autor e Desenvolvedor | [@C4Adriano](https://github.com/C4Adriano)           |
+| Caio César     | HTML e CSS            | [@caius-caesaris](https://github.com/caius-caesaris) |
+| Claude         | Assistente de IA      | [claude.ai](https://claude.ai)                       |
+| ChatGPT        | Assistente de IA      | [chatgpt.com](https://chatgpt.com)                   |
+| GitHub Copilot | Assistente de IA      | [copilot.github.com](https://copilot.github.com)     |
+
+---

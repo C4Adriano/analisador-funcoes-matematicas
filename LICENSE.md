@@ -20,3 +20,5 @@ Este software e seu código-fonte são propriedade exclusiva do autor.
 Nenhuma parte deste software pode ser copiada, modificada, distribuída,
 sublicenciada ou usada de qualquer forma sem permissão explícita e por
 escrito do autor.
+
+---

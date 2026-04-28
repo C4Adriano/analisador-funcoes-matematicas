@@ -21,3 +21,5 @@
 - **Lines of code / Linhas de código:** `x`
 - **Date / Data:** `YYYY-MM-DD`
 - **Full changelog / Changelog completo:** [CHANGELOG.md](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/CHANGELOG.md)
+
+---

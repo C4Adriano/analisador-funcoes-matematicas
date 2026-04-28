@@ -35,3 +35,5 @@
   @experimental - Tag adicional para código ainda não finalizado
 */
 ```
+
+---

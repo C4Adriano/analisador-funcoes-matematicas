@@ -19,3 +19,5 @@
 ## Fluxo Geral
 
 `main.js` → lê input do usuário → `analisar.js` → `algebra.js` → `escrita.js` → `ui.js`
+
+---

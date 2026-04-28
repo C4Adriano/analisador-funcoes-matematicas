@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
     <h1>Mathematical <b>Function Analyzer</b></h1>
     <h2>CHANGELOG</h2>
     <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>

@@ -14,7 +14,12 @@ Thanks to everyone who contributed to this project.
 
 ---
 
-| Name         | Role               | GitHub                                               |
-| ------------ | ------------------ | ---------------------------------------------------- |
-| Adriano Lima | Author & Developer | [@C4Adriano](https://github.com/C4Adriano)           |
-| Caio César   | HTML & CSS         | [@caius-caesaris](https://github.com/caius-caesaris) |
+| Name           | Role               | GitHub                                               |
+| -------------- | ------------------ | ---------------------------------------------------- |
+| Adriano Lima   | Author & Developer | [@C4Adriano](https://github.com/C4Adriano)           |
+| Caio César     | HTML & CSS         | [@caius-caesaris](https://github.com/caius-caesaris) |
+| Claude         | AI Assistant       | [claude.ai](https://claude.ai)                       |
+| ChatGPT        | AI Assistant       | [chatgpt.com](https://chatgpt.com)                   |
+| GitHub Copilot | AI Assistant       | [copilot.github.com](https://copilot.github.com)     |
+
+---

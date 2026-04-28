@@ -8,5 +8,15 @@
     "bracketSpacing": true,
     "arrowParens": "avoid",
     "quoteProps": "as-needed",
-    "useTabs": false
+    "useTabs": false,
+
+    "overrides": [
+        {
+            "files": "*.md",
+            "options": {
+                "printWidth": 80,
+                "proseWrap": "preserve"
+            }
+        }
+    ]
 }

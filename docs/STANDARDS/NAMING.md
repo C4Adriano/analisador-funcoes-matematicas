@@ -17,3 +17,5 @@
 ## Commits
 
 - Seguir Conventional Commits: `feat:`, `fix:`, `docs:`, `chore:`
+
+---

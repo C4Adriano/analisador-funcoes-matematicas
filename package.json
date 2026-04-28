@@ -1,31 +1,38 @@
 {
-    "name": "analisador",
-    "version": "6.1.0",
-    "description": "Mathematical Function Analyzer / Analisador de Funções Matemáticas",
-    "main": "index.js",
-    "directories": {
-        "doc": "docs"
-    },
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/C4Adriano/analisador-funcoes-matematicas.git"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "type": "module",
-    "bugs": {
-        "url": "https://github.com/C4Adriano/analisador-funcoes-matematicas/issues"
-    },
-    "homepage": "https://github.com/C4Adriano/analisador-funcoes-matematicas#readme",
-    "devDependencies": {
-        "@eslint/js": "^10.0.1",
-        "eslint": "^10.1.0",
-        "globals": "^17.4.0",
-        "markdownlint-cli": "^0.48.0",
-        "prettier": "^3.8.1"
-    }
+  "name": "analisador",
+  "version": "6.1.0",
+  "description": "Mathematical Function Analyzer / Analisador de Funções Matemáticas",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/C4Adriano/analisador-funcoes-matematicas.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/C4Adriano/analisador-funcoes-matematicas/issues"
+  },
+  "homepage": "https://github.com/C4Adriano/analisador-funcoes-matematicas#readme",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.1.0",
+    "globals": "^17.4.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "markdownlint-cli": "^0.48.0",
+    "prettier": "^3.8.1"
+  },
+  "lint-staged": {
+    "*.js": "prettier --write",
+    "*.md": "prettier --write"
+  }
 }
