@@ -17,6 +17,32 @@
                 "printWidth": 80,
                 "proseWrap": "preserve"
             }
+        },
+        {
+            "files": "*.html",
+            "options": {
+                "printWidth": 120,
+                "tabWidth": 4,
+                "htmlWhitespaceInsensitivity": "css",
+                "singleAttributePerLine": false,
+                "bracketSameLine": false,
+                "embeddedLanguageFormatting": "auto"
+            }
+        },
+        {
+            "files": "*.css",
+            "options": {
+                "printWidth": 120,
+                "tabWidth": 4,
+                "singleQuote": false
+            }
+        },
+        {
+            "files": "*.json",
+            "options": {
+                "printWidth": 80,
+                "tabWidth": 4
+            }
         }
     ]
 }
