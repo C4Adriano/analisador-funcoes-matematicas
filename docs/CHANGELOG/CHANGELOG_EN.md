@@ -707,3 +707,36 @@
 Full upcoming updates in [`ROADMAP`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP/ROADMAP_EN.md)
 
 ---
+
+### Version **v6.1.0** - Updates
+
+> **Dated:** _`2026-04-30`_
+
+#### Bug Fixes
+
+- .gitignore
+- ROADMAP
+- General
+- General
+- Trig funcs
+- Files translate
+- Translate
+- Main
+- Prettier changes
+- Prettier changes
+- Sign
+- Code translate
+- Code translate
+- Code translate
+- Mini
+- Mini
+- General formatting
+- .md
+- Commands
+
+#### Additions
+
+- Trig funcs
+- Debug
+
+---

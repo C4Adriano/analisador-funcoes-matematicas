@@ -1,0 +1,41 @@
+name: Update CHANGELOG
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    changelog:
+        runs-on: ubuntu-latest
+
+        # Evita rodar em commits feitos pela própria Action (loop infinito)
+        if: "!contains(github.event.head_commit.message, 'chore: update CHANGELOG')"
+
+        steps:
+            - name: Checkout completo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0 # precisa do histórico completo para git log
+
+            - name: Configurar Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+
+            - name: Instalar dependências
+              run: pip install deep-translator
+
+            - name: Gerar CHANGELOG
+              env:
+                  GITHUB_BEFORE: ${{ github.event.before }}
+              run: python .github/scripts/generate_changelog.py
+
+            - name: Commit dos CHANGELOGs atualizados
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add docs/CHANGELOG/CHANGELOG_PT.md docs/CHANGELOG/CHANGELOG_EN.md
+                  # Só faz commit se houver mudanças reais
+                  git diff --cached --quiet || git commit -m "chore: update CHANGELOG"
+                  git push

@@ -694,6 +694,39 @@
 
 ---
 
+### Versão **v6.1.0** - Atualizações
+
+> **Datada de:** _`2026-04-30`_
+
+#### Correções
+
+- .gitignore
+- ROADMAP
+- Geral
+- Geral
+- Trig funcs
+- Files translate
+- Translate
+- Main
+- Prettier changes
+- Prettier changes
+- Sign
+- Code translate
+- Code translate
+- Code translate
+- Mini
+- Mini
+- FormataÃ§Ã£o geral
+- .md
+- Commands
+
+#### Adições
+
+- Trig funcs
+- Debug
+
+---
+
 # **Próximas atualizações:**
 
 - Adicionar opção de verificar quais **Funções** podem ser válidas para os pontos conhecidos
