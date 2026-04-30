@@ -7,7 +7,7 @@
         "doc": "docs"
     },
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "vitest run",
         "prepare": "husky"
     },
     "repository": {
@@ -27,9 +27,11 @@
         "eslint": "^10.1.0",
         "globals": "^17.4.0",
         "husky": "^9.1.7",
+        "jsdom": "^29.1.1",
         "lint-staged": "^16.4.0",
         "markdownlint-cli": "^0.48.0",
-        "prettier": "^3.8.1"
+        "prettier": "^3.8.1",
+        "vitest": "^1.6.0"
     },
     "lint-staged": {
         "*.js": "prettier --write",
