@@ -43,10 +43,9 @@ $RECYCLE.BIN/
 notes.md
 TODO.md
 node_modules/
+pessoal/
 *-lock.json
 *.txt
-parse.html
-teste.html
 
 # === CREDENCIAIS ===
 .env
