@@ -15,9 +15,6 @@ The status of each item is updated as development progresses.
 
 ### In Development
 
-- [ ] Full English translation (PT-BR / EN)
-- [ ] `/` commands for quick menu access
-
 ### Planned
 
 - [ ] Verify which functions are valid for a set of known points
@@ -35,5 +32,7 @@ The status of each item is updated as development progresses.
 - [x] JS object architecture
 - [x] Function history during the session
 - [x] Public release on GitHub with GitHub Pages
+- [x] Full English translation (PT-BR / EN)
+- [x] `/` commands for quick menu access
 
 ---
