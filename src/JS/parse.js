@@ -4,13 +4,27 @@
 
 // ─── Constantes numéricas ────────────────────────────────────────────────────
 
+/**
+ * Número π
+ */
 const _PI = "3.14159265"
+/**
+ * Número de Euler
+ */
 const _E = "2.71828182"
 
 // ─── Utilitários ────────────────────────────────────────────────────────────
 
+/**
+ * [PARSE] Configurações e funções para processar a entrada do usuário e extrair informações sobre a função matemática.
+ * - Use as funções aqui para processar a entrada do usuário e extrair informações sobre a função matemática.
+ * @since v6.1.0
+ */
 export const Parse = {
-    // Função feita por mim para testar o parser
+    /**
+     * Função feita por mim para testar o parser
+     * @since v6.1.0
+     */
     entrada() {
         let input = prompt("Digite uma função de x (ex: 2x+3, x²-4x+1, ln(x)):")
         if (input === null) return null
@@ -36,6 +50,11 @@ export const Parse = {
      *   undefined / null / '' / '+' → fallback (padrão: 1)
      *   '-'                         → -fallback
      *   resto                       → Number(str)
+     *
+     * @param {string} str - String capturada pelo regex para o coeficiente
+     * @param {number} fallback - Valor a ser usado quando str for vazio ou apenas um sinal
+     * @return {number} - Valor numérico do coeficiente
+     * @since v6.1.0
      */
     coef(str, fallback = 1) {
         if (str === undefined || str === null) return fallback
@@ -63,6 +82,10 @@ export const Parse = {
      *   [N09] log_b → logb
      *   [N10] lg(x) → log10(x)
      *   [N11] Parênteses externos removidos: (expr) → expr
+     *
+     * @param {string} entrada - String de entrada do usuário
+     * @return {string} - String normalizada pronta para parsing
+     * @since v6.1.0
      */
     normalizar(entrada) {
         return (
@@ -137,6 +160,14 @@ export const Parse = {
     /**
      * Quadrática: ax² + bx + c
      * Exemplos: x²-4x+1, 2x²+3x, -x²+5, 0.5x²+x+1
+     *
+     * Coeficientes:
+     *   a — coeficiente de x² (fator de crescimento)
+     *   b — coeficiente de x (fator de crescimento linear)
+     *   c — termo constante (deslocamento vertical)
+     * @param {string} expr - Expressão a ser analisada
+     * @return {{ tipo: string, coeficientes: object } | null}
+     * @since v6.1.0
      */
     parsearQuadratica(expr) {
         const rA = /([+-]?\d*\.?\d*)x²/
@@ -165,6 +196,13 @@ export const Parse = {
     /**
      * Afim: ax + b
      * Exemplos: 2x+3, -x+1, x, 3x, πx+1, 0.5x+2
+     *
+     * Coeficientes:
+     *   a — coeficiente de x (fator de crescimento)
+     *   b — termo constante (deslocamento vertical)
+     * @param {string} expr - Expressão a ser analisada
+     * @return {{ tipo: string, coeficientes: object } | null}
+     * @since v6.1.0
      */
     parsearAfim(expr) {
         const regex = /^([+-]?\d*\.?\d*)x([+-]\d+\.?\d*)?$/
@@ -187,6 +225,11 @@ export const Parse = {
      * Exponencial base de Euler: a * e^x + c
      * Exemplos: e^x, 2e^x, -e^x, 2*e^x+5
      * (após normalização: ℯx, 2ℯx, -ℯx, 2ℯx+5)
+     *
+     * Coeficientes:
+     *   a — amplitude (fator externo)
+     *   base — Math.E (sempre)
+     *   c — deslocamento vertical
      */
     parsearExponencialEuler(expr) {
         const regex = /^([+-]?\d*\.?\d*)ℯx([+-]\d+\.?\d*)?$/
@@ -210,6 +253,14 @@ export const Parse = {
      *
      * Dois regex distintos: com coeficiente (·) e sem.
      * O · como separador evita a fusão "2*3^x" → "23ˣ" [N08].
+     *
+     * Coeficientes:
+     *   a — amplitude (fator externo)
+     *   base — base da exponencial (deve ser > 0 e ≠ 1)
+     *   c — deslocamento vertical
+     * @param {string} expr - Expressão a ser analisada
+     * @return {{ tipo: string, coeficientes: object } | null}
+     * @since v6.1.0
      */
     parsearExponencialBase(expr) {
         const r1 = /^([+-]?\d+\.?\d*)·(\d+\.?\d*)ˣ([+-]\d+\.?\d*)?$/
@@ -254,6 +305,9 @@ export const Parse = {
      *   base — Math.E (sempre)
      *   freq — coeficiente interno de x
      *   c    — deslocamento vertical
+     * @param {string} expr - Expressão a ser analisada
+     * @returns {{ tipo: string, coeficientes: object } | null}
+     * @since v6.1.0
      */
     parsearLn(expr) {
         const regex = /^([+-]?\d*\.?\d*)ln\(([+-]?\d*\.?\d*)x\)([+-]\d+\.?\d*)?$/
@@ -276,6 +330,9 @@ export const Parse = {
      * Aceita: log(x) [base 10], log2(x), log10(x), log_2(x) [N09], lg(x) [N10]
      *
      * Coeficientes: idem ln, com base variável.
+     * @param {string} expr - Expressão a ser analisada
+     * @returns {{ tipo: string, coeficientes: object } | null}
+     * @since v6.1.0
      */
     parsearLog(expr) {
         const regex = /^([+-]?\d*\.?\d*)log(\d*\.?\d*)\(([+-]?\d*\.?\d*)x\)([+-]\d+\.?\d*)?$/
@@ -304,6 +361,9 @@ export const Parse = {
      *   a — amplitude
      *   b — frequência (pode ser negativo — Parse.coef trata '-' como -1)
      *   c — deslocamento vertical
+     * @param {string} expr - Expressão a ser analisada
+     * @returns {{ tipo: string, coeficientes: object } | null}
+     * @since v6.1.0
      */
     parsearSeno(expr) {
         const regex = /^([+-]?\d*\.?\d*)s[ei]n\(([+-]?\d*\.?\d*)x\)([+-]\d+\.?\d*)?$/
@@ -323,6 +383,14 @@ export const Parse = {
     /**
      * Cosseno: a * cos(b·x) + c
      * Exemplos: cos(x), 3cos(x), cos(-2x), -cos(3x)+1
+     *
+     * Coeficientes:
+     *   a — amplitude
+     *   b — frequência (pode ser negativo — Parse.coef trata '-' como -1)
+     *   c — deslocamento vertical
+     * @param {string} expr - Expressão a ser analisada
+     * @returns {{ tipo: string, coeficientes: object } | null}
+     * @since v6.1.0
      */
     parsearCosseno(expr) {
         const regex = /^([+-]?\d*\.?\d*)cos\(([+-]?\d*\.?\d*)x\)([+-]\d+\.?\d*)?$/
@@ -342,6 +410,14 @@ export const Parse = {
     /**
      * Tangente: a * tan(b·x) + c   (aceita tan e tg)
      * Exemplos: tan(x), tg(x), 2tan(x), tan(-3x)-1
+     *
+     * Coeficientes:
+     *   a — amplitude
+     *   b — frequência (pode ser negativo — Parse.coef trata '-' como -1)
+     *   c — deslocamento vertical
+     * @param {string} expr - Expressão a ser analisada
+     * @returns {{ tipo: string, coeficientes: object } | null}
+     * @since v6.1.0
      */
     parsearTangente(expr) {
         const regex = /^([+-]?\d*\.?\d*)t(?:an|g)\(([+-]?\d*\.?\d*)x\)([+-]\d+\.?\d*)?$/
@@ -361,6 +437,9 @@ export const Parse = {
     /**
      * Constante: qualquer número sozinho (fallback final)
      * Exemplos: 5, -3, 0, 2.5, 1000 (de 1e3), 3.14159... (de pi), 2.718... (de e)
+     * @param {string} expr - Expressão a ser analisada
+     * @returns {{ tipo: string, coeficientes: object } | null}
+     * @since v6.1.0
      */
     parsearConstante(expr) {
         const regex = /^([+-]?\d+\.?\d*)$/
@@ -396,6 +475,7 @@ export const Parse = {
      *
      * @param {string} entrada - ex: "2x + 3", "x² - 4x + 1", "2*3^x+1", "sin(πx)"
      * @returns {{ tipo: string, coeficientes: object, original: string } | null}
+     * @since v6.1.0
      */
     parsear(entrada) {
         if (!entrada || !entrada.trim()) return null

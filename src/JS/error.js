@@ -25,7 +25,7 @@ export const Error = {
 
     /**
      * [ERRO] Exibe um erro de divisão por zero
-     * @param {string} reason - Motivo da divisão por zero, para exibir uma mensagem mais específica (opcional)
+     * @param {string} reason - Motivo da divisão por zero
      * @since v6.1.0
      */
     divZero(reason = "") {
@@ -45,7 +45,7 @@ export const Error = {
 
     /**
      * [ERRO] Exibe um erro de função que se torna constante pelos coeficientes dados
-     * @param {string} type - Tipo
+     * @param {string} type - Tipo de função
      * @since v6.1.0
      */
     constantFunction(type = "") {
@@ -54,7 +54,7 @@ export const Error = {
 
     /**
      * [ERRO] Exibe um erro de função inválida pelos coeficientes dados
-     * @param {string} type - Tipo
+     * @param {string} type - Tipo de função
      * @since v6.1.0
      */
     invalidFunction(type = "") {
@@ -63,8 +63,8 @@ export const Error = {
 
     /**
      * [ERRO] Exibe um erro de logaritmo inválido
-     * @param {string} type - Tipo de logaritmo (log, ln, etc.), para exibir uma mensagem mais específica (opcional)
-     * @param {string} reason - Motivo do erro, para exibir uma mensagem mais específica (opcional)
+     * @param {string} type - Tipo de logaritmo (log, ln, etc.)
+     * @param {string} reason - Motivo do erro
      * @since v6.1.0
      */
     invalidLog(type = "log", reason = "") {

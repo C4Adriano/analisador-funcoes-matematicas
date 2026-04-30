@@ -23,7 +23,7 @@
             "options": {
                 "printWidth": 120,
                 "tabWidth": 4,
-                "htmlWhitespaceInsensitivity": "css",
+                "htmlWhitespaceSensitivity": "css",
                 "singleAttributePerLine": false,
                 "bracketSameLine": false,
                 "embeddedLanguageFormatting": "auto"

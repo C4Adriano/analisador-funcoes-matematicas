@@ -561,6 +561,14 @@ export const Analyze = {
         return [coefA, coefB, coefC]
     },
 
+    /**
+     * [FUNÇÃO] Monta a função seno: b × sin(a · x) + c
+     * @param {number} coefA - Coeficiente a da função seno
+     * @param {number} coefB - Coeficiente b da função seno
+     * @param {number} coefC - Coeficiente c da função seno
+     * @returns {number[]} - Retorna: [coefA, coefB, coefC]
+     * @since v6.1.0
+     */
     sine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -635,6 +643,14 @@ export const Analyze = {
         return [coefA, coefB, coefC]
     },
 
+    /**
+     * [FUNÇÃO] Monta a função cosseno: b × cos(a · x) + c
+     * @param {number} coefA - Coeficiente a da função cosseno
+     * @param {number} coefB - Coeficiente b da função cosseno
+     * @param {number} coefC - Coeficiente c da função cosseno
+     * @returns {number[]} - Retorna: [coefA, coefB, coefC]
+     * @since v6.1.0
+     */
     cosine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -709,6 +725,14 @@ export const Analyze = {
         return [coefA, coefB, coefC]
     },
 
+    /**
+     * [FUNÇÃO] Monta a função tangente: b × tan(a · x) + c
+     * @param {number} coefA - Coeficiente a da função tangente
+     * @param {number} coefB - Coeficiente b da função tangente
+     * @param {number} coefC - Coeficiente c da função tangente
+     * @returns {number[]} - Retorna: [coefA, coefB, coefC]
+     * @since v6.1.0
+     */
     tangent(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,

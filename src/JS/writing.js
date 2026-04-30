@@ -1119,6 +1119,7 @@ export const Writing = {
      * [TEXTO] Análise de texto para conversão de graus para radianos
      * @param {string} text - Texto
      * @returns {number} - Ângulo em radianos
+     * @since v6.1.0
      */
     parseDegree(text = "") {
         let degrees = parseFloat(Writing.replace(text, "°", ""))
@@ -1128,7 +1129,8 @@ export const Writing = {
     /**
      * [TEXTO] Análise de texto para conversão de radianos para graus
      * @param {string} text - Texto
-     * @returns {number} - Ângulo em radianos
+     * @returns {number} - Ângulo em graus
+     * @since v6.1.0
      */
     parseRadian(text = "") {
         let parts = text.split("/"),
@@ -1141,7 +1143,8 @@ export const Writing = {
     /**
      * [TEXTO] Análise de texto para conversão de ângulos
      * @param {string} text - Texto
-     * @returns {number} - Ângulo
+     * @returns {number} - Ângulo em graus ou radianos
+     * @since v6.1.0
      */
     parseAngle(text = "") {
         if (text.includes("°")) {
@@ -1155,6 +1158,7 @@ export const Writing = {
      * [TEXTO] Formatação de ângulos para exibição
      * @param {number} value - Ângulo em radianos
      * @returns {string} - Ângulo formatado
+     * @since v6.1.0
      */
     formatAngle(value = 0) {
         let ratio = value / Math.PI // PI/6 → ratio = 1/6 ≈ 0.1666...

@@ -9,6 +9,7 @@ import { Writing } from "./writing.js"
 /**
  * [UI] Objeto base para as funções envolvendo UI / UX e interação com o usuário
  * - Use as funções aqui para exibir mensagens, menus, prompts e outras interações.
+ * @since v6.1.0
  */
 export const Ui = {
     /**
@@ -158,6 +159,7 @@ export const Ui = {
      * @param {boolean} number - true = número, false = string
      * @param {number} places - Casas para arredondar (0 = sem casas)
      * @returns {string | number} - Valor verificado
+     * @since v6.1.0
      */
     input(
         message = "",
@@ -534,6 +536,7 @@ export const Ui = {
      * @param {number} max - Máximo
      * @param {number} places - Casas decimais
      * @returns {number} - Um valor escolhido entre o intervalo
+     * @since v6.1.0
      */
     range(message = "", explanation = "", min = 0, max = 1, places = 0, allowCommands = false) {
         let value = 0

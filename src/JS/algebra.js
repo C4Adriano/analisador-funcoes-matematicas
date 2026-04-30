@@ -632,6 +632,7 @@ export const Algebra = {
      * @param {boolean} round - Se irá arredondar
      * @param {number} precision - Precisão do arredondamento
      * @returns {number} - Número absoluto
+     * @since v6.1.0
      */
     absolute(number = 0, round = true, precision = Config.decimalPlaces) {
         number = Writing.decimal(number, true, round, precision)
