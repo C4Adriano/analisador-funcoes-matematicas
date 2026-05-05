@@ -2,61 +2,61 @@
 // Identifica o tipo de função matemática e extrai seus coeficientes.
 // Pipeline: normalizar → tentar cada tipo → fallback constante
 
-// ─── Constantes numéricas ────────────────────────────────────────────────────
+// ─── Numeric constants ───────────────────────────────────────────────────────
 
 /**
- * Número π
+ * Number π
  */
 const _PI = "3.14159265"
 /**
- * Número de Euler
+ * Euler's number
  */
 const _E = "2.71828182"
 
-// ─── Utilitários ────────────────────────────────────────────────────────────
+// ─── Utilities ───────────────────────────────────────────────────────────────
 
 /**
- * [PARSE] Configurações e funções para processar a entrada do usuário e extrair informações sobre a função matemática.
- * - Use as funções aqui para processar a entrada do usuário e extrair informações sobre a função matemática.
+ * [PARSE] Settings and functions for processing user input and extracting information about the mathematical function.
+ * - Use the functions here to process user input and extract information about the mathematical function.
  * @since v6.1.0
  */
 export const Parse = {
     /**
-     * Função feita por mim para testar o parser
+     * Quick test function for the parser (debug only)
      * @since v6.1.0
      */
-    entrada() {
+    testInput() {
         let input = prompt("Digite uma função de x (ex: 2x+3, x²-4x+1, ln(x)):")
         if (input === null) return null
-        const r = Parse.parsear(input)
+        const r = Parse.parseExpr(input)
         alert(
             "Processando: " +
                 input +
                 "\nVerificado:" +
                 "\nTipo: " +
-                (r?.tipo || "Tipo não reconhecido") +
+                (r?.type || "Tipo não reconhecido") +
                 "\nCoeficientes: " +
-                JSON.stringify(r?.coeficientes || {}) +
+                JSON.stringify(r?.coefficients || {}) +
                 "\nOriginal: " +
                 (r?.original || input)
         )
     },
 
     /**
-     * Converte uma string de coeficiente capturada pelo regex em número.
-     * Usada tanto para coeficientes externos quanto para argumentos internos.
+     * Converts a coefficient string captured by a regex into a number.
+     * Used for both external coefficients and internal arguments.
      *
-     * Casos especiais:
-     *   undefined / null / '' / '+' → fallback (padrão: 1)
+     * Special cases:
+     *   undefined / null / '' / '+' → fallback (default: 1)
      *   '-'                         → -fallback
-     *   resto                       → Number(str)
+     *   anything else               → Number(str)
      *
-     * @param {string} str - String capturada pelo regex para o coeficiente
-     * @param {number} fallback - Valor a ser usado quando str for vazio ou apenas um sinal
-     * @return {number} - Valor numérico do coeficiente
+     * @param {string} str - String captured by the regex for the coefficient
+     * @param {number} fallback - Value to use when str is empty or just a sign
+     * @return {number} - Numeric value of the coefficient
      * @since v6.1.0
      */
-    coef(str, fallback = 1) {
+    parseCoef(str, fallback = 1) {
         if (str === undefined || str === null) return fallback
         const s = str.trim()
         if (s === "" || s === "+") return fallback
@@ -65,64 +65,64 @@ export const Parse = {
     },
 
     /**
-     * Normaliza a entrada antes de qualquer tentativa de parsing.
+     * Normalizes the input before any parsing attempt.
      *
-     * Ordem das substituições é crítica — não reordenar sem testar.
+     * Order of substitutions is critical — do not reorder without testing.
      *
-     * Correções aplicadas:
-     *   [N01] Notação científica (1e3 → 1000) ANTES de expandir e de Euler,
-     *         para evitar que "1e3" seja interpretado como "1 * e * 3"
-     *   [N02] ƒ (U+0192) e variantes tipográficas → f
-     *   [N03] "fx = ..." → prefixo de função removido
-     *   [N04] π e pi → valor numérico (com * explícito se precedidos de dígito)
-     *   [N05] e de Euler isolado → valor numérico (não afeta "sen", "exp", e^x)
-     *   [N06] Multiplicações numéricas colapsadas (2 * 3.14... → 6.28...)
-     *   [N07] e^x convertido para ℯx após a limpeza do e isolado
-     *   [N08] a*b^x → a·bˣ (· preserva separador, evita fusão "23ˣ")
+     * Applied corrections:
+     *   [N01] Scientific notation (1e3 → 1000) BEFORE expanding and Euler,
+     *         to prevent "1e3" from being read as "1 * e * 3"
+     *   [N02] ƒ (U+0192) and typographic variants → f
+     *   [N03] "fx = ..." → function prefix removed
+     *   [N04] π and pi → numeric value (with explicit * if preceded by digit)
+     *   [N05] Isolated Euler's e → numeric value (does not affect "sen", "exp", e^x)
+     *   [N06] Numeric multiplications collapsed (2 * 3.14... → 6.28...)
+     *   [N07] e^x converted to ℯx after cleaning isolated e
+     *   [N08] a*b^x → a·bˣ (· preserves separator, avoids fusion "23ˣ")
      *   [N09] log_b → logb
      *   [N10] lg(x) → log10(x)
-     *   [N11] Parênteses externos removidos: (expr) → expr
+     *   [N11] Outer parentheses removed: (expr) → expr
      *
-     * @param {string} entrada - String de entrada do usuário
-     * @return {string} - String normalizada pronta para parsing
+     * @param {string} input - User input string
+     * @return {string} - Normalized string ready for parsing
      * @since v6.1.0
      */
-    normalizar(entrada) {
+    normalizeExpr(input) {
         return (
-            entrada
+            input
                 .trim()
                 .toLowerCase()
 
-                // [N01] Notação científica PRIMEIRO — antes de qualquer expansão de 'e'
+                // [N01] Scientific notation FIRST — before any 'e' expansion
                 // "1e3" → 1000,  "2.5e2" → 250
                 .replace(/(\d+\.?\d*)e(\d+)/g, (_, m, exp) => String(Number(m) * Math.pow(10, Number(exp))))
 
-                // [N02] ƒ e variantes unicode → f
+                // [N02] ƒ and unicode variants → f
                 .replace(/[ƒ𝑓𝒻]/gu, "f")
 
-                // [N03] Prefixos de função: "fx=", "f(x)=", "g(x)=", "y=", etc.
+                // [N03] Function prefixes: "fx=", "f(x)=", "g(x)=", "y=", etc.
                 .replace(/^fx\s*=?\s*/, "")
                 .replace(/^[a-z]\s*\([a-z]\)\s*=\s*/, "")
                 .replace(/^[a-z]\s*=\s*/, "")
 
-                // Vírgula → ponto decimal
+                // Comma → decimal point
                 .replace(/,/g, ".")
 
-                // Remove espaços
+                // Remove spaces
                 .replace(/\s+/g, "")
 
-                // [N04] Adicionar * entre dígito e pi/π antes de expandir
+                // [N04] Add * between digit and pi/π before expanding
                 // "2pi" → "2*pi", "2π" → "2*π"
                 .replace(/(\d)(pi|π)/g, "$1*$2")
                 .replace(/π|pi/g, _PI)
 
-                // [N05] 'e' de Euler isolado (não e^x, não parte de palavra como "sen", "exp")
-                // Adicionar * quando precedido de dígito: "2e+3" → "2*e+3"
+                // [N05] Isolated Euler's 'e' (not e^x, not part of a word like "sen", "exp")
+                // Add * when preceded by digit: "2e+3" → "2*e+3"
                 .replace(/(\d)e(?!\^)(?![a-z])/g, "$1*e")
-                // Substituir e isolado (precedido de não-letra-não-dígito, ou início de string)
+                // Replace isolated e (preceded by non-letter-non-digit, or start of string)
                 .replace(/(?<![a-z\d])e(?!\^)(?![a-z])/g, _E)
 
-                // [N06] Colapsar multiplicações numéricas resultantes das expansões acima
+                // [N06] Collapse numeric multiplications from the expansions above
                 // "2 * 3.14..." → "6.28..."
                 .replace(/(\d+\.?\d*)\*(\d+\.?\d*)/g, (_, a, b) =>
                     String(parseFloat((Number(a) * Number(b)).toPrecision(8)))
@@ -131,45 +131,45 @@ export const Parse = {
                 // x^2 → x²
                 .replace(/x\^2/g, "x²")
 
-                // [N07] e^x → ℯx (símbolo interno para Euler como base)
-                // Feito DEPOIS de tratar e isolado — o 'e' de "e^x" chega aqui intacto
-                // porque o lookbehind de [N05] exige não-letra antes do e
+                // [N07] e^x → ℯx (internal symbol for Euler as base)
+                // Done AFTER treating isolated e — the 'e' in "e^x" arrives here intact
+                // because the lookbehind in [N05] requires a non-letter before e
                 .replace(/e\^x/g, "ℯx")
 
-                // [N08] Coeficiente * base^x → coef·baseˣ (preserva separador)
-                // DEVE vir antes do replace de ^x genérico
+                // [N08] coefficient * base^x → coef·baseˣ (preserves separator)
+                // MUST come before the generic ^x replace
                 .replace(/([+-]?\d+\.?\d*)\*(\d+\.?\d*)\^x/g, "$1·$2ˣ")
                 .replace(/(\d+\.?\d*)\^x/g, "$1ˣ")
 
                 // [N09] log_b(x) → logb(x)
                 .replace(/log_(\d+)/g, "log$1")
 
-                // [N10] lg(x) → log10(x)  (alias comum de log base 10)
+                // [N10] lg(x) → log10(x)  (common alias for log base 10)
                 .replace(/^([+-]?\d*\.?\d*)lg\(/, "$1log10(")
 
-                // [N11] Parênteses externos: (expr) → expr
+                // [N11] Outer parentheses: (expr) → expr
                 .replace(/^\((.+)\)$/, "$1")
 
-                // Remove * restantes (2*x → 2x, 2*ln(x) → 2ln(x), etc.)
+                // Remove remaining * (2*x → 2x, 2*ln(x) → 2ln(x), etc.)
                 .replace(/\*/g, "")
         )
     },
 
-    // ─── Parsers individuais ─────────────────────────────────────────────────────
+    // ─── Individual parsers ──────────────────────────────────────────────────────
 
     /**
-     * Quadrática: ax² + bx + c
-     * Exemplos: x²-4x+1, 2x²+3x, -x²+5, 0.5x²+x+1
+     * Quadratic: ax² + bx + c
+     * Examples: x²-4x+1, 2x²+3x, -x²+5, 0.5x²+x+1
      *
-     * Coeficientes:
-     *   a — coeficiente de x² (fator de crescimento)
-     *   b — coeficiente de x (fator de crescimento linear)
-     *   c — termo constante (deslocamento vertical)
-     * @param {string} expr - Expressão a ser analisada
-     * @return {{ tipo: string, coeficientes: object } | null}
+     * Coefficients:
+     *   a — coefficient of x² (growth factor)
+     *   b — coefficient of x (linear growth factor)
+     *   c — constant term (vertical shift)
+     * @param {string} expr - Expression to analyze
+     * @return {{ type: string, coefficients: object } | null}
      * @since v6.1.0
      */
-    parsearQuadratica(expr) {
+    parseQuadratic(expr) {
         const rA = /([+-]?\d*\.?\d*)x²/
         const rB = /([+-]?\d*\.?\d*)x(?!²)/
         const rC = /(?:^|(?<=[x²]))([+-]\d+\.?\d*)$/
@@ -180,41 +180,41 @@ export const Parse = {
         const mB = expr.match(rB)
         const mC = expr.match(rC)
 
-        const a = Parse.coef(mA[1])
+        const a = Parse.parseCoef(mA[1])
         if (a === 0) return null
 
         return {
-            tipo: "quadratica",
-            coeficientes: {
+            type: "quadratic",
+            coefficients: {
                 a,
-                b: mB ? Parse.coef(mB[1]) : 0,
+                b: mB ? Parse.parseCoef(mB[1]) : 0,
                 c: mC ? Number(mC[1]) : 0,
             },
         }
     },
 
     /**
-     * Afim: ax + b
-     * Exemplos: 2x+3, -x+1, x, 3x, πx+1, 0.5x+2
+     * Affine: ax + b
+     * Examples: 2x+3, -x+1, x, 3x, πx+1, 0.5x+2
      *
-     * Coeficientes:
-     *   a — coeficiente de x (fator de crescimento)
-     *   b — termo constante (deslocamento vertical)
-     * @param {string} expr - Expressão a ser analisada
-     * @return {{ tipo: string, coeficientes: object } | null}
+     * Coefficients:
+     *   a — coefficient of x (growth factor)
+     *   b — constant term (vertical shift)
+     * @param {string} expr - Expression to analyze
+     * @return {{ type: string, coefficients: object } | null}
      * @since v6.1.0
      */
-    parsearAfim(expr) {
+    parseAffine(expr) {
         const regex = /^([+-]?\d*\.?\d*)x([+-]\d+\.?\d*)?$/
         const match = expr.match(regex)
         if (!match) return null
 
-        const a = Parse.coef(match[1])
+        const a = Parse.parseCoef(match[1])
         if (a === 0) return null
 
         return {
-            tipo: "afim",
-            coeficientes: {
+            type: "affine",
+            coefficients: {
                 a,
                 b: match[2] ? Number(match[2]) : 0,
             },
@@ -222,24 +222,27 @@ export const Parse = {
     },
 
     /**
-     * Exponencial base de Euler: a * e^x + c
-     * Exemplos: e^x, 2e^x, -e^x, 2*e^x+5
-     * (após normalização: ℯx, 2ℯx, -ℯx, 2ℯx+5)
+     * Euler exponential: a * e^x + c
+     * Examples: e^x, 2e^x, -e^x, 2*e^x+5
+     * (after normalization: ℯx, 2ℯx, -ℯx, 2ℯx+5)
      *
-     * Coeficientes:
-     *   a — amplitude (fator externo)
-     *   base — Math.E (sempre)
-     *   c — deslocamento vertical
+     * Coefficients:
+     *   a    — amplitude (external factor)
+     *   base — Math.E (always)
+     *   c    — vertical shift
+     * @param {string} expr - Expression to analyze
+     * @return {{ type: string, coefficients: object } | null}
+     * @since v6.1.0
      */
-    parsearExponencialEuler(expr) {
+    parseEulerExp(expr) {
         const regex = /^([+-]?\d*\.?\d*)ℯx([+-]\d+\.?\d*)?$/
         const match = expr.match(regex)
         if (!match) return null
 
         return {
-            tipo: "exponencial",
-            coeficientes: {
-                a: Parse.coef(match[1]),
+            type: "exponential",
+            coefficients: {
+                a: Parse.parseCoef(match[1]),
                 base: Math.E,
                 c: match[2] ? Number(match[2]) : 0,
             },
@@ -247,30 +250,30 @@ export const Parse = {
     },
 
     /**
-     * Exponencial base arbitrária: a * b^x + c
-     * Exemplos: 2*3^x, 5^x, 10^x, -2*10^x+1
-     * (após normalização: 2·3ˣ, 5ˣ, 10ˣ, -2·10ˣ+1)
+     * Arbitrary-base exponential: a * b^x + c
+     * Examples: 2*3^x, 5^x, 10^x, -2*10^x+1
+     * (after normalization: 2·3ˣ, 5ˣ, 10ˣ, -2·10ˣ+1)
      *
-     * Dois regex distintos: com coeficiente (·) e sem.
-     * O · como separador evita a fusão "2*3^x" → "23ˣ" [N08].
+     * Two distinct regexes: with coefficient (·) and without.
+     * The · separator avoids fusing "2*3^x" → "23ˣ" [N08].
      *
-     * Coeficientes:
-     *   a — amplitude (fator externo)
-     *   base — base da exponencial (deve ser > 0 e ≠ 1)
-     *   c — deslocamento vertical
-     * @param {string} expr - Expressão a ser analisada
-     * @return {{ tipo: string, coeficientes: object } | null}
+     * Coefficients:
+     *   a    — amplitude (external factor)
+     *   base — exponential base (must be > 0 and ≠ 1)
+     *   c    — vertical shift
+     * @param {string} expr - Expression to analyze
+     * @return {{ type: string, coefficients: object } | null}
      * @since v6.1.0
      */
-    parsearExponencialBase(expr) {
+    parseBaseExp(expr) {
         const r1 = /^([+-]?\d+\.?\d*)·(\d+\.?\d*)ˣ([+-]\d+\.?\d*)?$/
         const m1 = expr.match(r1)
         if (m1) {
             const base = Number(m1[2])
             if (base <= 0 || base === 1) return null
             return {
-                tipo: "exponencial",
-                coeficientes: {
+                type: "exponential",
+                coefficients: {
                     a: Number(m1[1]),
                     base,
                     c: m1[3] ? Number(m1[3]) : 0,
@@ -284,8 +287,8 @@ export const Parse = {
             const base = Number(m2[1])
             if (base <= 0 || base === 1) return null
             return {
-                tipo: "exponencial",
-                coeficientes: {
+                type: "exponential",
+                coefficients: {
                     a: 1,
                     base,
                     c: m2[2] ? Number(m2[2]) : 0,
@@ -297,44 +300,44 @@ export const Parse = {
     },
 
     /**
-     * Logaritmo natural: a * ln(freq·x) + c
-     * Exemplos: ln(x), 2ln(x), -ln(x), ln(2x), 2ln(3x)+1
+     * Natural logarithm: a * ln(freq·x) + c
+     * Examples: ln(x), 2ln(x), -ln(x), ln(2x), 2ln(3x)+1
      *
-     * Coeficientes:
-     *   a    — amplitude (fator externo)
-     *   base — Math.E (sempre)
-     *   freq — coeficiente interno de x
-     *   c    — deslocamento vertical
-     * @param {string} expr - Expressão a ser analisada
-     * @returns {{ tipo: string, coeficientes: object } | null}
+     * Coefficients:
+     *   a    — amplitude (external factor)
+     *   base — Math.E (always)
+     *   freq — internal coefficient of x
+     *   c    — vertical shift
+     * @param {string} expr - Expression to analyze
+     * @returns {{ type: string, coefficients: object } | null}
      * @since v6.1.0
      */
-    parsearLn(expr) {
+    parseLn(expr) {
         const regex = /^([+-]?\d*\.?\d*)ln\(([+-]?\d*\.?\d*)x\)([+-]\d+\.?\d*)?$/
         const match = expr.match(regex)
         if (!match) return null
 
         return {
-            tipo: "logaritmica",
-            coeficientes: {
-                a: Parse.coef(match[1]),
+            type: "logarithmic",
+            coefficients: {
+                a: Parse.parseCoef(match[1]),
                 base: Math.E,
-                freq: Parse.coef(match[2]),
+                freq: Parse.parseCoef(match[2]),
                 c: match[3] ? Number(match[3]) : 0,
             },
         }
     },
 
     /**
-     * Logaritmo: a * log_base(freq·x) + c
-     * Aceita: log(x) [base 10], log2(x), log10(x), log_2(x) [N09], lg(x) [N10]
+     * Logarithm: a * log_base(freq·x) + c
+     * Accepts: log(x) [base 10], log2(x), log10(x), log_2(x) [N09], lg(x) [N10]
      *
-     * Coeficientes: idem ln, com base variável.
-     * @param {string} expr - Expressão a ser analisada
-     * @returns {{ tipo: string, coeficientes: object } | null}
+     * Coefficients: same as parseLn, with variable base.
+     * @param {string} expr - Expression to analyze
+     * @returns {{ type: string, coefficients: object } | null}
      * @since v6.1.0
      */
-    parsearLog(expr) {
+    parseLog(expr) {
         const regex = /^([+-]?\d*\.?\d*)log(\d*\.?\d*)\(([+-]?\d*\.?\d*)x\)([+-]\d+\.?\d*)?$/
         const match = expr.match(regex)
         if (!match) return null
@@ -343,161 +346,161 @@ export const Parse = {
         if (base <= 0 || base === 1) return null
 
         return {
-            tipo: "logaritmica",
-            coeficientes: {
-                a: Parse.coef(match[1]),
+            type: "logarithmic",
+            coefficients: {
+                a: Parse.parseCoef(match[1]),
                 base,
-                freq: Parse.coef(match[3]),
+                freq: Parse.parseCoef(match[3]),
                 c: match[4] ? Number(match[4]) : 0,
             },
         }
     },
 
     /**
-     * Seno: a * sin(b·x) + c   (aceita sin e sen)
-     * Exemplos: sin(x), 2sin(x), -sen(x), sin(2x), sin(-x), 2sin(-3x)+1
+     * Sine: a * sin(b·x) + c   (accepts sin and sen)
+     * Examples: sin(x), 2sin(x), -sen(x), sin(2x), sin(-x), 2sin(-3x)+1
      *
-     * Coeficientes:
+     * Coefficients:
      *   a — amplitude
-     *   b — frequência (pode ser negativo — Parse.coef trata '-' como -1)
-     *   c — deslocamento vertical
-     * @param {string} expr - Expressão a ser analisada
-     * @returns {{ tipo: string, coeficientes: object } | null}
+     *   b — frequency (can be negative — parseCoef handles '-' as -1)
+     *   c — vertical shift
+     * @param {string} expr - Expression to analyze
+     * @returns {{ type: string, coefficients: object } | null}
      * @since v6.1.0
      */
-    parsearSeno(expr) {
+    parseSine(expr) {
         const regex = /^([+-]?\d*\.?\d*)s[ei]n\(([+-]?\d*\.?\d*)x\)([+-]\d+\.?\d*)?$/
         const match = expr.match(regex)
         if (!match) return null
 
         return {
-            tipo: "seno",
-            coeficientes: {
-                a: Parse.coef(match[1]),
-                b: Parse.coef(match[2]),
+            type: "sine",
+            coefficients: {
+                a: Parse.parseCoef(match[1]),
+                b: Parse.parseCoef(match[2]),
                 c: match[3] ? Number(match[3]) : 0,
             },
         }
     },
 
     /**
-     * Cosseno: a * cos(b·x) + c
-     * Exemplos: cos(x), 3cos(x), cos(-2x), -cos(3x)+1
+     * Cosine: a * cos(b·x) + c
+     * Examples: cos(x), 3cos(x), cos(-2x), -cos(3x)+1
      *
-     * Coeficientes:
+     * Coefficients:
      *   a — amplitude
-     *   b — frequência (pode ser negativo — Parse.coef trata '-' como -1)
-     *   c — deslocamento vertical
-     * @param {string} expr - Expressão a ser analisada
-     * @returns {{ tipo: string, coeficientes: object } | null}
+     *   b — frequency (can be negative — parseCoef handles '-' as -1)
+     *   c — vertical shift
+     * @param {string} expr - Expression to analyze
+     * @returns {{ type: string, coefficients: object } | null}
      * @since v6.1.0
      */
-    parsearCosseno(expr) {
+    parseCosine(expr) {
         const regex = /^([+-]?\d*\.?\d*)cos\(([+-]?\d*\.?\d*)x\)([+-]\d+\.?\d*)?$/
         const match = expr.match(regex)
         if (!match) return null
 
         return {
-            tipo: "cosseno",
-            coeficientes: {
-                a: Parse.coef(match[1]),
-                b: Parse.coef(match[2]),
+            type: "cosine",
+            coefficients: {
+                a: Parse.parseCoef(match[1]),
+                b: Parse.parseCoef(match[2]),
                 c: match[3] ? Number(match[3]) : 0,
             },
         }
     },
 
     /**
-     * Tangente: a * tan(b·x) + c   (aceita tan e tg)
-     * Exemplos: tan(x), tg(x), 2tan(x), tan(-3x)-1
+     * Tangent: a * tan(b·x) + c   (accepts tan and tg)
+     * Examples: tan(x), tg(x), 2tan(x), tan(-3x)-1
      *
-     * Coeficientes:
+     * Coefficients:
      *   a — amplitude
-     *   b — frequência (pode ser negativo — Parse.coef trata '-' como -1)
-     *   c — deslocamento vertical
-     * @param {string} expr - Expressão a ser analisada
-     * @returns {{ tipo: string, coeficientes: object } | null}
+     *   b — frequency (can be negative — parseCoef handles '-' as -1)
+     *   c — vertical shift
+     * @param {string} expr - Expression to analyze
+     * @returns {{ type: string, coefficients: object } | null}
      * @since v6.1.0
      */
-    parsearTangente(expr) {
+    parseTangent(expr) {
         const regex = /^([+-]?\d*\.?\d*)t(?:an|g)\(([+-]?\d*\.?\d*)x\)([+-]\d+\.?\d*)?$/
         const match = expr.match(regex)
         if (!match) return null
 
         return {
-            tipo: "tangente",
-            coeficientes: {
-                a: Parse.coef(match[1]),
-                b: Parse.coef(match[2]),
+            type: "tangent",
+            coefficients: {
+                a: Parse.parseCoef(match[1]),
+                b: Parse.parseCoef(match[2]),
                 c: match[3] ? Number(match[3]) : 0,
             },
         }
     },
 
     /**
-     * Constante: qualquer número sozinho (fallback final)
-     * Exemplos: 5, -3, 0, 2.5, 1000 (de 1e3), 3.14159... (de pi), 2.718... (de e)
-     * @param {string} expr - Expressão a ser analisada
-     * @returns {{ tipo: string, coeficientes: object } | null}
+     * Constant: any standalone number (final fallback)
+     * Examples: 5, -3, 0, 2.5, 1000 (from 1e3), 3.14159... (from pi), 2.718... (from e)
+     * @param {string} expr - Expression to analyze
+     * @returns {{ type: string, coefficients: object } | null}
      * @since v6.1.0
      */
-    parsearConstante(expr) {
+    parseConstant(expr) {
         const regex = /^([+-]?\d+\.?\d*)$/
         const match = expr.match(regex)
         if (!match) return null
 
         return {
-            tipo: "constante",
-            coeficientes: { c: Number(match[1]) },
+            type: "constant",
+            coefficients: { c: Number(match[1]) },
         }
     },
 
-    // ─── Pipeline principal ──────────────────────────────────────────────────────
+    // ─── Main pipeline ───────────────────────────────────────────────────────────
 
     /**
-     * Recebe a entrada do usuário e retorna um objeto descrevendo a função.
-     * Retorna null se nenhum tipo for reconhecido.
+     * Receives user input and returns an object describing the function.
+     * Returns null if no type is recognized.
      *
-     * Ordem do pipeline:
-     *   Quadrática antes de afim (x² também contém x — falso positivo se invertido)
-     *   Euler antes de base arbitrária (ambas trabalham com ˣ/ℯx)
-     *   Constante é o fallback final
+     * Pipeline order:
+     *   Quadratic before affine (x² also contains x — false positive if reversed)
+     *   Euler before arbitrary base (both work with ˣ/ℯx)
+     *   Constant is the final fallback
      *
-     * Estrutura de retorno por tipo:
-     *   afim        → { a, b }
-     *   quadratica  → { a, b, c }
-     *   exponencial → { a, base, c }
-     *   logaritmica → { a, base, freq, c }
-     *   seno        → { a, b, c }
-     *   cosseno     → { a, b, c }
-     *   tangente    → { a, b, c }
-     *   constante   → { c }
+     * Return structure by type:
+     *   affine       → { a, b }
+     *   quadratic    → { a, b, c }
+     *   exponential  → { a, base, c }
+     *   logarithmic  → { a, base, freq, c }
+     *   sine         → { a, b, c }
+     *   cosine       → { a, b, c }
+     *   tangent      → { a, b, c }
+     *   constant     → { c }
      *
-     * @param {string} entrada - ex: "2x + 3", "x² - 4x + 1", "2*3^x+1", "sin(πx)"
-     * @returns {{ tipo: string, coeficientes: object, original: string } | null}
+     * @param {string} input - e.g. "2x + 3", "x² - 4x + 1", "2*3^x+1", "sin(πx)"
+     * @returns {{ type: string, coefficients: object, original: string } | null}
      * @since v6.1.0
      */
-    parsear(entrada) {
-        if (!entrada || !entrada.trim()) return null
+    parseExpr(input) {
+        if (!input || !input.trim()) return null
 
-        const original = entrada.trim()
-        const expr = Parse.normalizar(original)
+        const original = input.trim()
+        const expr = Parse.normalizeExpr(original)
 
-        const resultado =
-            Parse.parsearQuadratica(expr) ||
-            Parse.parsearAfim(expr) ||
-            Parse.parsearExponencialEuler(expr) ||
-            Parse.parsearExponencialBase(expr) ||
-            Parse.parsearLn(expr) ||
-            Parse.parsearLog(expr) ||
-            Parse.parsearSeno(expr) ||
-            Parse.parsearCosseno(expr) ||
-            Parse.parsearTangente(expr) ||
-            Parse.parsearConstante(expr) ||
+        const result =
+            Parse.parseQuadratic(expr) ||
+            Parse.parseAffine(expr) ||
+            Parse.parseEulerExp(expr) ||
+            Parse.parseBaseExp(expr) ||
+            Parse.parseLn(expr) ||
+            Parse.parseLog(expr) ||
+            Parse.parseSine(expr) ||
+            Parse.parseCosine(expr) ||
+            Parse.parseTangent(expr) ||
+            Parse.parseConstant(expr) ||
             null
 
-        if (!resultado) return null
+        if (!result) return null
 
-        return { ...resultado, original }
+        return { ...result, original }
     },
 }

@@ -1,6 +1,6 @@
 import { Config, VERSION, saveConfig, resetConfig } from "./config.js"
 import { State } from "./state.js"
-import { Test } from "./teste.js"
+import { Test } from "./test.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 

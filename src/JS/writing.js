@@ -479,7 +479,7 @@ export const Writing = {
      * @returns {string} - Texto convertido
      * @since v6.1.0
      */
-    multiSimples(text = "") {
+    simplifyMultiplication(text = "") {
         return Writing.replace(text, " · ", "")
     },
 
@@ -980,7 +980,7 @@ export const Writing = {
         // === SIMPLIFICAÇÃO DE MULTIPLICAÇÃO ===
         // Substitui símbolos de multiplicação complexos por simples, se ativado
         if (Config.simpleMulti) {
-            message = Writing.multiSimples(message)
+            message = Writing.simplifyMultiplication(message)
         }
 
         // === TRADUÇÃO ===

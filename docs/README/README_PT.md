@@ -22,20 +22,19 @@ Desenvolvida inteiramente em JavaScript puro, sem bibliotecas externas.
 
 ### Funcionalidades
 
-- **Funções suportadas:** Constante, Afim, Quadrática, Exponencial e Logarítmica
-- **Análises disponíveis:** Domínio, Imagem, Raízes, Vértice, Interseções com os eixos, Estudo do sinal, Assíntota, Curva, Valores de `x` e `y`, Equações entre funções
+- **Funções suportadas:** Constante, Afim, Quadrática, Exponencial, Logarítmica, Seno, Cosseno, Tangente e mais
+- **Análises disponíveis:** Domínio, Imagem, Raízes, Vértice, Interseções com os eixos, Estudo do sinal, Assíntota, Curva, Valores de `x` e `y`, Equações entre funções, etc.
 - **Coeficientes variáveis:** `a`, `b`, `c` podem ser deixados como incógnitas — o programa calcula seus valores a partir de pontos conhecidos
 - **Histórico:** Salva e recupera funções anteriores durante a sessão
 - **Configurações:** Unicode, acentos, casas decimais, capitalização, separador decimal, precisão de log e divisão, limite de iterações, idioma (PT-BR / EN) e mais
-- **Bilíngue:** Português Brasileiro e Inglês _(em desenvolvimento)_
+- **Bilíngue:** Português Brasileiro e Inglês
 
 ### Como usar
 
-1. Clone ou baixe o repositório
-2. Abra [`index.html`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/index.html) no navegador
-3. Siga os menus nos `prompts` e `alerts`
+1. Abra [`index.html`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/index.html) no navegador
+2. Siga os menus nos `prompts` e `alerts`
 
-Não é necessário instalar nada.
+Obs.: Não é necessário instalar nada.
 
 Ou acesse diretamente: [![GitHub Pages](https://img.shields.io/badge/Access%20here-GitHub%20Pages-blue)](https://c4adriano.github.io/analisador-funcoes-matematicas/)
 
@@ -43,13 +42,17 @@ Ou acesse diretamente: [![GitHub Pages](https://img.shields.io/badge/Access%20he
 
 | Objeto                                                                                                 | Responsabilidade                                     |
 | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
-| [`config`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/config.js)     | Configurações globais do programa                    |
-| [`helpers`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/helpers.js)   | Cálculos e montagem de resultados comuns             |
-| [`escrita`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/escrita.js)   | Formatação, tradução e conversão de texto            |
-| [`ui`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/ui.js)             | Interação com o usuário (menus, entradas, erros)     |
-| [`erro`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/erro.js)         | Mensagens de erro padronizadas                       |
 | [`algebra`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/algebra.js)   | Cálculos matemáticos (log, ln, divisão segura, etc.) |
-| [`analisar`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/analisar.js) | Análise de cada tipo de função                       |
+| [`analyze`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/analyze.js)   | Análise de cada tipo de função                       |
+| [`commands`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/commands.js) | Comandos do programa                                 |
+| [`config`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/config.js)     | Configurações globais do programa                    |
+| [`error`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/error.js)       | Mensagens de erro padronizadas                       |
+| [`helpers`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/helpers.js)   | Cálculos e montagem de resultados comuns             |
+| [`parse`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/parse.js)       | Análise e parsing das funções                        |
+| [`state`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/state.js)       | Gerenciamento do estado do programa                  |
+| [`test`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/test.js)         | Testes do programa                                   |
+| [`ui`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/ui.js)             | Interação com o usuário (menus, entradas, erros)     |
+| [`writing`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/writing.js)   | Formatação, tradução e conversão de texto            |
 
 ### Histórico resumido
 
