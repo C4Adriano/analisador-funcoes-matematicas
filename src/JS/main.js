@@ -442,26 +442,26 @@ do {
 
                 // Menu de configurações
                 let configOptions = [
-                    Writing.itemConfig("Caracteres Unicode", "unicode"),
-                    Writing.itemConfig("Explicações", "explanations"),
-                    Writing.itemConfig("Acentos", "accents"),
-                    Writing.itemConfig("Capitalizadas", "capitalized"),
-                    Writing.itemConfig("Maiúsculas", "uppercase"),
-                    Writing.itemConfig("Minúsculas", "lowercase"),
+                    Writing.configItem("Caracteres Unicode", "unicode"),
+                    Writing.configItem("Explicações", "explanations"),
+                    Writing.configItem("Acentos", "accents"),
+                    Writing.configItem("Capitalizadas", "capitalized"),
+                    Writing.configItem("Maiúsculas", "uppercase"),
+                    Writing.configItem("Minúsculas", "lowercase"),
 
-                    Writing.itemConfig("Ponto decimal", "decimalSeparator"),
-                    Writing.itemConfig("Multiplicação simples", "simpleMulti"),
-                    Writing.itemConfig("Confirmações de entrada", "inputConfirm"),
-                    Writing.itemConfig("Confirmações de saída", "outputConfirm"),
-                    Writing.itemConfig("Mensagens de erro", "errors"),
-                    Writing.itemConfig("Mostrar função", "showFunction"),
+                    Writing.configItem("Ponto decimal", "decimalSeparator"),
+                    Writing.configItem("Multiplicação simples", "simpleMulti"),
+                    Writing.configItem("Confirmações de entrada", "inputConfirm"),
+                    Writing.configItem("Confirmações de saída", "outputConfirm"),
+                    Writing.configItem("Mensagens de erro", "errors"),
+                    Writing.configItem("Mostrar função", "showFunction"),
 
-                    Writing.itemConfig("Casas decimais", "decimalPlaces"),
-                    Writing.itemConfig("Precisão do log", "logPrecision"),
-                    Writing.itemConfig("Precisão da divisão", "divPrecision"),
-                    Writing.itemConfig("Limite de interações", "interactionLimit"),
-                    Writing.itemConfig("Linguagem", "language"),
-                    Writing.itemConfig("Graus", "degrees"),
+                    Writing.configItem("Casas decimais", "decimalPlaces"),
+                    Writing.configItem("Precisão do log", "logPrecision"),
+                    Writing.configItem("Precisão da divisão", "divPrecision"),
+                    Writing.configItem("Limite de interações", "interactionLimit"),
+                    Writing.configItem("Linguagem", "language"),
+                    Writing.configItem("Graus", "degrees"),
                 ]
 
                 // Preenche com separadores
@@ -546,7 +546,7 @@ do {
                     // Unicode
                     if (choice == 1) {
                         Config.unicode = Ui.confirm(
-                            Writing.itemConfig("Ativar caracteres Unicode?", "unicode"),
+                            Writing.configItem("Ativar caracteres Unicode?", "unicode"),
                             "Obs.₁: Caracteres Unicode são os símbolos especiais, tais como: “ℝ”, “∀”, etc. Desativar fará com que eles sejam transformados em uma palavra correspondente, tais como: “Reais”, “para todo”, etc.\nObs.₂: Nem todos os caracteres Unicode serão desativados\nObs.₃: Essa configuração pode mudar algumas explicações"
                         )
                     }
@@ -554,7 +554,7 @@ do {
                     // Explicações
                     else if (choice == 2) {
                         Config.explanations = Ui.confirm(
-                            Writing.itemConfig("Ativar explicações?", "explanations"),
+                            Writing.configItem("Ativar explicações?", "explanations"),
                             "Obs.₁: Ativar fará com que certas mensagens sejam diferentes e tenham explicações, por exemplo: o cálculo do Delta, Δ = b² - 4 · a · c, sem ser só o resultado dele\nObs.₂: Nem todas as mensagens têm versão explicada\nObs.₃: Desativar o Unicode fará com que seja mostrado: Delta = b^2 - 4 * a * c"
                         )
                     }
@@ -562,7 +562,7 @@ do {
                     // Acentos
                     else if (choice == 3) {
                         Config.accents = Ui.confirm(
-                            Writing.itemConfig("Ativar acentos?", "accents"),
+                            Writing.configItem("Ativar acentos?", "accents"),
                             "Obs.: Essa configuração irá tirar todos os acentos gráficos das palavras, podendo haver má interpretação"
                         )
                     }
@@ -570,7 +570,7 @@ do {
                     // Capitalizadas
                     else if (choice == 4) {
                         Config.capitalized = Ui.confirm(
-                            Writing.itemConfig("Ativar letras capitalizadas?", "capitalized"),
+                            Writing.configItem("Ativar letras capitalizadas?", "capitalized"),
                             "Obs.₁: Essa configuração irá transformar as palavras em “normais”, no caso, a primeira letra da frase em maiúscula e as outras todas em minúsculas\nObs.₂: Essa configuração irá desativar “maiúsculas” e “minúsculas”"
                         )
                         if (Config.capitalized) {
@@ -584,7 +584,7 @@ do {
                     // Maiúsculas
                     else if (choice == 5) {
                         Config.uppercase = Ui.confirm(
-                            Writing.itemConfig("Ativar todas as letras maiúsculas?", "uppercase"),
+                            Writing.configItem("Ativar todas as letras maiúsculas?", "uppercase"),
                             "Obs.₁: Essa configuração irá transformar todas as letras em maiúsculas\nObs.₂: Essa configuração irá desativar “capitalizadas” e “minúsculas”"
                         )
                         if (Config.uppercase) {
@@ -598,7 +598,7 @@ do {
                     // Minúsculas
                     else if (choice == 6) {
                         Config.lowercase = Ui.confirm(
-                            Writing.itemConfig("Ativar todas as letras minúsculas?", "lowercase"),
+                            Writing.configItem("Ativar todas as letras minúsculas?", "lowercase"),
                             "Obs.₁: Essa configuração irá transformar todas as letras em minúsculas\nObs.₂: Essa configuração irá desativar “capitalizadas” e “maiúsculas”"
                         )
                         if (Config.lowercase) {
@@ -615,7 +615,7 @@ do {
                     // Ponto decimal
                     if (choice == 1) {
                         Config.decimalSeparator = Ui.confirm(
-                            Writing.itemConfig("Alterar ponto decimal?", "decimalSeparator"),
+                            Writing.configItem("Alterar ponto decimal?", "decimalSeparator"),
                             "Obs.₁: Essa configuração irá transformar os números com “.” em números com “,”, por exemplo: " +
                                 Writing.decimal(123.456) +
                                 "\nObs.₂: Isso é apenas estético e não irá afetar as contas\nObs.₃: Tu também poderás escrever os números com “,” em vez de “.”"
@@ -625,7 +625,7 @@ do {
                     // Multiplicação simples
                     else if (choice == 2) {
                         Config.simpleMulti = Ui.confirm(
-                            Writing.itemConfig("Alterar para multiplicação simples?", "simpleMulti"),
+                            Writing.configItem("Alterar para multiplicação simples?", "simpleMulti"),
                             "Obs.₁: Isso irá alterar esteticamente as contas polinomiais de: “a · x² + b · x + c” para: “ax² + bx + c”\nObs.₂: Desativar o Unicode irá transformar o “·” em “*”\nObs.₃: Isso não irá afetar o “×”, porém o Unicode irá transformá-lo em “*”"
                         )
                     }
@@ -633,7 +633,7 @@ do {
                     // Confirmações de entrada
                     else if (choice == 3) {
                         Config.inputConfirm = Ui.confirm(
-                            Writing.itemConfig("Ativar confirmações de entrada?", "inputConfirm"),
+                            Writing.configItem("Ativar confirmações de entrada?", "inputConfirm"),
                             "Obs.: Toda e qualquer coisa digitada passará a ter que ser confirmada"
                         )
                     }
@@ -641,7 +641,7 @@ do {
                     // Confirmações de saída
                     else if (choice == 4) {
                         Config.outputConfirm = Ui.confirm(
-                            Writing.itemConfig("Ativar confirmações de saída?", "outputConfirm"),
+                            Writing.configItem("Ativar confirmações de saída?", "outputConfirm"),
                             "Obs.: Isso irá ativar uma mensagem antes de sair / fechar o programa"
                         )
                     }
@@ -649,7 +649,7 @@ do {
                     // Errors
                     else if (choice == 5) {
                         Config.errors = Ui.confirm(
-                            Writing.itemConfig("Ativar mensagens de erro?", "errors"),
+                            Writing.configItem("Ativar mensagens de erro?", "errors"),
                             "Obs.: Desativar pode fazer com que tu não percebas algum erro que estás cometendo"
                         )
                     }
@@ -657,7 +657,7 @@ do {
                     // Função
                     else if (choice == 6) {
                         Config.showFunction = Ui.confirm(
-                            Writing.itemConfig("Ativar exibição da função?", "showFunction"),
+                            Writing.configItem("Ativar exibição da função?", "showFunction"),
                             "Obs.₁: “Mostrar função” significa que será mostrada a função (por exemplo: ax² + bx + c) no começo dos menus, antes das opções\nObs.₂: A função ainda continuará sendo mostrada quando for escolhida a opção “6” (Rever / Mostrar função)"
                         )
                     }
@@ -668,7 +668,7 @@ do {
                     // Casas decimais
                     if (choice == 1) {
                         Config.decimalPlaces = Ui.range(
-                            Writing.itemConfig("Quantas casas decimais?", "decimalPlaces"),
+                            Writing.configItem("Quantas casas decimais?", "decimalPlaces"),
                             "Obs.₁: Um número muito pequeno de casas decimais pode fazer as contas ficarem erradas\nObs.₂: Os números já digitados serão arredondados para o novo número de casas decimais",
                             3,
                             10
@@ -689,7 +689,7 @@ do {
                     // Precisão do log
                     else if (choice == 2) {
                         Config.logPrecision = Ui.range(
-                            Writing.itemConfig("Qual a precisão do log?", "logPrecision"),
+                            Writing.configItem("Qual a precisão do log?", "logPrecision"),
                             "Obs.₁: Isso poderá afetar contas muito pequenas envolvendo logs\nObs.₂: Tu terás que escrever literalmente “1e-12”",
                             1e-12,
                             1e-6,
@@ -700,7 +700,7 @@ do {
                     // Precisão da divisão
                     else if (choice == 3) {
                         Config.divPrecision = Ui.range(
-                            Writing.itemConfig("Qual a precisão da divisão?", "divPrecision"),
+                            Writing.configItem("Qual a precisão da divisão?", "divPrecision"),
                             "Obs.₁: Isso poderá afetar contas muito pequenas envolvendo divisões\nObs.₂: Tu terás que escrever literalmente “1e-12”",
                             1e-12,
                             1e-6,
@@ -711,7 +711,7 @@ do {
                     // Limite de interações
                     else if (choice == 4) {
                         Config.interactionLimit = Ui.range(
-                            Writing.itemConfig("Qual o limite de interações?", "interactionLimit"),
+                            Writing.configItem("Qual o limite de interações?", "interactionLimit"),
                             "Obs.₁: Isso irá afetar todos os loops, tais como logs, menus, etc.\nObs.₂: Essa configuração é útil para evitar loops infinitos no código, caso algo dê errado",
                             100,
                             10000
@@ -721,7 +721,7 @@ do {
                     // Linguagem
                     else if (choice == 5) {
                         let question = Ui.range(
-                                Writing.itemConfig("Qual língua?", "language") +
+                                Writing.configItem("Qual língua?", "language") +
                                     "\n1 = Português Brasileiro\n2 = Inglês",
                                 "Obs.: Isso irá alterar a língua do sistema inteiro.",
                                 1,
@@ -756,7 +756,7 @@ do {
                     // Graus
                     else if (choice == 6) {
                         Config.degrees = Ui.confirm(
-                            Writing.itemConfig("Usar graus em vez de radianos?", "degrees"),
+                            Writing.configItem("Usar graus em vez de radianos?", "degrees"),
                             "Obs.₁: Isso irá afetar as funções trigonométricas, tais como seno, cosseno e tangente\nObs.₂: Ativar isso irá fazer com que os ângulos sejam interpretados como graus, e não π radianos"
                         )
                     }
