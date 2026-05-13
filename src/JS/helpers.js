@@ -1,15 +1,9 @@
 import { Algebra } from "./algebra.js"
 import { Config } from "./config.js"
 import { Error } from "./error.js"
-import { Phrases } from "./phrases.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
-
-/**
- * @status Funcionando
- * [ 0% ] Phrases
- */
 
 /**
  * [FUNÇÃO] Objeto base para as ajudas de código (repetições) e cálculos comuns

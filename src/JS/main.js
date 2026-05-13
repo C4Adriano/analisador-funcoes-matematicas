@@ -3,15 +3,9 @@ import { Analyze } from "./analyze.js"
 import { Commands } from "./commands.js"
 import { Config, DEFAULT_CONFIG, VERSION, saveConfig, loadConfig, changeLanguage } from "./config.js"
 import { Error } from "./error.js"
-import { Phrases } from "./phrases.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
-
-/**
- * @status Funcionando
- * [ 0% ] Phrases
- */
 
 console.log(
     "" +

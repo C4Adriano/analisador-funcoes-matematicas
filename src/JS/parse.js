@@ -1,10 +1,3 @@
-import { Phrases } from "./phrases.js"
-
-/**
- * @status Funcionando
- * [ 0% ] Phrases
- */
-
 // Desenvolvido por (Anthropic) Claude (claude.ai), revisado e corrigido por Adriano Lima
 // Identifica o tipo de função matemática e extrai seus coeficientes.
 // Pipeline: normalizar → tentar cada tipo → fallback constante

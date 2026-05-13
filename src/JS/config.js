@@ -1,10 +1,3 @@
-import { Phrases } from "./phrases.js"
-
-/**
- * @status Funcionando
- * [ 0% ] Phrases
- */
-
 /**
  * [CONFIG] Configurações do programa
  * - Edite os valores aqui para mudar os valores padrões das configurações. Porém tente não ultrapassar os limites ou alterar os tipos dos valores

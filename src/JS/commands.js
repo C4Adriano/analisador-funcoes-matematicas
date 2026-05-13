@@ -1,14 +1,8 @@
 import { Config, VERSION, saveConfig, resetConfig, changeLanguage } from "./config.js"
 import { State } from "./state.js"
 import { Test } from "./test.js"
-import { Phrases } from "./phrases.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
-
-/**
- * @status Funcionando
- * [ 0% ] Phrases
- */
 
 /**
  * [JS] Processamento de comandos do usuário
