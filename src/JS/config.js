@@ -29,6 +29,25 @@ export const Config = {
 }
 
 /**
+ * [CONFIG] Altera a língua do programa, ajustando as configurações relacionadas (como acentos e separador decimal)
+ * @param {string} language Língua
+ */
+export function changeLanguage(language) {
+    if (confirm("Tu queres alterar a língua para: " + language, "")) {
+        if (language == "pt-br") {
+            Config.decimalSeparator = true
+            Config.accents = true
+        } else if (language == "en") {
+            Config.decimalSeparator = false
+            Config.accents = false
+        }
+
+        Config.language = language
+        saveConfig()
+    }
+}
+
+/**
  * [CONFIG] Carrega as configurações salvas no localStorage (se existirem)
  * @since v6.1.0
  */

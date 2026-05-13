@@ -1,7 +1,7 @@
 import { Algebra } from "./algebra.js"
 import { Analyze } from "./analyze.js"
 import { Commands } from "./commands.js"
-import { Config, DEFAULT_CONFIG, VERSION, saveConfig, loadConfig } from "./config.js"
+import { Config, DEFAULT_CONFIG, VERSION, saveConfig, loadConfig, changeLanguage } from "./config.js"
 import { Error } from "./error.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
@@ -730,26 +730,16 @@ do {
                             ),
                             language = question == 1 ? "pt-br" : "en"
                         if (language != Config.language) {
-                            if (Ui.confirm("Tu queres alterar a língua para: " + language, "")) {
-                                if (language == "pt-br") {
-                                    Config.decimalSeparator = true
-                                    Config.accents = true
-                                } else if (language == "en") {
-                                    Config.decimalSeparator = false
-                                    Config.accents = false
-                                }
+                            changeLanguage(language)
 
-                                Config.language = language
-
-                                // Para alterar o HTML também, conforme a língua
-                                document.title =
-                                    Config.language == "en"
-                                        ? "Mathematical Function Analyzer"
-                                        : "Analisador de Funções Matemáticas"
-                                document.querySelector("h1").textContent =
-                                    Config.language == "en" ? "Mathematics" : "Matemática"
-                                document.documentElement.lang = Config.language
-                            }
+                            // Para alterar o HTML também, conforme a língua
+                            document.title =
+                                Config.language == "en"
+                                    ? "Mathematical Function Analyzer"
+                                    : "Analisador de Funções Matemáticas"
+                            document.querySelector("h1").textContent =
+                                Config.language == "en" ? "Mathematics" : "Matemática"
+                            document.documentElement.lang = Config.language
                         }
                     }
 

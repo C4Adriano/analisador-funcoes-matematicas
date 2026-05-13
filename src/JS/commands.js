@@ -1,4 +1,4 @@
-import { Config, VERSION, saveConfig, resetConfig } from "./config.js"
+import { Config, VERSION, saveConfig, resetConfig, changeLanguage } from "./config.js"
 import { State } from "./state.js"
 import { Test } from "./test.js"
 import { Ui } from "./ui.js"
@@ -328,6 +328,54 @@ export const Commands = {
                     return Commands.change("degrees", arg)
                 },
             },
+            language: {
+                short: "alterna língua",
+                long: "Altera a língua do programa entre português e inglês.",
+                variations: ["lingua", "language", "lang"],
+                action(arg, parts) {
+                    if (parts[1] != undefined) {
+                        parts[1] = Writing.noAccents(Writing.lowercase(parts[1]))
+
+                        // Português
+                        if (
+                            parts[1] == "pt-br" ||
+                            parts[1] == "pt" ||
+                            parts[1] == "portugues" ||
+                            parts[1] == "portuguese" ||
+                            parts[1] == "brasileiro" ||
+                            parts[1] == "brazilian"
+                        ) {
+                            if (Config.language === "pt-br") {
+                                Ui.warning("A língua já está definida como português.")
+                            } else {
+                                changeLanguage("pt-br")
+                            }
+                        }
+
+                        // Inglês
+                        else if (
+                            parts[1] == "en" ||
+                            parts[1] == "english" ||
+                            parts[1] == "ingles" ||
+                            parts[1] == "inglese" ||
+                            parts[1] == "anglo" ||
+                            parts[1] == "anglo-saxon"
+                        ) {
+                            if (Config.language === "en") {
+                                Ui.warning("A língua já está definida como inglês.")
+                            } else {
+                                changeLanguage("en")
+                            }
+                        }
+
+                        // Erro
+                        else {
+                            Ui.error("Língua inválida", "“" + parts[1] + "” não é uma língua válida")
+                        }
+                        return null
+                    }
+                },
+            },
             debug: {
                 short: "alterna modo debug",
                 long: "Ativa ou desativa o modo de depuração.",
@@ -442,7 +490,7 @@ export const Commands = {
 
             menu += "\n----------------\n8 = Anterior | 9 = Próxima | 0 = Voltar"
 
-            answer = Ui.intervalo(menu, "", 0, 9, 0, true)
+            answer = Ui.range(menu, "", 0, 9, 0, true)
 
             if (answer == 8) {
                 page--
