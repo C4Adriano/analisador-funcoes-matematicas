@@ -44,8 +44,10 @@ export const Writing = {
     noUnicode(text = "") {
         let replacements = [
             // === LETRAS / SÍMBOLOS ESPECIAIS ===
+            ["©", "(c)"],
             ["Δ", "Delta"],
             ["π", "pi"],
+            ["ℯ", "_e"],
             ["φ", "phi"],
             ["θ", "theta"],
             ["λ", "lambda"],
@@ -186,6 +188,7 @@ export const Writing = {
             ["←", "<-"],
             ["↑", "^"],
             ["↓", "v"],
+            ["↳", "->"],
             ["↔", "<->"],
             ["↕", "^v"],
             ["↖", "\\"],

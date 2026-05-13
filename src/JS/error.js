@@ -1,3 +1,5 @@
+import { Ui } from "./ui.js"
+
 /**
  * [ERRO] Mensagens de erro padronizadas do programa
  * - Use as funções aqui para exibir erros ao usuário. Nunca chame Ui.error() diretamente

@@ -17,7 +17,9 @@ export const Commands = {
      * @since v6.1.0
      */
     process(raw = "") {
-        if (raw[0] != "/") return null
+        if (raw[0] != "/") {
+            return null
+        }
 
         let parts = Writing.noAccents(raw.slice(1).toLowerCase()).split(" "),
             cmd = parts[0],
@@ -25,27 +27,30 @@ export const Commands = {
             canonical = Commands.resolveCmd(cmd),
             cmds = Commands.listCmd()
 
-        if (canonical === null) {
+        if (canonical == null) {
             let suggestion = Commands.suggestCmd(cmd)
 
-            if (suggestion.tipo === "suggestion") {
+            if (suggestion.type == "suggestion") {
                 let answer = Ui.confirm(
                     "Você quis dizer: “/" + suggestion.canonical + "”?",
                     "Comando não reconhecido: “/" +
                         cmd +
-                        "”\nA sugestão mais próxima é “" +
+                        "”\nA sugestão mais próxima é “/" +
                         suggestion.canonical +
                         "” (distância " +
                         suggestion.distance +
                         ")\nDeseja executar essa sugestão?"
                 )
-                if (answer === 1) {
+                if (answer == true) {
                     return Commands.process("/" + suggestion.canonical + " " + (parts[1] || ""))
                 }
                 return null
             }
 
-            Ui.error("Comando inválido", cmd + " não é um comando válido\nDigite “/help” para ver todos os comandos")
+            Ui.error(
+                "Comando inválido",
+                "/“" + cmd + "” não é um comando válido\nDigite “/help” para ver todos os comandos"
+            )
             return null
         }
 
@@ -105,21 +110,59 @@ export const Commands = {
             dist = 0
 
         for (i = 0; i < keys.length; i++) {
-            // Testa a chave canônica + todas as variações
             candidates = [keys[i]].concat(cmds[keys[i]].variations)
 
             for (j = 0; j < candidates.length; j++) {
                 dist = Commands.levenshtein(typed, candidates[j])
                 if (dist < lowerDist) {
                     lowerDist = dist
-                    best = keys[i] // sempre salva o canônico
+                    best = keys[i]
                 }
             }
         }
 
-        if (lowerDist === 0) return { type: "exact", canonical: best, distance: 0 }
-        if (lowerDist <= LIMIT) return { type: "suggestion", canonical: best, distance: lowerDist }
+        if (lowerDist == 0) {
+            return { type: "exact", canonical: best, distance: 0 }
+        }
+        if (lowerDist <= LIMIT) {
+            return { type: "suggestion", canonical: best, distance: lowerDist }
+        }
         return { type: "unknown", canonical: "", distance: -1 }
+    },
+
+    /**
+     * [JS] Pesquisa comandos por termo — busca no canônico, variações, short e long
+     * @param {string} term - Termo de pesquisa
+     * @returns {string[]} - Lista de nomes canônicos dos comandos encontrados
+     * @since v6.2.0
+     */
+    searchCmd(term = "") {
+        if (term == "") {
+            return []
+        }
+
+        let cmds = Commands.listCmd(),
+            keys = Object.keys(cmds),
+            results = [],
+            t = Writing.noAccents(term.toLowerCase()),
+            i = 0,
+            j = 0,
+            cmd,
+            candidates = []
+
+        for (i = 0; i < keys.length; i++) {
+            cmd = cmds[keys[i]]
+            candidates = [keys[i], cmd.short, cmd.long].concat(cmd.variations)
+
+            for (j = 0; j < candidates.length; j++) {
+                if (Writing.noAccents(candidates[j].toLowerCase()).includes(t)) {
+                    results.push(keys[i])
+                    break
+                }
+            }
+        }
+
+        return results
     },
 
     /**
@@ -131,10 +174,34 @@ export const Commands = {
         return {
             help: {
                 short: "mostra essa mensagem",
-                long: "Exibe a lista de todos os comandos disponíveis.\nUso: /ajuda [comando]",
-                variations: ["ajuda", "help", "a", "h", "cmd", "cmds", "c"],
+                long: "Exibe a lista de todos os comandos disponíveis.\nUso: /help [comando]",
+                variations: ["ajuda", "help", "a", "h", "cmd", "cmds", "c", "comandos", "?"],
                 action(arg, parts) {
                     return Commands.help(parts[1] || "")
+                },
+            },
+            search: {
+                short: "pesquisa comandos",
+                long: "Pesquisa comandos por termo no nome, variações e descrições.\nUso: /search <termo>",
+                variations: ["pesquisar", "search", "buscar", "find", "procurar", "seek", "s"],
+                action(arg, parts) {
+                    return Commands.searchHelp(parts[1] || "")
+                },
+            },
+            shortcuts: {
+                short: "lista variações de um comando",
+                long: "Exibe todas as variações aceitas de um comando.\nUso: /shortcuts <comando>",
+                variations: ["atalhos", "shortcuts", "variacoes", "variacao", "aliases", "alias", "sc"],
+                action(arg, parts) {
+                    return Commands.shortcuts(parts[1] || "")
+                },
+            },
+            about: {
+                short: "sobre o programa",
+                long: "Exibe informações sobre o projeto, autor e repositório.",
+                variations: ["sobre", "about", "info", "informacoes", "informacao", "projeto"],
+                action() {
+                    return Commands.about()
                 },
             },
             config: {
@@ -167,43 +234,43 @@ export const Commands = {
             start: {
                 short: "volta ao menu principal",
                 long: "Retorna ao menu inicial de seleção de função.",
-                variations: ["inicio", "start"],
+                variations: ["inicio", "start", "home", "menu", "voltar", "back"],
                 action() {
-                    State.type = "inicio"
-                    return "inicio"
+                    State.type = "start"
+                    return "start"
                 },
             },
             review: {
                 short: "mostra os coeficientes atuais",
                 long: "Exibe os coeficientes inseridos na sessão atual.",
-                variations: ["rever", "review"],
+                variations: ["rever", "review", "rev", "rver", "coefs", "coeficientes", "ver"],
                 action() {
-                    State.type = "rever"
-                    return "rever"
+                    State.type = "review"
+                    return "review"
                 },
             },
             change: {
                 short: "muda os coeficientes",
                 long: "Permite alterar os coeficientes sem reiniciar a análise.",
-                variations: ["alterar", "change"],
+                variations: ["alterar", "change", "editar", "edit", "modificar", "modify"],
                 action() {
-                    State.type = "alterar"
-                    return "alterar"
+                    State.type = "change"
+                    return "change"
                 },
             },
             history: {
                 short: "abre o histórico",
                 long: "Exibe o histórico de funções analisadas na sessão.",
-                variations: ["historico", "history"],
+                variations: ["historico", "history", "hist"],
                 action() {
-                    State.type = "historico"
-                    return "historico"
+                    State.type = "history"
+                    return "history"
                 },
             },
             version: {
                 short: "mostra a versão",
                 long: "Exibe a versão atual do programa e informações de autoria.",
-                variations: ["versao", "version", "v"],
+                variations: ["versao", "version", "vers", "v"],
                 action() {
                     return Commands.version()
                 },
@@ -211,7 +278,7 @@ export const Commands = {
             unicode: {
                 short: "alterna Unicode",
                 long: "Ativa ou desativa o uso de caracteres Unicode na saída.",
-                variations: ["unicode"],
+                variations: ["unicode", "uni"],
                 action(arg) {
                     return Commands.change("unicode", arg)
                 },
@@ -227,7 +294,7 @@ export const Commands = {
             explain: {
                 short: "alterna explicações",
                 long: "Ativa ou desativa as explicações detalhadas dos resultados.",
-                variations: ["explicar", "explicacoes", "explain"],
+                variations: ["explicar", "explicacoes", "explain", "explicacao", "exp"],
                 action(arg) {
                     return Commands.change("explanations", arg)
                 },
@@ -315,6 +382,7 @@ export const Commands = {
                     "showfunction",
                     "showFunction",
                     "func",
+                    "fn",
                 ],
                 action(arg) {
                     return Commands.change("showFunction", arg)
@@ -323,15 +391,27 @@ export const Commands = {
             degrees: {
                 short: "alterna modo graus",
                 long: "Alterna entre graus e radianos nos cálculos.",
-                variations: ["graus", "grau", "degrees", "degree", "deg"],
+                variations: ["graus", "grau", "degrees", "degree", "deg", "rad", "radianos", "radians"],
                 action(arg) {
                     return Commands.change("degrees", arg)
                 },
             },
             language: {
                 short: "alterna língua",
-                long: "Altera a língua do programa entre português e inglês.",
-                variations: ["lingua", "language", "lang"],
+                long: "Altera a língua do programa entre português e inglês.\nUso: /language [pt | en]",
+                variations: [
+                    "lingua",
+                    "language",
+                    "lang",
+                    "idioma",
+                    "pt",
+                    "en",
+                    "pt-br",
+                    "ingles",
+                    "english",
+                    "portugues",
+                    "portuguese",
+                ],
                 action(arg, parts) {
                     if (parts[1] != undefined) {
                         parts[1] = Writing.noAccents(Writing.lowercase(parts[1]))
@@ -345,7 +425,7 @@ export const Commands = {
                             parts[1] == "brasileiro" ||
                             parts[1] == "brazilian"
                         ) {
-                            if (Config.language === "pt-br") {
+                            if (Config.language == "pt-br") {
                                 Ui.warning("A língua já está definida como português.")
                             } else {
                                 changeLanguage("pt-br")
@@ -361,7 +441,7 @@ export const Commands = {
                             parts[1] == "anglo" ||
                             parts[1] == "anglo-saxon"
                         ) {
-                            if (Config.language === "en") {
+                            if (Config.language == "en") {
                                 Ui.warning("A língua já está definida como inglês.")
                             } else {
                                 changeLanguage("en")
@@ -400,10 +480,10 @@ export const Commands = {
             exit: {
                 short: "sai do programa",
                 long: "Encerra o programa. Confirmação pode ser solicitada.",
-                variations: ["sair", "exit", "//", "ex", "out"],
+                variations: ["sair", "exit", "//", "ex", "out", "quit", "q", "fechar", "close"],
                 action() {
-                    State.type = "sair"
-                    return "sair"
+                    State.type = "exit"
+                    return "exit"
                 },
             },
         }
@@ -438,19 +518,21 @@ export const Commands = {
      * @since v6.1.0
      */
     parseBool(text = "") {
-        if (["true", "1", "sim", "yes", "on", "ativo"].includes(text)) {
+        if (["true", "1", "sim", "yes", "on", "ativo", "enable", "enabled", "ligar", "ativar"].includes(text)) {
             return true
         }
-        if (["false", "0", "nao", "no", "off", "inativo"].includes(text)) {
+        if (
+            ["false", "0", "nao", "no", "off", "inativo", "disable", "disabled", "desligar", "desativar"].includes(text)
+        ) {
             return false
         }
         return null
     },
 
     /**
-     * [JS] Exibe ajuda sobre um comando específico
-     * @param {string} specific - Específico
-     * @returns {boolean | null} - Se o comando foi encontrado
+     * [JS] Exibe ajuda sobre um comando específico ou lista paginada de todos os comandos
+     * @param {string} specific - Nome ou variação de um comando específico (opcional)
+     * @returns {null}
      * @since v6.1.0
      */
     help(specific = "") {
@@ -460,7 +542,9 @@ export const Commands = {
             let canonical = Commands.resolveCmd(specific)
 
             if (canonical != null) {
-                Ui.warning("/" + canonical + " — " + cmds[canonical].long)
+                let cmd = cmds[canonical],
+                    shortList = [canonical].concat(cmd.variations).join(", ")
+                Ui.display("“/" + canonical + "” — " + cmd.long + "\nVariações: " + shortList)
                 return null
             }
 
@@ -469,7 +553,7 @@ export const Commands = {
         }
 
         let key = Object.keys(cmds),
-            total = Math.ceil(key.length / 7),
+            total = Math.ceil(key.length / 5),
             page = 1,
             answer = 0
 
@@ -480,12 +564,13 @@ export const Commands = {
                 page = total
             }
 
-            let start = (page - 1) * 7,
-                end = Math.min(start + 7, key.length),
+            let start = (page - 1) * 5,
+                end = Math.min(start + 5, key.length),
                 menu = "=== Ajuda ===\nPágina " + String(page) + "/" + String(total) + "\n"
 
             for (let i = start; i < end; i++) {
-                menu += "\n/" + key[i] + " — " + cmds[key[i]].short
+                let aliases = [key[i]].concat(cmds[key[i]].variations).join(", ")
+                menu += "\n/" + key[i] + " — " + cmds[key[i]].short + "\n  ↳ " + aliases
             }
 
             menu += "\n----------------\n8 = Anterior | 9 = Próxima | 0 = Voltar"
@@ -503,12 +588,143 @@ export const Commands = {
     },
 
     /**
+     * [JS] Exibe os resultados de uma pesquisa de comandos de forma paginada
+     * @param {string} term - Termo de pesquisa
+     * @returns {null}
+     * @since v6.2.0
+     */
+    searchHelp(term = "") {
+        if (term == "") {
+            Ui.error("Pesquisa vazia", "Use: /search <termo>\nExemplo: /search lingua")
+            return null
+        }
+
+        term = Writing.noAccents(term.toLowerCase())
+
+        let results = Commands.searchCmd(term),
+            cmds = Commands.listCmd()
+
+        if (results.length == 0) {
+            Ui.warning("Nenhum comando encontrado para “/" + term + "”")
+            return null
+        }
+
+        let total = Math.ceil(results.length / 5),
+            page = 1,
+            answer = 0
+
+        do {
+            if (page < 1) {
+                page = 1
+            } else if (page > total) {
+                page = total
+            }
+
+            let start = (page - 1) * 5,
+                end = Math.min(start + 5, results.length),
+                menu =
+                    "=== Pesquisa: “" +
+                    term +
+                    "” ===\n" +
+                    String(results.length) +
+                    " resultado(s) — Página " +
+                    String(page) +
+                    "/" +
+                    String(total) +
+                    "\n"
+
+            for (let i = start; i < end; i++) {
+                menu += "\n/" + results[i] + " — " + cmds[results[i]].short
+            }
+
+            menu += "\n----------------\n8 = Anterior | 9 = Próxima | 0 = Voltar"
+
+            answer = Ui.range(menu, "", 0, 9, 0, true)
+
+            if (answer == 8) {
+                page--
+            } else if (answer == 9) {
+                page++
+            }
+        } while (answer != 0)
+
+        return null
+    },
+
+    /**
+     * [JS] Exibe todas as variações aceitas de um comando
+     * @param {string} specific - Nome ou variação do comando
+     * @returns {null}
+     * @since v6.2.0
+     */
+    shortcuts(specific = "") {
+        if (specific == "") {
+            Ui.error("Comando não informado", "Use: /shortcuts <comando>\nExemplo: /shortcuts language")
+            return null
+        }
+
+        let cmds = Commands.listCmd(),
+            canonical = Commands.resolveCmd(specific)
+
+        if (canonical == null) {
+            Ui.error("Comando desconhecido", "“/" + specific + "” não é um comando válido")
+            return null
+        }
+
+        let all = cmds[canonical].variations,
+            list = all
+                .map(function (v) {
+                    return "/" + v
+                })
+                .join("\n")
+
+        Ui.display("Variações de “/" + canonical + "”:\n" + list)
+        return null
+    },
+
+    /**
+     * [JS] Exibe informações sobre o projeto
+     * @returns {null}
+     * @since v6.2.0
+     */
+    about() {
+        Ui.display(
+            "" +
+                "====================================================" +
+                "\n" +
+                "Analisador de Funções Matemáticas — " +
+                VERSION +
+                "\n" +
+                "Autor: Adriano Lima" +
+                "\n" +
+                "Repositório: github.com/C4Adriano/analisador-funcoes-matematicas" +
+                "\n" +
+                "Todos os direitos reservados © Adriano Lima 2025 — 2026" +
+                "\n" +
+                "====================================================",
+            ""
+        )
+        return null
+    },
+
+    /**
      * [JS] Exibe a versão do programa
      * @returns {null}
      * @since v6.1.0
      */
     version() {
-        Ui.warning("Analisador de Funções Matemáticas\n" + VERSION + " — Adriano Lima 2025 - 2026")
+        Ui.display(
+            "" +
+                "====================================================" +
+                "\n" +
+                "Analisador de Funções Matemáticas — " +
+                VERSION +
+                "\n" +
+                "Todos os direitos reservados © Adriano Lima 2025 — 2026" +
+                "\n" +
+                "====================================================",
+            ""
+        )
         return null
     },
 
@@ -526,13 +742,13 @@ export const Commands = {
             Config[name] = !Config[name]
         }
 
-        if (name == "capitalizadas" && Config.capitalized) {
+        if (name == "capitalized" && Config.capitalized) {
             Config.uppercase = false
             Config.lowercase = false
-        } else if (name == "maiusculas" && Config.uppercase) {
+        } else if (name == "uppercase" && Config.uppercase) {
             Config.capitalized = false
             Config.lowercase = false
-        } else if (name == "minusculas" && Config.lowercase) {
+        } else if (name == "lowercase" && Config.lowercase) {
             Config.capitalized = false
             Config.uppercase = false
         }
@@ -543,11 +759,11 @@ export const Commands = {
     },
 
     /**
-     * [JS] Retorna uma lista com os nomes dos comandos disponíveis
-     * @returns {string[]} - Lista de nomes canônicos dos comandos disponíveis
+     * [JS] Retorna uma lista com os nomes canônicos dos comandos que alteram o fluxo de estado
+     * @returns {string[]} - Lista de nomes canônicos
      * @since v6.1.0
      */
     names() {
-        return ["config", "sair", "inicio", "rever", "historico", "alterar"]
+        return ["config", "exit", "start", "review", "history", "change"]
     },
 }

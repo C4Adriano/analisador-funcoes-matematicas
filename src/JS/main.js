@@ -7,7 +7,7 @@ import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
-console.log(
+Ui.display(
     "" +
         "====================================================" +
         "\n" +
@@ -16,7 +16,9 @@ console.log(
         "\n" +
         "All rights reserved / Todos os direitos reservados © Adriano Lima 2025 — 2026" +
         "\n" +
-        "===================================================="
+        "====================================================",
+    "",
+    true
 )
 
 // Carregar as configurações
@@ -67,7 +69,7 @@ do {
     }
 
     // Tipo de função
-    if (!State.keepType || State.type == "inicio") {
+    if (!State.keepType || State.type == "start") {
         State.type = Ui.input(
             "=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n3 = Funções trigonométricas\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair",
             "",
@@ -386,7 +388,7 @@ do {
         }
 
         // Histórico
-        else if (State.type == 6 || State.type == "historico") {
+        else if (State.type == 6 || State.type == "history") {
             State.loop = true
 
             // Error de histórico
@@ -758,7 +760,7 @@ do {
         }
 
         // Rever
-        else if (State.type == 8 || State.type == "rever") {
+        else if (State.type == 8 || State.type == "review") {
             Ui.display(
                 "Valores:\n“a” = " +
                     Writing.decimal(State.globalA) +
@@ -771,13 +773,13 @@ do {
         }
 
         // Mudar
-        else if (State.type == 9 || State.type == "alterar") {
+        else if (State.type == 9 || State.type == "change") {
             State.loop = true
             State.askCoeffs = true
         }
 
         // Sair
-        else if (State.type == 0 || State.type == "sair") {
+        else if (State.type == 0 || State.type == "exit") {
             if (Config.outputConfirm) {
                 State.loop = !Ui.confirm("Tu queres sair?", "Obs.: Configurações poderão voltar ao padrão caso saias")
             } else {

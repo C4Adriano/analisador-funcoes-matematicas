@@ -23,8 +23,6 @@ export const Ui = {
             console.log("Mensagem:", message)
             if (explanation != "") {
                 console.log("Explicação:", explanation)
-            } else {
-                console.log("Sem explicação")
             }
         } else {
             alert(Writing.format(message, explanation))
@@ -41,7 +39,9 @@ export const Ui = {
     confirm(message = "", explanation = "", debug = Config.debug) {
         if (debug) {
             console.log("Mensagem:", message)
-            console.log("Explicação:", explanation)
+            if (explanation != "") {
+                console.log("Explicação:", explanation)
+            }
             return true
         } else {
             return confirm(Writing.format(message, explanation + "\n\n“Ok” = “Sim” | “Cancelar” = “Não”"))
@@ -54,9 +54,9 @@ export const Ui = {
      * @param {string} explanation - Explicação
      * @since v6.1.0
      */
-    error(message = "", explanation = "") {
+    error(message = "", explanation = "", debug = Config.debug) {
         if (Config.errors) {
-            Ui.display("=== Erro ===\n" + message, explanation)
+            Ui.display("=== Erro ===\n" + message, explanation, debug)
         }
     },
 
@@ -67,13 +67,13 @@ export const Ui = {
      * @param {boolean} type - Tipo da mensagem
      * @since v6.1.0
      */
-    warning(message = "", explanation = "", type = false) {
+    warning(message = "", explanation = "", type = false, debug = Config.debug) {
         if (!type) {
             // Se tipo for falso, é um aviso simples, como um alert
-            Ui.display("=== Aviso ===\n" + message, explanation)
+            Ui.display("=== Aviso ===\n" + message, explanation, debug)
         } else {
             // Se tipo for verdadeiro, é um aviso de confirmação, como um confirm
-            return Ui.confirm("=== Aviso ===\n" + message, explanation)
+            return Ui.confirm("=== Aviso ===\n" + message, explanation, debug)
         }
     },
 
