@@ -1,7 +1,13 @@
 import { Algebra } from "./algebra.js"
 import { Analyze } from "./analyze.js"
 import { Helpers } from "./helpers.js"
+import { Phrases } from "./phrases.js"
 import { Ui } from "./ui.js"
+
+/**
+ * @status Funcionando
+ * [ 0% ] Phrases
+ */
 
 /**
  * [DEBUG] Objeto de testes do programa

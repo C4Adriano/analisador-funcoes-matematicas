@@ -1,4 +1,10 @@
 import { Ui } from "./ui.js"
+import { Phrases } from "./phrases.js"
+
+/**
+ * @status Funcionando
+ * [ 100% ] Phrases
+ */
 
 /**
  * [ERRO] Mensagens de erro padronizadas do programa
@@ -14,12 +20,12 @@ export const Error = {
      */
     range(min = 0, max = 1) {
         Ui.error(
-            "ERRO-001: Escolha um valor entre " +
+            Phrases.get(Phrases.Error.range.label) +
                 String(min + (min == 0 ? 1 : 0)) +
-                " e " +
+                Phrases.get(Phrases.Error.range.and) +
                 String(max) +
-                (min == 0 ? " ou selecione 0 para voltar / sair" : ""),
-            "Tu escolheste algo fora do intervalo."
+                (min == 0 ? Phrases.get(Phrases.Error.range.orBack) : ""),
+            Phrases.get(Phrases.Error.range.detail)
         )
     },
 
@@ -30,8 +36,10 @@ export const Error = {
      */
     divZero(reason = "") {
         Ui.error(
-            "ERRO-002: Divisão por zero",
-            reason != "" ? "Motivo: " + reason : "Tu tentaste dividir um número por zero, o que não é possível."
+            Phrases.get(Phrases.Error.divZero.label),
+            reason != ""
+                ? Phrases.get(Phrases.Error.divZero.reason) + reason
+                : Phrases.get(Phrases.Error.divZero.detail)
         )
     },
 
@@ -40,7 +48,7 @@ export const Error = {
      * @since v6.1.0
      */
     limitExceeded() {
-        Ui.error("ERRO-003: Ultrapassou o limite", "A quantidade de interações passou do limite.")
+        Ui.error(Phrases.get(Phrases.Error.limitExceeded.label), Phrases.get(Phrases.Error.limitExceeded.detail))
     },
 
     /**
@@ -49,7 +57,12 @@ export const Error = {
      * @since v6.1.0
      */
     constantFunction(type = "") {
-        Ui.error("ERRO-004: A função não é " + type + "; ela é constante", "(a = 0) ∨ (a = 1) ∨ (b = 0)")
+        Ui.error(
+            Phrases.get(Phrases.Error.constantFunction.label.prefix) +
+                type +
+                Phrases.get(Phrases.Error.constantFunction.label.suffix),
+            Phrases.get(Phrases.Error.constantFunction.detail)
+        )
     },
 
     /**
@@ -58,7 +71,10 @@ export const Error = {
      * @since v6.1.0
      */
     invalidFunction(type = "") {
-        Ui.error("ERRO-005: A função não é " + type, "a < 0")
+        Ui.error(
+            Phrases.get(Phrases.Error.invalidFunction.label) + type,
+            Phrases.get(Phrases.Error.invalidFunction.detail)
+        )
     },
 
     /**
@@ -69,10 +85,10 @@ export const Error = {
      */
     invalidLog(type = "log", reason = "") {
         Ui.error(
-            "ERRO-006: " + type + " inválido",
+            Phrases.get(Phrases.Error.invalidLog.label) + type + Phrases.get(Phrases.Error.invalidLog.invalid),
             reason != ""
-                ? "Motivo: " + reason
-                : "Tu tentaste calcular um logaritmo com base menor ou igual a 1, o que não é possível."
+                ? Phrases.get(Phrases.Error.invalidLog.reason) + reason
+                : Phrases.get(Phrases.Error.invalidLog.detail)
         )
     },
 }

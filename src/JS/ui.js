@@ -3,8 +3,14 @@ import { Commands } from "./commands.js"
 import { Config } from "./config.js"
 import { Error } from "./error.js"
 import { Helpers } from "./helpers.js"
+import { Phrases } from "./phrases.js"
 import { State } from "./state.js"
 import { Writing } from "./writing.js"
+
+/**
+ * @status Funcionando
+ * [ 0% ] Phrases
+ */
 
 /**
  * [UI] Objeto base para as funções envolvendo UI / UX e interação com o usuário
