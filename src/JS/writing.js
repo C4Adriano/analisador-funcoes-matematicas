@@ -313,17 +313,16 @@ export const Writing = {
             capitalize = true
 
         for (let i = 0; i < text.length; i++) {
-            let current = text[i],
+            let pervious = text[i - 1],
+                current = text[i],
+                next = text[i + 1],
                 letter = Writing.noAccents(current).toLowerCase()
 
-            if (
-                current == "." ||
-                current == "!" ||
-                current == "?" ||
-                current == "\n" ||
-                current == "|" ||
-                current == "“" ||
-                current == "'"
+            if (current == "\n" || current == "|" || current == "“" || current == "‘") {
+                capitalize = true
+            } else if (
+                (current == "." || current == "!" || current == "?") &&
+                (next == " " || next == "\n" || next == "“" || next == undefined)
             ) {
                 capitalize = true
             } else if (current == "/") {
@@ -341,32 +340,36 @@ export const Writing = {
         text = result
 
         let replacements = [
-            // Caso especial para a letra latina f, que matematicamente tem uma forma diferente em maiúscula e minúscula
+            // === LETRA LATINA F MATEMÁTICA ===
+            // "ƒ" tem formas distintas em maiúscula e minúscula
             ["Ƒ", "ƒ"],
             ["F(x)", "f(x)"],
+            ["F(X)", "f(x)"],
             ["(X)", "(x)"],
 
-            // Casos especiais para variáveis, por padrão, minúsculas
-            ["X ", "x "],
-            ["Y ", "y "],
-
+            // === VARIÁVEIS MATEMÁTICAS (minúsculas) ===
+            // Cobertura ampliada: espaço, pontuação, operadores e fim de string como delimitadores
             ["A =", "a ="],
+            ["A=", "a="],
             ["B =", "b ="],
+            ["B=", "b="],
             ["C =", "c ="],
+            ["C=", "c="],
 
             ["A · x²", "a · x²"],
-            ["A >", "a >"],
-            ["A <", "a <"],
             ["B · x", "b · x"],
             ["B × ", "b × "],
             ["B²", "b²"],
 
+            ["A >", "a >"],
+            ["A <", "a <"],
+
             ["“A”", "“a”"],
-            ["'A'", "'a'"],
+            ["‘A’", "‘a’"],
             ["“B”", "“b”"],
-            ["'B'", "'b'"],
+            ["‘B’", "‘b’"],
             ["“C”", "“c”"],
-            ["'C'", "'c'"],
+            ["‘C’", "‘c’"],
 
             ["X²", "x²"],
             ["X₁", "x₁"],
@@ -375,42 +378,75 @@ export const Writing = {
             ["Y₁", "y₁"],
             ["Y₂", "y₂"],
             ["Y₃", "y₃"],
+            ["X ", "x "],
+            ["X.", "x."],
+            ["X,", "x,"],
+            ["X)", "x)"],
+            ["X\n", "x\n"],
+            ["Y ", "y "],
+            ["Y.", "y."],
+            ["Y,", "y,"],
+            ["Y)", "y)"],
+            ["Y\n", "y\n"],
 
+            // === NOTAÇÃO CIENTÍFICA ===
             ["1E-", "1e-"],
             ["1E+", "1e+"],
             ["1E ", "1e "],
             ["1E\n", "1e\n"],
 
-            // Casos especiais para palavras, por padrão, maiúsculas
+            // === MATEMÁTICA ===
             ["delta", "Delta"],
-            ["unicode", "Unicode"],
+
+            // === NaN / Infinity ===
+            ["nan", "NaN"],
+            ["Nan", "NaN"],
+            ["infinity", "Infinity"],
+            ["INFINITY", "Infinity"],
+            ["+Infinity", "+Infinity"], // já correto, garante que não vire "+infinity"
+            ["-Infinity", "-Infinity"],
+
+            // === CONJUNTOS NUMÉRICOS (maiúsculos) ===
             ["reais", "Reais"],
             ["inteiros", "Inteiros"],
             ["naturais", "Naturais"],
             ["racionais", "Racionais"],
             ["complexos", "Complexos"],
+            ["irracionais", "Irracionais"],
             ["reals", "Reals"],
             ["integers", "Integers"],
             ["naturals", "Naturals"],
             ["rationals", "Rationals"],
             ["complexes", "Complexes"],
-            ["nan", "NaN"],
-            ["infinity", "Infinity"],
-            [" i ", " I "],
+            ["irrationals", "Irrationals"],
 
-            // Casos especiais para línguas, que as siglas são minusculas, e as palavras maiúsculas
+            // === "I" EM INGLÊS (pronome) ===
+            [" i ", " I "],
+            [" i.", " I."],
+            [" i,", " I,"],
+            [" i\n", " I\n"],
+            [" i!", " I!"],
+            [" i?", " I?"],
+
+            // === LÍNGUAS ===
             ["Pt-br", "pt-br"],
-            ["En", "en"],
+            ["Pt", "pt"],
             ["português", "Português"],
+            ["Portugues", "Português"],
             ["portuguese", "Portuguese"],
             ["inglês", "Inglês"],
+            ["Ingles", "Inglês"],
             ["english", "English"],
 
-            // Caso especial para o nome do programa
+            // === NOME DO PROGRAMA ===
             ["analisador de funções matemáticas", "Analisador de Funções Matemáticas"],
             ["Analisador de funções matemáticas", "Analisador de Funções Matemáticas"],
             ["mathematical function analyzer", "Mathematical Function Analyzer"],
             ["Mathematical function analyzer", "Mathematical Function Analyzer"],
+
+            // === NOME DO CRIADOR ===
+            ["adriano", "Adriano"],
+            ["lima", "Lima"],
         ]
 
         text = Writing.replaceGroup(text, replacements)
