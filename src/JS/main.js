@@ -71,7 +71,7 @@ do {
     // Tipo de função
     if (!State.keepType || State.type == "start") {
         State.type = Ui.input(
-            "=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n3 = Funções trigonométricas\n----------------\n6 = Antigas | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair",
+            "=== Início ===\nO que queres?\n1 = Funções polinomiais\n2 = Funções não polinomiais\n3 = Funções trigonométricas\n----------------\n6 = Histórico | 7 = Configurações | 8 = Rever | 9 = Alterar | 0 = Sair",
             "",
             true,
             0,

@@ -341,20 +341,15 @@ export const Writing = {
 
         let replacements = [
             // === LETRA LATINA F MATEMÁTICA ===
-            // "ƒ" tem formas distintas em maiúscula e minúscula
             ["Ƒ", "ƒ"],
             ["F(x)", "f(x)"],
             ["F(X)", "f(x)"],
             ["(X)", "(x)"],
 
-            // === VARIÁVEIS MATEMÁTICAS (minúsculas) ===
-            // Cobertura ampliada: espaço, pontuação, operadores e fim de string como delimitadores
+            // === VARIÁVEIS MATEMÁTICAS ===
             ["A =", "a ="],
-            ["A=", "a="],
             ["B =", "b ="],
-            ["B=", "b="],
             ["C =", "c ="],
-            ["C=", "c="],
 
             ["A · x²", "a · x²"],
             ["B · x", "b · x"],
@@ -363,6 +358,10 @@ export const Writing = {
 
             ["A >", "a >"],
             ["A <", "a <"],
+            ["B >", "b >"],
+            ["B <", "b <"],
+            ["C >", "c >"],
+            ["C <", "c <"],
 
             ["“A”", "“a”"],
             ["‘A’", "‘a’"],
@@ -372,17 +371,21 @@ export const Writing = {
             ["‘C’", "‘c’"],
 
             ["X²", "x²"],
+
+            // X
             ["X₁", "x₁"],
             ["X₂", "x₂"],
             ["X₃", "x₃"],
-            ["Y₁", "y₁"],
-            ["Y₂", "y₂"],
-            ["Y₃", "y₃"],
             ["X ", "x "],
             ["X.", "x."],
             ["X,", "x,"],
             ["X)", "x)"],
             ["X\n", "x\n"],
+
+            // Y
+            ["Y₁", "y₁"],
+            ["Y₂", "y₂"],
+            ["Y₃", "y₃"],
             ["Y ", "y "],
             ["Y.", "y."],
             ["Y,", "y,"],
@@ -402,17 +405,17 @@ export const Writing = {
             ["nan", "NaN"],
             ["Nan", "NaN"],
             ["infinity", "Infinity"],
-            ["INFINITY", "Infinity"],
-            ["+Infinity", "+Infinity"], // já correto, garante que não vire "+infinity"
-            ["-Infinity", "-Infinity"],
 
-            // === CONJUNTOS NUMÉRICOS (maiúsculos) ===
+            // === CONJUNTOS NUMÉRICOS ===
+            // PT
             ["reais", "Reais"],
             ["inteiros", "Inteiros"],
             ["naturais", "Naturais"],
             ["racionais", "Racionais"],
             ["complexos", "Complexos"],
             ["irracionais", "Irracionais"],
+
+            // EN
             ["reals", "Reals"],
             ["integers", "Integers"],
             ["naturals", "Naturals"],
@@ -431,11 +434,9 @@ export const Writing = {
             // === LÍNGUAS ===
             ["Pt-br", "pt-br"],
             ["Pt", "pt"],
-            ["português", "Português"],
-            ["Portugues", "Português"],
             ["portuguese", "Portuguese"],
-            ["inglês", "Inglês"],
-            ["Ingles", "Inglês"],
+            ["portugues", "Portugues"],
+            ["ingles", "Ingles"],
             ["english", "English"],
 
             // === NOME DO PROGRAMA ===
@@ -444,7 +445,11 @@ export const Writing = {
             ["mathematical function analyzer", "Mathematical Function Analyzer"],
             ["Mathematical function analyzer", "Mathematical Function Analyzer"],
 
+            // Copyright
+            ["(C)", "(c)"],
+
             // === NOME DO CRIADOR ===
+            ["c4", "C4"],
             ["adriano", "Adriano"],
             ["lima", "Lima"],
         ]
