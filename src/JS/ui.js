@@ -3,6 +3,7 @@ import { Commands } from "./commands.js"
 import { Config } from "./config.js"
 import { Error } from "./error.js"
 import { Helpers } from "./helpers.js"
+import { tr } from "./i18n.js"
 import { State } from "./state.js"
 import { Writing } from "./writing.js"
 
@@ -38,13 +39,18 @@ export const Ui = {
      */
     confirm(message = "", explanation = "", debug = Config.debug) {
         if (debug) {
-            console.log("Mensagem:", message)
+            console.log(tr("Mensagem: ", "Message: "), message)
             if (explanation != "") {
-                console.log("Explicação:", explanation)
+                console.log(tr("Explicação: ", "Explanation: "), explanation)
             }
             return true
         } else {
-            return confirm(Writing.format(message, explanation + "\n\n“Ok” = “Sim” | “Cancelar” = “Não”"))
+            return confirm(
+                Writing.format(
+                    message,
+                    explanation + "\n\n" + tr("“Ok” = “Sim” | “Cancelar” = “Não”", "“Ok” = “Yes” | “Cancel” = “No”")
+                )
+            )
         }
     },
 
@@ -56,7 +62,7 @@ export const Ui = {
      */
     error(message = "", explanation = "", debug = Config.debug) {
         if (Config.errors) {
-            Ui.display("=== Erro ===\n" + message, explanation, debug)
+            Ui.display("=== " + tr("Erro", "Error") + " ===\n" + message, explanation, debug)
         }
     },
 
@@ -70,10 +76,10 @@ export const Ui = {
     warning(message = "", explanation = "", type = false, debug = Config.debug) {
         if (!type) {
             // Se tipo for falso, é um aviso simples, como um alert
-            Ui.display("=== Aviso ===\n" + message, explanation, debug)
+            Ui.display("=== " + tr("Aviso", "Warning") + " ===\n" + message, explanation, debug)
         } else {
             // Se tipo for verdadeiro, é um aviso de confirmação, como um confirm
-            return Ui.confirm("=== Aviso ===\n" + message, explanation, debug)
+            return Ui.confirm("=== " + tr("Aviso", "Warning") + " ===\n" + message, explanation, debug)
         }
     },
 
@@ -108,7 +114,14 @@ export const Ui = {
             }
 
             // Pergunta
-            menu = "=== Menu ===\nPágina " + String(page) + "/" + String(total) + "\nO que queres?"
+            menu =
+                "=== Menu ===\n" +
+                tr("Página ", "Page ") +
+                String(page) +
+                "/" +
+                String(total) +
+                "\n" +
+                tr("O que queres?", "What do you want?")
 
             while (option <= 5) {
                 menu += "\n" + String(option) + " = " + String(list[option - 1 + 5 * (page - 1)])
@@ -116,7 +129,18 @@ export const Ui = {
             }
 
             option = 1
-            menu += "\n----------------\n6 = Rever | 7 = Alterar | 8 = Anterior | 9 = Próxima | 0 = Voltar"
+            menu +=
+                "\n----------------\n" +
+                "6 = " +
+                tr("Rever", "Review") +
+                " | 7 = " +
+                tr("Alterar", "Change") +
+                " | 8 = " +
+                tr("Anterior", "Previous") +
+                " | 9 = " +
+                tr("Próxima", "Next") +
+                " | 0 = " +
+                tr("Voltar", "Back")
 
             // Responde
             answer = Ui.range(menu, "", 0, 9, 0, true)
@@ -209,10 +233,13 @@ export const Ui = {
             // Confirma
             if (valid && Config.inputConfirm) {
                 valid = Ui.warning(
-                    "Tu digitaste: “" +
+                    tr("Tu digitaste: “", "You typed: “") +
                         (number ? (angle ? Writing.formatAngle(value) : Writing.decimal(value)) : text) +
-                        "”\nTens certeza?",
-                    "Obs.₁: Se essa for uma variável e o que foi digitado não for um número, ela será transformada no nome da variável, não no que foi digitado\nObs.₂: Essas mensagens podem ser desativadas nas configurações, em “Confirmações de entrada”",
+                        tr("”\nTens certeza?", "”\nAre you sure?"),
+                    tr(
+                        "Obs.₁: Se essa for uma variável e o que foi digitado não for um número, ela será transformada no nome da variável, não no que foi digitado\nObs.₂: Essas mensagens podem ser desativadas nas configurações, em “Confirmações de entrada”",
+                        "Note₁: If this is a variable and what was typed is not a number, it will be transformed into the variable name, not what was typed.\nNote₂: These messages can be disabled in the settings, under “Input Confirmations”."
+                    ),
                     true
                 )
             }
@@ -259,7 +286,7 @@ export const Ui = {
             return ""
         }
 
-        let funcStr = "A função: ƒ(x) = "
+        let funcStr = tr("A função: ƒ(x) = ", "The function: ƒ(x) = ")
 
         if (!funcExp && !funcLog && funcTrig == "") {
             // Polinomial
@@ -273,12 +300,12 @@ export const Ui = {
                     funcStr += String(coefC)
                 }
 
-                funcStr += " é constante"
+                funcStr += tr(" é constante", " is constant")
 
                 // Especiais
                 if (coefC == 0) {
                     // Se for zero, é a função nula
-                    funcStr += " / nula"
+                    funcStr += tr(" / nula", " / null")
                 }
             } else if (coefA == 0 && coefB != 0) {
                 // Afim
@@ -314,7 +341,7 @@ export const Ui = {
                     }
                 }
 
-                funcStr += " é afim"
+                funcStr += tr(" é afim", " is affine")
 
                 // Especiais
                 if (coefB != 1 && coefC == 0) {
@@ -322,10 +349,10 @@ export const Ui = {
                     funcStr += " / linear"
                 } else if (coefB == 1 && coefC == 0) {
                     // Se o coeficiente b for 1 e o coeficiente c for zero, é a função identidade
-                    funcStr += " / identidade"
+                    funcStr += tr(" / identidade", " / identity")
                 } else if (coefB == -1) {
                     // Se o coeficiente b for -1, é a função oposta da identidade
-                    funcStr += " / oposta"
+                    funcStr += tr(" / oposta", " / opposite")
                 }
             } else if (coefA != 0) {
                 // Quadrática
@@ -383,18 +410,18 @@ export const Ui = {
                     }
                 }
 
-                funcStr += " é quadrática"
+                funcStr += tr(" é quadrática", " is quadratic")
 
                 // Especiais
                 if (coefB == 0 && coefC == 0) {
                     // Se os coeficientes b e c forem zero, é uma função quadrática pura
-                    funcStr += " / pura"
+                    funcStr += tr(" / pura", " / pure")
                 } else if (coefB == 0) {
                     // Se o coeficiente b for zero, é uma função incompleta sem termo linear
-                    funcStr += " / incompleta (sem termo linear)"
+                    funcStr += tr(" / incompleta (sem termo linear)", " / incomplete (without linear term)")
                 } else if (coefC == 0) {
                     // Se o coeficiente c for zero, é uma função incompleta sem termo constante
-                    funcStr += " / incompleta (sem termo constante)"
+                    funcStr += tr(" / incompleta (sem termo constante)", " / incomplete (without constant term)")
                 }
             }
         } else if (funcExp && funcTrig == "") {
@@ -432,12 +459,12 @@ export const Ui = {
                 funcStr += " + c"
             }
 
-            funcStr += " é exponencial"
+            funcStr += tr(" é exponencial", " is exponential")
 
             // Especiais
             if (coefB == 1 && coefC == 0) {
                 // Se o coeficiente b for 1 e o coeficiente c for zero, é uma função exponencial pura
-                funcStr += " / pura"
+                funcStr += tr(" / pura", " / pure")
             }
             if (coefA == Algebra.round(Math.E)) {
                 // Se o coeficiente a for igual a e, é uma função exponencial natural
@@ -477,12 +504,12 @@ export const Ui = {
                 funcStr += " + c"
             }
 
-            funcStr += " é logarítmica"
+            funcStr += tr(" é logarítmica", " is logarithmic")
 
             // Especiais
             if (coefB == 1 && coefC == 0) {
                 // Se o coeficiente b for 1 e o coeficiente c for zero, é uma função logarítmica pura
-                funcStr += " / pura"
+                funcStr += tr(" / pura", " / pure")
             }
             if (coefA == Algebra.round(Math.E)) {
                 // Se o coeficiente a for igual a e, é uma função logarítmica natural
@@ -525,7 +552,7 @@ export const Ui = {
             }
         }
 
-        Ui.display("=== Função Atual ===\n" + Writing.decimal(funcStr))
+        Ui.display("=== " + tr("Função Atual", "Current Function") + " ===\n" + Writing.decimal(funcStr))
     },
 
     /**

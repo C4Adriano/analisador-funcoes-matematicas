@@ -29,25 +29,6 @@ export const Config = {
 }
 
 /**
- * [CONFIG] Altera a língua do programa, ajustando as configurações relacionadas (como acentos e separador decimal)
- * @param {string} language Língua
- */
-export function changeLanguage(language) {
-    if (confirm("Tu queres alterar a língua para: " + language, "")) {
-        if (language == "pt-br") {
-            Config.decimalSeparator = true
-            Config.accents = true
-        } else if (language == "en") {
-            Config.decimalSeparator = false
-            Config.accents = false
-        }
-
-        Config.language = language
-        saveConfig()
-    }
-}
-
-/**
  * [CONFIG] Carrega as configurações salvas no localStorage (se existirem)
  * @since v6.1.0
  */
@@ -84,7 +65,6 @@ export function loadConfig() {
 export function saveConfig() {
     localStorage.setItem("config", JSON.stringify(Config))
     localStorage.setItem("configVersion", VERSION)
-    console.log("Configurações salvas:", Config)
 }
 
 /**
@@ -110,4 +90,4 @@ export const DEFAULT_CONFIG = JSON.parse(JSON.stringify(Config))
  * [CONFIG] Versão do programa (MAJOR.MINOR.PATCH)
  * @since v6.1.0
  */
-export const VERSION = "v6.1.1"
+export const VERSION = "v6.2.0"

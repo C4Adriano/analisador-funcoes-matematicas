@@ -1,5 +1,6 @@
 import { Algebra } from "./algebra.js"
 import { Config, DEFAULT_CONFIG } from "./config.js"
+import { tr } from "./i18n.js"
 
 /**
  * [TEXTO] Objeto base para as funções envolvendo escrita e conversão de texto
@@ -303,163 +304,6 @@ export const Writing = {
     },
 
     /**
-     * [TEXTO] Conversão para capitalização
-     * @param {string} text - Texto
-     * @returns {string} - Texto convertido
-     * @since v6.1.0
-     */
-    capitalized(text = "") {
-        let result = "",
-            capitalize = true
-
-        for (let i = 0; i < text.length; i++) {
-            let pervious = text[i - 1],
-                current = text[i],
-                next = text[i + 1],
-                letter = Writing.noAccents(current).toLowerCase()
-
-            if (current == "\n" || current == "|" || current == "“" || current == "‘") {
-                capitalize = true
-            } else if (
-                (current == "." || current == "!" || current == "?") &&
-                (next == " " || next == "\n" || next == "“" || next == undefined)
-            ) {
-                capitalize = true
-            } else if (current == "/") {
-                capitalize = false
-            }
-
-            if (capitalize && "a" <= letter && letter <= "z") {
-                result += current.toUpperCase()
-                capitalize = false
-            } else {
-                result += current
-            }
-        }
-
-        text = result
-
-        let replacements = [
-            // === LETRA LATINA F MATEMÁTICA ===
-            ["Ƒ", "ƒ"],
-            ["F(x)", "f(x)"],
-            ["F(X)", "f(x)"],
-            ["(X)", "(x)"],
-
-            // === VARIÁVEIS MATEMÁTICAS ===
-            ["A =", "a ="],
-            ["B =", "b ="],
-            ["C =", "c ="],
-
-            ["A · x²", "a · x²"],
-            ["B · x", "b · x"],
-            ["B × ", "b × "],
-            ["B²", "b²"],
-
-            ["A >", "a >"],
-            ["A <", "a <"],
-            ["B >", "b >"],
-            ["B <", "b <"],
-            ["C >", "c >"],
-            ["C <", "c <"],
-
-            ["“A”", "“a”"],
-            ["‘A’", "‘a’"],
-            ["“B”", "“b”"],
-            ["‘B’", "‘b’"],
-            ["“C”", "“c”"],
-            ["‘C’", "‘c’"],
-
-            ["X²", "x²"],
-
-            // X
-            ["X₁", "x₁"],
-            ["X₂", "x₂"],
-            ["X₃", "x₃"],
-            ["X ", "x "],
-            ["X.", "x."],
-            ["X,", "x,"],
-            ["X)", "x)"],
-            ["X\n", "x\n"],
-
-            // Y
-            ["Y₁", "y₁"],
-            ["Y₂", "y₂"],
-            ["Y₃", "y₃"],
-            ["Y ", "y "],
-            ["Y.", "y."],
-            ["Y,", "y,"],
-            ["Y)", "y)"],
-            ["Y\n", "y\n"],
-
-            // === NOTAÇÃO CIENTÍFICA ===
-            ["1E-", "1e-"],
-            ["1E+", "1e+"],
-            ["1E ", "1e "],
-            ["1E\n", "1e\n"],
-
-            // === MATEMÁTICA ===
-            ["delta", "Delta"],
-
-            // === NaN / Infinity ===
-            ["nan", "NaN"],
-            ["Nan", "NaN"],
-            ["infinity", "Infinity"],
-
-            // === CONJUNTOS NUMÉRICOS ===
-            // PT
-            ["reais", "Reais"],
-            ["inteiros", "Inteiros"],
-            ["naturais", "Naturais"],
-            ["racionais", "Racionais"],
-            ["complexos", "Complexos"],
-            ["irracionais", "Irracionais"],
-
-            // EN
-            ["reals", "Reals"],
-            ["integers", "Integers"],
-            ["naturals", "Naturals"],
-            ["rationals", "Rationals"],
-            ["complexes", "Complexes"],
-            ["irrationals", "Irrationals"],
-
-            // === "I" EM INGLÊS (pronome) ===
-            [" i ", " I "],
-            [" i.", " I."],
-            [" i,", " I,"],
-            [" i\n", " I\n"],
-            [" i!", " I!"],
-            [" i?", " I?"],
-
-            // === LÍNGUAS ===
-            ["Pt-br", "pt-br"],
-            ["Pt", "pt"],
-            ["portuguese", "Portuguese"],
-            ["portugues", "Portugues"],
-            ["ingles", "Ingles"],
-            ["english", "English"],
-
-            // === NOME DO PROGRAMA ===
-            ["analisador de funções matemáticas", "Analisador de Funções Matemáticas"],
-            ["Analisador de funções matemáticas", "Analisador de Funções Matemáticas"],
-            ["mathematical function analyzer", "Mathematical Function Analyzer"],
-            ["Mathematical function analyzer", "Mathematical Function Analyzer"],
-
-            // Copyright
-            ["(C)", "(c)"],
-
-            // === NOME DO CRIADOR ===
-            ["c4", "C4"],
-            ["adriano", "Adriano"],
-            ["lima", "Lima"],
-        ]
-
-        text = Writing.replaceGroup(text, replacements)
-
-        return text
-    },
-
-    /**
      * [TEXTO] Conversão para minúsculas
      * @param {string} text - Texto
      * @returns {string} - Texto convertido
@@ -528,440 +372,6 @@ export const Writing = {
     },
 
     /**
-     * [TEXTO] Tradução de texto para a linguagem configurada
-     * @param {string} text - Texto
-     * @returns {string} - Texto traduzido
-     * @since v6.1.0
-     */
-    translate(text = "") {
-        text = Writing.lowercase(text)
-
-        let completeSentences = [["", ""]],
-            partialSentences = [["", ""]],
-            words = [["", ""]],
-            connectors = [["", ""]]
-
-        if (Config.language == "pt-br") {
-            // === TRADUÇÃO DE INGLÊS PARA PORTUGUÊS ===
-            words = [
-                ["undefined", "indefinido"],
-                ["nan", "não é um número"],
-                ["infinity", "infinito"],
-                ["sin(", "sen("],
-            ]
-        } else if (Config.language == "en") {
-            // === TRADUÇÃO DE PORTUGUÊS PARA INGLÊS ===
-            completeSentences = [
-                ["bem-vindo ao analisador de funções matemáticas", "welcome to the mathematical function analyzer"],
-                [
-                    "este programa analisa funções do tipo constante, afim, quadrática, exponencial e logarítmica — identificando suas propriedades e características. para começar, informe os dados da função quando solicitado",
-                    "this program analyzes functions of the following types: constant, affine, quadratic, exponential, and logarithmic — identifying their properties and characteristics. to get started, enter the function's data when prompted",
-                ],
-                ["analisador de funções matemáticas", "mathematical function analyzer"],
-                ["tu queres alterar a língua para", "do you want to change the language to"],
-                ["a função pode assumir qualquer", "the function can take any"],
-                ["a função só tem esse", "the function only has this"],
-                ["a função será sempre", "the function will always be"],
-                ["a função não é", "the function is not"],
-                ["não existe raiz real, portanto não há", "there is no real root, therefore there is no"],
-                [
-                    "ainda não posso resolver equações com funções não polinomiais",
-                    "i can not solve equations with non-polynomial functions yet",
-                ],
-                [
-                    "porque as funções são iguais, em todos os pontos, elas se encontram",
-                    "because the functions are the same at all points, they intersect",
-                ],
-                [
-                    "porque as funções são diferentes, não há ponto em que elas se encontrarão",
-                    "because the functions are different, there is no point at which they will meet",
-                ],
-                [
-                    "tu tentaste dividir um número por zero, o que não é possível",
-                    "you tried to divide a number by zero, which is not possible",
-                ],
-                [
-                    "tu tentaste calcular um logaritmo com base menor ou igual a 1, o que não é possível",
-                    "you tried to calculate a logarithm with a base less than or equal to 1, which is not possible",
-                ],
-                [
-                    "se essa for uma variável e o que foi digitado não for um número, ela será transformada no nome da variável, não no que foi digitado",
-                    "if this is a variable and what was typed is not a number, it will be transformed into the variable name, not what was typed",
-                ],
-                [
-                    "essas mensagens podem ser desativadas nas configurações, em",
-                    "these messages can be disabled in the settings, under",
-                ],
-                [
-                    "toda e qualquer coisa digitada passará a ter que ser confirmada",
-                    "everything typed will have to be confirmed",
-                ],
-                [
-                    "isso irá ativar uma mensagem antes de sair / fechar o programa",
-                    "this will enable a message before exiting / closing the program",
-                ],
-                [
-                    "essa configuração é útil para evitar loops infinitos no código, caso algo dê errado",
-                    "this setting is useful to avoid infinite loops in the code if something goes wrong",
-                ],
-                ["isso irá alterar a língua do sistema inteiro", "this will change the entire system language"],
-                ["a quantidade de interações passou do limite", "the number of iterations exceeded the limit"],
-                ["tu escolheste algo fora do intervalo", "you chose a value outside the interval"],
-                ["não há raízes reais", "there are no real roots"],
-                ["não há interseção com o eixo x", "there is no intersection with the x-axis"],
-                ["interseção com o eixo x", "intersection with the x-axis"],
-                ["interseções com o eixo x", "intersections with the x-axis"],
-                [
-                    "ponto mais baixo (ou mais alto, conforme a concavidade) da função",
-                    "lowest (or highest, depending on concavity) point of the function",
-                ],
-                ["entre o vértice e o ∞", "between the vertex and ∞"],
-                ["entre -∞ e o vértice", "between -∞ and the vertex"],
-                ["entre c e ∞, exceto o próprio c", "between c and ∞, excluding c itself"],
-                ["entre -∞ e c, exceto o próprio c", "between -∞ and c, excluding c itself"],
-                ["não há histórico o suficiente para mudanças", "not enough history for changes"],
-                [
-                    "escrevestes apenas uma função até agora. use “alterar” para escrever outra função",
-                    "you have only written one function so far. use “change” to write another function",
-                ],
-                ["todas as configurações já estão na forma padrão", "all settings are already in their default form"],
-                ["não há necessidade de restaurar", "there is no need to restore"],
-                ["voltar às configurações padrão", "reset to default settings"],
-                ["configurações não são salvas ao fechar", "settings are not saved on close"],
-                ["isso irá afetar todas as configurações acima", "this will affect all the settings above"],
-                ["essa alteração é permanente", "this change is permanent"],
-
-                // Unicode
-                [
-                    "caracteres unicode são os símbolos especiais, tais como: “ℝ”, “∀”, etc. desativar fará com que eles sejam transformados em uma palavra correspondente, tais como:",
-                    "unicode characters are special symbols, such as: “ℝ”, “∀”, etc. disabling them will cause them to be replaced by a corresponding word, such as:",
-                ],
-                ["nem todos os caracteres unicode serão desativados", "not all unicode characters will be disabled"],
-                ["essa configuração pode mudar algumas explicações", "this setting may change some explanations"],
-
-                // Explicações
-                [
-                    "ativar fará com que certas mensagens sejam diferentes e tenham explicações, por exemplo: o cálculo do delta,",
-                    "enabling will cause certain messages to be different and include explanations, for example: the calculation of delta,",
-                ],
-                ["sem ser só o resultado dele", "instead of just the result"],
-                ["nem todas as mensagens têm versão explicada", "not all messages have an explained version"],
-                [
-                    "desativar o unicode fará com que seja mostrado: delta = b^2 - 4 * a * c",
-                    "disabling unicode will show: delta = b^2 - 4 * a * c",
-                ],
-
-                // Acentos
-                [
-                    "essa configuração irá tirar todos os acentos gráficos das palavras, podendo haver má interpretação",
-                    "this setting will remove all diacritical marks from words, which may cause misinterpretation",
-                ],
-
-                // Capitalizadas
-                [
-                    "essa configuração irá transformar as palavras em “normais”, no caso, a primeira letra da frase em maiúscula e as outras todas em minúsculas",
-                    "this setting will transform words into “normal” form, meaning the first letter of each sentence in uppercase and all others in lowercase",
-                ],
-                [
-                    "essa configuração irá desativar “maiúsculas” e “minúsculas”",
-                    "this setting will disable “uppercase” and “lowercase”",
-                ],
-
-                // Maiúsculas
-                [
-                    "essa configuração irá transformar todas as letras em maiúsculas",
-                    "this setting will transform all letters into uppercase",
-                ],
-                [
-                    "essa configuração irá desativar “capitalizadas” e “minúsculas”",
-                    "this setting will disable “capitalized” and “lowercase”",
-                ],
-
-                // Minúsculas
-                [
-                    "essa configuração irá transformar todas as letras em minúsculas",
-                    "this setting will transform all letters into lowercase",
-                ],
-                [
-                    "essa configuração irá desativar “capitalizadas” e “maiúsculas”",
-                    "this setting will disable “capitalized” and “uppercase”",
-                ],
-
-                // Ponto decimal
-                [
-                    "essa configuração irá transformar os números com “.” em números com “,”",
-                    "this setting will transform numbers with “.” into numbers with “,”",
-                ],
-                [
-                    "isso é apenas estético e não irá afetar as contas",
-                    "this is only aesthetic and will not affect calculations",
-                ],
-                [
-                    "tu também poderás escrever os números com “,” em vez de “.”",
-                    "you will also be able to write numbers with “,” instead of “.”",
-                ],
-
-                // Multiplicação simples
-                [
-                    "isso irá alterar esteticamente as contas polinomiais de: “a · x² + b · x + c” para: “ax² + bx + c”",
-                    "this will aesthetically change polynomial expressions from: “a · x² + b · x + c” to: “ax² + bx + c”",
-                ],
-                ["desativar o unicode irá transformar o “·” em “*”", "disabling unicode will transform “·” into “*”"],
-                [
-                    "isso não irá afetar o “×”, porém o unicode irá transformá-lo em “*”",
-                    "this will not affect “×”, but unicode will transform it into “*”",
-                ],
-
-                // Confirmações de entrada
-                [
-                    "toda e qualquer coisa digitada passará a ter que ser confirmada",
-                    "everything typed will have to be confirmed",
-                ],
-
-                // Confirmações de saída
-                [
-                    "isso irá ativar uma mensagem antes de sair / fechar o programa",
-                    "this will enable a message before exiting / closing the program",
-                ],
-
-                // Erros
-                [
-                    "desativar pode fazer com que tu não percebas algum erro que estás cometendo",
-                    "disabling may cause you not to notice an error you are making",
-                ],
-
-                // Mostrar função
-                [
-                    "“mostrar função” significa que será mostrada a função (por exemplo: ax² + bx + c) no começo dos menus, antes das opções",
-                    "“show function” means the function (for example: ax² + bx + c) will be shown at the beginning of menus, before the options",
-                ],
-                [
-                    "a função ainda continuará sendo mostrada quando for escolhida a opção “6” (rever / mostrar função)",
-                    "the function will still be shown when option “6” (review / show function) is selected",
-                ],
-
-                // Casas decimais
-                [
-                    "um número muito pequeno de casas decimais pode fazer as contas ficarem erradas",
-                    "too few decimal places may cause calculations to be incorrect",
-                ],
-                [
-                    "os números já digitados serão arredondados para o novo número de casas decimais",
-                    "numbers already entered will be rounded to the new number of decimal places",
-                ],
-
-                // Precisão do log
-                [
-                    "isso poderá afetar contas muito pequenas envolvendo logs",
-                    "this may affect very small calculations involving logarithms",
-                ],
-                ["tu terás que escrever literalmente “1e-12”", "you will have to literally type “1e-12”"],
-
-                // Precisão da divisão
-                [
-                    "isso poderá afetar contas muito pequenas envolvendo divisões",
-                    "this may affect very small calculations involving divisions",
-                ],
-
-                // Limite de iterações
-                [
-                    "isso irá afetar todos os loops, tais como logs, menus, etc.",
-                    "this will affect all loops, such as logarithms, menus, etc.",
-                ],
-
-                // Linguagem
-                ["isso irá alterar a língua do sistema inteiro.", "this will change the entire system language."],
-            ]
-
-            partialSentences = [
-                ["em construção", "under construction"],
-                ["o que queres", "what do you want"],
-                ["tu digitaste", "you typed"],
-                ["tens certeza", "are you sure"],
-                ["tu queres sair", "do you want to exit"],
-                ["queres mudar os valores dos coeficientes", "do you want to change the coefficient values"],
-                ["se quiser alterar os valores dos pontos, escolha", "if you want to change the point values, choose"],
-                ["não posso ainda descobrir o valor de", "i cannot yet determine the value of"],
-                ["quando tenho somente o", "when i only have"],
-                ["tendo somente pontos", "given only points"],
-                ["não possuem pontos de interseção reais", "have no real intersection points"],
-                ["se encontram em", "meet at"],
-                ["escolha um valor entre", "choose a value between"],
-                ["ou selecione 0 para voltar / sair", "or select 0 to go back / exit"],
-                ["configurações poderão voltar ao padrão caso saias", "settings may revert to default if you exit"],
-                ["restaurar padrão", "restore defaults"],
-                ["configurações afetadas", "affected settings"],
-                ["para escrever outra função", "to write another function"],
-                ["caso queira que", "if you want"],
-                ["seja uma incógnita", "to be an unknown variable"],
-                ["ponto da raiz", "root point"],
-                ["o ponto é sempre", "the point is always"],
-                ["para comparar", "to compare"],
-                ["por enquanto", "for now"],
-                ["neste caso", "in this case"],
-                ["para cima", "upward"],
-                ["para baixo", "downward"],
-                ["| atual", "| current"],
-                ["| padrão", "| default"],
-                ["a raiz é", "the root is"],
-                ["as raízes reais", "the real roots"],
-                ["as funções", "the functions"],
-                ["a função", "the function"],
-                ["funções não polinomiais", "non-polynomial functions"],
-                ["funções polinomiais", "polynomial functions"],
-                ["função exponencial", "exponential function"],
-                ["função logarítmica", "logarithmic function"],
-                ["função atual", "current function"],
-                ["sem termo linear", "without a linear term"],
-                ["sem termo constante", "without a constant term"],
-                ["ela é constante", "it is constant"],
-                ["valores inválidos", "invalid values"],
-                ["estudo do sinal", "signal analytics"],
-                ["não há", "there is no"],
-                ["não é", "is not"],
-                ["divisão por zero", "division by zero"],
-                ["ultrapassou o limite", "exceeded the limit"],
-                ["assíntota horizontal", "horizontal asymptote"],
-                ["confirmações de entrada", "input confirmations"],
-                ["confirmações de saída", "output confirmations"],
-                ["mensagens de erro", "error messages"],
-                ["mostrar função", "show function"],
-                ["casas decimais", "decimal places"],
-                ["precisão do log", "log precision"],
-                ["precisão da divisão", "division precision"],
-                ["separador decimal", "decimal separator"],
-                ["multiplicação simples", "multiplication simplification"],
-                ["caracteres unicode", "unicode characters"],
-                ["menu principal", "main menu"],
-                [" x real", " real x"],
-                [" y real", " real y"],
-                ["valor de x", "x-value"],
-                ["valor de y", "y-value"],
-                ["eixo x", "x-axis"],
-                ["eixo y", "y-axis"],
-                ["para x", "for x"],
-                ["para y", "for y"],
-                ["como y", "since y"],
-                ["pois c", "since c"],
-                ["pois b", "since b"],
-                ["pois y", "since y"],
-            ]
-
-            words = [
-                ["histórico", "history"],
-                ["erro", "error"],
-                ["equações", "equations"],
-                ["exceto", "except"],
-                ["português brasileiro", "brazilian portuguese"],
-                ["raiz real", "real root"],
-                ["raízes reais", "real roots"],
-                ["domínio", "domain"],
-                ["imagem", "range"],
-                ["positiva", "positive"],
-                ["negativa", "negative"],
-                ["constante", "constant"],
-                ["concavidade", "concavity"],
-                ["inclinação", "slope"],
-                ["crescente", "increasing"],
-                ["decrescente", "decreasing"],
-                ["assíntota", "asymptote"],
-                ["vértice", "vertex"],
-                ["intervalo", "interval"],
-                ["coeficiente", "coefficient"],
-                ["interseção", "intersection"],
-                ["interseções", "intersections"],
-                ["raízes", "roots"],
-                ["raiz", "root"],
-                ["valores", "values"],
-                ["valor", "value"],
-                ["ponto", "point"],
-                ["nula", "null"],
-                ["afim", "affine"],
-                ["quadrática", "quadratic"],
-                ["exponencial", "exponential"],
-                ["logarítmica", "logarithmic"],
-                ["polinomiais", "polynomial"],
-                ["polinomial", "polynomial"],
-                ["incompleta", "incomplete"],
-                ["identidade", "identity"],
-                ["oposta", "opposite"],
-                ["linear", "linear"],
-                ["natural", "natural"],
-                ["decimal", "decimal"],
-                ["pura", "pure"],
-                ["curva", "curve"],
-                ["aponta", "points"],
-                ["salva", "saved"],
-                ["coincidem", "coincide"],
-                ["infinitos", "infinite"],
-                ["infinito", "infinity"],
-                ["inválido", "invalid"],
-                ["motivo", "reason"],
-                ["número", "number"],
-                ["página", "page"],
-                ["anterior", "previous"],
-                ["próxima", "next"],
-                ["antigas", "history"],
-                ["início", "start"],
-                ["alterar", "change"],
-                ["voltar", "back"],
-                ["cancelar", "cancel"],
-                ["desativar", "disable"],
-                ["ativar", "enable"],
-                ["sair", "exit"],
-                ["rever", "review"],
-                ["entre", "between"],
-                ["sempre", "always"],
-                ["aviso", "warning"],
-                ["função", "function"],
-                ["funções", "functions"],
-                ["configurações", "settings"],
-                ["configuração", "setting"],
-                ["linguagem", "language"],
-                ["inglês", "english"],
-                ["acentos", "accents"],
-                ["capitalizadas", "capitalized"],
-                ["maiúsculas", "uppercase"],
-                ["minúsculas", "lowercase"],
-                ["explicações", "explanations"],
-                ["padrão", "default"],
-                ["atual", "current"],
-                ["digitaste", "typed"],
-                ["digite", "type"],
-                ["interações", "iterations"],
-                ["sen(", "sin("],
-            ]
-
-            connectors = [
-                ["“cancelar”", "“cancel”"],
-                ["“sim”", "“yes”"],
-                ["“não”", "“no”"],
-                ["obs.", "note"],
-                ["pois", "because"],
-                ["conforme", "according to"],
-                [" com ", " with "],
-                [" é ", " is "],
-                // [" a ", " the "], - Problemas com a letra "a" em inglês, que pode ser um artigo ou uma variável
-                [" as ", " the "],
-                [" o ", " the "],
-                [" os ", " the "],
-                [" em ", " in "],
-                [" se ", " if "],
-                [" e ", " and "],
-                [" ela ", " she "],
-                [" ele ", " he "],
-                [" tu ", " you "],
-                [" você ", " you "],
-                [" eu ", " i "],
-            ]
-        }
-
-        text = Writing.replaceGroup(text, [].concat(completeSentences, partialSentences, words, connectors))
-
-        return text
-    },
-
-    /**
      * [TEXTO] Tradução de texto sem Unicode para a linguagem configurada
      * @param {string} text - Texto
      * @returns {string} - Texto traduzido
@@ -1015,44 +425,26 @@ export const Writing = {
      * @since v6.1.0
      */
     format(message = "", explanation = "") {
-        // === ADIÇÃO DE EXPLICAÇÕES ===
-        // Se explicações estão ativadas e há uma explicação, adiciona à mensagem
         if (Config.explanations && explanation != "") {
             message += "\n\n" + explanation
         }
 
-        // === SIMPLIFICAÇÃO DE MULTIPLICAÇÃO ===
-        // Substitui símbolos de multiplicação complexos por simples, se ativado
         if (Config.simpleMulti) {
             message = Writing.simplifyMultiplication(message)
         }
 
-        // === TRADUÇÃO ===
-        // Traduz a mensagem para a linguagem configurada
-        if (Config.language != "pt-br") {
-            message = Writing.translate(message)
-        }
-
-        // === REMOÇÃO DE UNICODE ===
-        // Remove símbolos Unicode especiais, se desativado
         if (!Config.unicode) {
             message = Writing.noUnicode(message)
-            if (Config.language != "pt-br") {
+            if (Config.language != "pt") {
                 message = Writing.translateUnicode(message)
             }
         }
 
-        // === REMOÇÃO DE ACENTOS ===
-        // Remove acentos das letras, se desativado
         if (!Config.accents) {
             message = Writing.noAccents(message)
         }
 
-        // === AJUSTE DE CASE (MAIÚSCULAS/MINÚSCULAS) ===
-        // Aplica transformação de case baseada nas configurações
-        if (Config.capitalized) {
-            message = Writing.capitalized(message)
-        } else if (Config.lowercase) {
+        if (Config.lowercase) {
             message = Writing.lowercase(message)
         } else if (Config.uppercase) {
             message = Writing.uppercase(message)
@@ -1135,7 +527,7 @@ export const Writing = {
      */
     formatValue(value = true) {
         if (value == true || value == false) {
-            return value ? "Sim" : "Não"
+            return value ? tr("Sim", "Yes") : tr("Não", "No")
         }
 
         return String(value)
@@ -1151,9 +543,13 @@ export const Writing = {
     configItem(message = "", name = "") {
         return (
             message +
-            " | Atual: “" +
+            " | “" +
+            tr("Atual", "Current") +
+            "”: “" +
             Writing.formatValue(Config[name]) +
-            "” | Padrão: “" +
+            "” | “" +
+            tr("Padrão", "Default") +
+            "”: “" +
             Writing.formatValue(DEFAULT_CONFIG[name]) +
             "”"
         )

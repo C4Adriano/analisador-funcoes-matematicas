@@ -1,6 +1,7 @@
 import { Config } from "./config.js"
 import { Error } from "./error.js"
 import { Helpers } from "./helpers.js"
+import { tr } from "./i18n.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
@@ -38,7 +39,13 @@ export const Algebra = {
      * @since v6.1.0
      */
     variables(name = "x") {
-        let value = Ui.input(name + " = ", "Digite “" + name + "” caso queira que “" + name + "” seja uma incógnita.")
+        let value = Ui.input(
+            name + " = ",
+            tr(
+                "Digite “" + name + "” caso queira que “" + name + "” seja uma incógnita.",
+                "Type “" + name + "” is you want “" + name + "” to be an unknown variable."
+            )
+        )
 
         if (isFinite(Writing.decimal(value, true))) {
             return Algebra.round(value)
@@ -98,13 +105,25 @@ export const Algebra = {
         if (coefA == 0 && coefB == 0) {
             if (coefC == 0) {
                 Ui.display(
-                    "As funções coincidem: ƒ₁(x) = ƒ₂(x), ∀ x ∈ ℝ",
-                    "Porque as funções são iguais, em todos os pontos, elas se encontram."
+                    tr(
+                        "As funções coincidem: ƒ₁(x) = ƒ₂(x), ∀ x ∈ ℝ",
+                        "The functions are identical: ƒ₁(x) = ƒ₂(x), ∀ x ∈ ℝ"
+                    ),
+                    tr(
+                        "Porque as funções são iguais, em todos os pontos, elas se encontram.",
+                        "Because the functions are identical at all points, they coincide."
+                    )
                 )
             } else if (coefC != 0) {
                 Ui.display(
-                    "As funções nunca se encontrarão: ƒ₁(x) ≠ ƒ₂(x), ∀ x ∈ ℝ",
-                    "Porque as funções são diferentes, não há ponto em que elas se encontrarão."
+                    tr(
+                        "As funções nunca se encontrarão: ƒ₁(x) ≠ ƒ₂(x), ∀ x ∈ ℝ",
+                        "The functions are distinct: ƒ₁(x) ≠ ƒ₂(x), ∀ x ∈ ℝ"
+                    ),
+                    tr(
+                        "Porque as funções são diferentes, não há ponto em que elas se encontrarão.",
+                        "Because the functions are distinct, there is no point where they coincide."
+                    )
                 )
             }
         }
@@ -112,7 +131,10 @@ export const Algebra = {
         // Afim
         else if (coefA == 0 && coefB != 0) {
             x = Algebra.division(-coefC, coefB)
-            Ui.display("As funções se encontram em: x = " + Writing.decimal(x), "x = −c / b")
+            Ui.display(
+                tr("As funções se encontram em: ", "The functions coincide at: ") + "x = " + Writing.decimal(x),
+                "x = −c / b"
+            )
         }
 
         // Quadrática
@@ -120,9 +142,16 @@ export const Algebra = {
             let delta = Helpers.calcDelta(coefA, coefB, coefC)
             Helpers.showDelta(
                 delta[0],
-                "As funções não possuem pontos de interseção reais",
-                "As funções se encontram em: x = " + Writing.decimal(delta[1]),
-                "As funções se encontram em: x₁ = " + Writing.decimal(delta[1]) + ", x₂ = " + Writing.decimal(delta[2])
+                tr(
+                    "As funções não possuem pontos de interseção reais",
+                    "The functions have no real intersections points"
+                ),
+                tr("As funções se encontram em: ", "The functions coincide in: ") + "x = " + Writing.decimal(delta[1]),
+                tr("As funções se encontram em: ", "The functions coincide in: ") +
+                    "x₁ = " +
+                    Writing.decimal(delta[1]) +
+                    ", x₂ = " +
+                    Writing.decimal(delta[2])
             )
         }
     },
@@ -209,7 +238,7 @@ export const Algebra = {
                             coefB = Algebra.division(points[3] - points[1], points[2] - points[0])
                             coefC = points[1] - coefB * points[0]
                         } else {
-                            Error.divZero("x ≠ 0 e x₁ ≠ x₂")
+                            Error.divZero("x ≠ 0 ∧ x₁ ≠ x₂")
                             repeat = true
                         }
                     }
@@ -268,7 +297,7 @@ export const Algebra = {
                                 denominator
                             )
                         } else {
-                            Error.divZero("x ≠ 0 e x₁ ≠ x₂")
+                            Error.divZero("x ≠ 0 ∧ x₁ ≠ x₂")
                             repeat = true
                         }
                     }
@@ -374,7 +403,13 @@ export const Algebra = {
                 else if (coefA == "a" && coefB != "b" && coefC == "c") {
                     // pontoExp = algebra.ponto(2)
 
-                    Ui.warning("Não posso ainda descobrir o valor de a e c quando tenho somente o b", "Em construção.")
+                    Ui.warning(
+                        tr(
+                            "Não posso ainda descobrir o valor de a e c quando tenho somente o b",
+                            "I cannot found the value of a and c when I only have b"
+                        ),
+                        tr("Em construção.", "Under construction.")
+                    )
                     coefA = -1
                     coefC = 0
                 }
@@ -391,7 +426,13 @@ export const Algebra = {
                 else if (coefA == "a" && coefB == "b" && coefC == "c") {
                     // pontoExp = algebra.ponto(3)
 
-                    Ui.warning("Não posso ainda descobrir o valor de a, b e c tendo somente pontos", "Em construção.")
+                    Ui.warning(
+                        tr(
+                            "Não posso ainda descobrir o valor de a, b e c tendo somente pontos",
+                            "I cannot found the value of a, b and c having only points"
+                        ),
+                        tr("Em construção.", "Under construction.")
+                    )
                     coefA = -1
                     coefB = 1
                     coefC = 0
@@ -429,7 +470,13 @@ export const Algebra = {
                 else if (coefA == "a" && coefB == "b" && coefC != "c") {
                     // pontoLog = algebra.ponto(2)
 
-                    Ui.warning("Não posso ainda descobrir o valor de a e b quando tenho somente o c", "Em construção.")
+                    Ui.warning(
+                        tr(
+                            "Não posso ainda descobrir o valor de a e b quando tenho somente o c",
+                            "I cannot yet determine the value of a and b when I only have c"
+                        ),
+                        tr("Em construção.", "Under construction.")
+                    )
                     coefA = -1
                     coefB = 1
                     coefC = 0
@@ -461,7 +508,13 @@ export const Algebra = {
                 else if (coefA == "a" && coefB == "b" && coefC == "c") {
                     // pontoLog = algebra.ponto(3)
 
-                    Ui.warning("Não posso ainda descobrir o valor de a, b e c tendo somente pontos", "Em construção.")
+                    Ui.warning(
+                        tr(
+                            "Não posso ainda descobrir o valor de a, b e c tendo somente pontos",
+                            "I cannot yet determine the value of a, b and c given only points"
+                        ),
+                        tr("Em construção.", "Under construction.")
+                    )
                     coefA = -1
                     coefB = 1
                     coefC = 0
@@ -473,8 +526,14 @@ export const Algebra = {
                 Error.divZero("Valores inválidos.")
                 if (
                     Ui.confirm(
-                        "Queres mudar os valores dos coeficientes?",
-                        "Se quiser alterar os valores dos pontos, escolha “Cancelar”"
+                        tr(
+                            "Queres mudar os valores dos coeficientes?",
+                            "Do you want to change the coefficients values?"
+                        ),
+                        tr(
+                            "Se quiser alterar os valores dos pontos, escolha “Cancelar”",
+                            "If you want to change the point values, chose “Cancel”"
+                        )
                     )
                 ) {
                     coefA = "a"
@@ -523,7 +582,7 @@ export const Algebra = {
 
         // Valida
         if (x <= 0 || base <= 0 || base == 1) {
-            Error.invalidLog("log", "x > 0 e base > 0, base ≠ 1")
+            Error.invalidLog("log", "x > 0 ∧ base > 0, base ≠ 1")
             return NaN
         }
 

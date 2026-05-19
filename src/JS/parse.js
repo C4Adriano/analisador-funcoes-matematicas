@@ -1,3 +1,6 @@
+import { tr } from "./i18n.js"
+import { Ui } from "./ui.js"
+
 // Desenvolvido por (Anthropic) Claude (claude.ai), revisado e corrigido por Adriano Lima
 // Identifica o tipo de função matemática e extrai seus coeficientes.
 // Pipeline: normalizar → tentar cada tipo → fallback constante

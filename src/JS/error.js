@@ -1,3 +1,4 @@
+import { tr } from "./i18n.js"
 import { Ui } from "./ui.js"
 
 /**
@@ -14,12 +15,12 @@ export const Error = {
      */
     range(min = 0, max = 1) {
         Ui.error(
-            "ERRO-001: Escolha um valor entre " +
+            tr("ERRO-001: Escolha um valor entre ", "ERROR-001: Choose a value between") +
                 String(min + (min == 0 ? 1 : 0)) +
-                " e " +
+                tr(" e ", " and ") +
                 String(max) +
-                (min == 0 ? " ou selecione 0 para voltar / sair" : ""),
-            "Tu escolheste algo fora do intervalo."
+                (min == 0 ? tr(" ou selecione 0 para voltar / sair", " or select 0 to go back / exit") : ""),
+            tr("Tu escolheste algo fora do intervalo.", "You chose something outside the interval")
         )
     },
 
@@ -30,8 +31,13 @@ export const Error = {
      */
     divZero(reason = "") {
         Ui.error(
-            "ERRO-002: Divisão por zero",
-            reason != "" ? "Motivo: " + reason : "Tu tentaste dividir um número por zero, o que não é possível."
+            tr("ERRO-002: Divisão por zero", "ERROR-002: Division by zero"),
+            reason != ""
+                ? tr("Motivo: ", "Reason: ") + reason
+                : tr(
+                      "Tu tentaste dividir um número por zero, o que não é possível.",
+                      "You tried to divide a number by zero, which is not possible"
+                  )
         )
     },
 
@@ -40,7 +46,10 @@ export const Error = {
      * @since v6.1.0
      */
     limitExceeded() {
-        Ui.error("ERRO-003: Ultrapassou o limite", "A quantidade de interações passou do limite.")
+        Ui.error(
+            tr("ERRO-003: Ultrapassou o limite", "ERROR-003: Limit exceeded"),
+            tr("A quantidade de interações passou do limite.", "The number of iterations exceeded the limit.")
+        )
     },
 
     /**
@@ -49,7 +58,12 @@ export const Error = {
      * @since v6.1.0
      */
     constantFunction(type = "") {
-        Ui.error("ERRO-004: A função não é " + type + "; ela é constante", "(a = 0) ∨ (a = 1) ∨ (b = 0)")
+        Ui.error(
+            tr("ERRO-004: A função não é ", "ERROR-004: The function is not ") +
+                type +
+                tr("; ela é constante", "; it is constant"),
+            "(a = 0) ∨ (a = 1) ∨ (b = 0)"
+        )
     },
 
     /**
@@ -58,7 +72,7 @@ export const Error = {
      * @since v6.1.0
      */
     invalidFunction(type = "") {
-        Ui.error("ERRO-005: A função não é " + type, "a < 0")
+        Ui.error(tr("ERRO-005: A função não é ", "ERROR-005: The function is not ") + type, "a < 0")
     },
 
     /**
@@ -69,10 +83,13 @@ export const Error = {
      */
     invalidLog(type = "log", reason = "") {
         Ui.error(
-            "ERRO-006: " + type + " inválido",
+            tr("ERRO-006: ", "ERROR-006: ") + type + tr(" inválido", " invalid"),
             reason != ""
-                ? "Motivo: " + reason
-                : "Tu tentaste calcular um logaritmo com base menor ou igual a 1, o que não é possível."
+                ? tr("Motivo: ", "Reason: ") + reason
+                : tr(
+                      "Tu tentaste calcular um logaritmo com base menor ou igual a 1, o que não é possível.",
+                      "You tried to calculate a logarithm with a base less than or equal to 1, which is not possible."
+                  )
         )
     },
 }

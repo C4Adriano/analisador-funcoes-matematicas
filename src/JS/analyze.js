@@ -1,28 +1,66 @@
 import { Algebra } from "./algebra.js"
 import { Commands } from "./commands.js"
 import { Helpers } from "./helpers.js"
+import { tr, trArr } from "./i18n.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
 let baseOptions = [
-        "Domínio",
-        "Imagem",
-        "Interseção com o eixo x",
-        "Interseção com o eixo y",
-        "Valores para x",
-        "Valores para y",
-        "Estudo do sinal",
-        "Equações entre funções",
+        ["Domínio", "Domain"],
+        ["Imagem", "Range"],
+        ["Interseção com o eixo x", "X-axis intersection"],
+        ["Interseção com o eixo y", "Y-axis intersection"],
+        ["Valores para x", "X values"],
+        ["Valores para y", "Y values"],
+        ["Estudo do sinal", "Sign analysis"],
+        ["Equações entre funções", "Function equations"],
     ],
-    constOptions = [].concat(baseOptions),
-    affineOptions = ["Inclinação", "Raiz"].concat(baseOptions),
-    quadOptions = ["Concavidade", "Raízes", "Vértice"].concat(baseOptions),
-    expOptions = ["Curva", "Raiz", "Assíntota"].concat(baseOptions),
-    logOptions = ["Curva", "Raiz"].concat(baseOptions),
-    sinOptions = ["Amplitude", "Período"].concat(baseOptions),
-    cosOptions = ["Amplitude", "Período"].concat(baseOptions),
-    tanOptions = ["Assíntotas verticais", "Período"].concat(baseOptions)
+    constOptions = trArr([].concat(baseOptions)),
+    affineOptions = trArr(
+        [
+            ["Inclinação", "Slope"],
+            ["Raiz", "Root"],
+        ].concat(baseOptions)
+    ),
+    quadOptions = trArr(
+        [
+            ["Concavidade", "Concavity"],
+            ["Raízes", "Roots"],
+            ["Vértice", "Vertex"],
+        ].concat(baseOptions)
+    ),
+    expOptions = trArr(
+        [
+            ["Curva", "Curve"],
+            ["Raiz", "Root"],
+            ["Assíntota", "Asymptote"],
+        ].concat(baseOptions)
+    ),
+    logOptions = trArr(
+        [
+            ["Curva", "Curve"],
+            ["Raiz", "Root"],
+        ].concat(baseOptions)
+    ),
+    sinOptions = trArr(
+        [
+            ["Amplitude", "Amplitude"],
+            ["Período", "Period"],
+        ].concat(baseOptions)
+    ),
+    cosOptions = trArr(
+        [
+            ["Amplitude", "Amplitude"],
+            ["Período", "Period"],
+        ].concat(baseOptions)
+    ),
+    tanOptions = trArr(
+        [
+            ["Assíntotas verticais", "Vertical asymptotes"],
+            ["Período", "Period"],
+        ].concat(baseOptions)
+    )
 
 /**
  * [FUNÇÃO] Objeto base para as funções envolvendo funções matemáticas, seus estudos e características
@@ -259,17 +297,30 @@ export const Analyze = {
                 else if (option == 2) {
                     Helpers.showDelta(
                         delta[0],
-                        "Não há raízes reais.",
-                        "Raiz real: x₁ = x₂ = " + Writing.decimal(delta[1]),
-                        "Raízes reais: x₁ = " + Writing.decimal(delta[1]) + ", x₂ = " + Writing.decimal(delta[2])
+                        tr("Não há raízes reais.", "There are no real roots"),
+                        tr("Raiz real: ", "Real root: ") + "x₁ = x₂ = " + Writing.decimal(delta[1]),
+                        tr("Raízes reais: ", "Real roots: ") +
+                            "x₁ = " +
+                            Writing.decimal(delta[1]) +
+                            ", x₂ = " +
+                            Writing.decimal(delta[2])
                     )
                 }
 
                 // Vértice
                 else if (option == 3) {
                     Ui.display(
-                        "Vértice: (" + Writing.decimal(vertex[0]) + ", " + Writing.decimal(vertex[1]) + ")",
-                        "Ponto mais baixo (ou mais alto, conforme a concavidade) da função. Ponto (-b / (2 · a), -Δ / (4 · a))"
+                        tr("Vértice: ", "Vertex: ") +
+                            "(" +
+                            Writing.decimal(vertex[0]) +
+                            ", " +
+                            Writing.decimal(vertex[1]) +
+                            ")",
+                        tr(
+                            "Ponto mais baixo (ou mais alto, conforme a concavidade) da função.",
+                            "Lowest (or highest, depending on concavity) point of the function"
+                        ),
+                        tr("Ponto", "Point") + "(-b / (2 · a), -Δ / (4 · a))"
                     )
                 }
 
@@ -281,9 +332,15 @@ export const Analyze = {
                 // Imagem
                 else if (option == 5) {
                     if (coefA > 0) {
-                        Helpers.range("∈ [" + Writing.decimal(vertex[1]) + ", ∞)", " entre o vértice e o ∞.")
+                        Helpers.range(
+                            "∈ [" + Writing.decimal(vertex[1]) + ", ∞)",
+                            tr(" entre o vértice e o ∞.", " between the vertex and the ∞.")
+                        )
                     } else if (coefA < 0) {
-                        Helpers.range("∈ (-∞, " + Writing.decimal(vertex[1]) + "]", " entre -∞ e o vértice.")
+                        Helpers.range(
+                            "∈ (-∞, " + Writing.decimal(vertex[1]) + "]",
+                            tr(" entre -∞ e o vértice.", " between the -∞ and the vertex")
+                        )
                     }
                 }
             }
@@ -294,11 +351,15 @@ export const Analyze = {
                 if (option == 1) {
                     Helpers.showDelta(
                         delta[0],
-                        "Não há interseção com o eixo x.",
-                        "Interseção com o eixo x: (" + Writing.decimal(delta[1]) + ", 0)",
-                        "Interseções com o eixo x: (" +
+                        tr("Não há interseção com o eixo x.", "There is no intersection with the x-axis"),
+                        tr("Interseção com o eixo x:", "Intersection with the x-axis") +
+                            "(" +
                             Writing.decimal(delta[1]) +
-                            ", 0) e (" +
+                            ", 0)",
+                        tr("Interseções com o eixo x:", "Intersections with the x-axis") +
+                            "(" +
+                            Writing.decimal(delta[1]) +
+                            ", 0), (" +
                             Writing.decimal(delta[2]) +
                             ", 0)"
                     )
@@ -392,7 +453,10 @@ export const Analyze = {
 
                 // Assíntota
                 else if (option == 3) {
-                    Ui.display("Assíntota horizontal: y = " + Writing.decimal(coefC), "y = c")
+                    Ui.display(
+                        tr("Assíntota horizontal: ", "Horizontal asymptote: ") + "y = " + Writing.decimal(coefC),
+                        "y = c"
+                    )
                 }
 
                 // Domínio
@@ -403,9 +467,15 @@ export const Analyze = {
                 // Imagem
                 else if (option == 5) {
                     if (coefB > 0) {
-                        Helpers.range("∈ (" + Writing.decimal(coefC) + ", ∞)", " entre c e ∞, exceto o próprio c.")
+                        Helpers.range(
+                            "∈ (" + Writing.decimal(coefC) + ", ∞)",
+                            tr(" entre c e ∞, exceto o próprio c.", " between c and ∞, excluding c itself")
+                        )
                     } else {
-                        Helpers.range("∈ (-∞, " + Writing.decimal(coefC) + ")", " entre -∞ e c, exceto o próprio c.")
+                        Helpers.range(
+                            "∈ (-∞, " + Writing.decimal(coefC) + ")",
+                            tr(" entre -∞ e c, exceto o próprio c.", " between -∞ and c, excluding c itself")
+                        )
                     }
                 }
             }
@@ -523,7 +593,7 @@ export const Analyze = {
             else if (page == 2) {
                 // Interseção com o eixo y
                 if (option == 1) {
-                    Helpers.yAxis("∄", "b × logₐ(x) + c", " x = 0 ⇒ logₐ(x) ∉ ℝ")
+                    Helpers.yAxis("∄", "b × logₐ(x) + c", "x = 0 ⇒ logₐ(x) ∉ ℝ")
                 }
 
                 // Valores para x
@@ -607,10 +677,14 @@ export const Analyze = {
                             Writing.decimal(Algebra.absolute(coefB) + coefC) +
                             "]",
                         "",
-                        "Entre −|b| + c e |b| + c"
+                        tr("Entre ", "Between ") + "−|b| + c ∧ |b| + c"
                     )
                 } else if (option == 5) {
-                    Helpers.xAxis(root, "arcsin(−c / b) / a", "|(−c / b)| > 1, sem raiz real")
+                    Helpers.xAxis(
+                        root,
+                        "arcsin(−c / b) / a",
+                        "|(−c / b)| > 1, " + tr("sem raiz real", "without real root")
+                    )
                 }
             }
 
@@ -689,10 +763,14 @@ export const Analyze = {
                             Writing.decimal(Algebra.absolute(coefB) + coefC) +
                             "]",
                         "",
-                        "Entre −|b| + c e |b| + c"
+                        tr("Entre", "Between") + "−|b| + c e |b| + c"
                     )
                 } else if (option == 5) {
-                    Helpers.xAxis(root, "arccos(−c / b) / a", "|(−c / b)| > 1, sem raiz real")
+                    Helpers.xAxis(
+                        root,
+                        "arccos(−c / b) / a",
+                        "|(−c / b)| > 1, " + tr("sem raiz real", "without real root")
+                    )
                 }
             }
 

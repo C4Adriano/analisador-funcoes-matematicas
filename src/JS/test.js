@@ -1,6 +1,7 @@
 import { Algebra } from "./algebra.js"
 import { Analyze } from "./analyze.js"
 import { Helpers } from "./helpers.js"
+import { tr } from "./i18n.js"
 import { Ui } from "./ui.js"
 
 /**
