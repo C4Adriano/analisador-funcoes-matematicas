@@ -7,60 +7,15 @@ import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
 let baseOptions = [
-        ["Domínio", "Domain"],
-        ["Imagem", "Range"],
-        ["Interseção com o eixo x", "X‐axis intersection"],
-        ["Interseção com o eixo y", "Y‐axis intersection"],
-        ["Valores para x", "X values"],
-        ["Valores para y", "Y values"],
-        ["Estudo do sinal", "Sign analysis"],
-        ["Equações entre funções", "Function equations"],
-    ],
-    constOptions = trArr([].concat(baseOptions)),
-    affineOptions = trArr(
-        [
-            ["Inclinação", "Slope"],
-            ["Raiz", "Root"],
-        ].concat(baseOptions)
-    ),
-    quadOptions = trArr(
-        [
-            ["Concavidade", "Concavity"],
-            ["Raízes", "Roots"],
-            ["Vértice", "Vertex"],
-        ].concat(baseOptions)
-    ),
-    expOptions = trArr(
-        [
-            ["Curva", "Curve"],
-            ["Raiz", "Root"],
-            ["Assíntota", "Asymptote"],
-        ].concat(baseOptions)
-    ),
-    logOptions = trArr(
-        [
-            ["Curva", "Curve"],
-            ["Raiz", "Root"],
-        ].concat(baseOptions)
-    ),
-    sinOptions = trArr(
-        [
-            ["Amplitude", "Amplitude"],
-            ["Período", "Period"],
-        ].concat(baseOptions)
-    ),
-    cosOptions = trArr(
-        [
-            ["Amplitude", "Amplitude"],
-            ["Período", "Period"],
-        ].concat(baseOptions)
-    ),
-    tanOptions = trArr(
-        [
-            ["Assíntotas verticais", "Vertical asymptotes"],
-            ["Período", "Period"],
-        ].concat(baseOptions)
-    )
+    ["Domínio", "Domain"],
+    ["Imagem", "Range"],
+    ["Interseção com o eixo x", "X‐axis intersection"],
+    ["Interseção com o eixo y", "Y‐axis intersection"],
+    ["Valores para x", "X values"],
+    ["Valores para y", "Y values"],
+    ["Estudo do sinal", "Sign analysis"],
+    ["Equações entre funções", "Function equations"],
+]
 
 /**
  * [FUNÇÃO] Objeto base para as funções envolvendo funções matemáticas, seus estudos e características
@@ -77,7 +32,8 @@ export const Analyze = {
     constant(coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, ""],
+            constOptions = trArr([].concat(baseOptions))
 
         // Mostra
         Ui.function(0, 0, coefC)
@@ -168,7 +124,13 @@ export const Analyze = {
     affine(coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, ""],
+            affineOptions = trArr(
+                [
+                    ["Inclinação", "Slope"],
+                    ["Raiz", "Root"],
+                ].concat(baseOptions)
+            )
 
         // Mostra
         Ui.function(0, coefB, coefC)
@@ -269,7 +231,14 @@ export const Analyze = {
     quadratic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, ""],
+            quadOptions = trArr(
+                [
+                    ["Concavidade", "Concavity"],
+                    ["Raízes", "Roots"],
+                    ["Vértice", "Vertex"],
+                ].concat(baseOptions)
+            )
 
         // Mostra
         Ui.function(coefA, coefB, coefC)
@@ -423,7 +392,14 @@ export const Analyze = {
     exponential(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, ""],
+            expOptions = trArr(
+                [
+                    ["Curva", "Curve"],
+                    ["Raiz", "Root"],
+                    ["Assíntota", "Asymptote"],
+                ].concat(baseOptions)
+            )
 
         // Mostra
         Ui.function(coefA, coefB, coefC, true)
@@ -545,7 +521,13 @@ export const Analyze = {
     logarithmic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, ""],
+            logOptions = trArr(
+                [
+                    ["Curva", "Curve"],
+                    ["Raiz", "Root"],
+                ].concat(baseOptions)
+            )
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, true)
@@ -646,7 +628,13 @@ export const Analyze = {
     sine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, ""],
+            sinOptions = trArr(
+                [
+                    ["Amplitude", "Amplitude"],
+                    ["Período", "Period"],
+                ].concat(baseOptions)
+            )
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "sin")
@@ -732,7 +720,13 @@ export const Analyze = {
     cosine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, ""],
+            cosOptions = trArr(
+                [
+                    ["Amplitude", "Amplitude"],
+                    ["Período", "Period"],
+                ].concat(baseOptions)
+            )
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "cos")
@@ -818,7 +812,13 @@ export const Analyze = {
     tangent(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, ""],
+            tanOptions = trArr(
+                [
+                    ["Assíntotas verticais", "Vertical asymptotes"],
+                    ["Período", "Period"],
+                ].concat(baseOptions)
+            )
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "tan")
