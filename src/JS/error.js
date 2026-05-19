@@ -15,12 +15,12 @@ export const Error = {
      */
     range(min = 0, max = 1) {
         Ui.error(
-            tr("ERRO-001: Escolha um valor entre ", "ERROR-001: Choose a value between") +
+            tr("ERRO-001: Valor fora do intervalo. Escolha entre ", "ERROR-001: Value out of range. Choose between ") +
                 String(min + (min == 0 ? 1 : 0)) +
                 tr(" e ", " and ") +
                 String(max) +
-                (min == 0 ? tr(" ou selecione 0 para voltar / sair", " or select 0 to go back / exit") : ""),
-            tr("Tu escolheste algo fora do intervalo.", "You chose something outside the interval")
+                (min == 0 ? tr(" ou 0 para voltar / sair", " or 0 to go back / exit") : ""),
+            tr("Valor fora do intervalo permitido.", "Value outside the allowed range.")
         )
     },
 
@@ -34,10 +34,7 @@ export const Error = {
             tr("ERRO-002: Divisão por zero", "ERROR-002: Division by zero"),
             reason != ""
                 ? tr("Motivo: ", "Reason: ") + reason
-                : tr(
-                      "Tu tentaste dividir um número por zero, o que não é possível.",
-                      "You tried to divide a number by zero, which is not possible"
-                  )
+                : tr("Não é possível dividir por zero.", "Division by zero is not defined.")
         )
     },
 
@@ -47,8 +44,11 @@ export const Error = {
      */
     limitExceeded() {
         Ui.error(
-            tr("ERRO-003: Ultrapassou o limite", "ERROR-003: Limit exceeded"),
-            tr("A quantidade de interações passou do limite.", "The number of iterations exceeded the limit.")
+            tr("ERRO-003: Limite de interações excedido", "ERROR-003: Interaction limit exceeded"),
+            tr(
+                "O número de interações ultrapassou o limite configurado.",
+                "The number of iterations exceeded the configured limit."
+            )
         )
     },
 
@@ -61,7 +61,7 @@ export const Error = {
         Ui.error(
             tr("ERRO-004: A função não é ", "ERROR-004: The function is not ") +
                 type +
-                tr("; ela é constante", "; it is constant"),
+                tr("; é constante", "; it is constant"),
             "(a = 0) ∨ (a = 1) ∨ (b = 0)"
         )
     },

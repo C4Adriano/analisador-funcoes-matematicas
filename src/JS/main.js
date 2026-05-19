@@ -31,7 +31,7 @@ Ui.display(
     tr("Bem-vindo ao Analisador de Funções Matemáticas!", "Welcome to the Mathematical Function Analyzer!"),
     tr(
         "Este programa analisa funções dos tipos constante, afim, quadrática, exponencial, logarítmica, seno, cosseno, tangente, etc. — identificando suas propriedades e características. Para começar, informe os dados da função quando solicitado.",
-        "This program analyzes functions of the types constant, affine, quadratic, exponential, logarithmic, sine, cosine, tangent, etc. — showing their properties and characteristics. To get started, enter the functions data when prompted."
+        "This program analyzes functions of the types constant, affine, quadratic, exponential, logarithmic, sine, cosine, tangent, etc. — identifying their properties and characteristics. To get started, enter the function data when prompted."
     )
 )
 
@@ -991,8 +991,8 @@ do {
                 State.loop = !Ui.confirm(
                     tr("Tu queres sair?", "Do you want to exit?"),
                     tr(
-                        "Obs.: Configurações poderão voltar ao padrão caso saias",
-                        "Note: Settings maybe back to the default if you exit"
+                        "Obs.: As configurações poderão ser redefinidas ao sair.",
+                        "Note: Settings may be reset upon exit."
                     )
                 )
             } else {

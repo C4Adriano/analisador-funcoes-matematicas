@@ -43,7 +43,7 @@ export const Algebra = {
             name + " = ",
             tr(
                 "Digite “" + name + "” caso queira que “" + name + "” seja uma incógnita.",
-                "Type “" + name + "” is you want “" + name + "” to be an unknown variable."
+                "Type “" + name + "” if you want “" + name + "” to be an unknown variable."
             )
         )
 
@@ -110,8 +110,8 @@ export const Algebra = {
                         "The functions are identical: ƒ₁(x) = ƒ₂(x), ∀ x ∈ ℝ"
                     ),
                     tr(
-                        "Porque as funções são iguais, em todos os pontos, elas se encontram.",
-                        "Because the functions are identical at all points, they coincide."
+                        "Porque as funções são iguais em todos os pontos, elas coincidem.",
+                        "The functions coincide at every point."
                     )
                 )
             } else if (coefC != 0) {
@@ -121,8 +121,8 @@ export const Algebra = {
                         "The functions are distinct: ƒ₁(x) ≠ ƒ₂(x), ∀ x ∈ ℝ"
                     ),
                     tr(
-                        "Porque as funções são diferentes, não há ponto em que elas se encontrarão.",
-                        "Because the functions are distinct, there is no point where they coincide."
+                        "As funções são distintas: não há ponto de interseção.",
+                        "The functions are distinct: there is no intersection point."
                     )
                 )
             }
@@ -144,10 +144,10 @@ export const Algebra = {
                 delta[0],
                 tr(
                     "As funções não possuem pontos de interseção reais",
-                    "The functions have no real intersections points"
+                    "The functions have no real intersection points"
                 ),
-                tr("As funções se encontram em: ", "The functions coincide in: ") + "x = " + Writing.decimal(delta[1]),
-                tr("As funções se encontram em: ", "The functions coincide in: ") +
+                tr("As funções se encontram em: ", "The functions intersect at: ") + "x = " + Writing.decimal(delta[1]),
+                tr("As funções se encontram em: ", "The functions intersect at: ") +
                     "x₁ = " +
                     Writing.decimal(delta[1]) +
                     ", x₂ = " +
@@ -406,7 +406,7 @@ export const Algebra = {
                     Ui.warning(
                         tr(
                             "Não posso ainda descobrir o valor de a e c quando tenho somente o b",
-                            "I cannot found the value of a and c when I only have b"
+                            "I cannot yet determine the value of a and c when I only have b"
                         ),
                         tr("Em construção.", "Under construction.")
                     )
@@ -429,7 +429,7 @@ export const Algebra = {
                     Ui.warning(
                         tr(
                             "Não posso ainda descobrir o valor de a, b e c tendo somente pontos",
-                            "I cannot found the value of a, b and c having only points"
+                            "I cannot yet determine the value of a, b and c having only points"
                         ),
                         tr("Em construção.", "Under construction.")
                     )

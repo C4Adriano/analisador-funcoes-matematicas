@@ -38,14 +38,14 @@ export const Commands = {
                         "“/" +
                         cmd +
                         "”\n" +
-                        tr("A sugestão mais próxima é ", "The closest suggestion is ") +
+                        tr("Sugestão: ", "Suggestion: ") +
                         "“/" +
                         suggestion.canonical +
-                        "” (" +
-                        tr("distância ", "distance ") +
+                        "” " +
+                        tr("(distância ", "(distance ") +
                         suggestion.distance +
                         ")\n" +
-                        tr("Deseja executar essa sugestão?", "Do you want to run this suggestion?")
+                        tr("Deseja executar?", "Run it?")
                 )
                 if (answer) {
                     return Commands.process("/" + suggestion.canonical + " " + parts[1])
@@ -60,7 +60,7 @@ export const Commands = {
                     "” " +
                     tr("não é um comando válido", "is not a valid command") +
                     "\n" +
-                    tr("Digite “/ajuda para ver todos os comandos", "Type “/help” to see all commands")
+                    tr("Digite “/ajuda” para ver todos os comandos", "Type “/help” to see all commands")
             )
             return null
         }
@@ -177,7 +177,7 @@ export const Commands = {
             help: {
                 short: tr("mostra essa mensagem", "shows this message"),
                 long: tr(
-                    "Exibe a lista de todos os comandos disponíveis.\nUso: /ajuda [comando]",
+                    "Exibe a lista de todos os comandos disponíveis.\nUse: /ajuda [comando]",
                     "Displays the list of all available commands.\nUsage: /help [command]"
                 ),
                 variations: ["ajuda", "help", "a", "h", "cmd", "cmds", "c", "comandos", "?"],
@@ -188,7 +188,7 @@ export const Commands = {
             search: {
                 short: tr("pesquisa comandos", "searches commands"),
                 long: tr(
-                    "Pesquisa comandos por termo no nome, variações e descrições.\nUso: /pesquisa <termo>",
+                    "Pesquisa comandos por termo no nome, variações e descrições.\nUse: /pesquisa <termo>",
                     "Searches commands by term in name, variations and descriptions.\nUsage: /search <term>"
                 ),
                 variations: ["pesquisa", "pesquisar", "search", "buscar", "find", "procurar", "seek", "s"],
@@ -199,7 +199,7 @@ export const Commands = {
             shortcuts: {
                 short: tr("lista variações de um comando", "lists variations of a command"),
                 long: tr(
-                    "Exibe todas as variações aceitas de um comando.\nUso: /atalhos <comando>",
+                    "Exibe todas as variações aceitas de um comando.\nUse: /atalhos <comando>",
                     "Displays all accepted variations of a command.\nUsage: /shortcuts <command>"
                 ),
                 variations: ["atalhos", "shortcuts", "variacoes", "variacao", "aliases", "alias", "sc"],
@@ -469,7 +469,7 @@ export const Commands = {
             language: {
                 short: tr("alterna língua", "toggles language"),
                 long: tr(
-                    "Altera a língua do programa entre português e inglês.\nUso: /language [pt | en]",
+                    "Altera a língua do programa entre português e inglês.\nUse: /language [pt | en]",
                     "Changes the program language between Portuguese and English.\nUsage: /language [pt | en]"
                 ),
                 variations: [

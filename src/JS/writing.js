@@ -380,6 +380,9 @@ export const Writing = {
         let replacements = [
             ["alfa", "alpha"],
             ["para todo", "for all"],
+            ["existe um único", "there exists exactly one"],
+            ["não existe um único", "there is no unique"],
+            ["existem infinitos", "infinitely many exist"],
             ["não existe", "does not exist"],
             ["não pertencente a", "not belonging to"],
             ["pertencente a", "belonging to"],

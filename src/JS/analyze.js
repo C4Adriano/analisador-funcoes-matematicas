@@ -9,8 +9,8 @@ import { Writing } from "./writing.js"
 let baseOptions = [
         ["Domínio", "Domain"],
         ["Imagem", "Range"],
-        ["Interseção com o eixo x", "X-axis intersection"],
-        ["Interseção com o eixo y", "Y-axis intersection"],
+        ["Interseção com o eixo x", "X‐axis intersection"],
+        ["Interseção com o eixo y", "Y‐axis intersection"],
         ["Valores para x", "X values"],
         ["Valores para y", "Y values"],
         ["Estudo do sinal", "Sign analysis"],
@@ -103,7 +103,11 @@ export const Analyze = {
 
                 // Imagem
                 else if (option == 2) {
-                    Helpers.range("= " + Writing.decimal(coefC), ".", "A função só tem esse valor de y, pois y = c")
+                    Helpers.range(
+                        "= " + Writing.decimal(coefC),
+                        ".",
+                        "y = c ⇒ ƒ " + tr("assume apenas esse valor", "takes only this value")
+                    )
                 }
 
                 // Interseção com o eixo x
@@ -351,12 +355,12 @@ export const Analyze = {
                 if (option == 1) {
                     Helpers.showDelta(
                         delta[0],
-                        tr("Não há interseção com o eixo x.", "There is no intersection with the x-axis"),
-                        tr("Interseção com o eixo x:", "Intersection with the x-axis") +
+                        tr("Não há interseção com o eixo x.", "There is no intersection with the x‐axis"),
+                        tr("Interseção com o eixo x:", "Intersection with the x‐axis") +
                             "(" +
                             Writing.decimal(delta[1]) +
                             ", 0)",
-                        tr("Interseções com o eixo x:", "Intersections with the x-axis") +
+                        tr("Interseções com o eixo x:", "Intersections with the x‐axis") +
                             "(" +
                             Writing.decimal(delta[1]) +
                             ", 0), (" +
@@ -677,7 +681,7 @@ export const Analyze = {
                             Writing.decimal(Algebra.absolute(coefB) + coefC) +
                             "]",
                         "",
-                        tr("Entre ", "Between ") + "−|b| + c ∧ |b| + c"
+                        "−|b| + c ≤ y ≤ |b| + c"
                     )
                 } else if (option == 5) {
                     Helpers.xAxis(
@@ -763,7 +767,7 @@ export const Analyze = {
                             Writing.decimal(Algebra.absolute(coefB) + coefC) +
                             "]",
                         "",
-                        tr("Entre", "Between") + "−|b| + c e |b| + c"
+                        "−|b| + c ≤ y ≤ |b| + c"
                     )
                 } else if (option == 5) {
                     Helpers.xAxis(

@@ -52,19 +52,19 @@ export const Helpers = {
         explanation = "c",
         noHave = tr(
             "Não existe raiz real, portanto não há interseção com o eixo x.",
-            "There is no real root, therefore there is no intersection with the x-axis."
+            "There is no real root, therefore there is no intersection with the x‐axis."
         )
     ) {
-        let intersection = tr("Interseção com o eixo x: ", "Intersection with the x-axis: ")
+        let intersection = tr("Interseção com o eixo x: ", "Intersection with the x‐axis: ")
 
         if (root == 0) {
             // Constante
             if (explanation == 0) {
                 // Se c = 0, a função é nula, então existe infinitas raízes
-                Ui.display(intersection + "∃∞ x ∈ ℝ", "y = 0, ∀ x ∈ ℝ")
+                Ui.display(intersection + "∃∞ x ∈ ℝ", "y = 0 ⇒ ∀ x ∈ ℝ")
             } else {
                 // Se c ≠ 0, então não existe raiz
-                Ui.display(intersection + "∄! x ∈ ℝ", "y = c; " + tr("se", "if") + " c ≠ 0 ⇒ ∄ x")
+                Ui.display(intersection + "∄! x ∈ ℝ", "y = c ∧ c ≠ 0 ⇒ ∄ x")
             }
         } else {
             // Outras funções
@@ -90,13 +90,9 @@ export const Helpers = {
      */
     yAxis(point = 0, func = "c", explanation = "c") {
         Ui.display(
-            tr("Interseção com o eixo y: ", "Intersection with the y-axis") +
+            tr("Interseção com o eixo y: ", "Intersection with the y‐axis") +
                 (point != "∄" ? "(0, " + Writing.decimal(point) + ")" : "∄"),
-            tr("Como y = ", "Since y = ") +
-                func +
-                (point != "∄"
-                    ? ", " + tr("o ponto é sempre", "the point is always") + "(0, " + explanation + ")"
-                    : explanation)
+            tr("Como y = ", "Since y = ") + func + (point != "∄" ? " ⇒ (0, " + explanation + ")" : explanation)
         )
     },
 
@@ -174,14 +170,14 @@ export const Helpers = {
                 // Constante
                 if (y == coefC) {
                     // Se y = c, então existe infinitas soluções
-                    Ui.display(message + "∃∞ x ∈ ℝ", "y = c, ∀ x ∈ ℝ")
+                    Ui.display(message + "∃∞ x ∈ ℝ", "y = c ⇒ ∀ x ∈ ℝ")
                 } else {
                     // Se y ≠ c, então não existe solução
-                    Ui.display(message + "∄! x ∈ ℝ", "y = c; " + tr("se", "if") + " y ≠ c ⇒ ∄ x")
+                    Ui.display(message + "∄! x ∈ ℝ", "y ≠ c ⇒ ∄ x")
                 }
             } else if (coefA == 0 && coefB != 0) {
                 // Afim
-                Ui.display(message + "x = " + Writing.decimal(Algebra.division(y - coefC, coefB)), "x = (y - c) / b")
+                Ui.display(message + "x = " + Writing.decimal(Algebra.division(y - coefC, coefB)), "x = (y − c) / b")
             } else if (coefA != 0) {
                 // Quadrática
                 let delta = Helpers.calcDelta(coefA, coefB, coefC - y)
@@ -195,18 +191,18 @@ export const Helpers = {
             }
         } else if (funcExp || funcLog) {
             // Não polinomial
-            let exponent = Algebra.division(y - coefC, coefB, false) // (y - c) / b
+            let exponent = Algebra.division(y - coefC, coefB, false) // (y − c) / b
             if (funcExp) {
                 // Exponencial
                 if (exponent > 0) {
-                    // Se (y - c) / b > 0, então o logaritmo é definido, então a função tem valor real para esse y
+                    // Se (y − c) / b > 0, então o logaritmo é definido, então a função tem valor real para esse y
                     Ui.display(
                         message + "x = " + Writing.decimal(Algebra.division(Algebra.ln(exponent), Algebra.ln(coefA))),
-                        "x = ln((y - c) / b) / ln(a)"
+                        "x = ln((y − c) / b) / ln(a)"
                     )
                 } else {
-                    // Se (y - c) / b ≤ 0, o logaritmo não é definido, então a função não tem valor real para esse y
-                    Ui.display(message + "∄! x ∈ ℝ", "(y - c) / b ≤ 0")
+                    // Se (y − c) / b ≤ 0, o logaritmo não é definido, então a função não tem valor real para esse y
+                    Ui.display(message + "∄! x ∈ ℝ", "(y − c) / b ≤ 0 ⇒ ∄ x ∈ ℝ")
                 }
             } else if (funcLog) {
                 // Logarítmica
@@ -245,11 +241,11 @@ export const Helpers = {
                 let op = coefC > 0 ? "positive" : "negative"
                 Ui.display(
                     "ƒ(x) " + (coefC != 0 ? operations[op] : "=") + " 0, ∀ x ∈ ℝ",
-                    tr("A função será sempre ", "The function is always ") +
-                        (coefC != 0 ? words[op] : tr("nula", "null")) +
-                        tr(", pois c ", ", since c ") +
+                    "c " +
                         (coefC != 0 ? operations[op] : "=") +
-                        " 0"
+                        " 0 ⇒ ƒ(x) " +
+                        (coefC != 0 ? operations[op] : "=") +
+                        " 0 ⇒ ∀ x ∈ ℝ"
                 )
             } else if (coefA == 0 && coefB != 0) {
                 // Afim
@@ -264,6 +260,10 @@ export const Helpers = {
                         operations[(op + (coefB < 0 ? 1 : 0)) % 2] +
                         " " +
                         affineRoot +
+                        "\nƒ(x) = 0 " +
+                        tr("em", "in") +
+                        " x = " +
+                        affineRoot +
                         "\nƒ(x) " +
                         operations[1 - op] +
                         " 0 " +
@@ -271,12 +271,8 @@ export const Helpers = {
                         " x " +
                         operations[(1 - op + (coefB < 0 ? 1 : 0)) % 2] +
                         " " +
-                        affineRoot +
-                        "\nƒ(x) = 0 " +
-                        tr("em", "in") +
-                        " x = " +
                         affineRoot,
-                    tr("Pois b ", "Since b ") + operations[op] + " 0."
+                    "b " + operations[op] + " 0 ⇒ ƒ " + tr("crescente", "increasing")
                 )
             } else if (coefA != 0) {
                 // Quadrática
@@ -292,10 +288,7 @@ export const Helpers = {
                     // Sem raiz
                     Ui.display(
                         "ƒ(x) " + operations[op] + " 0, ∀ x ∈ ℝ",
-                        tr("Conforme a concavidade e as raízes, ", "According to the concavity and the roots, ") +
-                            "a " +
-                            operations[op] +
-                            " 0 e Δ < 0."
+                        "a " + operations[op] + " 0 ∧ Δ < 0 ⇒ ƒ(x) " + operations[op] + " 0, ∀ x ∈ ℝ"
                     )
                 } else if (quadRoot[0] == 0) {
                     // Uma raiz
@@ -306,10 +299,12 @@ export const Helpers = {
                             tr("exceto em", "except in") +
                             " x = " +
                             Writing.decimal(quadRoot[1]),
-                        tr("Conforme a concavidade e a raiz, ", "According to the concavity and the root, ") +
-                            "a " +
+                        "a " +
                             operations[op] +
-                            " 0 ∧ Δ = 0."
+                            " 0 ∧ Δ = 0 ⇒ ƒ(x) " +
+                            operations[op] +
+                            " 0, x ≠ " +
+                            Writing.decimal(quadRoot[1])
                     )
                 } else {
                     // Duas raízes
@@ -322,44 +317,42 @@ export const Helpers = {
                                 Writing.decimal(quadRoot[1]) +
                                 " < x < " +
                                 Writing.decimal(quadRoot[2]) +
-                                "\nƒ(x) < 0 " +
-                                tr("se", "if") +
-                                " (x < " +
-                                Writing.decimal(quadRoot[1]) +
-                                ") ∨ (x > " +
-                                Writing.decimal(quadRoot[2]) +
-                                ")\nƒ(x) = 0 " +
+                                "\nƒ(x) = 0 " +
                                 tr("em", "in") +
                                 " x = " +
                                 Writing.decimal(quadRoot[1]) +
-                                ", " +
+                                " ∨ x = " +
+                                Writing.decimal(quadRoot[2]) +
+                                "\nƒ(x) < 0 " +
+                                tr("se", "if") +
+                                " x < " +
+                                Writing.decimal(quadRoot[1]) +
+                                " ∨ x > " +
                                 Writing.decimal(quadRoot[2]),
-                            tr("Conforme a concavidade e a raízes, ", "According to the concavity and the roots, ") +
-                                "a < 0 ∧ Δ > 0."
+                            "a < 0 ∧ Δ > 0"
                         )
                     } else {
                         // Concavidade para cima
                         Ui.display(
                             "ƒ(x) > 0 " +
                                 tr("se", "if") +
-                                " (x < " +
+                                " x < " +
                                 Writing.decimal(quadRoot[1]) +
-                                ") ∨ (x > " +
-                                Writing.decimal(quadRoot[2]) +
-                                ")\nƒ(x) < 0 " +
-                                tr("se", "if") +
-                                " " +
-                                Writing.decimal(quadRoot[1]) +
-                                " < x < " +
+                                " ∨ x > " +
                                 Writing.decimal(quadRoot[2]) +
                                 "\nƒ(x) = 0 " +
                                 tr("em", "in") +
                                 " x = " +
                                 Writing.decimal(quadRoot[1]) +
-                                ", " +
+                                " ∨ x = " +
+                                Writing.decimal(quadRoot[2]) +
+                                "\nƒ(x) < 0 " +
+                                tr("se", "if") +
+                                " " +
+                                Writing.decimal(quadRoot[1]) +
+                                " < x < " +
                                 Writing.decimal(quadRoot[2]),
-                            tr("Conforme a concavidade e a raízes, ", "According to the concavity and the roots, ") +
-                                "a > 0 ∧ Δ > 0."
+                            "a > 0 ∧ Δ > 0."
                         )
                     }
                 }
@@ -378,16 +371,15 @@ export const Helpers = {
                                 tr("se", "if") +
                                 " x > " +
                                 Writing.decimal(expRoot) +
-                                "\nƒ(x) < 0 " +
-                                tr("se", "if") +
-                                " x < " +
-                                Writing.decimal(expRoot) +
                                 "\nƒ(x) = 0 " +
                                 tr("em", "in") +
                                 " x = " +
+                                Writing.decimal(expRoot) +
+                                "\nƒ(x) < 0 " +
+                                tr("se", "if") +
+                                " x < " +
                                 Writing.decimal(expRoot),
-                            tr("Conforme a concavidade e a raízes, ", "According to the concavity and the roots, ") +
-                                "a > 0 ∧ (−c) / b > 0."
+                            "a > 0 ∧ (−c) / b > 0."
                         )
                     } else if ((coefA > 1 && coefB < 0) || (coefA < 1 && coefB > 0)) {
                         // Curva para baixo
@@ -396,16 +388,15 @@ export const Helpers = {
                                 tr("se", "if") +
                                 " x < " +
                                 Writing.decimal(expRoot) +
-                                "\nƒ(x) < 0 " +
-                                tr("se", "if") +
-                                " x > " +
-                                Writing.decimal(expRoot) +
                                 "\nƒ(x) = 0 " +
                                 tr("em", "in") +
                                 " x = " +
+                                Writing.decimal(expRoot) +
+                                "\nƒ(x) < 0 " +
+                                tr("se", "if") +
+                                " x > " +
                                 Writing.decimal(expRoot),
-                            tr("Conforme a concavidade e a raízes, ", "According to the concavity and the roots, ") +
-                                "a < 0 ∧ (−c) / b > 0."
+                            "a < 0 ∧ (−c) / b > 0."
                         )
                     }
                 } else if (coefB > 0) {
@@ -425,15 +416,15 @@ export const Helpers = {
                             tr("se", "if") +
                             " x > " +
                             Writing.decimal(logRoot) +
-                            "\nƒ(x) < 0 " +
-                            tr("se", "if") +
-                            " x < " +
-                            Writing.decimal(logRoot) +
                             "\nƒ(x) = 0 " +
                             tr("em", "in") +
                             " x = " +
+                            Writing.decimal(logRoot) +
+                            "\nƒ(x) < 0 " +
+                            tr("se", "if") +
+                            " x < " +
                             Writing.decimal(logRoot),
-                        tr("Conforme a curva (crescente)", "According to the curve (upward)")
+                        "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)"
                     )
                 } else if ((coefA > 1 && coefB < 0) || (coefA < 1 && coefB > 0)) {
                     // Curva para baixo
@@ -442,15 +433,15 @@ export const Helpers = {
                             tr("se", "if") +
                             " x < " +
                             Writing.decimal(logRoot) +
-                            "\nƒ(x) < 0 " +
-                            tr("se", "if") +
-                            " x > " +
-                            Writing.decimal(logRoot) +
                             "\nƒ(x) = 0 " +
                             tr("em", "in") +
                             " x = " +
+                            Writing.decimal(logRoot) +
+                            "\nƒ(x) < 0 " +
+                            tr("se", "if") +
+                            " x > " +
                             Writing.decimal(logRoot),
-                        tr("Conforme a curva (decrescente)", "According to the curve (downward)")
+                        "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)"
                     )
                 }
             }
@@ -620,18 +611,18 @@ export const Helpers = {
      * @param {string} lower - Mensagem para Delta < 0
      * @param {string} equal - Mensagem para Delta = 0
      * @param {string} higher - Mensagem para Delta > 0
-     * @param {boolean} hasY - Se é (c - y)
+     * @param {boolean} hasY - Se é (c − y)
      * @since v6.1.0
      */
     showDelta(delta = 0, lower = "", equal = "", higher = "", hasY = false) {
         if (delta < 0) {
-            Ui.display(lower, "Δ = b² - 4 · a · " + (hasY ? "(c - y)" : "c") + " ⇒ Δ < 0 ⇒ x ∉ ℝ")
+            Ui.display(lower, "Δ = b² − 4 · a · " + (hasY ? "(c − y)" : "c") + " ⇒ Δ < 0 ⇒ x ∉ ℝ")
         } else if (delta == 0) {
-            Ui.display(equal, "Δ = b² - 4 · a · " + (hasY ? "(c - y)" : "c") + " ⇒ Δ = 0 ⇒ x = (-b) / (2 · a)")
+            Ui.display(equal, "Δ = b² − 4 · a · " + (hasY ? "(c − y)" : "c") + " ⇒ Δ = 0 ⇒ x = (−b) / (2 · a)")
         } else {
             Ui.display(
                 higher,
-                "Δ = b² - 4 · a · " + (hasY ? "(c - y)" : "c") + " ⇒ Δ > 0 ⇒ x₁, x₂ = (-b ± √Δ) / (2 · a)"
+                "Δ = b² − 4 · a · " + (hasY ? "(c − y)" : "c") + " ⇒ Δ > 0 ⇒ x₁, x₂ = (−b ± √Δ) / (2 · a)"
             )
         }
     },

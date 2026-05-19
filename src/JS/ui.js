@@ -48,7 +48,7 @@ export const Ui = {
             return confirm(
                 Writing.format(
                     message,
-                    explanation + "\n\n" + tr("“Ok” = “Sim” | “Cancelar” = “Não”", "“Ok” = “Yes” | “Cancel” = “No”")
+                    explanation + "\n\n" + tr("“Ok” = Sim | “Cancelar” = Não", "“Ok” = Yes | “Cancel” = No")
                 )
             )
         }
