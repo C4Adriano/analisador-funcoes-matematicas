@@ -32,8 +32,7 @@ export const Analyze = {
     constant(coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""],
-            constOptions = trArr([].concat(baseOptions))
+            menuResp = [0, ""]
 
         // Mostra
         Ui.function(0, 0, coefC)
@@ -42,7 +41,7 @@ export const Analyze = {
         let limit = 0
         do {
             // Menu
-            menuResp = Ui.menu(constOptions, page)
+            menuResp = Ui.menu(trArr([].concat(baseOptions)), page)
             option = menuResp[0]
             page = menuResp[1]
             if (Commands.names().includes(menuResp[0])) {
@@ -124,13 +123,7 @@ export const Analyze = {
     affine(coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""],
-            affineOptions = trArr(
-                [
-                    ["Inclinação", "Slope"],
-                    ["Raiz", "Root"],
-                ].concat(baseOptions)
-            )
+            menuResp = [0, ""]
 
         // Mostra
         Ui.function(0, coefB, coefC)
@@ -142,7 +135,15 @@ export const Analyze = {
         let limit = 0
         do {
             // Menu
-            menuResp = Ui.menu(affineOptions, page)
+            menuResp = Ui.menu(
+                trArr(
+                    [
+                        ["Inclinação", "Slope"],
+                        ["Raiz", "Root"],
+                    ].concat(baseOptions)
+                ),
+                page
+            )
             page = menuResp[1]
             option = menuResp[0]
             if (Commands.names().includes(menuResp[0])) {
@@ -231,14 +232,7 @@ export const Analyze = {
     quadratic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""],
-            quadOptions = trArr(
-                [
-                    ["Concavidade", "Concavity"],
-                    ["Raízes", "Roots"],
-                    ["Vértice", "Vertex"],
-                ].concat(baseOptions)
-            )
+            menuResp = [0, ""]
 
         // Mostra
         Ui.function(coefA, coefB, coefC)
@@ -251,7 +245,16 @@ export const Analyze = {
         let limit = 0
         do {
             // Menu
-            menuResp = Ui.menu(quadOptions, page)
+            menuResp = Ui.menu(
+                trArr(
+                    [
+                        ["Concavidade", "Concavity"],
+                        ["Raízes", "Roots"],
+                        ["Vértice", "Vertex"],
+                    ].concat(baseOptions)
+                ),
+                page
+            )
             option = menuResp[0]
             page = menuResp[1]
             if (Commands.names().includes(menuResp[0])) {
@@ -392,14 +395,7 @@ export const Analyze = {
     exponential(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""],
-            expOptions = trArr(
-                [
-                    ["Curva", "Curve"],
-                    ["Raiz", "Root"],
-                    ["Assíntota", "Asymptote"],
-                ].concat(baseOptions)
-            )
+            menuResp = [0, ""]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, true)
@@ -411,7 +407,16 @@ export const Analyze = {
         let limit = 0
         do {
             // Menu
-            menuResp = Ui.menu(expOptions, page)
+            menuResp = Ui.menu(
+                trArr(
+                    [
+                        ["Curva", "Curve"],
+                        ["Raiz", "Root"],
+                        ["Assíntota", "Asymptote"],
+                    ].concat(baseOptions)
+                ),
+                page
+            )
             option = menuResp[0]
             page = menuResp[1]
             if (Commands.names().includes(menuResp[0])) {
@@ -521,13 +526,7 @@ export const Analyze = {
     logarithmic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""],
-            logOptions = trArr(
-                [
-                    ["Curva", "Curve"],
-                    ["Raiz", "Root"],
-                ].concat(baseOptions)
-            )
+            menuResp = [0, ""]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, true)
@@ -539,7 +538,15 @@ export const Analyze = {
         let limit = 0
         do {
             // Menu
-            menuResp = Ui.menu(logOptions, page)
+            menuResp = Ui.menu(
+                trArr(
+                    [
+                        ["Curva", "Curve"],
+                        ["Raiz", "Root"],
+                    ].concat(baseOptions)
+                ),
+                page
+            )
             option = menuResp[0]
             page = menuResp[1]
             if (Commands.names().includes(menuResp[0])) {
@@ -628,13 +635,7 @@ export const Analyze = {
     sine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""],
-            sinOptions = trArr(
-                [
-                    ["Amplitude", "Amplitude"],
-                    ["Período", "Period"],
-                ].concat(baseOptions)
-            )
+            menuResp = [0, ""]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "sin")
@@ -645,7 +646,15 @@ export const Analyze = {
         // Loop
         let limit = 0
         do {
-            menuResp = Ui.menu(sinOptions, page)
+            menuResp = Ui.menu(
+                trArr(
+                    [
+                        ["Amplitude", "Amplitude"],
+                        ["Período", "Period"],
+                    ].concat(baseOptions)
+                ),
+                page
+            )
             option = menuResp[0]
             page = menuResp[1]
             if (Commands.names().includes(menuResp[0])) {
@@ -720,13 +729,7 @@ export const Analyze = {
     cosine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""],
-            cosOptions = trArr(
-                [
-                    ["Amplitude", "Amplitude"],
-                    ["Período", "Period"],
-                ].concat(baseOptions)
-            )
+            menuResp = [0, ""]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "cos")
@@ -737,7 +740,15 @@ export const Analyze = {
         // Loop
         let limit = 0
         do {
-            menuResp = Ui.menu(cosOptions, page)
+            menuResp = Ui.menu(
+                trArr(
+                    [
+                        ["Amplitude", "Amplitude"],
+                        ["Período", "Period"],
+                    ].concat(baseOptions)
+                ),
+                page
+            )
             option = menuResp[0]
             page = menuResp[1]
             if (Commands.names().includes(menuResp[0])) {
@@ -812,13 +823,7 @@ export const Analyze = {
     tangent(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""],
-            tanOptions = trArr(
-                [
-                    ["Assíntotas verticais", "Vertical asymptotes"],
-                    ["Período", "Period"],
-                ].concat(baseOptions)
-            )
+            menuResp = [0, ""]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "tan")
@@ -829,7 +834,15 @@ export const Analyze = {
         // Loop
         let limit = 0
         do {
-            menuResp = Ui.menu(tanOptions, page)
+            menuResp = Ui.menu(
+                trArr(
+                    [
+                        ["Assíntotas verticais", "Vertical asymptotes"],
+                        ["Período", "Period"],
+                    ].concat(baseOptions)
+                ),
+                page
+            )
             option = menuResp[0]
             page = menuResp[1]
             if (Commands.names().includes(menuResp[0])) {

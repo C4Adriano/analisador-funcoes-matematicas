@@ -90,7 +90,7 @@ export const Helpers = {
      */
     yAxis(point = 0, func = "c", explanation = "c") {
         Ui.display(
-            tr("Interseção com o eixo y: ", "Intersection with the y‐axis") +
+            tr("Interseção com o eixo y: ", "Intersection with the y‐axis: ") +
                 (point != "∄" ? "(0, " + Writing.decimal(point) + ")" : "∄"),
             tr("Como y = ", "Since y = ") + func + (point != "∄" ? " ⇒ (0, " + explanation + ")" : explanation)
         )
