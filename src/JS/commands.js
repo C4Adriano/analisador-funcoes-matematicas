@@ -1,5 +1,5 @@
 import { Config, VERSION, saveConfig, resetConfig } from "./config.js"
-import { changeLanguage, tr } from "./i18n.js"
+import { tr, changeLanguage } from "./i18n.js"
 import { State } from "./state.js"
 import { Test } from "./test.js"
 import { Ui } from "./ui.js"
@@ -24,7 +24,7 @@ export const Commands = {
 
         let parts = Writing.noAccents(raw.slice(1).toLowerCase()).split(" "),
             cmd = parts[0],
-            arg = Commands.parseBool(parts[1] || ""),
+            arg = Commands.parseBool(parts[1]),
             canonical = Commands.resolveCmd(cmd),
             cmds = Commands.listCmd()
 
@@ -47,8 +47,8 @@ export const Commands = {
                         ")\n" +
                         tr("Deseja executar essa sugestão?", "Do you want to run this suggestion?")
                 )
-                if (answer == true) {
-                    return Commands.process("“/" + suggestion.canonical + " " + (parts[1] || ""))
+                if (answer) {
+                    return Commands.process("/" + suggestion.canonical + " " + parts[1])
                 }
                 return null
             }
@@ -115,16 +115,13 @@ export const Commands = {
             keys = Object.keys(cmds),
             best = "",
             lowerDist = Infinity,
-            i = 0,
-            j = 0,
-            candidates = [],
-            dist = 0
+            candidates = []
 
-        for (i = 0; i < keys.length; i++) {
+        for (let i = 0; i < keys.length; i++) {
             candidates = [keys[i]].concat(cmds[keys[i]].variations)
 
-            for (j = 0; j < candidates.length; j++) {
-                dist = Commands.levenshtein(typed, candidates[j])
+            for (let j = 0; j < candidates.length; j++) {
+                let dist = Commands.levenshtein(typed, candidates[j])
                 if (dist < lowerDist) {
                     lowerDist = dist
                     best = keys[i]
@@ -132,11 +129,8 @@ export const Commands = {
             }
         }
 
-        if (lowerDist == 0) {
-            return { type: "exact", canonical: best, distance: 0 }
-        }
         if (lowerDist <= LIMIT) {
-            return { type: "suggestion", canonical: best, distance: lowerDist }
+            return { type: lowerDist == 0 ? "exact" : "suggestion", canonical: best, distance: lowerDist }
         }
         return { type: "unknown", canonical: "", distance: -1 }
     },
@@ -155,18 +149,15 @@ export const Commands = {
         let cmds = Commands.listCmd(),
             keys = Object.keys(cmds),
             results = [],
-            t = Writing.noAccents(term.toLowerCase()),
-            i = 0,
-            j = 0,
             cmd,
             candidates = []
 
-        for (i = 0; i < keys.length; i++) {
+        for (let i = 0; i < keys.length; i++) {
             cmd = cmds[keys[i]]
             candidates = [keys[i], cmd.short, cmd.long].concat(cmd.variations)
 
-            for (j = 0; j < candidates.length; j++) {
-                if (Writing.noAccents(candidates[j].toLowerCase()).includes(t)) {
+            for (let j = 0; j < candidates.length; j++) {
+                if (Writing.noAccents(candidates[j].toLowerCase()).includes(Writing.noAccents(term.toLowerCase()))) {
                     results.push(keys[i])
                     break
                 }
@@ -191,29 +182,29 @@ export const Commands = {
                 ),
                 variations: ["ajuda", "help", "a", "h", "cmd", "cmds", "c", "comandos", "?"],
                 action(arg, parts) {
-                    return Commands.help(parts[1] || "")
+                    return Commands.help(parts[1])
                 },
             },
             search: {
                 short: tr("pesquisa comandos", "searches commands"),
                 long: tr(
-                    "Pesquisa comandos por termo no nome, variações e descrições.\nUso: /search <termo>",
+                    "Pesquisa comandos por termo no nome, variações e descrições.\nUso: /pesquisa <termo>",
                     "Searches commands by term in name, variations and descriptions.\nUsage: /search <term>"
                 ),
-                variations: ["pesquisar", "search", "buscar", "find", "procurar", "seek", "s"],
+                variations: ["pesquisa", "pesquisar", "search", "buscar", "find", "procurar", "seek", "s"],
                 action(arg, parts) {
-                    return Commands.searchHelp(parts[1] || "")
+                    return Commands.searchHelp(parts[1])
                 },
             },
             shortcuts: {
                 short: tr("lista variações de um comando", "lists variations of a command"),
                 long: tr(
-                    "Exibe todas as variações aceitas de um comando.\nUso: /shortcuts <comando>",
+                    "Exibe todas as variações aceitas de um comando.\nUso: /atalhos <comando>",
                     "Displays all accepted variations of a command.\nUsage: /shortcuts <command>"
                 ),
                 variations: ["atalhos", "shortcuts", "variacoes", "variacao", "aliases", "alias", "sc"],
                 action(arg, parts) {
-                    return Commands.shortcuts(parts[1] || "")
+                    return Commands.shortcuts(parts[1])
                 },
             },
             about: {
@@ -486,69 +477,115 @@ export const Commands = {
                     "language",
                     "lang",
                     "idioma",
+
+                    // Português
                     "pt",
-                    "en",
                     "pt-br",
-                    "ingles",
-                    "english",
+                    "pt-pt",
                     "portugues",
                     "portuguese",
+                    "brasileiro",
+                    "brazilian",
+                    "br",
+                    "ptbr",
+
+                    // Inglês
+                    "en",
+                    "en-us",
+                    "en-gb",
+                    "ingles",
+                    "english",
+                    "anglo",
+                    "eua",
+                    "usa",
+                    "uk",
                 ],
                 action(arg, parts) {
-                    if (parts[1] != undefined) {
-                        parts[1] = Writing.noAccents(Writing.lowercase(parts[1]))
+                    let target = parts[1] != undefined ? parts[1] : parts[0]
+                    target = Writing.noAccents(Writing.lowercase(target))
 
-                        // Português
-                        if (
-                            parts[1] == "pt-br" ||
-                            parts[1] == "pt" ||
-                            parts[1] == "portugues" ||
-                            parts[1] == "portuguese" ||
-                            parts[1] == "brasileiro" ||
-                            parts[1] == "brazilian"
-                        ) {
-                            if (Config.language == "pt") {
-                                Ui.warning(
-                                    tr(
-                                        "A língua já está definida como português.",
-                                        "The language is already set to Portuguese."
-                                    )
+                    // Português
+                    if (
+                        [
+                            // Geral
+                            "lusitano",
+                            "lusitana",
+
+                            // BR
+                            "br",
+                            "pt-br",
+                            "ptbr",
+                            "brasileiro",
+                            "brazilian",
+                            "brasil",
+                            "brazil",
+
+                            // PT
+                            "pt",
+                            "pt-pt",
+                            "ptpt",
+                            "portugues",
+                            "portuguese",
+                            "portugal",
+                        ].includes(target)
+                    ) {
+                        if (Config.language == "pt") {
+                            Ui.warning(
+                                tr(
+                                    "A língua já está definida como português.",
+                                    "The language is already set to Portuguese."
                                 )
-                            } else {
-                                changeLanguage("pt")
-                            }
-                        }
-
-                        // Inglês
-                        else if (
-                            parts[1] == "en" ||
-                            parts[1] == "english" ||
-                            parts[1] == "ingles" ||
-                            parts[1] == "inglese" ||
-                            parts[1] == "anglo" ||
-                            parts[1] == "anglo-saxon"
-                        ) {
-                            if (Config.language == "en") {
-                                Ui.warning(
-                                    tr(
-                                        "A língua já está definida como inglês.",
-                                        "The language is already set to English."
-                                    )
-                                )
-                            } else {
-                                changeLanguage("en")
-                            }
-                        }
-
-                        // Erro
-                        else {
-                            Ui.error(
-                                tr("Língua inválida", "Invalid language"),
-                                "“" + parts[1] + "” " + tr("não é uma língua válida", "is not a valid language")
                             )
+                        } else {
+                            changeLanguage("pt")
                         }
-                        return null
                     }
+
+                    // Inglês
+                    else if (
+                        [
+                            // Geral
+                            "en",
+                            "anglo",
+                            "anglo-saxon",
+                            "anglosaxon",
+
+                            // US
+                            "en-us",
+                            "enus",
+                            "americano",
+                            "american",
+                            "eua",
+                            "usa",
+
+                            // GB
+                            "en-gb",
+                            "engb",
+                            "ingles",
+                            "english",
+                            "britanico",
+                            "british",
+                            "uk",
+                        ].includes(target)
+                    ) {
+                        if (Config.language == "en") {
+                            Ui.warning(
+                                tr("A língua já está definida como inglês.", "The language is already set to English.")
+                            )
+                        } else {
+                            changeLanguage("en")
+                        }
+                    }
+
+                    // Erro — só mostra se o utilizador tentou passar um argumento explícito
+                    else if (parts[1] != undefined) {
+                        Ui.error(
+                            tr("Língua inválida", "Invalid language"),
+                            "“" + target + "” " + tr("não é uma língua válida", "is not a valid language")
+                        )
+                    }
+
+                    return null
                 },
             },
             debug: {
@@ -602,14 +639,12 @@ export const Commands = {
     resolveCmd(specific = "") {
         let cmds = Commands.listCmd(),
             cmdKeys = Object.keys(cmds),
-            canonical = specific,
-            i = 0
+            canonical = specific
 
-        while (i < cmdKeys.length && canonical == specific) {
+        for (let i = 0; i < cmdKeys.length && canonical == specific; i++) {
             if (cmds[cmdKeys[i]].variations.includes(specific)) {
                 canonical = cmdKeys[i]
             }
-            i++
         }
 
         return cmds[canonical] != undefined ? canonical : null
@@ -673,14 +708,8 @@ export const Commands = {
 
             let start = (page - 1) * 5,
                 end = Math.min(start + 5, key.length),
-                menu =
-                    tr("=== Ajuda ===", "=== Help ===") +
-                    "\n" +
-                    tr("Página ", "Page ") +
-                    String(page) +
-                    "“/" +
-                    String(total) +
-                    "\n"
+                menu = "=== " + tr("Ajuda", "Help") + " ==="
+            "\n" + tr("Página ", "Page ") + String(page) + "/" + String(total) + "\n"
 
             for (let i = start; i < end; i++) {
                 let aliases = [key[i]].concat(cmds[key[i]].variations).join(", ")
@@ -717,7 +746,10 @@ export const Commands = {
         if (term == "") {
             Ui.error(
                 tr("Pesquisa vazia", "Empty search"),
-                tr("Use: /search <termo>\nExemplo: /search lingua", "Usage: /search <term>\nExample: /search language")
+                tr(
+                    "Use: /pesquisa <termo>\nExemplo: /pesquisa lingua",
+                    "Usage: /search <term>\nExample: /search language"
+                )
             )
             return null
         }
@@ -746,15 +778,16 @@ export const Commands = {
             let start = (page - 1) * 5,
                 end = Math.min(start + 5, results.length),
                 menu =
-                    tr("=== Pesquisa: ", "=== Search: ") +
-                    "“" +
+                    "=== " +
+                    tr("Pesquisa", "Search") +
+                    ": “" +
                     term +
                     "” ===\n" +
                     String(results.length) +
                     " " +
                     tr("resultado(s) — Página ", "result(s) — Page ") +
                     String(page) +
-                    "“/" +
+                    "/" +
                     String(total) +
                     "\n"
 
@@ -794,7 +827,7 @@ export const Commands = {
             Ui.error(
                 tr("Comando não informado", "Command not provided"),
                 tr(
-                    "Use: /shortcuts <comando>\nExemplo: /shortcuts language",
+                    "Use: /atalhos <comando>\nExemplo: /atalhos language",
                     "Usage: /shortcuts <command>\nExample: /shortcuts language"
                 )
             )
