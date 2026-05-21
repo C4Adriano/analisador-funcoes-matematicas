@@ -38,7 +38,12 @@ Ui.display(
 // === OBJETOS GLOBAIS ===
 // Para alterar o HTML também, conforme a língua
 document.title = tr("Analisador de Funções Matemáticas", "Mathematical Function Analyzer")
-document.querySelector("h1").textContent = tr("Matemática", "Mathematics")
+let h1 = document.querySelector("h1")
+if (h1) {
+    h1.textContent = tr("Matemática", "Mathematics")
+} else {
+    Ui.error("[main] Elemento 'h1' não encontrado no DOM.", "", true)
+}
 document.documentElement.lang = Config.language
 
 let subType = 0,
@@ -320,7 +325,7 @@ do {
                 subLoop = false
 
                 if (
-                    (0 <= subType && subType <= 2) ||
+                    (0 <= subType && subType <= 3) ||
                     (6 <= subType && subType <= 9) ||
                     Commands.names().includes(subType)
                 ) {
@@ -462,7 +467,7 @@ do {
             State.loop = true
 
             // Error de histórico
-            if (State.history.length == 1) {
+            if (State.history.length <= 1) {
                 Ui.display(
                     tr("Não há histórico o suficiente para mudanças.", "There is no history yet for changes."),
                     tr(
@@ -497,17 +502,20 @@ do {
                 // Escolha
                 answer = Ui.range(message, "", 0, State.history.length - 1)
 
-                // Restaura função
-                let index = State.history.length - 1 - answer
-                ;((State.globalA = State.history[index][0]),
-                    (State.globalB = State.history[index][1]),
-                    (State.globalC = State.history[index][2]))
-                if (
-                    State.globalA != State.currentFunc[0] ||
-                    State.globalB != State.currentFunc[1] ||
-                    State.globalC != State.currentFunc[2]
-                ) {
-                    State.currentFunc = [State.globalA, State.globalB, State.globalC]
+                if (answer != 0) {
+                    // Restaura função
+                    let index = State.history.length - answer
+
+                    State.globalA = State.history[index][0]
+                    State.globalB = State.history[index][1]
+                    State.globalC = State.history[index][2]
+                    if (
+                        State.globalA != State.currentFunc[0] ||
+                        State.globalB != State.currentFunc[1] ||
+                        State.globalC != State.currentFunc[2]
+                    ) {
+                        State.currentFunc = [State.globalA, State.globalB, State.globalC]
+                    }
                 }
             }
         }
@@ -939,8 +947,12 @@ do {
                                 Config.language == "en"
                                     ? "Mathematical Function Analyzer"
                                     : "Analisador de Funções Matemáticas"
-                            document.querySelector("h1").textContent =
-                                Config.language == "en" ? "Mathematics" : "Matemática"
+                            let h1 = document.querySelector("h1")
+                            if (h1) {
+                                h1.textContent = tr("Matemática", "Mathematics")
+                            } else {
+                                Ui.error("[main] Elemento 'h1' não encontrado no DOM.", "", true)
+                            }
                             document.documentElement.lang = Config.language
                         }
                     }
@@ -961,7 +973,9 @@ do {
                 }
 
                 // Salvar as configurações
-                saveConfig()
+                if (1 <= choice && choice <= 6) {
+                    saveConfig()
+                }
             } while (choice != 0)
         }
 

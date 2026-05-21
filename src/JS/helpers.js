@@ -238,26 +238,27 @@ export const Helpers = {
             // Polinomial
             if (coefA == 0 && coefB == 0) {
                 // Constante
-                let op = coefC > 0 ? "positive" : "negative"
+                let operation = coefC > 0 ? "positive" : "negative"
                 Ui.display(
-                    "ƒ(x) " + (coefC != 0 ? operations[op] : "=") + " 0, ∀ x ∈ ℝ",
+                    "ƒ(x) " + (coefC != 0 ? operations[operation] : "=") + " 0, ∀ x ∈ ℝ",
                     "c " +
-                        (coefC != 0 ? operations[op] : "=") +
+                        (coefC != 0 ? operations[operation] : "=") +
                         " 0 ⇒ ƒ(x) " +
-                        (coefC != 0 ? operations[op] : "=") +
+                        (coefC != 0 ? operations[operation] : "=") +
                         " 0 ⇒ ∀ x ∈ ℝ"
                 )
             } else if (coefA == 0 && coefB != 0) {
                 // Afim
                 let affineRoot = Helpers.calcRoot(0, coefB, coefC),
-                    op = coefB > 0 ? "positive" : "negative"
+                    operation = coefB > 0 ? "positive" : "negative",
+                    opposite = operation == "positive" ? "negative" : "positive"
                 Ui.display(
                     "ƒ(x) " +
-                        operations[op] +
+                        operations[operation] +
                         " 0 " +
                         tr("se", "if") +
                         " x " +
-                        operations[(op + (coefB < 0 ? 1 : 0)) % 2] +
+                        operations[opposite] +
                         " " +
                         affineRoot +
                         "\nƒ(x) = 0 " +
@@ -265,19 +266,19 @@ export const Helpers = {
                         " x = " +
                         affineRoot +
                         "\nƒ(x) " +
-                        operations[1 - op] +
+                        operations[opposite] +
                         " 0 " +
                         tr("se", "if") +
                         " x " +
-                        operations[(1 - op + (coefB < 0 ? 1 : 0)) % 2] +
+                        operations[operation] +
                         " " +
                         affineRoot,
-                    "b " + operations[op] + " 0 ⇒ ƒ " + tr("crescente", "increasing")
+                    "b " + operations[operation] + " 0 ⇒ ƒ(x) " + tr("crescente", "increasing")
                 )
             } else if (coefA != 0) {
                 // Quadrática
                 let quadRoot = Helpers.calcRoot(coefA, coefB, coefC),
-                    op = coefA > 0 ? "positive" : "negative"
+                    operation = coefA > 0 ? "positive" : "negative"
                 if (quadRoot[1] > quadRoot[2]) {
                     // Inverte para ficar de menor a maior
                     let temp = quadRoot[2]
@@ -287,22 +288,22 @@ export const Helpers = {
                 if (quadRoot[0] < 0) {
                     // Sem raiz
                     Ui.display(
-                        "ƒ(x) " + operations[op] + " 0, ∀ x ∈ ℝ",
-                        "a " + operations[op] + " 0 ∧ Δ < 0 ⇒ ƒ(x) " + operations[op] + " 0, ∀ x ∈ ℝ"
+                        "ƒ(x) " + operations[operation] + " 0, ∀ x ∈ ℝ",
+                        "a " + operations[operation] + " 0 ∧ Δ < 0 ⇒ ƒ(x) " + operations[operation] + " 0, ∀ x ∈ ℝ"
                     )
                 } else if (quadRoot[0] == 0) {
                     // Uma raiz
                     Ui.display(
                         "ƒ(x) " +
-                            operations[op] +
+                            operations[operation] +
                             " 0, " +
                             tr("exceto em", "except in") +
                             " x = " +
                             Writing.decimal(quadRoot[1]),
                         "a " +
-                            operations[op] +
+                            operations[operation] +
                             " 0 ∧ Δ = 0 ⇒ ƒ(x) " +
-                            operations[op] +
+                            operations[operation] +
                             " 0, x ≠ " +
                             Writing.decimal(quadRoot[1])
                     )
@@ -538,7 +539,7 @@ export const Helpers = {
      * @param {number} coefC - Coeficiente c
      * @param {boolean} funcExp - Exponencial
      * @param {boolean} funcLog - Logarítmica
-     * @returns {number} - Raiz
+     * @returns {number | number[]} - Raiz
      * @since v6.1.0
      */
     calcRoot(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {

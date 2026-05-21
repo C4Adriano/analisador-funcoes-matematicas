@@ -18,7 +18,7 @@ export const Commands = {
      * @since v6.1.0
      */
     process(raw = "") {
-        if (raw[0] != "/") {
+        if (typeof raw !== "string" || raw.length === 0 || raw[0] !== "/") {
             return null
         }
 
@@ -637,6 +637,10 @@ export const Commands = {
      * @since v6.1.0
      */
     resolveCmd(specific = "") {
+        if (typeof specific !== "string" || specific === "") {
+            return null
+        }
+
         let cmds = Commands.listCmd(),
             cmdKeys = Object.keys(cmds),
             canonical = specific
@@ -708,8 +712,16 @@ export const Commands = {
 
             let start = (page - 1) * 5,
                 end = Math.min(start + 5, key.length),
-                menu = "=== " + tr("Ajuda", "Help") + " ==="
-            "\n" + tr("Página ", "Page ") + String(page) + "/" + String(total) + "\n"
+                menu =
+                    "=== " +
+                    tr("Ajuda", "Help") +
+                    " ===" +
+                    "\n" +
+                    tr("Página ", "Page ") +
+                    String(page) +
+                    "/" +
+                    String(total) +
+                    "\n"
 
             for (let i = start; i < end; i++) {
                 let aliases = [key[i]].concat(cmds[key[i]].variations).join(", ")
@@ -912,6 +924,20 @@ export const Commands = {
      * @since v6.1.0
      */
     change(name = "", value = null) {
+        if (Config[name] === undefined) {
+            Ui.error("[Commands.change] Configuração inexistente.", "'" + name + "' não existe em Config.", true)
+            return null
+        }
+
+        if (value != null && typeof value !== typeof Config[name]) {
+            Ui.error(
+                "[Commands.change] Tipo inválido.",
+                "Esperado: " + typeof Config[name] + " | Recebido: " + typeof value,
+                true
+            )
+            return null
+        }
+
         if (value != null) {
             Config[name] = value
         } else {

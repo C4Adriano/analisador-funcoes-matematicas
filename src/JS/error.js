@@ -14,8 +14,15 @@ export const Error = {
      * @since v6.1.0
      */
     range(min = 0, max = 1) {
+        if (!isFinite(min) || !isFinite(max)) {
+            Ui.error("[Error.range] Parâmetros inválidos.", "Min: " + min + " | Max: " + max, true)
+            min = 0
+            max = 1
+        }
+
         Ui.error(
             tr("ERRO-001: Valor fora do intervalo. Escolha entre ", "ERROR-001: Value out of range. Choose between ") +
+                /* Se min = 0, o range exibido começa em 1 (0 é reservado para "voltar/sair") */
                 String(min + (min == 0 ? 1 : 0)) +
                 tr(" e ", " and ") +
                 String(max) +
@@ -30,6 +37,11 @@ export const Error = {
      * @since v6.1.0
      */
     divZero(reason = "") {
+        if (typeof reason !== "string") {
+            Ui.error("[Error.divZero] 'reason' inválido.", "Recebido: " + reason, true)
+            reason = ""
+        }
+
         Ui.error(
             tr("ERRO-002: Divisão por zero", "ERROR-002: Division by zero"),
             reason != ""
@@ -72,6 +84,11 @@ export const Error = {
      * @since v6.1.0
      */
     invalidFunction(type = "") {
+        if (typeof type != "string") {
+            Ui.error("[Error.invalidFunction] 'type' inválido.", "Recebido: " + type, true)
+            type = ""
+        }
+
         Ui.error(tr("ERRO-005: A função não é ", "ERROR-005: The function is not ") + type, "a < 0")
     },
 
@@ -82,6 +99,15 @@ export const Error = {
      * @since v6.1.0
      */
     invalidLog(type = "log", reason = "") {
+        if (typeof type != "string") {
+            Ui.error("[Error.invalidLog] 'type' inválido.", "Recebido: " + type, true)
+            type = "log"
+        }
+        if (typeof reason != "string") {
+            Ui.error("[Error.invalidLog] 'reason' inválido.", "Recebido: " + reason, true)
+            reason = ""
+        }
+
         Ui.error(
             tr("ERRO-006: ", "ERROR-006: ") + type + tr(" inválido", " invalid"),
             reason != ""

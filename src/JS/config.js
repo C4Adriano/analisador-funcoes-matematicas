@@ -41,19 +41,31 @@ export function loadConfig() {
     }
 
     if (savedVersion !== VERSION) {
-        // Versão diferente: descarta o salvo e começa do zero
         localStorage.removeItem("config")
         localStorage.removeItem("configVersion")
         return
     }
 
-    let savedConfig = JSON.parse(saved),
-        keys = Object.keys(savedConfig)
+    let savedConfig
+    try {
+        savedConfig = JSON.parse(saved)
+    } catch (e) {
+        console.warn("[loadConfig] Config corrompida no localStorage. Ignorando.", e)
+        localStorage.removeItem("config")
+        localStorage.removeItem("configVersion")
+        return
+    }
 
+    let keys = Object.keys(savedConfig)
     for (let i = 0; i < keys.length; i++) {
         let key = keys[i]
-        if (Config[key] !== undefined) {
+        if (Config[key] !== undefined && typeof savedConfig[key] === typeof Config[key]) {
             Config[key] = savedConfig[key]
+        } else if (Config[key] !== undefined) {
+            console.warn(
+                "[loadConfig] Tipo inválido para '" + key + "'.",
+                "Esperado: " + typeof Config[key] + " | Recebido: " + typeof savedConfig[key]
+            )
         }
     }
 }
@@ -63,8 +75,12 @@ export function loadConfig() {
  * @since v6.1.0
  */
 export function saveConfig() {
-    localStorage.setItem("config", JSON.stringify(Config))
-    localStorage.setItem("configVersion", VERSION)
+    try {
+        localStorage.setItem("config", JSON.stringify(Config))
+        localStorage.setItem("configVersion", VERSION)
+    } catch (e) {
+        console.warn("[saveConfig] Não foi possível salvar as configurações.", e)
+    }
 }
 
 /**
@@ -73,6 +89,7 @@ export function saveConfig() {
  */
 export function resetConfig() {
     localStorage.removeItem("config")
+    localStorage.removeItem("configVersion")
 
     let keys = Object.keys(DEFAULT_CONFIG)
     for (let i = 0; i < keys.length; i++) {

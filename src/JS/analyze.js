@@ -6,7 +6,7 @@ import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
-let baseOptions = [
+const BASE_OPTIONS = [
     ["Domínio", "Domain"],
     ["Imagem", "Range"],
     ["Interseção com o eixo x", "X‐axis intersection"],
@@ -32,7 +32,7 @@ export const Analyze = {
     constant(coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(0, 0, coefC)
@@ -41,7 +41,7 @@ export const Analyze = {
         let limit = 0
         do {
             // Menu
-            menuResp = Ui.menu(trArr([].concat(baseOptions)), page)
+            menuResp = Ui.menu(trArr([].concat(BASE_OPTIONS)), page)
             option = menuResp[0]
             page = menuResp[1]
             if (Commands.names().includes(menuResp[0])) {
@@ -61,7 +61,7 @@ export const Analyze = {
                     Helpers.range(
                         "= " + Writing.decimal(coefC),
                         ".",
-                        "y = c ⇒ ƒ " + tr("assume apenas esse valor", "takes only this value")
+                        "y = c ⇒ ƒ(x) " + tr("assume apenas esse valor", "takes only this value")
                     )
                 }
 
@@ -101,7 +101,7 @@ export const Analyze = {
 
             // Rever
             if (option == 6) {
-                Ui.function(0, 0, coefC, false, false, 0, true)
+                Ui.function(0, 0, coefC, false, false, "", true)
             }
 
             // Limite
@@ -123,7 +123,7 @@ export const Analyze = {
     affine(coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(0, coefB, coefC)
@@ -140,7 +140,7 @@ export const Analyze = {
                     [
                         ["Inclinação", "Slope"],
                         ["Raiz", "Root"],
-                    ].concat(baseOptions)
+                    ].concat(BASE_OPTIONS)
                 ),
                 page
             )
@@ -209,7 +209,7 @@ export const Analyze = {
 
             // Rever
             if (option == 6) {
-                Ui.function(0, coefB, coefC, false, false, 0, true)
+                Ui.function(0, coefB, coefC, false, false, "", true)
             }
 
             // Limite
@@ -232,7 +232,7 @@ export const Analyze = {
     quadratic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(coefA, coefB, coefC)
@@ -251,7 +251,7 @@ export const Analyze = {
                         ["Concavidade", "Concavity"],
                         ["Raízes", "Roots"],
                         ["Vértice", "Vertex"],
-                    ].concat(baseOptions)
+                    ].concat(BASE_OPTIONS)
                 ),
                 page
             )
@@ -372,7 +372,7 @@ export const Analyze = {
 
             // Rever
             if (option == 6) {
-                Ui.function(coefA, coefB, coefC, false, false, 0, true)
+                Ui.function(coefA, coefB, coefC, false, false, "", true)
             }
 
             // Limite
@@ -395,7 +395,7 @@ export const Analyze = {
     exponential(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, true)
@@ -413,7 +413,7 @@ export const Analyze = {
                         ["Curva", "Curve"],
                         ["Raiz", "Root"],
                         ["Assíntota", "Asymptote"],
-                    ].concat(baseOptions)
+                    ].concat(BASE_OPTIONS)
                 ),
                 page
             )
@@ -503,7 +503,7 @@ export const Analyze = {
 
             // Rever
             if (option == 6) {
-                Ui.function(coefA, coefB, coefC, true, false, 0, true)
+                Ui.function(coefA, coefB, coefC, true, false, "", true)
             }
 
             // Limite
@@ -526,7 +526,7 @@ export const Analyze = {
     logarithmic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, true)
@@ -543,7 +543,7 @@ export const Analyze = {
                     [
                         ["Curva", "Curve"],
                         ["Raiz", "Root"],
-                    ].concat(baseOptions)
+                    ].concat(BASE_OPTIONS)
                 ),
                 page
             )
@@ -612,7 +612,7 @@ export const Analyze = {
 
             // Rever
             if (option == 6) {
-                Ui.function(coefA, coefB, coefC, false, true, 0, true)
+                Ui.function(coefA, coefB, coefC, false, true, "", true)
             }
 
             // Limite
@@ -635,7 +635,7 @@ export const Analyze = {
     sine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "sin")
@@ -651,7 +651,7 @@ export const Analyze = {
                     [
                         ["Amplitude", "Amplitude"],
                         ["Período", "Period"],
-                    ].concat(baseOptions)
+                    ].concat(BASE_OPTIONS)
                 ),
                 page
             )
@@ -729,7 +729,7 @@ export const Analyze = {
     cosine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "cos")
@@ -745,7 +745,7 @@ export const Analyze = {
                     [
                         ["Amplitude", "Amplitude"],
                         ["Período", "Period"],
-                    ].concat(baseOptions)
+                    ].concat(BASE_OPTIONS)
                 ),
                 page
             )
@@ -823,7 +823,7 @@ export const Analyze = {
     tangent(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, ""]
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "tan")
@@ -839,7 +839,7 @@ export const Analyze = {
                     [
                         ["Assíntotas verticais", "Vertical asymptotes"],
                         ["Período", "Period"],
-                    ].concat(baseOptions)
+                    ].concat(BASE_OPTIONS)
                 ),
                 page
             )

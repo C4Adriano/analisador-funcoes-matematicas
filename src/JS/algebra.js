@@ -20,11 +20,16 @@ export const Algebra = {
      * @since v6.1.0
      */
     round(number = 0, places = Config.decimalPlaces) {
+        if (!isFinite(places) || places < 0 || !Number.isInteger(places)) {
+            Ui.error("[Algebra.round] 'places' inválido: " + places, "Usando padrão: " + Config.decimalPlaces, true)
+            places = Config.decimalPlaces
+        }
+
         number = Writing.decimal(number, true)
 
         if (isFinite(number)) {
             number = Math.round(number * 10 ** places) / 10 ** places
-            if (number == "-0") {
+            if (number == 0) {
                 number = 0
             }
         }
@@ -39,6 +44,11 @@ export const Algebra = {
      * @since v6.1.0
      */
     variables(name = "x") {
+        if (typeof name != "string" || name.trim() == "") {
+            Ui.error("[Algebra.variables] 'name' inválido:" + name, "Usando 'x'", true)
+            name = "x"
+        }
+
         let value = Ui.input(
             name + " = ",
             tr(
@@ -61,6 +71,11 @@ export const Algebra = {
      * @since v6.1.0
      */
     point(type = 1) {
+        if (type != 1 && type != 2 && type != 3) {
+            console.warn("[Algebra.point] 'type' inválido:", type, "— usando 1")
+            type = 1
+        }
+
         let array = [],
             x1 = 0,
             x2 = 0,
@@ -662,11 +677,17 @@ export const Algebra = {
 
         // Valida
         if (denominator == 0 || !isFinite(numerator) || !isFinite(denominator)) {
+            Ui.error(
+                "[Algebra.division] Entrada inválida.",
+                "numerator: " + numerator + "denominator: " + denominator,
+                true
+            )
             return NaN
         }
 
         // Denominador pequeno
         if (Algebra.absolute(denominator) <= precision) {
+            Ui.error("[Algebra.division] Denominador próximo de zero.", denominator, true)
             return NaN
         }
 
@@ -689,16 +710,21 @@ export const Algebra = {
      * [NUMÉRICO] Calcula o valor absoluto de um número
      * @param {string | number} number - Número
      * @param {boolean} round - Se irá arredondar
-     * @param {number} precision - Precisão do arredondamento
+     * @param {number} places - Casas decimais
      * @returns {number} - Número absoluto
      * @since v6.1.0
      */
-    absolute(number = 0, round = true, precision = Config.decimalPlaces) {
-        number = Writing.decimal(number, true, round, precision)
+    absolute(number = 0, round = true, places = Config.decimalPlaces) {
+        number = Number(Writing.decimal(number, true))
 
         // Valida
         if (!isFinite(number)) {
+            Ui.error("[Algebra.absolute] Valor inválido: " + number, "", true)
             return NaN
+        }
+
+        if (round) {
+            number = Algebra.round(number, places)
         }
 
         return Math.abs(number)
