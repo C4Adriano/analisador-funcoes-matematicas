@@ -21,9 +21,9 @@ export const Ui = {
      */
     display(message = "", explanation = "", debug = Config.debug) {
         if (debug) {
-            console.log("Mensagem:", message)
+            console.log(message)
             if (explanation != "") {
-                console.log("Explicação:", explanation)
+                console.log(explanation)
             }
         } else {
             alert(Writing.format(message, explanation))
@@ -39,9 +39,9 @@ export const Ui = {
      */
     confirm(message = "", explanation = "", debug = Config.debug) {
         if (debug) {
-            console.log(tr("Mensagem: ", "Message: "), message)
+            console.log(message)
             if (explanation != "") {
-                console.log(tr("Explicação: ", "Explanation: "), explanation)
+                console.log(explanation)
             }
             return true
         } else {
