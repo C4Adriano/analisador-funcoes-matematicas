@@ -10,7 +10,8 @@
 
 ---
 
-> **Total de linhas:** _`3296`_<br>
+# Geral
+
 > **Datado de:** _`2025-07-23 -> hoje`_
 
 ---

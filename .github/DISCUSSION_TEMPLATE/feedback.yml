@@ -1,35 +1,35 @@
 labels: [feedback]
 body:
-    - type: markdown
-      attributes:
-          value: |
-              ## Feedback
+  - type: markdown
+    attributes:
+      value: |
+        ## Feedback
 
-    - type: dropdown
-      id: type
-      attributes:
-          label: "Type / Tipo"
-          options:
-              - "Positive / Positivo"
-              - "Negative / Negativo"
-              - "Neutral / Neutro"
-      validations:
-          required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: "Type / Tipo"
+      options:
+        - "Positive / Positivo"
+        - "Negative / Negativo"
+        - "Neutral / Neutro"
+    validations:
+      required: true
 
-    - type: textarea
-      id: feedback
-      attributes:
-          label: "Feedback"
-          description: "English: Share your feedback | Português: Compartilhe seu feedback"
-          placeholder: "..."
-      validations:
-          required: true
+  - type: textarea
+    id: feedback
+    attributes:
+      label: "Feedback"
+      description: "English: Share your feedback | Português: Compartilhe seu feedback"
+      placeholder: "..."
+    validations:
+      required: true
 
-    - type: textarea
-      id: suggestion
-      attributes:
-          label: "Suggestion / Sugestão"
-          description: "English: Any improvement suggestion | Português: Alguma sugestão de melhoria"
-          placeholder: "..."
-      validations:
-          required: false
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: "Suggestion / Sugestão"
+      description: "English: Any improvement suggestion | Português: Alguma sugestão de melhoria"
+      placeholder: "..."
+    validations:
+      required: false
