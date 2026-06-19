@@ -4,17 +4,17 @@
  * @since v6.1.0
  */
 export const Config = {
-    language: "en", // Linguagem para as mensagens do programa (em construção, por enquanto só pt-br / en)
+    language: "pt-br", // Linguagem para as mensagens do programa (em construção, por enquanto só pt-br / en)
     debug: false, // Exibir mensagens de debug detalhadas para o desenvolvedor (como os passos intermediários dos cálculos)
 
     unicode: true, // Usar Unicode para deixar bonitinhas as frases / expressões (como Δ, ∈, etc.)
     explanations: true, // Exibir explicações detalhadas junto com os resultados
-    accents: false, // Usar acentos nas palavras
+    accents: true, // Usar acentos nas palavras
     capitalized: true, // Forma normal de texto, com a primeira letra de cada frase em maiúscula
     uppercase: false, // Todas as letras em maiúscula
     lowercase: false, // Todas as letras em minúscula
 
-    decimalSeparator: false, // Usar vírgula como separador decimal (em vez de ponto)
+    decimalSeparator: true, // Usar vírgula como separador decimal (em vez de ponto)
     simpleMulti: true, // Juntar letras em múltiplos (como "2x" em vez de "2 · x")
     inputConfirm: false, // Exibir mensagens de confirmação para as entradas do usuário
     outputConfirm: true, // Exibir mensagem de confirmação para sair do programa

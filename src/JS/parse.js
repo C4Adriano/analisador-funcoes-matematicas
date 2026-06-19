@@ -1,3 +1,5 @@
+// *NÃO UTILIZADO*
+
 import { tr } from "./i18n.js"
 import { Ui } from "./ui.js"
 
