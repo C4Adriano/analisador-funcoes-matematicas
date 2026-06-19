@@ -4,7 +4,7 @@
  * @since v6.1.0
  */
 export const Config = {
-    language: "pt-br", // Linguagem para as mensagens do programa (em construção, por enquanto só pt-br / en)
+    language: "pt", // Linguagem para as mensagens do programa (em construção, por enquanto só pt / en)
     debug: false, // Exibir mensagens de debug detalhadas para o desenvolvedor (como os passos intermediários dos cálculos)
 
     unicode: true, // Usar Unicode para deixar bonitinhas as frases / expressões (como Δ, ∈, etc.)

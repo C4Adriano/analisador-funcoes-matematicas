@@ -8,7 +8,7 @@ import { Config, saveConfig } from "./config.js"
  * @since v6.2.0
  */
 export function tr(pt = "", en = "") {
-    if (en == "" || Config.language == "pt") {
+    if (en == "" || Config.language == "pt" || Config.language == "pt-br") {
         return pt
     } else if (pt == "" || Config.language == "en") {
         return en
