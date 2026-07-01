@@ -10,7 +10,7 @@
 
 ---
 
-Este documento lista as funcionalidades planejadas para versões futuras do Analisador de Funções Matemáticas.
+Este **Documento** lista as funcionalidades planejadas para **Versões** futuras do **Analisador de Funções Matemáticas**.
 O status de cada item é atualizado conforme o desenvolvimento avança.
 
 ### Em Desenvolvimento
@@ -20,19 +20,19 @@ O status de cada item é atualizado conforme o desenvolvimento avança.
 - [ ] Verificar quais funções são válidas para um conjunto de pontos conhecidos
 - [ ] Ajuda integrada por tipo de função (resumos e explicações contextuais)
 - [ ] Relatórios por tipo de função
-- [ ] Equações entre Funções Exponenciais
+- [ ] Equações entre **Funções Exponenciais**
 
 ### Concluído
 
-- [x] Funções Constantes, Afins e Quadráticas
-- [x] Funções Exponenciais
+- [x] **Funções Constantes, Afins e Quadráticas**
+- [x] **Funções Exponenciais**
 - [x] Coeficientes como variáveis (incógnitas calculadas a partir de pontos)
-- [x] Funções Logarítmicas
+- [x] **Funções Logarítmicas**
 - [x] Sistema de configurações
-- [x] Arquitetura em objetos JS
+- [x] Arquitetura em objetos **JS**
 - [x] Histórico de funções durante a sessão
-- [x] Lançamento público no GitHub com GitHub Pages
-- [x] Tradução completa para inglês (PT-BR / EN)
+- [x] Lançamento público no **GitHub** com **GitHub Pages**
+- [x] Tradução completa para inglês _(PT-BR / EN)_
 - [x] Comandos com `/` para acesso rápido aos menus
 
 ---

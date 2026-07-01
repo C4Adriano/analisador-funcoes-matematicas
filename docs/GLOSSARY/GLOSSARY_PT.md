@@ -10,38 +10,38 @@
 
 ---
 
-Um guia de referência para os termos usados neste projeto — matemáticos, técnicos e relacionados ao GitHub.
+Um guia de referência para os termos usados neste **Projeto** — **Matemáticos, Técnicos** e relacionados ao **GitHub**.
 
 ---
 
 ### 📐 Termos Matemáticos
 
 **Assíntota**
-Uma reta que uma curva se aproxima mas nunca toca. Nas Funções Exponenciais e Logarítmicas, a assíntota define o limite da imagem da função.
+Uma reta que uma curva se aproxima mas nunca toca. Nas **Funções Exponenciais** e **Logarítmicas**, a assíntota define o limite da imagem da **Função**.
 
 **Coeficiente**
-Um número que multiplica uma variável em uma função. Em `f(x) = ax² + bx + c`, os coeficientes são `a`, `b` e `c`.
+Um número que multiplica uma variável em uma **Função**. Em `f(x) = ax² + bx + c`, os coeficientes são `a`, `b` e `c`.
 
 **Concavidade**
-Descreve se uma Função Quadrática abre para cima (face feliz, `a > 0`) ou para baixo (face triste, `a < 0`).
+Descreve se uma **Função Quadrática** abre para cima (_face feliz_, `a > 0`) ou para baixo (_face triste_, `a < 0`).
 
 **Domínio**
-O conjunto de todos os valores de entrada (`x`) válidos para uma função.
+O conjunto de todos os valores de entrada (`x`) válidos para uma **Função**.
 
 **Imagem**
-O conjunto de todos os valores de saída (`y`) produzidos por uma função.
+O conjunto de todos os valores de saída (`y`) produzidos por uma **Função**.
 
 **Raiz**
-Um valor de `x` onde `f(x) = 0` — ou seja, onde a função cruza o eixo X.
+Um valor de `x` onde `f(x) = 0` — ou seja, onde a **Função** cruza o eixo X.
 
 **Estudo do Sinal**
-Uma análise que determina para quais valores de `x` a função é positiva, negativa ou zero.
+Uma análise que determina para quais valores de `x` a **Função** é positiva, negativa ou zero.
 
 **Vértice**
-O ponto mais alto ou mais baixo de uma Função Quadrática. Definido pelas coordenadas `(-b/2a, -Δ/4a)`.
+O ponto mais alto ou mais baixo de uma **Função Quadrática**. Definido pelas coordenadas `(-b / 2a, -Δ / 4a)`.
 
 **Inclinação**
-Descreve o quão íngreme é uma Função Afim ou Exponencial. Em uma Função Afim, é o coeficiente `a` em `f(x) = ax + b`.
+Descreve o quão íngreme é uma **Função** Afim ou Exponencial. Em uma **Função** Afim, é o coeficiente `a` em `f(x) = ax + b`.
 
 **Incógnita**
 Um coeficiente (`a`, `b` ou `c`) cujo valor não é fornecido diretamente — o programa o calcula a partir de pontos conhecidos.
@@ -51,22 +51,22 @@ Um coeficiente (`a`, `b` ou `c`) cujo valor não é fornecido diretamente — o 
 ### 💻 Termos do Código
 
 **Objeto**
-Uma estrutura JavaScript que agrupa funções e variáveis relacionadas. Este projeto usa objetos como `config`, `helpers`, `algebra` e `analisar` para organizar o código.
+Uma estrutura **JavaScript** que agrupa **Funções JS** e variáveis relacionadas. Este projeto usa objetos como `config`, `helpers`, `algebra` e `analisar` para organizar o código.
 
 **Função JS**
-Um bloco de código reutilizável em JavaScript que realiza uma tarefa específica. Diferente de uma Função Matemática.
+Um bloco de código reutilizável em **JavaScript** que realiza uma tarefa específica. Diferente de uma **Função Matemática**.
 
 **`config`**
 O objeto que armazena todas as configurações globais do programa, como casas decimais, idioma e preferências de Unicode.
 
 **`helpers`**
-O objeto que contém cálculos comuns e montagem de resultados usados em vários tipos de função.
+O objeto que contém cálculos comuns e montagem de resultados usados em vários tipos de **Função**.
 
 **`algebra`**
-O objeto responsável pelos cálculos matemáticos, como logaritmos, logaritmo natural e divisão segura.
+O objeto responsável pelos cálculos **Matemáticos**, como logaritmos, logaritmo natural e divisão segura.
 
 **`analisar`**
-O objeto que realiza a análise de cada tipo de função matemática.
+O objeto que realiza a análise de cada tipo de **Função** matemática.
 
 **`escrita`**
 O objeto responsável por formatar, traduzir e converter textos para exibição.
@@ -84,10 +84,10 @@ Uma caixa de diálogo nativa do navegador que pede ao usuário que digite um val
 Uma caixa de diálogo nativa do navegador que exibe uma mensagem ao usuário. Usado para mostrar resultados e menus.
 
 **`NaN` (Not a Number / Não é um Número)**
-Um valor JavaScript que aparece quando uma operação matemática produz um resultado inválido, como dividir zero por zero.
+Um valor **JavaScript** que aparece quando uma operação matemática produz um resultado inválido, como dividir zero por zero.
 
 **`Infinity`**
-Um valor JavaScript que aparece quando um número ultrapassa o valor máximo representável, como dividir por zero.
+Um valor **JavaScript** que aparece quando um número ultrapassa o valor máximo representável, como dividir por zero.
 
 ---
 
@@ -106,15 +106,15 @@ Um registro salvo das alterações no repositório. Cada commit tem uma mensagem
 Uma cópia pessoal do repositório de outra pessoa, permitindo fazer alterações sem afetar o original.
 
 **Issue**
-Um relatório ou sugestão enviado pelo GitHub. Pode ser um reporte de bug ou uma solicitação de funcionalidade.
+Um relatório ou sugestão enviado pelo **GitHub**. Pode ser um reporte de bug ou uma solicitação de funcionalidade.
 
 **Pull Request (PR)**
 Uma proposta para mesclar alterações de uma branch para outra. Usado para revisão de código e contribuições.
 
 **Release**
-Uma versão publicada do projeto, marcada com uma tag de versão (ex.: `v6.0`).
+Uma versão publicada do projeto, marcada com uma tag de versão _(ex.: `v6.0`)_.
 
 **Repositório**
-A pasta do projeto hospedada no GitHub, contendo todos os arquivos, histórico e configurações.
+A pasta do projeto hospedada no **GitHub**, contendo todos os arquivos, histórico e configurações.
 
 ---

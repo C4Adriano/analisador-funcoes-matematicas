@@ -10,29 +10,29 @@
 
 ---
 
-This document lists the planned features for future versions of the Mathematical Function Analyzer.
+This **Document** lists the planned features for future **Versions** of the **Mathematical Function Analyzer**.
 The status of each item is updated as development progresses.
 
 ### In Development
 
 ### Planned
 
-- [ ] Verify which functions are valid for a set of known points
+- [ ] Verify which **Functions** are valid for a set of known points
 - [ ] Integrated help per function type (summaries and contextual explanations)
 - [ ] Reports per function type
-- [ ] Equations between Exponential Functions
+- [ ] Equations between **Exponential Functions**
 
 ### Completed
 
-- [x] Constant, Linear, and Quadratic functions
-- [x] Exponential functions
+- [x] **Constant, Linear, and Quadratic Functions**
+- [x] **Exponential Functions**
 - [x] Coefficients as unknowns (calculated from known points)
-- [x] Logarithmic functions
+- [x] **Logarithmic Functions**
 - [x] Settings system
-- [x] JS object architecture
+- [x] **JS** object architecture
 - [x] Function history during the session
-- [x] Public release on GitHub with GitHub Pages
-- [x] Full English translation (PT-BR / EN)
+- [x] Public release on **GitHub** with **GitHub Pages**
+- [x] Full English translation _(PT-BR / EN)_
 - [x] `/` commands for quick menu access
 
 ---
