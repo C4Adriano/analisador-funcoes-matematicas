@@ -14,12 +14,12 @@ import { Writing } from "./writing.js"
 export const Algebra = {
     /**
      * [NUMÉRICO] Arredonda um número
-     * @param {number} number - Número
+     * @param {string | number} number - Número
      * @param {number} places - Casas decimais
-     * @returns {number} - Número arredondado
+     * @returns {string | number} - Número arredondado
      * @since v6.1.0
      */
-    round(number = 0, places = Config.decimalPlaces) {
+    round(number: string | number = 0, places: number = Config.decimalPlaces): string | number {
         if (!isFinite(places) || places < 0 || !Number.isInteger(places)) {
             Ui.error("[Algebra.round] 'places' inválido: " + places, "Usando padrão: " + Config.decimalPlaces, true)
             places = Config.decimalPlaces
@@ -27,7 +27,7 @@ export const Algebra = {
 
         number = Writing.decimal(number, true)
 
-        if (isFinite(number)) {
+        if (typeof number == "number" && isFinite(number)) {
             number = Math.round(number * 10 ** places) / 10 ** places
             if (number == 0) {
                 number = 0
@@ -43,7 +43,7 @@ export const Algebra = {
      * @returns {string | number} - Se a variável tiver valor numérico, retorna o valor. Se não, retorna o nome
      * @since v6.1.0
      */
-    variables(name = "x") {
+    variables(name: string = "x"): string | number {
         if (typeof name != "string" || name.trim() == "") {
             Ui.error("[Algebra.variables] 'name' inválido:" + name, "Usando 'x'", true)
             name = "x"
@@ -57,8 +57,9 @@ export const Algebra = {
             )
         )
 
-        if (isFinite(Writing.decimal(value, true))) {
-            return Algebra.round(value)
+        let decimal = Writing.decimal(value, true)
+        if (typeof decimal == "number" && isFinite(decimal)) {
+            return Algebra.round(decimal)
         }
 
         return name
@@ -67,22 +68,22 @@ export const Algebra = {
     /**
      * [UI] Pede um(ns) ponto(s)
      * @param {number} type - Quantos pontos vão ser pedidos (1, 2 ou 3)
-     * @returns {number[]} - Um array com os pontos, na ordem: [x₁, y₁, x₂, y₂, x₃, y₃]
+     * @returns {(string | number)[]} - Um array com os pontos, na ordem: [x₁, y₁, x₂, y₂, x₃, y₃]
      * @since v6.1.0
      */
-    point(type = 1) {
+    point(type: number = 1): (string | number)[] {
         if (type != 1 && type != 2 && type != 3) {
             console.warn("[Algebra.point] 'type' inválido:", type, "— usando 1")
             type = 1
         }
 
-        let array = [],
-            x1 = 0,
-            x2 = 0,
-            x3 = 0,
-            y1 = 0,
-            y2 = 0,
-            y3 = 0
+        let array: (string | number)[] = [],
+            x1: string | number,
+            y1: string | number,
+            x2: string | number,
+            y2: string | number,
+            x3: string | number,
+            y3: string | number
 
         // Pergunta
         x1 = Ui.input("x₁ = ", "", true)
@@ -110,10 +111,20 @@ export const Algebra = {
      * @param {number[]} func2 - Segunda função [a, b, c]
      * @since v6.1.0
      */
-    equations(func1 = [0, 0, 0], func2 = [0, 0, 0]) {
-        let coefA = func1[0] - func2[0],
-            coefB = func1[1] - func2[1],
-            coefC = func1[2] - func2[2],
+    equations(func1: number[] = [0, 0, 0], func2: number[] = [0, 0, 0]) {
+        if (!Array.isArray(func1) || func1.length != 3) {
+            Ui.error("[Algebra.equations] 'func1' inválido: " + func1, "Usando [0, 0, 0]", true)
+            func1 = [0, 0, 0]
+        }
+        if (!Array.isArray(func2) || func2.length != 3) {
+            Ui.error("[Algebra.equations] 'func2' inválido: " + func2, "Usando [0, 0, 0]", true)
+            func2 = [0, 0, 0]
+        }
+        const [a1 = 0, b1 = 0, c1 = 0] = func1
+        const [a2 = 0, b2 = 0, c2 = 0] = func2
+        let coefA = a1 - a2,
+            coefB = b1 - b2,
+            coefC = c1 - c2,
             x = 0
 
         // Constante
@@ -145,7 +156,7 @@ export const Algebra = {
 
         // Afim
         else if (coefA == 0 && coefB != 0) {
-            x = Algebra.division(-coefC, coefB)
+            x = Algebra.division(-coefC, coefB) as number
             Ui.display(
                 tr("As funções se encontram em: ", "The functions coincide at: ") + "x = " + Writing.decimal(x),
                 "x = −c / b"
@@ -182,27 +193,34 @@ export const Algebra = {
      * @returns {number[]} - Retorna os coeficientes em formato de array numérico [a, b, c]
      * @since v6.1.0
      */
-    unknown(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
-        let repeat = false,
-            points = [0],
-            denominator = 0,
-            diff1 = 0,
-            diff2 = 0,
-            term1 = 0,
-            term2 = 0,
-            term3 = 0,
-            term4 = 0
+    unknown(
+        coefA: string | number = 0,
+        coefB: string | number = 0,
+        coefC: string | number = 0,
+        funcExp: boolean = false,
+        funcLog: boolean = false,
+        funcTrig: string = ""
+    ) {
+        let repeat: boolean = false,
+            points: (string | number)[] = [],
+            denominator: number = 0,
+            diff1: number = 0,
+            diff2: number = 0,
+            term1: number = 0,
+            term2: number = 0,
+            term3: number = 0,
+            term4: number = 0
 
         if (funcExp || funcLog) {
             // Valida
             if (coefA == 0 || coefA == 1 || coefB == 0) {
-                if (!isFinite(coefA)) {
+                if (typeof coefA == "number" && !isFinite(coefA)) {
                     coefA = 0
                 }
-                if (!isFinite(coefB)) {
+                if (typeof coefB == "number" && !isFinite(coefB)) {
                     coefB = 0
                 }
-                if (!isFinite(coefC)) {
+                if (typeof coefC == "number" && !isFinite(coefC)) {
                     coefC = 0
                 }
 
@@ -237,7 +255,7 @@ export const Algebra = {
                             coefC = points[1] - coefB * points[0]
                         } else if (coefB == "b") {
                             if (points[0] != 0) {
-                                coefB = Algebra.division(points[1] - coefC, points[0])
+                                coefB = Algebra.division(points[1] - coefC, points[0]) as number
                             } else {
                                 Error.divZero("x ≠ 0")
                                 repeat = true
@@ -250,7 +268,7 @@ export const Algebra = {
                         points = Algebra.point(2)
 
                         if (points[0] != points[2] && (points[0] != 0 || points[2] != 0)) {
-                            coefB = Algebra.division(points[3] - points[1], points[2] - points[0])
+                            coefB = Algebra.division(points[3] - points[1], points[2] - points[0]) as number
                             coefC = points[1] - coefB * points[0]
                         } else {
                             Error.divZero("x ≠ 0 ∧ x₁ ≠ x₂")
@@ -268,7 +286,10 @@ export const Algebra = {
                         points = Algebra.point()
 
                         if (points[0] != 0) {
-                            coefA = Algebra.division(points[1] - coefB * points[0] - coefC, points[0] * points[0])
+                            coefA = Algebra.division(
+                                points[1] - coefB * points[0] - coefC,
+                                points[0] * points[0]
+                            ) as number
                         } else {
                             Error.divZero("x ≠ 0")
                             repeat = true
@@ -280,7 +301,10 @@ export const Algebra = {
                         points = Algebra.point()
 
                         if (points[0] != 0) {
-                            coefB = Algebra.division(points[1] - coefA * (points[0] * points[0]) - coefC, points[0])
+                            coefB = Algebra.division(
+                                points[1] - coefA * (points[0] * points[0]) - coefC,
+                                points[0]
+                            ) as number
                         } else {
                             Error.divZero("x ≠ 0")
                             repeat = true
@@ -305,12 +329,12 @@ export const Algebra = {
                             coefA = Algebra.division(
                                 (points[1] - coefC) * points[2] - (points[3] - coefC) * points[0],
                                 denominator
-                            )
+                            ) as number
                             coefB = Algebra.division(
                                 (points[3] - coefC) * points[0] * points[0] -
                                     (points[1] - coefC) * points[2] * points[2],
                                 denominator
-                            )
+                            ) as number
                         } else {
                             Error.divZero("x ≠ 0 ∧ x₁ ≠ x₂")
                             repeat = true
@@ -326,7 +350,7 @@ export const Algebra = {
                             coefA = Algebra.division(
                                 points[1] - coefB * points[0] - (points[3] - coefB * points[2]),
                                 denominator
-                            )
+                            ) as number
                             coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0]
                         } else {
                             Error.divZero("x₁ ≠ x₂")
@@ -342,7 +366,7 @@ export const Algebra = {
                             coefB = Algebra.division(
                                 points[3] - coefA * points[2] * points[2] - (points[1] - coefA * points[0] * points[0]),
                                 points[2] - points[0]
-                            )
+                            ) as number
                             coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0]
                         } else {
                             Error.divZero("x₁ ≠ x₂")
@@ -363,8 +387,8 @@ export const Algebra = {
                         denominator = term1 * term4 - term2 * term3
 
                         if (denominator != 0) {
-                            coefA = Algebra.division(diff1 * term4 - term2 * diff2, denominator)
-                            coefB = Algebra.division(term1 * diff2 - diff1 * term3, denominator)
+                            coefA = Algebra.division(diff1 * term4 - term2 * diff2, denominator) as number
+                            coefB = Algebra.division(term1 * diff2 - diff1 * term3, denominator) as number
                             coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0]
                         } else {
                             Error.divZero("x₁ ≠ x₂")
@@ -391,7 +415,7 @@ export const Algebra = {
                 else if (coefB == "b" && coefA != "a" && coefC != "c") {
                     points = Algebra.point()
 
-                    coefB = Algebra.division(points[1] - coefC, coefA ** points[0])
+                    coefB = Algebra.division(points[1] - coefC, coefA ** points[0]) as number
                 }
 
                 // c
@@ -411,7 +435,7 @@ export const Algebra = {
                         Algebra.division(points[1] - coefC, points[3] - coefC, false) **
                             Algebra.division(1, points[0] - points[2], false)
                     )
-                    coefB = Algebra.division(points[1] - coefC, coefA ** points[0])
+                    coefB = Algebra.division(points[1] - coefC, coefA ** points[0]) as number
                 }
 
                 // a, c
@@ -433,7 +457,7 @@ export const Algebra = {
                 else if (coefA != "a" && coefB == "b" && coefC == "c") {
                     points = Algebra.point(2)
 
-                    coefB = Algebra.division(points[3] - points[1], coefA ** points[2] - coefA ** points[0])
+                    coefB = Algebra.division(points[3] - points[1], coefA ** points[2] - coefA ** points[0]) as number
                     coefC = points[1] - coefB * coefA ** points[0]
                 }
 
@@ -462,21 +486,21 @@ export const Algebra = {
                 if (coefA == "a" && coefB != "b" && coefC != "c") {
                     points = Algebra.point()
 
-                    coefA = Algebra.round(points[0] ** Algebra.division(coefB, points[1] - coefC, false))
+                    coefA = Algebra.round(points[0] ** Algebra.division(coefB, points[1] - coefC, false)) as number
                 }
 
                 // b
                 else if (coefA != "a" && coefB == "b" && coefC != "c") {
                     points = Algebra.point()
 
-                    coefB = Algebra.division(points[1] - coefC, Algebra.log(points[0], coefA))
+                    coefB = Algebra.division(points[1] - coefC, Algebra.log(points[0], coefA)) as number
                 }
 
                 // c
                 else if (coefA != "a" && coefB != "b" && coefC == "c") {
                     points = Algebra.point()
 
-                    coefC = points[1] - Algebra.round(coefB * Algebra.log(points[0], coefA))
+                    coefC = (points[1] - Algebra.round(coefB * Algebra.log(points[0], coefA))) as number
                 }
 
                 // Duplas
@@ -504,8 +528,8 @@ export const Algebra = {
                     coefA = Algebra.round(
                         Algebra.division(points[0], points[2], false) **
                             Algebra.division(coefB, points[1] - points[3], false)
-                    )
-                    coefC = points[1] - coefB * Algebra.log(points[0], coefA)
+                    ) as number
+                    coefC = (points[1] - coefB * Algebra.log(points[0], coefA)) as number
                 }
 
                 // b, c
@@ -515,8 +539,8 @@ export const Algebra = {
                     coefB = Algebra.division(
                         points[1] - points[3],
                         Algebra.log(points[0], coefA) - Algebra.log(points[2], coefA)
-                    )
-                    coefC = points[1] - coefB * Algebra.log(points[0], coefA)
+                    ) as number
+                    coefC = (points[1] - coefB * Algebra.log(points[0], coefA)) as number
                 }
 
                 // Triplas

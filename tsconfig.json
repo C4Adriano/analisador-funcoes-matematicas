@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "target": "es2025",
+        "module": "esnext",
+
+        "rootDir": "./src/TS",
+        "outDir": "./src/JS",
+
+        "allowJs": true,
+        "checkJs": true,
+
+        "strict": true,
+
+        "sourceMap": true,
+
+        "skipLibCheck": true,
+
+        "noUncheckedIndexedAccess": true,
+        "exactOptionalPropertyTypes": true
+    },
+
+    "include": ["src/**/*"]
+}

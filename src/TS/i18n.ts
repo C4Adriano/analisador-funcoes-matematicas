@@ -1,4 +1,5 @@
 import { Config, saveConfig } from "./config.js"
+import type { Language } from "./values.js"
 
 /**
  * [I18N] Retorna o texto na língua configurada
@@ -7,12 +8,13 @@ import { Config, saveConfig } from "./config.js"
  * @returns {string} - Texto na língua configurada
  * @since v6.2.0
  */
-export function tr(pt = "", en = "") {
+export function tr(pt: string = "", en: string = ""): string {
     if (en == "" || Config.language == "pt" || Config.language == "pt-br") {
         return pt
     } else if (pt == "" || Config.language == "en") {
         return en
     }
+    return pt
 }
 
 /**
@@ -21,12 +23,8 @@ export function tr(pt = "", en = "") {
  * @returns {string[]} - Array na língua configurada
  * @since v6.2.0
  */
-export function trArr(pairs = []) {
-    let result = []
-    for (let i = 0; i < pairs.length; i++) {
-        result.push(tr(pairs[i][0], pairs[i][1]))
-    }
-    return result
+export function trArr(pairs: [string, string][] = []): string[] {
+    return pairs.map(pair => tr(pair[0], pair[1]))
 }
 
 /**
@@ -34,12 +32,9 @@ export function trArr(pairs = []) {
  * @param {string} language Língua
  * @since v6.2.0
  */
-export function changeLanguage(language) {
+export function changeLanguage(language: Language) {
     if (
-        confirm(
-            tr("Tu queres alterar a língua para: “", "Do you want to change the language to: “") + language + "”?",
-            ""
-        )
+        confirm(tr("Tu queres alterar a língua para: “", "Do you want to change the language to: “") + language + "”?")
     ) {
         if (language == "pt") {
             Config.decimalSeparator = true

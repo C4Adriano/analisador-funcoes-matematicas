@@ -337,7 +337,7 @@ export const Writing = {
      * @param {boolean} invert - Para inverter e não afetar nas contas
      * @param {boolean} round - Arredondar
      * @param {number} places - Casas decimais
-     * @returns {string} - Número convertido
+     * @returns {string | number} - Número convertido
      * @since v6.1.0
      */
     decimal(number = 0, invert = false, round = true, places = Config.decimalPlaces) {

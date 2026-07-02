@@ -1,0 +1,24 @@
+{
+    "language": "pt",
+    "debug": false,
+
+    "unicode": true,
+    "explanations": true,
+    "accents": true,
+    "capitalized": true,
+    "uppercase": false,
+    "lowercase": false,
+
+    "decimalSeparator": true,
+    "simpleMulti": true,
+    "inputConfirm": false,
+    "outputConfirm": true,
+    "errors": true,
+    "showFunction": true,
+
+    "decimalPlaces": 6,
+    "logPrecision": 1e-12,
+    "divPrecision": 1e-12,
+    "interactionLimit": 1000,
+    "degrees": false
+}

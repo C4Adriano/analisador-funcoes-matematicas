@@ -6,8 +6,16 @@
         "type": "git",
         "url": "git+https://github.com/C4Adriano/analisador-funcoes-matematicas.git"
     },
-    "keywords": [],
-    "author": "",
+    "keywords": [
+        "mathematics",
+        "math",
+        "function",
+        "analyzer",
+        "analisador",
+        "função",
+        "matemática"
+    ],
+    "author": "Adriano Lima",
     "license": "UNLICENSED",
     "type": "module",
     "bugs": {
@@ -15,7 +23,7 @@
     },
     "homepage": "https://github.com/C4Adriano/analisador-funcoes-matematicas#readme",
     "devDependencies": {
-        "prettier": "^3.8.5"
-    },
-    "dependencies": {}
+        "prettier": "^3.8.5",
+        "typescript": "^6.0.3"
+    }
 }
