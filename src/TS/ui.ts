@@ -7,6 +7,8 @@ import { tr } from "./i18n.js"
 import { State } from "./state.js"
 import { Writing } from "./writing.js"
 
+import type { Numeric, Variable, Value, TrigonometricFunction, Digit, CommandsNames } from "./values.js"
+
 /**
  * [UI] Objeto base para as funções envolvendo UI / UX e interação com o usuário
  * - Use as funções aqui para exibir mensagens, menus, prompts e outras interações.
@@ -15,11 +17,11 @@ import { Writing } from "./writing.js"
 export const Ui = {
     /**
      * [UI] Exibe um alert personalizado
-     * @param {string} message - Mensagem
-     * @param {string} explanation - Explicação
+     * @param message - Mensagem
+     * @param explanation - Explicação
      * @since v6.1.0
      */
-    display(message = "", explanation = "", debug = Config.debug) {
+    display(message: string = "", explanation: string = "", debug: boolean = Config.debug): void {
         if (debug) {
             console.log(message)
             if (explanation != "") {
@@ -32,12 +34,12 @@ export const Ui = {
 
     /**
      * [UI] Exibe um confirm personalizado
-     * @param {string} message - Mensagem
-     * @param {string} explanation - Explicação
-     * @returns {boolean} - Sim / Não
+     * @param message - Mensagem
+     * @param explanation - Explicação
+     * @returns - Sim / Não
      * @since v6.1.0
      */
-    confirm(message = "", explanation = "", debug = Config.debug) {
+    confirm(message: string = "", explanation: string = "", debug: boolean = Config.debug): boolean {
         if (debug) {
             console.log(message)
             if (explanation != "") {
@@ -56,11 +58,11 @@ export const Ui = {
 
     /**
      * [UI] Exibe uma mensagem de erro
-     * @param {string} message - Mensagem
-     * @param {string} explanation - Explicação
+     * @param message - Mensagem
+     * @param explanation - Explicação
      * @since v6.1.0
      */
-    error(message = "", explanation = "", debug = Config.debug) {
+    error(message: string = "", explanation: string = "", debug: boolean = Config.debug): void {
         if (Config.errors) {
             Ui.display("=== " + tr("Erro", "Error") + " ===\n" + message, explanation, debug)
         }
@@ -68,12 +70,17 @@ export const Ui = {
 
     /**
      * [UI] Exibe uma mensagem de aviso
-     * @param {string} message - Mensagem
-     * @param {string} explanation - Explicação
-     * @param {boolean} type - Tipo da mensagem
+     * @param message - Mensagem
+     * @param explanation - Explicação
+     * @param type - Tipo da mensagem
      * @since v6.1.0
      */
-    warning(message = "", explanation = "", type = false, debug = Config.debug) {
+    warning(
+        message: string = "",
+        explanation: string = "",
+        type: boolean = false,
+        debug: boolean = Config.debug
+    ): boolean | void {
         if (!type) {
             // Se tipo for falso, é um aviso simples, como um alert
             Ui.display("=== " + tr("Aviso", "Warning") + " ===\n" + message, explanation, debug)
@@ -85,17 +92,17 @@ export const Ui = {
 
     /**
      * [UI] Formata um menu paginado
-     * @param {string[]} options Array com todas as opções possíveis
-     * @param {number} page Página atual
-     * @returns {number[]} - Retorna a resposta, a página atual, as opções por página
+     * @param options Array com todas as opções possíveis
+     * @param page Página atual
+     * @returns - Retorna a resposta, a página atual, as opções por página
      * @since v6.1.0
      */
-    menu(options = ["---"], page = 1) {
-        let answer = 0,
-            menu = "",
+    menu(options: string[] = ["---"], page: number = 1) {
+        let answer: CommandsNames | Digit | -1,
+            menu: string = "",
             option = 1,
             total = 0,
-            list = [].concat(options)
+            list = options.slice()
 
         // Organiza
         while (list.length % 5 != 0 || list.length == 0) {
@@ -143,7 +150,7 @@ export const Ui = {
                 tr("Voltar", "Back")
 
             // Responde
-            answer = Ui.range(menu, "", 0, 9, 0, true)
+            answer = Ui.range(menu, "", 0, 9, 0, true) as CommandsNames | Digit | -1
             if (answer == 0) {
                 // Voltar
                 State.askCoeffs = false
@@ -161,7 +168,7 @@ export const Ui = {
                 // +1
                 answer = -1
                 page += 1
-            } else if (Commands.names().includes(answer)) {
+            } else if (Commands.names().includes(String(answer))) {
                 State.loop = true
                 State.keepType = true
             }
@@ -171,30 +178,30 @@ export const Ui = {
                 answer = 0
                 State.loop = true
             }
-        } while (!(0 <= answer && answer <= 9) && !Commands.names().includes(answer))
+        } while (typeof answer != "number" && typeof answer != "string")
 
         return [answer, page]
     },
 
     /**
      * [UI] Exibe um prompt personalizado e verifica ele
-     * @param {string} message - Mensagem
-     * @param {string} explanation - Explicação
-     * @param {boolean} number - true = número, false = string
-     * @param {number} places - Casas para arredondar (0 = sem casas)
-     * @returns {string | number} - Valor verificado
+     * @param message - Mensagem
+     * @param explanation - Explicação
+     * @param number - true = número, false = string
+     * @param places - Casas para arredondar (0 = sem casas)
+     * @returns - Valor verificado
      * @since v6.1.0
      */
     input(
-        message = "",
-        explanation = "",
-        number = false,
-        places = Config.decimalPlaces,
-        allowCommands = false,
-        angle = false
-    ) {
-        let raw = "",
-            text = "",
+        message: string = "",
+        explanation: string = "",
+        number: boolean = false,
+        places: number = Config.decimalPlaces,
+        allowCommands: boolean = false,
+        angle: boolean = false
+    ): Value {
+        let raw: string | null = "",
+            text: string | number = "",
             value = 0,
             valid = false
 
@@ -206,6 +213,7 @@ export const Ui = {
             // Cancelar
             if (raw == null) {
                 valid = false
+                continue
             } else {
                 text = String(raw).trim()
                 valid = text != ""
@@ -221,7 +229,7 @@ export const Ui = {
             }
 
             // Número
-            if (valid && number) {
+            if (valid && number && typeof text == "number") {
                 if (angle) {
                     value = Writing.parseAngle(text)
                 } else {
@@ -241,7 +249,7 @@ export const Ui = {
                         "Note₁: If this is a variable and what was typed is not a number, it will be transformed into the variable name, not what was typed.\nNote₂: These messages can be disabled in the settings, under “Input Confirmations”."
                     ),
                     true
-                )
+                ) as boolean
             }
 
             // Retorna
@@ -263,23 +271,23 @@ export const Ui = {
 
     /**
      * [UI] Formata uma função
-     * @param {string | number} coefA - Coeficiente a
-     * @param {string | number} coefB - Coeficiente b
-     * @param {string | number} coefC - Coeficiente c
-     * @param {boolean} funcExp - Exponencial
-     * @param {boolean} funcLog - Logarítmica
-     * @param {string} funcTrig - Trigonométrica (sin, cos, tan)
-     * @param {boolean} show - Mostrará a função ou não, baseado na configuração
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @param funcExp - Exponencial
+     * @param funcLog - Logarítmica
+     * @param funcTrig - Trigonométrica (sin, cos, tan)
+     * @param show - Mostrará a função ou não, baseado na configuração
      * @since v6.1.0
      */
     function(
-        coefA = 0,
-        coefB = 0,
-        coefC = 0,
-        funcExp = false,
-        funcLog = false,
-        funcTrig = "",
-        show = Config.showFunction
+        coefA: Value = 0,
+        coefB: Value = 0,
+        coefC: Value = 0,
+        funcExp: boolean = false,
+        funcLog: boolean = false,
+        funcTrig: TrigonometricFunction = "",
+        show: boolean = Config.showFunction
     ) {
         if (!show) {
             // Não mostrar
@@ -292,10 +300,10 @@ export const Ui = {
             // Polinomial
             if (coefA == 0 && coefB == 0) {
                 // Constante
-                if (coefC == "c") {
+                if (typeof coefC == "string") {
                     // Variável
                     funcStr += "c"
-                } else if (coefC != "c") {
+                } else if (typeof coefC == "number") {
                     // Não variável
                     funcStr += String(coefC)
                 }
@@ -309,10 +317,10 @@ export const Ui = {
                 }
             } else if (coefA == 0 && coefB != 0) {
                 // Afim
-                if (coefB == "b") {
+                if (typeof coefB == "string") {
                     // Variável
                     funcStr += "b · x"
-                } else if (coefB != "b") {
+                } else if (typeof coefB == "number") {
                     // Não variável
                     if (Algebra.absolute(coefB) == 1) {
                         // Se for 1 ou -1, não mostra o número, só o sinal
@@ -327,10 +335,10 @@ export const Ui = {
                     }
                 }
 
-                if (coefC == "c") {
+                if (typeof coefC == "string") {
                     // Variável
                     funcStr += " + c"
-                } else if (coefC != "c") {
+                } else if (typeof coefC == "number") {
                     // Não variável
                     if (coefC > 0) {
                         // Se for positivo, mostra o sinal de mais
@@ -356,10 +364,10 @@ export const Ui = {
                 }
             } else if (coefA != 0) {
                 // Quadrática
-                if (coefA == "a") {
+                if (typeof coefA == "string") {
                     // Variável
                     funcStr += "a · x²"
-                } else if (coefA != "a") {
+                } else if (typeof coefA == "number") {
                     // Não variável
                     if (Algebra.absolute(coefA) == 1) {
                         // Se for 1 ou -1, não mostra o número, só o sinal
@@ -374,10 +382,10 @@ export const Ui = {
                     }
                 }
 
-                if (coefB == "b") {
+                if (typeof coefB == "string") {
                     // Variável
                     funcStr += " + b · x"
-                } else if (coefB != "b" && coefB != 0) {
+                } else if (typeof coefB == "number" && coefB != 0) {
                     // Não variável e diferente de zero
                     if (coefB > 0) {
                         // Se for positivo, mostra o sinal de mais
@@ -396,10 +404,10 @@ export const Ui = {
                     }
                 }
 
-                if (coefC == "c") {
+                if (typeof coefC == "string") {
                     // Variável
                     funcStr += " + c"
-                } else if (coefC != "c") {
+                } else if (typeof coefC == "number" && coefC != 0) {
                     // Não variável
                     if (coefC > 0) {
                         // Se for positivo, mostra o sinal de mais
@@ -426,26 +434,26 @@ export const Ui = {
             }
         } else if (funcExp && funcTrig == "") {
             // Exponencial
-            if (coefB != "b") {
+            if (typeof coefB == "number" && coefB != 0) {
                 // Não variável
                 if (coefB != 1) {
                     // Se for diferente de 1, mostra o número
                     funcStr += String(coefB) + " × "
                 }
-            } else if (coefB == "b") {
+            } else if (typeof coefB == "string") {
                 // Variável
                 funcStr += "b × "
             }
 
-            if (coefA != "a") {
+            if (typeof coefA == "number" && coefA != 0) {
                 // Não variável
                 funcStr += String(coefA) + "ˣ"
-            } else if (coefA == "a") {
+            } else if (typeof coefA == "string") {
                 // Variável
                 funcStr += "aˣ"
             }
 
-            if (coefC != "c") {
+            if (typeof coefC == "number" && coefC != 0) {
                 // Não variável
                 if (coefC > 0) {
                     // Se for positivo, mostra o sinal de mais
@@ -454,7 +462,7 @@ export const Ui = {
                     // Se for negativo, mostra o sinal de menos e o número positivo
                     funcStr += " − " + String(-coefC)
                 }
-            } else if (coefC == "c") {
+            } else if (typeof coefC == "string") {
                 // Variável
                 funcStr += " + c"
             }
@@ -472,25 +480,25 @@ export const Ui = {
             }
         } else if (funcLog && funcTrig == "") {
             // Logarítmica
-            if (coefB != "b") {
+            if (typeof coefB == "number" && coefB != 0) {
                 // Não variável
                 if (coefB != 1) {
                     funcStr += String(coefB) + " × "
                 }
-            } else if (coefB == "b") {
+            } else if (typeof coefB == "string") {
                 // Variável
                 funcStr += "b × "
             }
 
-            if (coefA != "a") {
+            if (typeof coefA == "number" && coefA != 0) {
                 // Não variável
                 funcStr += "log" + Writing.subscript(coefA) + "(x)"
-            } else if (coefA == "a") {
+            } else if (typeof coefA == "string") {
                 // Variável
                 funcStr += "logₐ(x)"
             }
 
-            if (coefC != "c") {
+            if (typeof coefC == "number" && coefC != 0) {
                 // Não variável
                 if (coefC > 0) {
                     // Se for positivo, mostra o sinal de mais
@@ -499,7 +507,7 @@ export const Ui = {
                     // Se for negativo, mostra o sinal de menos e o número positivo
                     funcStr += " − " + String(-coefC)
                 }
-            } else if (coefC == "c") {
+            } else if (typeof coefC == "string") {
                 // Variável
                 funcStr += " + c"
             }
@@ -520,24 +528,24 @@ export const Ui = {
             }
         } else if (funcTrig != "") {
             // Trigonométrica
-            if (coefB != "b") {
+            if (typeof coefB == "number" && coefB != 0) {
                 // Não variável
                 if (coefB != 1) {
                     funcStr += String(coefB) + " × "
                 }
-            } else if (coefB == "b") {
+            } else if (typeof coefB == "string") {
                 // Variável
                 funcStr += "b × "
             }
 
-            if (coefA != "a") {
+            if (typeof coefA == "number" && coefA != 0) {
                 // Não variável
                 funcStr += funcTrig + "(" + String(coefA) + " · x)"
-            } else if (coefA == "a") {
+            } else if (typeof coefA == "string") {
                 funcStr += funcTrig + "(a · x)"
             }
 
-            if (coefC != "c") {
+            if (typeof coefC == "number" && coefC != 0) {
                 // Não variável
                 if (coefC > 0) {
                     // Se for positivo, mostra o sinal de mais
@@ -546,7 +554,7 @@ export const Ui = {
                     // Se for negativo, mostra o sinal de menos e o número positivo
                     funcStr += " − " + String(-coefC)
                 }
-            } else if (coefC == "c") {
+            } else if (typeof coefC == "string") {
                 // Variável
                 funcStr += " + c"
             }
@@ -557,37 +565,47 @@ export const Ui = {
 
     /**
      * [UI] Pede ao usuário um valor entre o intervalo
-     * @param {string} message - Mensagem
-     * @param {string} explanation - Explicação
-     * @param {number} min - Mínimo
-     * @param {number} max - Máximo
-     * @param {number} places - Casas decimais
-     * @returns {number} - Um valor escolhido entre o intervalo
+     * @param message - Mensagem
+     * @param explanation - Explicação
+     * @param min - Mínimo
+     * @param max - Máximo
+     * @param places - Casas decimais
+     * @returns - Um valor escolhido entre o intervalo
      * @since v6.1.0
      */
-    range(message = "", explanation = "", min = 0, max = 1, places = 0, allowCommands = false) {
-        let value = 0
+    range(
+        message: string = "",
+        explanation: string = "",
+        min: Numeric = 0,
+        max: Numeric = 1,
+        places: number = 0,
+        allowCommands: boolean = false
+    ): Value {
+        let value: Value = 0,
+            i = true
 
         // Loop
         do {
+            i = true
             // Pede um valor
             value = Ui.input(message, explanation, true, places, allowCommands)
 
             // Comandos
-            if (Commands.names().includes(value)) {
+            if (typeof value == "string" && Commands.names().includes(value)) {
                 return value
             }
 
             // Encerrar intervalo
-            else if (value == "end") {
+            else if (typeof value == "string" && value == "end") {
                 return 0
             }
 
-            if (!(min <= value && value <= max)) {
+            if (typeof value == "number" && !(min <= value && value <= max)) {
                 // Se o valor não estiver entre o intervalo, mostra um erro
                 Error.range(min, max)
+                i = false
             }
-        } while (!(min <= value && value <= max))
+        } while (i)
 
         return value
     },

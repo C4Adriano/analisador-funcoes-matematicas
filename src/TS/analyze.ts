@@ -6,7 +6,9 @@ import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
-const BASE_OPTIONS = [
+import type { Numeric, Value } from "./values.js"
+
+const BASE_OPTIONS: [string, string][] = [
     ["Domínio", "Domain"],
     ["Imagem", "Range"],
     ["Interseção com o eixo x", "X‐axis intersection"],
@@ -25,14 +27,14 @@ const BASE_OPTIONS = [
 export const Analyze = {
     /**
      * [FUNÇÃO] Monta uma função constante: ƒ(x) = c
-     * @param {number} coefC - Coeficiente c da função constante
+     * @param coefC - Coeficiente c da função constante
      * @returns {number[]} - Retorna: [coefC]
      * @since v6.1.0
      */
-    constant(coefC = State.globalC) {
+    constant(coefC: Value = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp = [0, 1]
+            menuResp: Numeric[]
 
         // Mostra
         Ui.function(0, 0, coefC)
@@ -41,7 +43,7 @@ export const Analyze = {
         let limit = 0
         do {
             // Menu
-            menuResp = Ui.menu(trArr([].concat(BASE_OPTIONS)), page)
+            menuResp = Ui.menu(trArr(BASE_OPTIONS.slice()), page)
             option = menuResp[0]
             page = menuResp[1]
             if (Commands.names().includes(menuResp[0])) {
@@ -120,10 +122,10 @@ export const Analyze = {
      * @returns {number[]} - Retorna: [coefB, coefC]
      * @since v6.1.0
      */
-    affine(coefB = State.globalB, coefC = State.globalC) {
-        let option = 0,
-            page = 1,
-            menuResp = [0, 1]
+    affine(coefB: Value = State.globalB, coefC: Value = State.globalC) {
+        let option: Numeric,
+            page: Numeric = 1,
+            menuResp: Numeric[]
 
         // Mostra
         Ui.function(0, coefB, coefC)
@@ -229,10 +231,10 @@ export const Analyze = {
      * @returns {number[]} - Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
-    quadratic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
-        let option = 0,
-            page = 1,
-            menuResp = [0, 1]
+    quadratic(coefA: Value = State.globalA, coefB: Value = State.globalB, coefC: Value = State.globalC) {
+        let option: Numeric,
+            page: Numeric = 1,
+            menuResp: Numeric[]
 
         // Mostra
         Ui.function(coefA, coefB, coefC)
@@ -393,9 +395,9 @@ export const Analyze = {
      * @since v6.1.0
      */
     exponential(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
-        let option = 0,
-            page = 1,
-            menuResp = [0, 1]
+        let option: Numeric,
+            page: Numeric = 1,
+            menuResp: Numeric[]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, true)
@@ -524,9 +526,9 @@ export const Analyze = {
      * @since v6.1.0
      */
     logarithmic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
-        let option = 0,
-            page = 1,
-            menuResp = [0, 1]
+        let option: Numeric,
+            page: Numeric = 1,
+            menuResp: Numeric[]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, true)
@@ -633,9 +635,9 @@ export const Analyze = {
      * @since v6.1.0
      */
     sine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
-        let option = 0,
-            page = 1,
-            menuResp = [0, 1]
+        let option: Numeric,
+            page: Numeric = 1,
+            menuResp: Numeric[]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "sin")
@@ -727,9 +729,9 @@ export const Analyze = {
      * @since v6.1.0
      */
     cosine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
-        let option = 0,
-            page = 1,
-            menuResp = [0, 1]
+        let option: Numeric,
+            page: Numeric = 1,
+            menuResp: Numeric[]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "cos")
@@ -821,9 +823,9 @@ export const Analyze = {
      * @since v6.1.0
      */
     tangent(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
-        let option = 0,
-            page = 1,
-            menuResp = [0, 1]
+        let option: Numeric,
+            page: Numeric = 1,
+            menuResp: Numeric[]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "tan")

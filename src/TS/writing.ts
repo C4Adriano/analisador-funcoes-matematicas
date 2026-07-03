@@ -1,6 +1,7 @@
 import { Algebra } from "./algebra.js"
-import { Config, DEFAULT_CONFIG } from "./config.js"
+import { Config } from "./config.js"
 import { tr } from "./i18n.js"
+import { Places, Value } from "./values.js"
 
 /**
  * [TEXTO] Objeto base para as funções envolvendo escrita e conversão de texto
@@ -333,14 +334,14 @@ export const Writing = {
 
     /**
      * [TEXTO] Manipulação de separadores decimais
-     * @param {string | number} number - Número
-     * @param {boolean} invert - Para inverter e não afetar nas contas
-     * @param {boolean} round - Arredondar
-     * @param {number} places - Casas decimais
-     * @returns {string | number} - Número convertido
+     * @param number - Número
+     * @param invert - Para inverter e não afetar nas contas
+     * @param round - Arredondar
+     * @param places - Casas decimais
+     * @returns - Número convertido
      * @since v6.1.0
      */
-    decimal(number = 0, invert = false, round = true, places = Config.decimalPlaces) {
+    decimal(number: Value = 0, invert: boolean = false, round: boolean = true, places: Places = Config.decimalPlaces) {
         number = String(number)
 
         // Se inverter é verdadeiro, troca vírgulas por pontos para não afetar nas contas
@@ -458,11 +459,11 @@ export const Writing = {
 
     /**
      * [TEXTO] Conversão para sobrescrito
-     * @param {string | number} text - Número
-     * @returns {string} - Número convertido
+     * @param text - Número
+     * @returns Número convertido
      * @since v6.1.0
      */
-    superscript(text = "") {
+    superscript(text: Value = ""): string {
         // Se Unicode está desativado, retorna o texto com um símbolo de sobrescrito simples
         if (!Config.unicode) {
             return "^" + text
@@ -491,11 +492,11 @@ export const Writing = {
 
     /**
      * [TEXTO] Conversão para subscrito
-     * @param {string | number} text - Número
-     * @returns {string} - Número subscrito
+     * @param text - Número
+     * @return - Número subscrito
      * @since v6.1.0
      */
-    subscript(text = "") {
+    subscript(text: Value = ""): string {
         // Se Unicode está desativado, retorna o texto com um símbolo de subscrito simples
         if (!Config.unicode) {
             return "_" + text

@@ -105,11 +105,11 @@ export const Commands = {
 
     /**
      * [JS] Sugere um comando baseado no digitado pelo usuário usando distância de Levenshtein
-     * @param {string} typed - O digitado pelo usuário
-     * @returns {object} - A sugestão de comando
+     * @param typed - O digitado pelo usuário
+     * @returns A sugestão de comando
      * @since v6.1.0
      */
-    suggestCmd(typed = "") {
+    suggestCmd(typed: string = ""): object {
         const LIMIT = 3
         let cmds = Commands.listCmd(),
             keys = Object.keys(cmds),
@@ -117,17 +117,17 @@ export const Commands = {
             lowerDist = Infinity,
             candidates = []
 
-        for (let i = 0; i < keys.length; i++) {
-            candidates = [keys[i]].concat(cmds[keys[i]].variations)
+        keys.forEach(key => {
+            candidates = [key].concat(cmds[key].variations)
 
-            for (let j = 0; j < candidates.length; j++) {
-                let dist = Commands.levenshtein(typed, candidates[j])
+            candidates.forEach(candidate => {
+                let dist = Commands.levenshtein(typed, candidate)
                 if (dist < lowerDist) {
                     lowerDist = dist
-                    best = keys[i]
+                    best = key
                 }
-            }
-        }
+            })
+        })
 
         if (lowerDist <= LIMIT) {
             return { type: lowerDist == 0 ? "exact" : "suggestion", canonical: best, distance: lowerDist }
@@ -141,28 +141,27 @@ export const Commands = {
      * @returns {string[]} - Lista de nomes canônicos dos comandos encontrados
      * @since v6.2.0
      */
-    searchCmd(term = "") {
+    searchCmd(term: string = ""): string[] {
         if (term == "") {
             return []
         }
 
-        let cmds = Commands.listCmd(),
+        let cmds: { [key: string]: any } = Commands.listCmd(),
             keys = Object.keys(cmds),
-            results = [],
+            results: string[] = [],
             cmd,
-            candidates = []
+            candidates: string[] = []
 
-        for (let i = 0; i < keys.length; i++) {
-            cmd = cmds[keys[i]]
-            candidates = [keys[i], cmd.short, cmd.long].concat(cmd.variations)
+        keys.forEach(key => {
+            cmd = cmds[key]
+            candidates = [key, cmd.short, cmd.long].concat(cmd.variations)
 
-            for (let j = 0; j < candidates.length; j++) {
-                if (Writing.noAccents(candidates[j].toLowerCase()).includes(Writing.noAccents(term.toLowerCase()))) {
-                    results.push(keys[i])
-                    break
+            candidates.forEach(candidate => {
+                if (Writing.noAccents(candidate.toLowerCase()).includes(Writing.noAccents(term.toLowerCase()))) {
+                    results.push(key)
                 }
-            }
-        }
+            })
+        })
 
         return results
     },
@@ -645,11 +644,11 @@ export const Commands = {
             cmdKeys = Object.keys(cmds),
             canonical = specific
 
-        for (let i = 0; i < cmdKeys.length && canonical == specific; i++) {
-            if (cmds[cmdKeys[i]].variations.includes(specific)) {
-                canonical = cmdKeys[i]
+        cmdKeys.forEach((key) => {
+            if (cmds[key].variations.includes(specific)) {
+                canonical = key
             }
-        }
+        })
 
         return cmds[canonical] != undefined ? canonical : null
     },

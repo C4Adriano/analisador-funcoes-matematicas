@@ -6,6 +6,8 @@ import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
+import type { Value, Numeric, Variable, Precision, Places, ValueArray } from "./values.js"
+
 /**
  * [NUMÉRICO] Objeto base para as funções envolvendo algebra
  * - Use as funções daqui para fazer cálculos, arredondar números, pedir variáveis e pontos, etc.
@@ -14,12 +16,12 @@ import { Writing } from "./writing.js"
 export const Algebra = {
     /**
      * [NUMÉRICO] Arredonda um número
-     * @param {string | number} number - Número
-     * @param {number} places - Casas decimais
-     * @returns {string | number} - Número arredondado
+     * @param number - Número
+     * @param places - Casas decimais
+     * @returns Número arredondado
      * @since v6.1.0
      */
-    round(number: string | number = 0, places: number = Config.decimalPlaces): string | number {
+    round(number: Value = 0, places: Places = Config.decimalPlaces): Value {
         if (!isFinite(places) || places < 0 || !Number.isInteger(places)) {
             Ui.error("[Algebra.round] 'places' inválido: " + places, "Usando padrão: " + Config.decimalPlaces, true)
             places = Config.decimalPlaces
@@ -39,11 +41,11 @@ export const Algebra = {
 
     /**
      * [UI] Pede uma variável
-     * @param {string} name - Nome da variável
-     * @returns {string | number} - Se a variável tiver valor numérico, retorna o valor. Se não, retorna o nome
+     * @param name - Nome da variável
+     * @returns Se a variável tiver valor numérico, retorna o valor. Se não, retorna o nome
      * @since v6.1.0
      */
-    variables(name: string = "x"): string | number {
+    variables(name: Variable = "x"): Value {
         if (typeof name != "string" || name.trim() == "") {
             Ui.error("[Algebra.variables] 'name' inválido:" + name, "Usando 'x'", true)
             name = "x"
@@ -57,9 +59,9 @@ export const Algebra = {
             )
         )
 
-        let decimal = Writing.decimal(value, true)
-        if (typeof decimal == "number" && isFinite(decimal)) {
-            return Algebra.round(decimal)
+        value = Writing.decimal(value, true)
+        if (typeof value == "number" && isFinite(value)) {
+            return Algebra.round(value)
         }
 
         return name
@@ -67,23 +69,23 @@ export const Algebra = {
 
     /**
      * [UI] Pede um(ns) ponto(s)
-     * @param {number} type - Quantos pontos vão ser pedidos (1, 2 ou 3)
-     * @returns {(string | number)[]} - Um array com os pontos, na ordem: [x₁, y₁, x₂, y₂, x₃, y₃]
+     * @param type - Quantos pontos vão ser pedidos (1, 2 ou 3)
+     * @returns Um array com os pontos, na ordem: [x₁, y₁, x₂, y₂, x₃, y₃]
      * @since v6.1.0
      */
-    point(type: number = 1): (string | number)[] {
+    point(type: Numeric = 1): ValueArray {
         if (type != 1 && type != 2 && type != 3) {
             console.warn("[Algebra.point] 'type' inválido:", type, "— usando 1")
             type = 1
         }
 
-        let array: (string | number)[] = [],
-            x1: string | number,
-            y1: string | number,
-            x2: string | number,
-            y2: string | number,
-            x3: string | number,
-            y3: string | number
+        let array: ValueArray = [],
+            x1: Value,
+            y1: Value,
+            x2: Value,
+            y2: Value,
+            x3: Value,
+            y3: Value
 
         // Pergunta
         x1 = Ui.input("x₁ = ", "", true)
@@ -107,11 +109,11 @@ export const Algebra = {
 
     /**
      * [UI] Vê se as funções têm pontos de encontro
-     * @param {number[]} func1 - Primeira função [a, b, c]
-     * @param {number[]} func2 - Segunda função [a, b, c]
+     * @param func1 - Primeira função [a, b, c]
+     * @param func2 - Segunda função [a, b, c]
      * @since v6.1.0
      */
-    equations(func1: number[] = [0, 0, 0], func2: number[] = [0, 0, 0]) {
+    equations(func1: ValueArray = [0, 0, 0], func2: ValueArray = [0, 0, 0]): void {
         if (!Array.isArray(func1) || func1.length != 3) {
             Ui.error("[Algebra.equations] 'func1' inválido: " + func1, "Usando [0, 0, 0]", true)
             func1 = [0, 0, 0]
@@ -120,12 +122,27 @@ export const Algebra = {
             Ui.error("[Algebra.equations] 'func2' inválido: " + func2, "Usando [0, 0, 0]", true)
             func2 = [0, 0, 0]
         }
-        const [a1 = 0, b1 = 0, c1 = 0] = func1
-        const [a2 = 0, b2 = 0, c2 = 0] = func2
-        let coefA = a1 - a2,
-            coefB = b1 - b2,
-            coefC = c1 - c2,
-            x = 0
+        if (!func1.every(value => typeof value == "number" && isFinite(value))) {
+            Ui.error("[Algebra.equations] 'func1' contém valores inválidos: " + func1, "Usando [0, 0, 0]", true)
+            func1 = [0, 0, 0]
+        }
+        if (!func2.every(value => typeof value == "number" && isFinite(value))) {
+            Ui.error("[Algebra.equations] 'func2' contém valores inválidos: " + func2, "Usando [0, 0, 0]", true)
+            func2 = [0, 0, 0]
+        }
+
+        let coefA: Numeric = 0,
+            coefB: Numeric = 0,
+            coefC: Numeric = 0,
+            x: Numeric = 0
+
+        if (func1.every(value => typeof value == "number") && func2.every(value => typeof value == "number")) {
+            const [a1 = 0, b1 = 0, c1 = 0]: ValueArray = func1
+            const [a2 = 0, b2 = 0, c2 = 0]: ValueArray = func2
+            coefA = a1 - a2
+            coefB = b1 - b2
+            coefC = c1 - c2
+        }
 
         // Constante
         if (coefA == 0 && coefB == 0) {
@@ -156,7 +173,7 @@ export const Algebra = {
 
         // Afim
         else if (coefA == 0 && coefB != 0) {
-            x = Algebra.division(-coefC, coefB) as number
+            x = Algebra.division(-coefC, coefB)
             Ui.display(
                 tr("As funções se encontram em: ", "The functions coincide at: ") + "x = " + Writing.decimal(x),
                 "x = −c / b"
@@ -184,32 +201,32 @@ export const Algebra = {
 
     /**
      * [NUMÉRICO] Descobre quais são as incógnitas
-     * @param {string | number} coefA - Coeficiente a
-     * @param {string | number} coefB - Coeficiente b
-     * @param {string | number} coefC - Coeficiente c
-     * @param {boolean} funcExp - Se é exponencial
-     * @param {boolean} funcLog - Se é logarítmica
-     * @param {string} funcTrig - Se é trigonométrica, e qual (sin, cos, tan)
-     * @returns {number[]} - Retorna os coeficientes em formato de array numérico [a, b, c]
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @param funcExp - Se é exponencial
+     * @param funcLog - Se é logarítmica
+     * @param funcTrig - Se é trigonométrica, e qual (sin, cos, tan)
+     * @returns Retorna os coeficientes em formato de array numérico [a, b, c]
      * @since v6.1.0
      */
     unknown(
-        coefA: string | number = 0,
-        coefB: string | number = 0,
-        coefC: string | number = 0,
+        coefA: Value,
+        coefB: Value,
+        coefC: Value,
         funcExp: boolean = false,
         funcLog: boolean = false,
         funcTrig: string = ""
     ) {
         let repeat: boolean = false,
-            points: (string | number)[] = [],
-            denominator: number = 0,
-            diff1: number = 0,
-            diff2: number = 0,
-            term1: number = 0,
-            term2: number = 0,
-            term3: number = 0,
-            term4: number = 0
+            points: ValueArray,
+            denominator: Numeric,
+            diff1: Numeric,
+            diff2: Numeric,
+            term1: Numeric,
+            term2: Numeric,
+            term3: Numeric,
+            term4: Numeric
 
         if (funcExp || funcLog) {
             // Valida
@@ -242,20 +259,23 @@ export const Algebra = {
                 if (coefA == 0 && coefB == 0) {
                     points = Algebra.point()
 
-                    coefC = points[1]
+                    coefC = points[1]!
                 }
 
                 // Afim
                 else if (coefA == 0 && coefB != 0) {
                     // Únicas
-                    if ((coefB == "b" && coefC != "c") || (coefC == "c" && coefB != "b")) {
+                    if (
+                        (typeof coefB == "string" && typeof coefC == "number") ||
+                        (typeof coefC == "string" && typeof coefB == "number")
+                    ) {
                         points = Algebra.point()
 
-                        if (coefC == "c") {
+                        if (typeof coefC == "string") {
                             coefC = points[1] - coefB * points[0]
-                        } else if (coefB == "b") {
+                        } else if (typeof coefB == "string") {
                             if (points[0] != 0) {
-                                coefB = Algebra.division(points[1] - coefC, points[0]) as number
+                                coefB = Algebra.division(points[1] - coefC, points[0])
                             } else {
                                 Error.divZero("x ≠ 0")
                                 repeat = true
@@ -264,11 +284,11 @@ export const Algebra = {
                     }
 
                     // Duplas
-                    else if (coefB == "b" && coefC == "c") {
+                    else if (typeof coefB == "string" && typeof coefC == "string") {
                         points = Algebra.point(2)
 
                         if (points[0] != points[2] && (points[0] != 0 || points[2] != 0)) {
-                            coefB = Algebra.division(points[3] - points[1], points[2] - points[0]) as number
+                            coefB = Algebra.division(points[3] - points[1], points[2] - points[0])
                             coefC = points[1] - coefB * points[0]
                         } else {
                             Error.divZero("x ≠ 0 ∧ x₁ ≠ x₂")
@@ -282,14 +302,11 @@ export const Algebra = {
                     // Únicas
 
                     // a
-                    if (coefA == "a" && coefB != "b" && coefC != "c") {
+                    if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "number") {
                         points = Algebra.point()
 
                         if (points[0] != 0) {
-                            coefA = Algebra.division(
-                                points[1] - coefB * points[0] - coefC,
-                                points[0] * points[0]
-                            ) as number
+                            coefA = Algebra.division(points[1] - coefB * points[0] - coefC, points[0] * points[0])
                         } else {
                             Error.divZero("x ≠ 0")
                             repeat = true
@@ -297,14 +314,11 @@ export const Algebra = {
                     }
 
                     // b
-                    else if (coefB == "b" && coefA != "a" && coefC != "c") {
+                    else if (typeof coefB == "string" && typeof coefA == "number" && typeof coefC == "number") {
                         points = Algebra.point()
 
                         if (points[0] != 0) {
-                            coefB = Algebra.division(
-                                points[1] - coefA * (points[0] * points[0]) - coefC,
-                                points[0]
-                            ) as number
+                            coefB = Algebra.division(points[1] - coefA * (points[0] * points[0]) - coefC, points[0])
                         } else {
                             Error.divZero("x ≠ 0")
                             repeat = true
@@ -312,7 +326,7 @@ export const Algebra = {
                     }
 
                     // c
-                    else if (coefC == "c" && coefB != "b" && coefA != "a") {
+                    else if (typeof coefC == "string" && typeof coefB == "number" && typeof coefA == "number") {
                         points = Algebra.point()
 
                         coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0]
@@ -321,7 +335,7 @@ export const Algebra = {
                     // Duplas
 
                     // a, b
-                    else if (coefA == "a" && coefB == "b" && coefC != "c") {
+                    else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "number") {
                         points = Algebra.point(2)
 
                         if (points[0] != 0 && points[0] != points[2]) {
@@ -329,12 +343,12 @@ export const Algebra = {
                             coefA = Algebra.division(
                                 (points[1] - coefC) * points[2] - (points[3] - coefC) * points[0],
                                 denominator
-                            ) as number
+                            )
                             coefB = Algebra.division(
                                 (points[3] - coefC) * points[0] * points[0] -
                                     (points[1] - coefC) * points[2] * points[2],
                                 denominator
-                            ) as number
+                            )
                         } else {
                             Error.divZero("x ≠ 0 ∧ x₁ ≠ x₂")
                             repeat = true
@@ -342,7 +356,7 @@ export const Algebra = {
                     }
 
                     // a, c
-                    else if (coefA == "a" && coefB != "b" && coefC == "c") {
+                    else if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "string") {
                         points = Algebra.point(2)
 
                         denominator = points[0] * points[0] - points[2] * points[2]
@@ -350,7 +364,7 @@ export const Algebra = {
                             coefA = Algebra.division(
                                 points[1] - coefB * points[0] - (points[3] - coefB * points[2]),
                                 denominator
-                            ) as number
+                            )
                             coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0]
                         } else {
                             Error.divZero("x₁ ≠ x₂")
@@ -359,14 +373,14 @@ export const Algebra = {
                     }
 
                     // b, c
-                    else if (coefA != "a" && coefB == "b" && coefC == "c") {
+                    else if (typeof coefA == "number" && typeof coefB == "string" && typeof coefC == "string") {
                         points = Algebra.point(2)
 
                         if (points[0] != points[2]) {
                             coefB = Algebra.division(
                                 points[3] - coefA * points[2] * points[2] - (points[1] - coefA * points[0] * points[0]),
                                 points[2] - points[0]
-                            ) as number
+                            )
                             coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0]
                         } else {
                             Error.divZero("x₁ ≠ x₂")
@@ -375,7 +389,7 @@ export const Algebra = {
                     }
 
                     // Triplas
-                    else if (coefA == "a" && coefB == "b" && coefC == "c") {
+                    else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "string") {
                         points = Algebra.point(3)
 
                         diff1 = points[3] - points[1]
@@ -387,8 +401,8 @@ export const Algebra = {
                         denominator = term1 * term4 - term2 * term3
 
                         if (denominator != 0) {
-                            coefA = Algebra.division(diff1 * term4 - term2 * diff2, denominator) as number
-                            coefB = Algebra.division(term1 * diff2 - diff1 * term3, denominator) as number
+                            coefA = Algebra.division(diff1 * term4 - term2 * diff2, denominator)
+                            coefB = Algebra.division(term1 * diff2 - diff1 * term3, denominator)
                             coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0]
                         } else {
                             Error.divZero("x₁ ≠ x₂")
@@ -403,7 +417,7 @@ export const Algebra = {
                 // Únicas
 
                 // a
-                if (coefA == "a" && coefB != "b" && coefC != "c") {
+                if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "number") {
                     points = Algebra.point()
 
                     coefA = Algebra.round(
@@ -412,14 +426,14 @@ export const Algebra = {
                 }
 
                 // b
-                else if (coefB == "b" && coefA != "a" && coefC != "c") {
+                else if (typeof coefB == "string" && typeof coefA == "number" && typeof coefC == "number") {
                     points = Algebra.point()
 
-                    coefB = Algebra.division(points[1] - coefC, coefA ** points[0]) as number
+                    coefB = Algebra.division(points[1] - coefC, coefA ** points[0])
                 }
 
                 // c
-                else if (coefC == "c" && coefB != "b" && coefA != "a") {
+                else if (typeof coefC == "string" && typeof coefB == "number" && typeof coefA == "number") {
                     points = Algebra.point()
 
                     coefC = points[1] - coefB * coefA ** points[0]
@@ -428,18 +442,18 @@ export const Algebra = {
                 // Duplas
 
                 // a, b
-                else if (coefA == "a" && coefB == "b" && coefC != "c") {
+                else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "number") {
                     points = Algebra.point(2)
 
                     coefA = Algebra.round(
                         Algebra.division(points[1] - coefC, points[3] - coefC, false) **
                             Algebra.division(1, points[0] - points[2], false)
                     )
-                    coefB = Algebra.division(points[1] - coefC, coefA ** points[0]) as number
+                    coefB = Algebra.division(points[1] - coefC, coefA ** points[0])
                 }
 
                 // a, c
-                else if (coefA == "a" && coefB != "b" && coefC == "c") {
+                else if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "string") {
                     // pontoExp = algebra.ponto(2)
 
                     Ui.warning(
@@ -454,15 +468,15 @@ export const Algebra = {
                 }
 
                 // b, c
-                else if (coefA != "a" && coefB == "b" && coefC == "c") {
+                else if (typeof coefA == "number" && typeof coefB == "string" && typeof coefC == "string") {
                     points = Algebra.point(2)
 
-                    coefB = Algebra.division(points[3] - points[1], coefA ** points[2] - coefA ** points[0]) as number
+                    coefB = Algebra.division(points[3] - points[1], coefA ** points[2] - coefA ** points[0])
                     coefC = points[1] - coefB * coefA ** points[0]
                 }
 
                 // Triplas
-                else if (coefA == "a" && coefB == "b" && coefC == "c") {
+                else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "string") {
                     // pontoExp = algebra.ponto(3)
 
                     Ui.warning(
@@ -483,30 +497,30 @@ export const Algebra = {
                 // Únicas
 
                 // a
-                if (coefA == "a" && coefB != "b" && coefC != "c") {
+                if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "number") {
                     points = Algebra.point()
 
-                    coefA = Algebra.round(points[0] ** Algebra.division(coefB, points[1] - coefC, false)) as number
+                    coefA = Algebra.round(points[0] ** Algebra.division(coefB, points[1] - coefC, false))
                 }
 
                 // b
-                else if (coefA != "a" && coefB == "b" && coefC != "c") {
+                else if (typeof coefA == "number" && typeof coefB == "string" && typeof coefC == "number") {
                     points = Algebra.point()
 
-                    coefB = Algebra.division(points[1] - coefC, Algebra.log(points[0], coefA)) as number
+                    coefB = Algebra.division(points[1] - coefC, Algebra.log(points[0], coefA))
                 }
 
                 // c
-                else if (coefA != "a" && coefB != "b" && coefC == "c") {
+                else if (typeof coefA == "number" && typeof coefB == "number" && typeof coefC == "string") {
                     points = Algebra.point()
 
-                    coefC = (points[1] - Algebra.round(coefB * Algebra.log(points[0], coefA))) as number
+                    coefC = points[1] - Algebra.round(coefB * Algebra.log(points[0], coefA))
                 }
 
                 // Duplas
 
                 // a, b
-                else if (coefA == "a" && coefB == "b" && coefC != "c") {
+                else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "number") {
                     // pontoLog = algebra.ponto(2)
 
                     Ui.warning(
@@ -522,29 +536,29 @@ export const Algebra = {
                 }
 
                 // a, c
-                else if (coefA == "a" && coefB != "b" && coefC == "c") {
+                else if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "string") {
                     points = Algebra.point(2)
 
                     coefA = Algebra.round(
                         Algebra.division(points[0], points[2], false) **
                             Algebra.division(coefB, points[1] - points[3], false)
-                    ) as number
-                    coefC = (points[1] - coefB * Algebra.log(points[0], coefA)) as number
+                    )
+                    coefC = points[1] - coefB * Algebra.log(points[0], coefA)
                 }
 
                 // b, c
-                else if (coefA != "a" && coefB == "b" && coefC == "c") {
+                else if (typeof coefA == "number" && typeof coefB == "string" && typeof coefC == "string") {
                     points = Algebra.point(2)
 
                     coefB = Algebra.division(
                         points[1] - points[3],
                         Algebra.log(points[0], coefA) - Algebra.log(points[2], coefA)
-                    ) as number
-                    coefC = (points[1] - coefB * Algebra.log(points[0], coefA)) as number
+                    )
+                    coefC = points[1] - coefB * Algebra.log(points[0], coefA)
                 }
 
                 // Triplas
-                else if (coefA == "a" && coefB == "b" && coefC == "c") {
+                else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "string") {
                     // pontoLog = algebra.ponto(3)
 
                     Ui.warning(
@@ -561,7 +575,7 @@ export const Algebra = {
             }
 
             // Erro
-            if (!isFinite(coefA) || !isFinite(coefB) || !isFinite(coefC)) {
+            if (!isFinite(Number(coefA)) || !isFinite(Number(coefB)) || !isFinite(Number(coefC))) {
                 Error.divZero("Valores inválidos.")
                 if (
                     Ui.confirm(
@@ -582,13 +596,13 @@ export const Algebra = {
                     State.loop = true
                     repeat = false
                 } else {
-                    if (!isFinite(coefA)) {
+                    if (!isFinite(Number(coefA))) {
                         coefA = "a"
                     }
-                    if (!isFinite(coefB)) {
+                    if (!isFinite(Number(coefB))) {
                         coefB = "b"
                     }
-                    if (!isFinite(coefC)) {
+                    if (!isFinite(Number(coefC))) {
                         coefC = "c"
                     }
                     repeat = true
@@ -606,18 +620,18 @@ export const Algebra = {
 
     /**
      * [NUMÉRICO] Log de x na base
-     * @param {number} x - Número
-     * @param {number} base - Base
-     * @param {number} precision - Casas decimais
-     * @returns {number} - Resultado
+     * @param x - Número
+     * @param base - Base
+     * @param precision - Casas decimais
+     * @returns - Resultado
      * @since v6.1.0
      */
-    log(x = 1, base = Math.E, precision = Config.logPrecision) {
+    log(x: Numeric = 1, base: Numeric = Math.E, precision: Precision = Config.logPrecision): Numeric {
         let y = x > 1 ? 1 : -1,
-            number = 0,
-            delta = 0,
-            lnX = 0,
-            lnBase = 0
+            number: Numeric,
+            delta: Numeric,
+            lnX: Numeric,
+            lnBase: Numeric
 
         // Valida
         if (x <= 0 || base <= 0 || base == 1) {
@@ -651,17 +665,17 @@ export const Algebra = {
             }
         }
 
-        return Algebra.round(y)
+        return Algebra.round(y) as Numeric
     },
 
     /**
      * [NUMÉRICO] Log de x na base E
-     * @param {number} x - Número
-     * @param {number} precision - Casas decimais
-     * @returns {number} - Resultado
+     * @param x - Número
+     * @param precision - Casas decimais
+     * @returns Resultado
      * @since v6.1.0
      */
-    ln(x = 1, precision = Config.logPrecision) {
+    ln(x: Numeric = 1, precision: Precision = Config.logPrecision): Numeric {
         let y = x > 1 ? 1 : -1,
             base = Math.E,
             delta = Algebra.division(base ** y - x, base ** y, false)
@@ -684,26 +698,34 @@ export const Algebra = {
             }
         }
 
-        return Algebra.round(y)
+        return Algebra.round(y) as Numeric
     },
 
     /**
      * [NUMÉRICO] Divide dois números
-     * @param {number} numerator - Parte de cima da fração
-     * @param {number} denominator - Parte de baixo da fração
-     * @param {boolean} round - Se irá arredondar
-     * @param {number} precision - Precisão do arredondamento
-     * @returns {number} - Resultado
+     * @param numerator - Parte de cima da fração
+     * @param denominator - Parte de baixo da fração
+     * @param round - Se irá arredondar
+     * @param precision - Precisão do arredondamento
+     * @returns Resultado
      * @since v6.1.0
      */
-    division(numerator = 0, denominator = 1, round = true, precision = Config.divPrecision) {
-        let result = 0
+    division(
+        numerator: Numeric = 0,
+        denominator: Numeric = 1,
+        round: boolean = true,
+        precision: Precision = Config.divPrecision
+    ): Numeric {
+        let result: Numeric
+
+        numerator = Number(Writing.decimal(numerator, true))
+        denominator = Number(Writing.decimal(denominator, true))
 
         // Valida
         if (denominator == 0 || !isFinite(numerator) || !isFinite(denominator)) {
             Ui.error(
                 "[Algebra.division] Entrada inválida.",
-                "numerator: " + numerator + "denominator: " + denominator,
+                "numerator: " + String(numerator) + "denominator: " + String(denominator),
                 true
             )
             return NaN
@@ -711,7 +733,7 @@ export const Algebra = {
 
         // Denominador pequeno
         if (Algebra.absolute(denominator) <= precision) {
-            Ui.error("[Algebra.division] Denominador próximo de zero.", denominator, true)
+            Ui.error("[Algebra.division] Denominador próximo de zero.", String(denominator), true)
             return NaN
         }
 
@@ -724,7 +746,7 @@ export const Algebra = {
 
         // Arredonda
         if (round) {
-            return Algebra.round(result)
+            return Algebra.round(result) as Numeric
         }
 
         return result
@@ -732,14 +754,14 @@ export const Algebra = {
 
     /**
      * [NUMÉRICO] Calcula o valor absoluto de um número
-     * @param {string | number} number - Número
-     * @param {boolean} round - Se irá arredondar
-     * @param {number} places - Casas decimais
-     * @returns {number} - Número absoluto
+     * @param number - Número
+     * @param round - Se irá arredondar
+     * @param places - Casas decimais
+     * @returns Número absoluto
      * @since v6.1.0
      */
-    absolute(number = 0, round = true, places = Config.decimalPlaces) {
-        number = Number(Writing.decimal(number, true))
+    absolute(number: Numeric = 0, round: boolean = true, places: Places = Config.decimalPlaces): Numeric {
+        number = Writing.decimal(number, true) as Numeric
 
         // Valida
         if (!isFinite(number)) {
@@ -748,7 +770,7 @@ export const Algebra = {
         }
 
         if (round) {
-            number = Algebra.round(number, places)
+            number = Algebra.round(number, places) as Numeric
         }
 
         return Math.abs(number)

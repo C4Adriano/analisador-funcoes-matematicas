@@ -642,11 +642,11 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Vê se estourou o limite
-     * @param {number} limit - Limite
+     * @param limit - Limite
      * @returns {boolean} - Se estourou o limite
      * @since v6.1.0
      */
-    exceededLimit(limit = Config.interactionLimit) {
+    exceededLimit(limit: number = Config.interactionLimit) {
         let exceeded = limit >= Config.interactionLimit
 
         // Exibe o erro se estourou o limite

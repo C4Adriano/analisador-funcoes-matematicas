@@ -1,4 +1,6 @@
-// *NÃO UTILIZADO*
+/**
+ * @deprecated - Este arquivo não é utilizado no programa e será removido em futuras versões.
+ */
 
 import { tr } from "./i18n.js"
 import { Ui } from "./ui.js"

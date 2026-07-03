@@ -1,10 +1,14 @@
-// *NÃO UTILIZADO*
+/**
+ * @deprecated - Este arquivo não é utilizado no programa e será removido em futuras versões.
+ */
 
 import { Algebra } from "./algebra.js"
 import { Analyze } from "./analyze.js"
 import { Helpers } from "./helpers.js"
 import { tr } from "./i18n.js"
 import { Ui } from "./ui.js"
+
+import type { Value } from "./values.js"
 
 /**
  * [DEBUG] Objeto de testes do programa
@@ -17,7 +21,7 @@ export const Test = {
      * @since v6.1.0
      */
     start() {
-        let option = 0
+        let option: Value
         do {
             option = Ui.range(
                 "=== Testes ===\n1 = Constante\n2 = Afim\n3 = Quadrática\n4 = Exponencial\n5 = Logarítmica\n6 = Contas\n0 = Sair",
@@ -161,16 +165,16 @@ export const Test = {
 
         // Monta relatório
         let logs = "=== Relatório de Contas ===\n"
-        for (let i = 0; i < result.length; i++) {
-            let name = result[i][0],
-                gated = result[i][1],
-                waited = result[i][2]
+        result.forEach(element => {
+            let name = element[0] as string,
+                gated = element[1] as number,
+                waited = element[2] as number
             let pass = isNaN(waited) ? isNaN(gated) : gated == waited
             if (!pass) {
                 errors++
             }
             logs += (pass ? "✓" : "✗") + " " + name + " → " + gated + (pass ? "" : " (esperado: " + waited + ")") + "\n"
-        }
+        })
 
         logs += "\n" + (errors == 0 ? "✓ Todos os testes passaram!" : "✗ " + errors + " erro(s) encontrado(s)")
         Ui.display(logs)

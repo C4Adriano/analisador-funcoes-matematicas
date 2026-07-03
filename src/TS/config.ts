@@ -1,14 +1,38 @@
 import defaultConfigJson from "../JSON/config.json" with { type: "json" }
+import { Degrees, Language, Places } from "./values"
 
 /**
  * Tipo automático baseado no JSON
  */
-export type ConfigType = typeof defaultConfigJson
+export type ConfigType = {
+    language: Language
+    debug: boolean
+
+    unicode: boolean
+    explanations: boolean
+    accents: boolean
+    capitalized: boolean
+    uppercase: boolean
+    lowercase: boolean
+
+    decimalSeparator: boolean
+    simpleMulti: boolean
+    inputConfirm: boolean
+    outputConfirm: boolean
+    errors: boolean
+    showFunction: boolean
+
+    decimalPlaces: Places
+    logPrecision: 1e-12
+    divPrecision: 1e-12
+    interactionLimit: 1000
+    degrees: Degrees
+}
 
 /**
  * Configurações ativas do programa
  */
-export const Config: ConfigType = structuredClone(defaultConfigJson)
+export const Config: ConfigType = structuredClone(defaultConfigJson) as ConfigType
 
 /**
  * Versão do programa (MAJOR.MINOR.PATCH)

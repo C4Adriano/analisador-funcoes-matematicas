@@ -20,5 +20,5 @@
     "logPrecision": 1e-12,
     "divPrecision": 1e-12,
     "interactionLimit": 1000,
-    "degrees": false
+    "degrees": "deg"
 }

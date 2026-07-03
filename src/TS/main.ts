@@ -613,9 +613,9 @@ do {
                             keys = Object.keys(Config)
 
                         // Mostra configurações afetadas
-                        for (let i = 0; i < keys.length; i++) {
-                            message += Config[keys[i]] != DEFAULT_CONFIG[keys[i]] ? keys[i] + ", " : ""
-                        }
+                        keys.forEach((key: string) => {
+                            message += Config[key] != DEFAULT_CONFIG[key] ? key + ", " : ""
+                        })
 
                         // Remove última vírgula e espaço
                         message = message.slice(0, -2)
