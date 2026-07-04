@@ -8,6 +8,7 @@
 
         "allowJs": true,
         "checkJs": true,
+        "resolveJsonModule": true,
 
         "strict": true,
 
@@ -19,6 +20,6 @@
         "exactOptionalPropertyTypes": true
     },
 
-    "include": ["./src/**/*"],
+    "include": ["./src/TS/*"],
     "exclude": ["./pessoal", "./node_modules"]
 }
