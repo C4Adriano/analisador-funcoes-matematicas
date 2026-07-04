@@ -19,5 +19,6 @@
         "exactOptionalPropertyTypes": true
     },
 
-    "include": ["src/**/*"]
+    "include": ["./src/**/*"],
+    "exclude": ["./pessoal", "./node_modules"]
 }

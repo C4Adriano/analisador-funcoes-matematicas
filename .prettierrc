@@ -9,7 +9,7 @@
 
     "overrides": [
         {
-            "files": ["*.js"],
+            "files": ["*.js", "*.ts"],
             "options": {
                 "semi": false,
                 "singleQuote": false,
@@ -34,13 +34,13 @@
             }
         },
         {
-            "files": ["*.css"],
+            "files": ["*.css", "*.scss"],
             "options": {
                 "singleQuote": false
             }
         },
         {
-            "files": ["*.json", "*.jsonc"],
+            "files": ["*.json", "*.jsonc", "*.json5"],
             "options": {
                 "printWidth": 80
             }

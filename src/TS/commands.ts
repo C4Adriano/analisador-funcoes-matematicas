@@ -1,7 +1,6 @@
 import { Config, VERSION, saveConfig, resetConfig } from "./config.js"
 import { tr, changeLanguage } from "./i18n.js"
 import { State } from "./state.js"
-import { Test } from "./test.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
@@ -595,25 +594,6 @@ export const Commands = {
                 variations: ["debug", "dbg"],
                 action(arg) {
                     return Commands.change("debug", arg)
-                },
-            },
-            test: {
-                short: tr("executa testes", "runs tests"),
-                long: tr(
-                    "Executa a bateria de testes internos do programa.",
-                    "Runs the internal test suite of the program."
-                ),
-                variations: ["teste", "test"],
-                action(arg, parts) {
-                    if (parts[1] == "1234") {
-                        Test.start()
-                    } else {
-                        Ui.error(
-                            tr("Senha inválida", "Invalid password"),
-                            "“" + String(parts[1]) + "” " + tr("não é uma senha válida", "is not a valid password")
-                        )
-                    }
-                    return null
                 },
             },
             exit: {
