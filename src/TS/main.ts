@@ -1,12 +1,14 @@
 import { Algebra } from "./algebra.js"
 import { Analyze } from "./analyze.js"
 import { Commands } from "./commands.js"
-import { Config, DEFAULT_CONFIG, VERSION, saveConfig, loadConfig } from "./config.js"
+import { Config, VERSION, saveConfig, loadConfig, ConfigType } from "./config.js"
 import { Error } from "./error.js"
 import { tr, changeLanguage } from "./i18n.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
+
+import type { CommandsNames, Numeric, Places, Value } from "./values.js"
 
 Ui.display(
     "====================================================" +
@@ -38,7 +40,7 @@ Ui.display(
 // === OBJETOS GLOBAIS ===
 // Para alterar o HTML também, conforme a língua
 document.title = tr("Analisador de Funções Matemáticas", "Mathematical Function Analyzer")
-let h1 = document.querySelector("h1")
+let h1: HTMLElement | null = document.querySelector("h1")
 if (h1) {
     h1.textContent = tr("Matemática", "Mathematics")
 } else {
@@ -46,10 +48,10 @@ if (h1) {
 }
 document.documentElement.lang = Config.language
 
-let subType = 0,
-    subLoop = false,
-    choice = 0,
-    page = 1
+let subType: CommandsNames | Numeric = 0,
+    subLoop: boolean = false,
+    choice: Value = 0,
+    page: Numeric = 1
 
 State.globalA = Algebra.variables("a")
 State.globalB = Algebra.variables("b")
@@ -110,7 +112,7 @@ do {
             true,
             0,
             true
-        )
+        ) as Numeric
     }
 
     State.keepType = false
@@ -118,9 +120,9 @@ do {
     State.loop = false
 
     if (
-        (0 <= State.type && State.type <= 3) ||
-        (6 <= State.type && State.type <= 9) ||
-        Commands.names().includes(State.type)
+        (typeof State.type === "number" &&
+            ((0 <= State.type && State.type <= 3) || (6 <= State.type && State.type <= 9))) ||
+        (typeof State.type === "string" && Commands.names().includes(State.type))
     ) {
         // Polinomiais
         if (State.type == 1) {
@@ -631,9 +633,9 @@ do {
                                 true
                             )
                         ) {
-                            for (let i = 0; i < keys.length; i++) {
-                                Config[keys[i]] = DEFAULT_CONFIG[keys[i]]
-                            }
+                            keys.forEach((key: string) => {
+                                Config[key] = DEFAULT_CONFIG[key]
+                            })
                         }
                     }
                 } else if (choice == 8) {
@@ -779,12 +781,8 @@ do {
                                 "simpleMulti"
                             ),
                             tr(
-                                "Obs.₁: Isso irá alterar esteticamente as contas polinomiais de: “a · x² + b · x + c” para: “ax² + bx + c”\nObs.₂: Desativar o Unicode irá transformar o “·” em " *
-                                    "\nObs.₃: Isso não irá afetar o “×”, porém o Unicode irá transformá-lo em " *
-                                    "",
-                                "Note₁: This will aesthetically change polynomial expressions from: “a · x² + b · x + c” to: “ax² + bx + c”\nNote₂: Disabling Unicode will transform “·” into " *
-                                    "\nNote₃: This will not affect “×”, but Unicode will transform it into " *
-                                    ""
+                                "Obs.₁: Isso irá alterar esteticamente as contas polinomiais de: “a · x² + b · x + c” para: “ax² + bx + c”\nObs.₂: Desativar o Unicode irá transformar o “·” em *\nObs.₃: Isso não irá afetar o “×”, porém o Unicode irá transformá-lo em *",
+                                "Note₁: This will aesthetically change polynomial expressions from: “a · x² + b · x + c” to: “ax² + bx + c”\nNote₂: Disabling Unicode will transform “·” into *\nNote₃: This will not affect “×”, but Unicode will transform it into *"
                             )
                         )
                     }
@@ -858,7 +856,7 @@ do {
                             ),
                             3,
                             10
-                        )
+                        ) as Places
 
                         // Arredonda novamente
                         if (State.globalA != "a") {

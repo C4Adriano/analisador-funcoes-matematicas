@@ -6,6 +6,8 @@ import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
+import type { Text, Numeric, Value } from "./values.js"
+
 /**
  * [FUNÇÃO] Objeto base para as ajudas de código (repetições) e cálculos comuns
  * - Use as funções aqui para obter ajudas comuns, como o domínio, imagem, interseção com os eixos, estudo do sinal, etc.

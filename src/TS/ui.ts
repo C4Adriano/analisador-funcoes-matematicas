@@ -7,7 +7,7 @@ import { tr } from "./i18n.js"
 import { State } from "./state.js"
 import { Writing } from "./writing.js"
 
-import type { Numeric, Variable, Value, TrigonometricFunction, Digit, CommandsNames } from "./values.js"
+import type { Numeric, Value, TrigonometricFunction, Digit, CommandsNames, Text, Places, Degrees } from "./values.js"
 
 /**
  * [UI] Objeto base para as funções envolvendo UI / UX e interação com o usuário
@@ -21,7 +21,7 @@ export const Ui = {
      * @param explanation - Explicação
      * @since v6.1.0
      */
-    display(message: string = "", explanation: string = "", debug: boolean = Config.debug): void {
+    display(message: Text = "", explanation: Text = "", debug: boolean = Config.debug): void {
         if (debug) {
             console.log(message)
             if (explanation != "") {
@@ -36,10 +36,10 @@ export const Ui = {
      * [UI] Exibe um confirm personalizado
      * @param message - Mensagem
      * @param explanation - Explicação
-     * @returns - Sim / Não
+     * @returns Sim / Não
      * @since v6.1.0
      */
-    confirm(message: string = "", explanation: string = "", debug: boolean = Config.debug): boolean {
+    confirm(message: Text = "", explanation: Text = "", debug: boolean = Config.debug): boolean {
         if (debug) {
             console.log(message)
             if (explanation != "") {
@@ -62,7 +62,7 @@ export const Ui = {
      * @param explanation - Explicação
      * @since v6.1.0
      */
-    error(message: string = "", explanation: string = "", debug: boolean = Config.debug): void {
+    error(message: Text = "", explanation: Text = "", debug: boolean = Config.debug): void {
         if (Config.errors) {
             Ui.display("=== " + tr("Erro", "Error") + " ===\n" + message, explanation, debug)
         }
@@ -76,8 +76,8 @@ export const Ui = {
      * @since v6.1.0
      */
     warning(
-        message: string = "",
-        explanation: string = "",
+        message: Text = "",
+        explanation: Text = "",
         type: boolean = false,
         debug: boolean = Config.debug
     ): boolean | void {
@@ -94,15 +94,15 @@ export const Ui = {
      * [UI] Formata um menu paginado
      * @param options Array com todas as opções possíveis
      * @param page Página atual
-     * @returns - Retorna a resposta, a página atual, as opções por página
+     * @returns Retorna a resposta, a página atual, as opções por página
      * @since v6.1.0
      */
-    menu(options: string[] = ["---"], page: number = 1) {
+    menu(options: Text[] = ["---"], page: Numeric = 1) {
         let answer: CommandsNames | Digit | -1,
-            menu: string = "",
-            option = 1,
-            total = 0,
-            list = options.slice()
+            menu: Text = "",
+            option: Numeric = 1,
+            total: Numeric = 0,
+            list: Text[] = options.slice()
 
         // Organiza
         while (list.length % 5 != 0 || list.length == 0) {
@@ -111,7 +111,7 @@ export const Ui = {
         total = Math.ceil(list.length / 5)
 
         // Loop
-        let limit = 0
+        let limit: Numeric = 0
         do {
             // Arruma
             if (page < 1) {
@@ -187,26 +187,26 @@ export const Ui = {
      * [UI] Exibe um prompt personalizado e verifica ele
      * @param message - Mensagem
      * @param explanation - Explicação
-     * @param number - true = número, false = string
+     * @param number - true = Número, false = Texto
      * @param places - Casas para arredondar (0 = sem casas)
-     * @returns - Valor verificado
+     * @returns Valor verificado
      * @since v6.1.0
      */
     input(
-        message: string = "",
-        explanation: string = "",
+        message: Text = "",
+        explanation: Text = "",
         number: boolean = false,
-        places: number = Config.decimalPlaces,
+        places: Places = Config.decimalPlaces,
         allowCommands: boolean = false,
-        angle: boolean = false
+        angle: Degrees = Config.degrees
     ): Value {
-        let raw: string | null = "",
-            text: string | number = "",
-            value = 0,
-            valid = false
+        let raw: Text | null = "",
+            text: Text | Numeric = "",
+            value: Value = 0,
+            valid: boolean = false
 
         // Loop
-        let limit = 0
+        let limit: Numeric = 0
         do {
             raw = prompt(Writing.format(message, explanation))
 
@@ -221,7 +221,7 @@ export const Ui = {
 
             // Comandos
             if (valid && raw[0] == "/" && allowCommands) {
-                let action = Commands.process(raw)
+                let action: Text | Numeric | null = Commands.process(raw)
                 if (action != null) {
                     return action
                 }
@@ -230,9 +230,9 @@ export const Ui = {
 
             // Número
             if (valid && number && typeof text == "number") {
-                if (angle) {
+                if (angle == "rad") {
                     value = Writing.parseAngle(text)
-                } else {
+                } else if (angle == "deg") {
                     value = Number(Writing.decimal(text, true))
                 }
                 valid = isFinite(value)
@@ -294,7 +294,7 @@ export const Ui = {
             return ""
         }
 
-        let funcStr = tr("A função: ƒ(x) = ", "The function: ƒ(x) = ")
+        let funcStr: Text = tr("A função: ƒ(x) = ", "The function: ƒ(x) = ")
 
         if (!funcExp && !funcLog && funcTrig == "") {
             // Polinomial
@@ -570,19 +570,19 @@ export const Ui = {
      * @param min - Mínimo
      * @param max - Máximo
      * @param places - Casas decimais
-     * @returns - Um valor escolhido entre o intervalo
+     * @returns Um valor escolhido entre o intervalo
      * @since v6.1.0
      */
     range(
-        message: string = "",
-        explanation: string = "",
+        message: Text = "",
+        explanation: Text = "",
         min: Numeric = 0,
         max: Numeric = 1,
-        places: number = 0,
+        places: Places = 0,
         allowCommands: boolean = false
     ): Value {
         let value: Value = 0,
-            i = true
+            i: boolean = true
 
         // Loop
         do {

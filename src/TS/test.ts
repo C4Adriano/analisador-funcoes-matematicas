@@ -8,7 +8,7 @@ import { Helpers } from "./helpers.js"
 import { tr } from "./i18n.js"
 import { Ui } from "./ui.js"
 
-import type { Value } from "./values.js"
+import type { Text, Numeric, Value } from "./values.js"
 
 /**
  * [DEBUG] Objeto de testes do programa
@@ -166,9 +166,9 @@ export const Test = {
         // Monta relatório
         let logs = "=== Relatório de Contas ===\n"
         result.forEach(element => {
-            let name = element[0] as string,
-                gated = element[1] as number,
-                waited = element[2] as number
+            let name = element[0] as Text,
+                gated = element[1] as Numeric,
+                waited = element[2] as Numeric
             let pass = isNaN(waited) ? isNaN(gated) : gated == waited
             if (!pass) {
                 errors++

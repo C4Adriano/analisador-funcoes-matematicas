@@ -1,35 +1,35 @@
 /**
- * Variáveis matemáticas.
- */
-export type Variable = string
-
-/**
- * Números matemáticos.
- */
-export type Numeric = number
-
-/**
- * Valores matemáticos.
- */
-export type Value = Variable | Numeric
-
-/**
  * Texto genérico.
  */
 export type Text = string
 
 /**
+ * Número genérico.
+ */
+export type Numeric = number
+
+/**
+ * Variável matemática.
+ */
+export type Variable = Text
+
+/**
+ * Valor matemático.
+ */
+export type Value = Variable | Numeric
+
+/**
  * Precisão numérica.
  */
-export type Precision = number
+export type Precision = 1e-6 | 1e-7 | 1e-8 | 1e-9 | 1e-10 | 1e-11 | 1e-12
 
 /**
  * Casas decimais.
  */
-export type Places = number
+export type Places = Numeric
 
 /**
- * Dígitos numéricos.
+ * Dígito numérico.
  */
 export type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 

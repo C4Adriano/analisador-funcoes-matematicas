@@ -1,5 +1,6 @@
 import stateJson from "../JSON/state.json" with { type: "json" }
-import type { CommandsNames, Value, ValueArray } from "./values.js"
+
+import type { CommandsNames, Numeric, Value, ValueArray } from "./values.js"
 
 export type StateType = {
     loop: boolean
@@ -10,7 +11,7 @@ export type StateType = {
     globalB: Value
     globalC: Value
 
-    type: CommandsNames | number
+    type: Numeric | CommandsNames
 
     baseFunc: ValueArray
     coefficients: ValueArray

@@ -5,6 +5,8 @@ import { Test } from "./test.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
+import type { Text, Numeric, Value } from "./values.js"
+
 /**
  * [JS] Processamento de comandos do usuário
  * - Use o comando "/help" para ver todos os comandos disponíveis
@@ -644,7 +646,7 @@ export const Commands = {
             cmdKeys = Object.keys(cmds),
             canonical = specific
 
-        cmdKeys.forEach((key) => {
+        cmdKeys.forEach(key => {
             if (cmds[key].variations.includes(specific)) {
                 canonical = key
             }

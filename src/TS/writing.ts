@@ -1,7 +1,8 @@
 import { Algebra } from "./algebra.js"
 import { Config } from "./config.js"
 import { tr } from "./i18n.js"
-import { Places, Value } from "./values.js"
+
+import type { Text, Numeric, Value, Places } from "./values.js"
 
 /**
  * [TEXTO] Objeto base para as funções envolvendo escrita e conversão de texto
@@ -23,17 +24,17 @@ export const Writing = {
 
     /**
      * [TEXTO] Substituição de várias strings
-     * @param {string} text - Texto
+     * @param text - Texto
      * @param {string[][]} list - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
-     * @returns {string} - Texto convertido
+     * @returns - Texto convertido
      * @since v6.1.0
      */
-    replaceGroup(text = "", list = [["", ""]]) {
-        for (let i = 0; i < list.length; i++) {
-            if (list[i][0] != undefined && list[i][1] != undefined) {
-                text = Writing.replace(text, list[i][0], list[i][1])
+    replaceGroup(text: Text = "", list: [Text, Text][] = [["", ""]]): Text {
+        list.forEach(value => {
+            if (value[0] != undefined && value[1] != undefined) {
+                text = Writing.replace(text, value[0], value[1])
             }
-        }
+        })
         return text
     },
 
@@ -338,7 +339,7 @@ export const Writing = {
      * @param invert - Para inverter e não afetar nas contas
      * @param round - Arredondar
      * @param places - Casas decimais
-     * @returns - Número convertido
+     * @returns Número convertido
      * @since v6.1.0
      */
     decimal(number: Value = 0, invert: boolean = false, round: boolean = true, places: Places = Config.decimalPlaces) {
@@ -493,7 +494,7 @@ export const Writing = {
     /**
      * [TEXTO] Conversão para subscrito
      * @param text - Número
-     * @return - Número subscrito
+     * @returns Número subscrito
      * @since v6.1.0
      */
     subscript(text: Value = ""): string {

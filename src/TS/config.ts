@@ -1,5 +1,6 @@
 import defaultConfigJson from "../JSON/config.json" with { type: "json" }
-import { Degrees, Language, Places } from "./values"
+
+import type { Text, Degrees, Language, Numeric, Places, Precision } from "./values"
 
 /**
  * Tipo automático baseado no JSON
@@ -23,9 +24,9 @@ export type ConfigType = {
     showFunction: boolean
 
     decimalPlaces: Places
-    logPrecision: 1e-12
-    divPrecision: 1e-12
-    interactionLimit: 1000
+    logPrecision: Precision
+    divPrecision: Precision
+    interactionLimit: Numeric
     degrees: Degrees
 }
 
@@ -37,14 +38,14 @@ export const Config: ConfigType = structuredClone(defaultConfigJson) as ConfigTy
 /**
  * Versão do programa (MAJOR.MINOR.PATCH)
  */
-export const VERSION = "v6.2.0"
+export const VERSION: Text = "v6.2.0"
 
 /**
  * Carrega configurações salvas no localStorage
  */
-export function loadConfig() {
-    const saved = localStorage.getItem("config")
-    const savedVersion = localStorage.getItem("configVersion")
+export function loadConfig(): void {
+    const saved: Text | null = localStorage.getItem("config")
+    const savedVersion: Text | null = localStorage.getItem("configVersion")
 
     if (!saved) return
 
@@ -87,7 +88,7 @@ export function loadConfig() {
 /**
  * Salva configurações atuais no localStorage
  */
-export function saveConfig() {
+export function saveConfig(): void {
     try {
         localStorage.setItem("config", JSON.stringify(Config))
         localStorage.setItem("configVersion", VERSION)
@@ -99,7 +100,7 @@ export function saveConfig() {
 /**
  * Reseta para os valores padrão do JSON
  */
-export function resetConfig() {
+export function resetConfig(): void {
     localStorage.removeItem("config")
     localStorage.removeItem("configVersion")
 

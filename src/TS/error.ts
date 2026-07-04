@@ -1,6 +1,8 @@
 import { tr } from "./i18n.js"
 import { Ui } from "./ui.js"
 
+import type { Text, Numeric, Value } from "./values.js"
+
 /**
  * [ERRO] Mensagens de erro padronizadas do programa
  * - Use as funções aqui para exibir erros ao usuário. Nunca chame Ui.error() diretamente
@@ -9,11 +11,11 @@ import { Ui } from "./ui.js"
 export const Error = {
     /**
      * [ERRO] Exibe um erro de valor fora do intervalo permitido
-     * @param {number} min - Valor mínimo permitido
-     * @param {number} max - Valor máximo permitido
+     * @param min - Valor mínimo permitido
+     * @param max - Valor máximo permitido
      * @since v6.1.0
      */
-    range(min = 0, max = 1) {
+    range(min: Numeric = 0, max: Numeric = 1): void {
         if (!isFinite(min) || !isFinite(max)) {
             Ui.error("[Error.range] Parâmetros inválidos.", "Min: " + min + " | Max: " + max, true)
             min = 0
@@ -33,10 +35,10 @@ export const Error = {
 
     /**
      * [ERRO] Exibe um erro de divisão por zero
-     * @param {string} reason - Motivo da divisão por zero
+     * @param reason - Motivo da divisão por zero
      * @since v6.1.0
      */
-    divZero(reason = "") {
+    divZero(reason: Text = ""): void {
         if (typeof reason !== "string") {
             Ui.error("[Error.divZero] 'reason' inválido.", "Recebido: " + reason, true)
             reason = ""
@@ -54,7 +56,7 @@ export const Error = {
      * [ERRO] Exibe um erro de limite de interações estourado
      * @since v6.1.0
      */
-    limitExceeded() {
+    limitExceeded(): void {
         Ui.error(
             tr("ERRO-003: Limite de interações excedido", "ERROR-003: Interaction limit exceeded"),
             tr(
@@ -66,10 +68,10 @@ export const Error = {
 
     /**
      * [ERRO] Exibe um erro de função que se torna constante pelos coeficientes dados
-     * @param {string} type - Tipo de função
+     * @param type - Tipo de função
      * @since v6.1.0
      */
-    constantFunction(type = "") {
+    constantFunction(type: Text = ""): void {
         Ui.error(
             tr("ERRO-004: A função não é ", "ERROR-004: The function is not ") +
                 type +
@@ -80,10 +82,10 @@ export const Error = {
 
     /**
      * [ERRO] Exibe um erro de função inválida pelos coeficientes dados
-     * @param {string} type - Tipo de função
+     * @param type - Tipo de função
      * @since v6.1.0
      */
-    invalidFunction(type = "") {
+    invalidFunction(type: Text = ""): void {
         if (typeof type != "string") {
             Ui.error("[Error.invalidFunction] 'type' inválido.", "Recebido: " + type, true)
             type = ""
@@ -94,11 +96,11 @@ export const Error = {
 
     /**
      * [ERRO] Exibe um erro de logaritmo inválido
-     * @param {string} type - Tipo de logaritmo (log, ln, etc.)
-     * @param {string} reason - Motivo do erro
+     * @param type - Tipo de logaritmo (log, ln, etc.)
+     * @param reason - Motivo do erro
      * @since v6.1.0
      */
-    invalidLog(type = "log", reason = "") {
+    invalidLog(type: "log" | "ln" = "log", reason: Text = "") {
         if (typeof type != "string") {
             Ui.error("[Error.invalidLog] 'type' inválido.", "Recebido: " + type, true)
             type = "log"

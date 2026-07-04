@@ -623,7 +623,7 @@ export const Algebra = {
      * @param x - Número
      * @param base - Base
      * @param precision - Casas decimais
-     * @returns - Resultado
+     * @returns Resultado
      * @since v6.1.0
      */
     log(x: Numeric = 1, base: Numeric = Math.E, precision: Precision = Config.logPrecision): Numeric {

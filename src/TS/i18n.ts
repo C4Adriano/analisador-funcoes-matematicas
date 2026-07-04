@@ -1,14 +1,15 @@
 import { Config, saveConfig } from "./config.js"
-import type { Language } from "./values.js"
+
+import type { Text, Language } from "./values.js"
 
 /**
  * [I18N] Retorna o texto na língua configurada
- * @param {string} pt - Texto em português
- * @param {string} en - Texto em inglês
- * @returns {string} - Texto na língua configurada
+ * @param pt - Texto em português
+ * @param en - Texto em inglês
+ * @returns Texto na língua configurada
  * @since v6.2.0
  */
-export function tr(pt: string = "", en: string = ""): string {
+export function tr(pt: Text = "", en: Text = ""): Text {
     if (en == "" || Config.language == "pt" || Config.language == "pt-br") {
         return pt
     } else if (pt == "" || Config.language == "en") {
@@ -19,17 +20,17 @@ export function tr(pt: string = "", en: string = ""): string {
 
 /**
  * [I18N] Retorna o array de opções na língua configurada
- * @param {string[][]} pairs - Array de pares [pt, en]
- * @returns {string[]} - Array na língua configurada
+ * @param pairs - Array de pares [pt, en]
+ * @returns Array na língua configurada
  * @since v6.2.0
  */
-export function trArr(pairs: [string, string][] = []): string[] {
+export function trArr(pairs: [Text, Text][] = []): Text[] {
     return pairs.map(pair => tr(pair[0], pair[1]))
 }
 
 /**
  * [I18N] Altera a língua do programa, ajustando as configurações relacionadas (como acentos e separador decimal)
- * @param {string} language Língua
+ * @param language Língua
  * @since v6.2.0
  */
 export function changeLanguage(language: Language) {
