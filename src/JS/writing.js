@@ -1,5 +1,5 @@
 import { Algebra } from "./algebra.js";
-import { Config } from "./config.js";
+import { Config, DEFAULT_CONFIG } from "./config.js";
 import { tr } from "./i18n.js";
 /**
  * [TEXTO] Objeto base para as funções envolvendo escrita e conversão de texto

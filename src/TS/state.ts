@@ -16,7 +16,7 @@ export type StateType = {
     baseFunc: ValueArray
     coefficients: ValueArray
     currentFunc: ValueArray
-    history: ValueArray
+    history: ValueArray[]
 }
 
 export const State: StateType = structuredClone(stateJson)

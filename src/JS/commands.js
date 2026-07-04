@@ -11,7 +11,7 @@ import { Writing } from "./writing.js";
 export const Commands = {
     /**
      * [JS] Processa um comando slash
-     * @param {string} raw - Texto digitado pelo usuário
+     * @param  raw - Texto digitado pelo usuário
      * @returns {string | null} - Ação a executar, ou null se não for comando
      * @since v6.1.0
      */
@@ -52,8 +52,8 @@ export const Commands = {
     },
     /**
      * [JS] Calcula a distância de Levenshtein entre duas strings
-     * @param {string} wrong - A string digitada pelo usuário
-     * @param {string} correct - A string de um comando conhecido
+     * @param  wrong - A string digitada pelo usuário
+     * @param  correct - A string de um comando conhecido
      * @returns {number}
      * @since v6.1.0
      */
@@ -104,7 +104,7 @@ export const Commands = {
     },
     /**
      * [JS] Pesquisa comandos por termo — busca no canônico, variações, short e long
-     * @param {string} term - Termo de pesquisa
+     * @param  term - Termo de pesquisa
      * @returns {string[]} - Lista de nomes canônicos dos comandos encontrados
      * @since v6.2.0
      */
@@ -473,7 +473,7 @@ export const Commands = {
     },
     /**
      * [JS] Resolve um comando específico para seu nome canônico
-     * @param {string} specific - Comando específico
+     * @param  specific - Comando específico
      * @returns {string | null} - Nome canônico do comando, ou null se não for encontrado
      * @since v6.1.0
      */
@@ -491,7 +491,7 @@ export const Commands = {
     },
     /**
      * [JS] Converte um texto em um valor boolean
-     * @param {string} text - Texto
+     * @param  text - Texto
      * @returns {boolean | null} - Se é parecido com um valor boolean verdadeiro / falso ou se não é reconhecido
      * @since v6.1.0
      */
@@ -506,7 +506,7 @@ export const Commands = {
     },
     /**
      * [JS] Exibe ajuda sobre um comando específico ou lista paginada de todos os comandos
-     * @param {string} specific - Nome ou variação de um comando específico (opcional)
+     * @param  specific - Nome ou variação de um comando específico (opcional)
      * @returns {null}
      * @since v6.1.0
      */
@@ -562,7 +562,7 @@ export const Commands = {
     },
     /**
      * [JS] Exibe os resultados de uma pesquisa de comandos de forma paginada
-     * @param {string} term - Termo de pesquisa
+     * @param  term - Termo de pesquisa
      * @returns {null}
      * @since v6.2.0
      */
@@ -620,7 +620,7 @@ export const Commands = {
     },
     /**
      * [JS] Exibe todas as variações aceitas de um comando
-     * @param {string} specific - Nome ou variação do comando
+     * @param  specific - Nome ou variação do comando
      * @returns {null}
      * @since v6.2.0
      */
@@ -686,7 +686,7 @@ export const Commands = {
     },
     /**
      * [JS] Altera uma configuração do programa
-     * @param {string} name - Nome da configuração
+     * @param  name - Nome da configuração
      * @param {any} value - Novo valor para a configuração
      * @returns {null}
      * @since v6.1.0

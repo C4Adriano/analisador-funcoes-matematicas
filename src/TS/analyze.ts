@@ -31,7 +31,7 @@ export const Analyze = {
      * @returns {number[]} - Retorna: [coefC]
      * @since v6.1.0
      */
-    constant(coefC: Value = State.globalC) {
+    constant(coefC: Value = State.globalC): number[] {
         let option = 0,
             page = 1,
             menuResp: Numeric[]
@@ -122,7 +122,7 @@ export const Analyze = {
      * @returns {number[]} - Retorna: [coefB, coefC]
      * @since v6.1.0
      */
-    affine(coefB: Value = State.globalB, coefC: Value = State.globalC) {
+    affine(coefB: Value = State.globalB, coefC: Value = State.globalC): number[] {
         let option: Numeric,
             page: Numeric = 1,
             menuResp: Numeric[]
@@ -231,7 +231,7 @@ export const Analyze = {
      * @returns {number[]} - Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
-    quadratic(coefA: Value = State.globalA, coefB: Value = State.globalB, coefC: Value = State.globalC) {
+    quadratic(coefA: Value = State.globalA, coefB: Value = State.globalB, coefC: Value = State.globalC): number[] {
         let option: Numeric,
             page: Numeric = 1,
             menuResp: Numeric[]
@@ -394,7 +394,7 @@ export const Analyze = {
      * @returns {number[]} - Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
-    exponential(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
+    exponential(coefA: number = State.globalA, coefB: number = State.globalB, coefC: number = State.globalC): number[] {
         let option: Numeric,
             page: Numeric = 1,
             menuResp: Numeric[]
@@ -525,7 +525,7 @@ export const Analyze = {
      * @returns {number[]} - Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
-    logarithmic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
+    logarithmic(coefA: number = State.globalA, coefB: number = State.globalB, coefC: number = State.globalC): number[] {
         let option: Numeric,
             page: Numeric = 1,
             menuResp: Numeric[]
@@ -634,7 +634,7 @@ export const Analyze = {
      * @returns {number[]} - Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
-    sine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
+    sine(coefA: number = State.globalA, coefB: number = State.globalB, coefC: number = State.globalC): number[] {
         let option: Numeric,
             page: Numeric = 1,
             menuResp: Numeric[]
@@ -728,7 +728,7 @@ export const Analyze = {
      * @returns {number[]} - Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
-    cosine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
+    cosine(coefA: number = State.globalA, coefB: number = State.globalB, coefC: number = State.globalC): number[] {
         let option: Numeric,
             page: Numeric = 1,
             menuResp: Numeric[]
@@ -822,7 +822,7 @@ export const Analyze = {
      * @returns {number[]} - Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
-    tangent(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
+    tangent(coefA: number = State.globalA, coefB: number = State.globalB, coefC: number = State.globalC): number[] {
         let option: Numeric,
             page: Numeric = 1,
             menuResp: Numeric[]

@@ -5,6 +5,12 @@ import { tr } from "./i18n.js";
 import { State } from "./state.js";
 import { Ui } from "./ui.js";
 import { Writing } from "./writing.js";
+function isNumeric(value) {
+    return typeof value === "number" && isFinite(value);
+}
+function numericPoint(points, index) {
+    return Number(Writing.decimal(points[index] ?? 0, true));
+}
 /**
  * [NUMÉRICO] Objeto base para as funções envolvendo algebra
  * - Use as funções daqui para fazer cálculos, arredondar números, pedir variáveis e pontos, etc.
@@ -172,7 +178,7 @@ export const Algebra = {
                 // Constante
                 if (coefA == 0 && coefB == 0) {
                     points = Algebra.point();
-                    coefC = points[1];
+                    coefC = numericPoint(points, 1);
                 }
                 // Afim
                 else if (coefA == 0 && coefB != 0) {
@@ -180,12 +186,15 @@ export const Algebra = {
                     if ((typeof coefB == "string" && typeof coefC == "number") ||
                         (typeof coefC == "string" && typeof coefB == "number")) {
                         points = Algebra.point();
+                        const x0 = numericPoint(points, 0);
+                        const x1 = numericPoint(points, 1);
                         if (typeof coefC == "string") {
-                            coefC = points[1] - coefB * points[0];
+                            const b = coefB;
+                            coefC = x1 - b * x0;
                         }
                         else if (typeof coefB == "string") {
-                            if (points[0] != 0) {
-                                coefB = Algebra.division(points[1] - coefC, points[0]);
+                            if (x0 != 0) {
+                                coefB = Algebra.division(x1 - coefC, x0);
                             }
                             else {
                                 Error.divZero("x ≠ 0");
@@ -196,9 +205,13 @@ export const Algebra = {
                     // Duplas
                     else if (typeof coefB == "string" && typeof coefC == "string") {
                         points = Algebra.point(2);
-                        if (points[0] != points[2] && (points[0] != 0 || points[2] != 0)) {
-                            coefB = Algebra.division(points[3] - points[1], points[2] - points[0]);
-                            coefC = points[1] - coefB * points[0];
+                        const x0 = numericPoint(points, 0);
+                        const x1 = numericPoint(points, 1);
+                        const x2 = numericPoint(points, 2);
+                        const x3 = numericPoint(points, 3);
+                        if (x0 != x2 && (x0 != 0 || x2 != 0)) {
+                            coefB = Algebra.division(x3 - x1, x2 - x0);
+                            coefC = x1 - coefB * x0;
                         }
                         else {
                             Error.divZero("x ≠ 0 ∧ x₁ ≠ x₂");
@@ -212,8 +225,10 @@ export const Algebra = {
                     // a
                     if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "number") {
                         points = Algebra.point();
-                        if (points[0] != 0) {
-                            coefA = Algebra.division(points[1] - coefB * points[0] - coefC, points[0] * points[0]);
+                        const x0 = numericPoint(points, 0);
+                        const x1 = numericPoint(points, 1);
+                        if (x0 != 0) {
+                            coefA = Algebra.division(x1 - coefB * x0 - coefC, x0 * x0);
                         }
                         else {
                             Error.divZero("x ≠ 0");
@@ -223,8 +238,10 @@ export const Algebra = {
                     // b
                     else if (typeof coefB == "string" && typeof coefA == "number" && typeof coefC == "number") {
                         points = Algebra.point();
-                        if (points[0] != 0) {
-                            coefB = Algebra.division(points[1] - coefA * (points[0] * points[0]) - coefC, points[0]);
+                        const x0 = numericPoint(points, 0);
+                        const x1 = numericPoint(points, 1);
+                        if (x0 != 0) {
+                            coefB = Algebra.division(x1 - coefA * (x0 * x0) - coefC, x0);
                         }
                         else {
                             Error.divZero("x ≠ 0");
@@ -234,17 +251,22 @@ export const Algebra = {
                     // c
                     else if (typeof coefC == "string" && typeof coefB == "number" && typeof coefA == "number") {
                         points = Algebra.point();
-                        coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0];
+                        const x0 = numericPoint(points, 0);
+                        const x1 = numericPoint(points, 1);
+                        coefC = x1 - coefA * (x0 * x0) - coefB * x0;
                     }
                     // Duplas
                     // a, b
                     else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "number") {
                         points = Algebra.point(2);
-                        if (points[0] != 0 && points[0] != points[2]) {
-                            denominator = points[0] * points[2] * (points[0] - points[2]);
-                            coefA = Algebra.division((points[1] - coefC) * points[2] - (points[3] - coefC) * points[0], denominator);
-                            coefB = Algebra.division((points[3] - coefC) * points[0] * points[0] -
-                                (points[1] - coefC) * points[2] * points[2], denominator);
+                        const x0 = numericPoint(points, 0);
+                        const x1 = numericPoint(points, 1);
+                        const x2 = numericPoint(points, 2);
+                        const x3 = numericPoint(points, 3);
+                        if (x0 != 0 && x0 != x2) {
+                            denominator = x0 * x2 * (x0 - x2);
+                            coefA = Algebra.division((x1 - coefC) * x2 - (x3 - coefC) * x0, denominator);
+                            coefB = Algebra.division((x3 - coefC) * x0 * x0 - (x1 - coefC) * x2 * x2, denominator);
                         }
                         else {
                             Error.divZero("x ≠ 0 ∧ x₁ ≠ x₂");
@@ -254,10 +276,14 @@ export const Algebra = {
                     // a, c
                     else if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "string") {
                         points = Algebra.point(2);
-                        denominator = points[0] * points[0] - points[2] * points[2];
+                        const x0 = numericPoint(points, 0);
+                        const x1 = numericPoint(points, 1);
+                        const x2 = numericPoint(points, 2);
+                        const x3 = numericPoint(points, 3);
+                        denominator = x0 * x0 - x2 * x2;
                         if (denominator != 0) {
-                            coefA = Algebra.division(points[1] - coefB * points[0] - (points[3] - coefB * points[2]), denominator);
-                            coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0];
+                            coefA = Algebra.division(x1 - coefB * x0 - (x3 - coefB * x2), denominator);
+                            coefC = x1 - coefA * (x0 * x0) - coefB * x0;
                         }
                         else {
                             Error.divZero("x₁ ≠ x₂");
@@ -267,9 +293,13 @@ export const Algebra = {
                     // b, c
                     else if (typeof coefA == "number" && typeof coefB == "string" && typeof coefC == "string") {
                         points = Algebra.point(2);
-                        if (points[0] != points[2]) {
-                            coefB = Algebra.division(points[3] - coefA * points[2] * points[2] - (points[1] - coefA * points[0] * points[0]), points[2] - points[0]);
-                            coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0];
+                        const x0 = numericPoint(points, 0);
+                        const x1 = numericPoint(points, 1);
+                        const x2 = numericPoint(points, 2);
+                        const x3 = numericPoint(points, 3);
+                        if (x0 != x2) {
+                            coefB = Algebra.division(x3 - coefA * x2 * x2 - (x1 - coefA * x0 * x0), x2 - x0);
+                            coefC = x1 - coefA * (x0 * x0) - coefB * x0;
                         }
                         else {
                             Error.divZero("x₁ ≠ x₂");
@@ -279,17 +309,23 @@ export const Algebra = {
                     // Triplas
                     else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "string") {
                         points = Algebra.point(3);
-                        diff1 = points[3] - points[1];
-                        diff2 = points[5] - points[1];
-                        term1 = points[2] * points[2] - points[0] * points[0];
-                        term2 = points[2] - points[0];
-                        term3 = points[4] * points[4] - points[0] * points[0];
-                        term4 = points[4] - points[0];
+                        const x0 = numericPoint(points, 0);
+                        const x1 = numericPoint(points, 1);
+                        const x2 = numericPoint(points, 2);
+                        const x3 = numericPoint(points, 3);
+                        const x4 = numericPoint(points, 4);
+                        const x5 = numericPoint(points, 5);
+                        diff1 = x3 - x1;
+                        diff2 = x5 - x1;
+                        term1 = x2 * x2 - x0 * x0;
+                        term2 = x2 - x0;
+                        term3 = x4 * x4 - x0 * x0;
+                        term4 = x4 - x0;
                         denominator = term1 * term4 - term2 * term3;
                         if (denominator != 0) {
                             coefA = Algebra.division(diff1 * term4 - term2 * diff2, denominator);
                             coefB = Algebra.division(term1 * diff2 - diff1 * term3, denominator);
-                            coefC = points[1] - coefA * (points[0] * points[0]) - coefB * points[0];
+                            coefC = x1 - coefA * (x0 * x0) - coefB * x0;
                         }
                         else {
                             Error.divZero("x₁ ≠ x₂");
@@ -304,25 +340,35 @@ export const Algebra = {
                 // a
                 if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "number") {
                     points = Algebra.point();
-                    coefA = Algebra.round(Algebra.division(points[1] - coefC, coefB, false) ** Algebra.division(1, points[0], false));
+                    const x0 = numericPoint(points, 0);
+                    const x1 = numericPoint(points, 1);
+                    coefA = Algebra.round(Algebra.division(x1 - coefC, coefB, false) ** Algebra.division(1, x0, false));
                 }
                 // b
                 else if (typeof coefB == "string" && typeof coefA == "number" && typeof coefC == "number") {
                     points = Algebra.point();
-                    coefB = Algebra.division(points[1] - coefC, coefA ** points[0]);
+                    const x0 = numericPoint(points, 0);
+                    const x1 = numericPoint(points, 1);
+                    coefB = Algebra.division(x1 - coefC, coefA ** x0);
                 }
                 // c
                 else if (typeof coefC == "string" && typeof coefB == "number" && typeof coefA == "number") {
                     points = Algebra.point();
-                    coefC = points[1] - coefB * coefA ** points[0];
+                    const x0 = numericPoint(points, 0);
+                    const x1 = numericPoint(points, 1);
+                    coefC = x1 - coefB * coefA ** x0;
                 }
                 // Duplas
                 // a, b
                 else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "number") {
                     points = Algebra.point(2);
-                    coefA = Algebra.round(Algebra.division(points[1] - coefC, points[3] - coefC, false) **
-                        Algebra.division(1, points[0] - points[2], false));
-                    coefB = Algebra.division(points[1] - coefC, coefA ** points[0]);
+                    const x0 = numericPoint(points, 0);
+                    const x1 = numericPoint(points, 1);
+                    const x2 = numericPoint(points, 2);
+                    const x3 = numericPoint(points, 3);
+                    const a = Algebra.round(Algebra.division(x1 - coefC, x3 - coefC, false) ** Algebra.division(1, x0 - x2, false));
+                    coefA = a;
+                    coefB = Algebra.division(x1 - coefC, a ** x0);
                 }
                 // a, c
                 else if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "string") {
@@ -334,16 +380,13 @@ export const Algebra = {
                 // b, c
                 else if (typeof coefA == "number" && typeof coefB == "string" && typeof coefC == "string") {
                     points = Algebra.point(2);
-                    coefB = Algebra.division(points[3] - points[1], coefA ** points[2] - coefA ** points[0]);
-                    coefC = points[1] - coefB * coefA ** points[0];
-                }
-                // Triplas
-                else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "string") {
-                    // pontoExp = algebra.ponto(3)
-                    Ui.warning(tr("Não posso ainda descobrir o valor de a, b e c tendo somente pontos", "I cannot yet determine the value of a, b and c having only points"), tr("Em construção.", "Under construction."));
-                    coefA = -1;
-                    coefB = 1;
-                    coefC = 0;
+                    const x0 = numericPoint(points, 0);
+                    const x1 = numericPoint(points, 1);
+                    const x2 = numericPoint(points, 2);
+                    const x3 = numericPoint(points, 3);
+                    const b = Algebra.division(x3 - x1, coefA ** x2 - coefA ** x0);
+                    coefB = b;
+                    coefC = x1 - b * coefA ** x0;
                 }
             }
             // Logarítmica
@@ -352,17 +395,23 @@ export const Algebra = {
                 // a
                 if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "number") {
                     points = Algebra.point();
-                    coefA = Algebra.round(points[0] ** Algebra.division(coefB, points[1] - coefC, false));
+                    const x0 = numericPoint(points, 0);
+                    const x1 = numericPoint(points, 1);
+                    coefA = Algebra.round(x0 ** Algebra.division(coefB, x1 - coefC, false));
                 }
                 // b
                 else if (typeof coefA == "number" && typeof coefB == "string" && typeof coefC == "number") {
                     points = Algebra.point();
-                    coefB = Algebra.division(points[1] - coefC, Algebra.log(points[0], coefA));
+                    const x0 = numericPoint(points, 0);
+                    const x1 = numericPoint(points, 1);
+                    coefB = Algebra.division(x1 - coefC, Algebra.log(x0, coefA));
                 }
                 // c
                 else if (typeof coefA == "number" && typeof coefB == "number" && typeof coefC == "string") {
                     points = Algebra.point();
-                    coefC = points[1] - Algebra.round(coefB * Algebra.log(points[0], coefA));
+                    const x0 = numericPoint(points, 0);
+                    const x1 = numericPoint(points, 1);
+                    coefC = x1 - Number(Algebra.round(coefB * Algebra.log(x0, coefA)));
                 }
                 // Duplas
                 // a, b
@@ -376,23 +425,23 @@ export const Algebra = {
                 // a, c
                 else if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "string") {
                     points = Algebra.point(2);
-                    coefA = Algebra.round(Algebra.division(points[0], points[2], false) **
-                        Algebra.division(coefB, points[1] - points[3], false));
-                    coefC = points[1] - coefB * Algebra.log(points[0], coefA);
+                    const x0 = numericPoint(points, 0);
+                    const x1 = numericPoint(points, 1);
+                    const x2 = numericPoint(points, 2);
+                    const x3 = numericPoint(points, 3);
+                    const a = Algebra.round(Algebra.division(x0, x2, false) ** Algebra.division(coefB, x1 - x3, false));
+                    coefA = a;
+                    coefC = x1 - coefB * Algebra.log(x0, a);
                 }
                 // b, c
                 else if (typeof coefA == "number" && typeof coefB == "string" && typeof coefC == "string") {
                     points = Algebra.point(2);
-                    coefB = Algebra.division(points[1] - points[3], Algebra.log(points[0], coefA) - Algebra.log(points[2], coefA));
-                    coefC = points[1] - coefB * Algebra.log(points[0], coefA);
-                }
-                // Triplas
-                else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "string") {
-                    // pontoLog = algebra.ponto(3)
-                    Ui.warning(tr("Não posso ainda descobrir o valor de a, b e c tendo somente pontos", "I cannot yet determine the value of a, b and c given only points"), tr("Em construção.", "Under construction."));
-                    coefA = -1;
-                    coefB = 1;
-                    coefC = 0;
+                    const x0 = numericPoint(points, 0);
+                    const x1 = numericPoint(points, 1);
+                    const x2 = numericPoint(points, 2);
+                    const x3 = numericPoint(points, 3);
+                    coefB = Algebra.division(x1 - x3, Algebra.log(x0, coefA) - Algebra.log(x2, coefA));
+                    coefC = x1 - coefB * Algebra.log(x0, coefA);
                 }
             }
             // Erro

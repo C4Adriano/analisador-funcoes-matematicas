@@ -34,6 +34,7 @@ export type ConfigType = {
  * Configurações ativas do programa
  */
 export const Config: ConfigType = structuredClone(defaultConfigJson) as ConfigType
+export const DEFAULT_CONFIG: ConfigType = structuredClone(defaultConfigJson) as ConfigType
 
 /**
  * Versão do programa (MAJOR.MINOR.PATCH)

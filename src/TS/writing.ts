@@ -1,5 +1,5 @@
 import { Algebra } from "./algebra.js"
-import { Config } from "./config.js"
+import { Config, DEFAULT_CONFIG } from "./config.js"
 import { tr } from "./i18n.js"
 
 import type { Text, Numeric, Value, Places } from "./values.js"
@@ -18,7 +18,7 @@ export const Writing = {
      * @returns {string} - Texto convertido
      * @since v6.1.0
      */
-    replace(text = "", from = "", to = "") {
+    replace(text: string = "", from: string = "", to: string = ""): string {
         return String(text).split(from).join(to)
     },
 
@@ -44,7 +44,7 @@ export const Writing = {
      * @returns {string} - Texto convertido
      * @since v6.1.0
      */
-    noUnicode(text = "") {
+    noUnicode(text: string = ""): string {
         let replacements = [
             // === LETRAS / SÍMBOLOS ESPECIAIS ===
             ["©", "(c)"],
@@ -221,7 +221,7 @@ export const Writing = {
      * @param {string} text Texto
      * @returns Texto convertido
      */
-    noAccents(text = "") {
+    noAccents(text: string = "") {
         let replacements = [
             // === AGUDOS (´) ===
             ["á", "a"], // A agudo (espanhol, português)
@@ -311,7 +311,7 @@ export const Writing = {
      * @returns {string} - Texto convertido
      * @since v6.1.0
      */
-    lowercase(text = "") {
+    lowercase(text: string = ""): string {
         text = text.toLowerCase()
         // Caso especial para a letra grega delta, que matematicamente tem uma forma diferente em maiúscula e minúscula
         text = Writing.replace(text, "δ", "Δ")
@@ -325,7 +325,7 @@ export const Writing = {
      * @returns {string} - Texto convertido
      * @since v6.1.0
      */
-    uppercase(text = "") {
+    uppercase(text: string = ""): string {
         text = text.toUpperCase()
         // Caso especial para a letra latina f, que matematicamente tem uma forma diferente em maiúscula e minúscula
         text = Writing.replace(text, "Ƒ", "ƒ")
@@ -369,7 +369,7 @@ export const Writing = {
      * @returns {string} - Texto convertido
      * @since v6.1.0
      */
-    simplifyMultiplication(text = "") {
+    simplifyMultiplication(text: string = ""): string {
         return Writing.replace(text, " · ", "")
     },
 
@@ -378,7 +378,7 @@ export const Writing = {
      * @param {string} text - Texto
      * @returns {string} - Texto traduzido
      */
-    translateUnicode(text = "") {
+    translateUnicode(text: string = ""): string {
         let replacements = [
             ["alfa", "alpha"],
             ["para todo", "for all"],
@@ -429,7 +429,7 @@ export const Writing = {
      * @returns {string} - Mensagem formatada
      * @since v6.1.0
      */
-    format(message = "", explanation = "") {
+    format(message: string = "", explanation: string = ""): string {
         if (Config.explanations && explanation != "") {
             message += "\n\n" + explanation
         }
@@ -530,7 +530,7 @@ export const Writing = {
      * @returns {string} - Valor formatado
      * @since v6.1.0
      */
-    formatValue(value = true) {
+    formatValue(value: string | number | boolean = true): string {
         if (value == true || value == false) {
             return value ? tr("Sim", "Yes") : tr("Não", "No")
         }
@@ -545,7 +545,7 @@ export const Writing = {
      * @returns {string} - Mensagem formatada
      * @since v6.1.0
      */
-    configItem(message = "", name = "") {
+    configItem(message: string = "", name: string = ""): string {
         return (
             message +
             " | “" +
@@ -566,7 +566,7 @@ export const Writing = {
      * @returns {number} - Ângulo em radianos
      * @since v6.1.0
      */
-    parseDegree(text = "") {
+    parseDegree(text: string = ""): number {
         let degrees = parseFloat(Writing.replace(text, "°", ""))
         return degrees * (Math.PI / 180)
     },
@@ -577,7 +577,7 @@ export const Writing = {
      * @returns {number} - Ângulo em graus
      * @since v6.1.0
      */
-    parseRadian(text = "") {
+    parseRadian(text: string = ""): number {
         let parts = text.split("/"),
             denominator = parts[1] ? parseFloat(parts[1]) : 1,
             multiParts = parts[0].split("*"),
@@ -591,7 +591,7 @@ export const Writing = {
      * @returns {number} - Ângulo em graus ou radianos
      * @since v6.1.0
      */
-    parseAngle(text = "") {
+    parseAngle(text: string = ""): number {
         if (text.includes("°")) {
             return Writing.parseDegree(text)
         } else {
@@ -605,7 +605,7 @@ export const Writing = {
      * @returns {string} - Ângulo formatado
      * @since v6.1.0
      */
-    formatAngle(value = 0) {
+    formatAngle(value: number = 0): string {
         let ratio = value / Math.PI // PI/6 → ratio = 1/6 ≈ 0.1666...
 
         // Testa denominadores comuns (1 a 12 cobre os casos típicos)

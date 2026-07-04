@@ -1,7 +1,7 @@
 import { Algebra } from "./algebra.js";
 import { Analyze } from "./analyze.js";
 import { Commands } from "./commands.js";
-import { Config, VERSION, saveConfig, loadConfig } from "./config.js";
+import { Config, VERSION, saveConfig, loadConfig, resetConfig, DEFAULT_CONFIG } from "./config.js";
 import { Error } from "./error.js";
 import { tr, changeLanguage } from "./i18n.js";
 import { State } from "./state.js";
@@ -32,6 +32,12 @@ else {
     Ui.error("[main] Elemento 'h1' não encontrado no DOM.", "", true);
 }
 document.documentElement.lang = Config.language;
+function isNumeric(value) {
+    return typeof value === "number" && isFinite(value);
+}
+function isCommand(value) {
+    return typeof value === "string" && Commands.names().includes(value);
+}
 let subType = 0, subLoop = false, choice = 0, page = 1;
 State.globalA = Algebra.variables("a");
 State.globalB = Algebra.variables("b");
@@ -91,14 +97,14 @@ do {
         // Polinomiais
         if (State.type == 1) {
             // Incógnitas
-            if (!isFinite(State.globalA) || !isFinite(State.globalB) || !isFinite(State.globalC)) {
+            if (!isNumeric(State.globalA) || !isNumeric(State.globalB) || !isNumeric(State.globalC)) {
                 State.coefficients = Algebra.unknown(State.globalA, State.globalB, State.globalC);
                 State.globalA = Algebra.round(State.coefficients[0]);
                 State.globalB = Algebra.round(State.coefficients[1]);
                 State.globalC = Algebra.round(State.coefficients[2]);
             }
             // Números
-            if (isFinite(State.globalA) && isFinite(State.globalB) && isFinite(State.globalC)) {
+            if (isNumeric(State.globalA) && isNumeric(State.globalB) && isNumeric(State.globalC)) {
                 if (State.globalA == 0 && State.globalB == 0) {
                     Analyze.constant(State.globalC);
                 }
@@ -135,9 +141,9 @@ do {
                     " | 0 = " +
                     tr("Voltar", "Back"), "", true, 0, true);
                 subLoop = false;
-                if ((0 <= subType && subType <= 2) ||
-                    (6 <= subType && subType <= 9) ||
-                    Commands.names().includes(subType)) {
+                if ((typeof subType === "number" && 0 <= subType && subType <= 2) ||
+                    (typeof subType === "number" && 6 <= subType && subType <= 9) ||
+                    (typeof subType === "string" && Commands.names().includes(subType))) {
                     // Exponencial
                     if (subType == 1) {
                         // Incógnitas
@@ -149,13 +155,17 @@ do {
                         }
                         // Números
                         if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
-                            if (State.globalA > 0 && State.globalA != 1 && State.globalB != 0) {
+                            if (isNumeric(State.globalA) &&
+                                isNumeric(State.globalB) &&
+                                State.globalA > 0 &&
+                                State.globalA != 1 &&
+                                State.globalB != 0) {
                                 Analyze.exponential(State.globalA, State.globalB, State.globalC);
                             }
                             // Constante
                             else if (State.globalA == 0 || State.globalA == 1 || State.globalB == 0) {
                                 Error.constantFunction(tr("exponencial", "exponential"));
-                                if (State.globalA == 1) {
+                                if (State.globalA == 1 && isNumeric(State.globalB) && isNumeric(State.globalC)) {
                                     State.globalC += State.globalB;
                                 }
                                 State.globalA = 0;
@@ -165,7 +175,7 @@ do {
                                 State.loop = true;
                             }
                             // Error de base
-                            else if (State.globalA < 0) {
+                            else if (isNumeric(State.globalA) && State.globalA < 0) {
                                 Error.invalidFunction(tr("exponencial", "exponential"));
                                 State.askCoeffs = true;
                                 State.loop = true;
@@ -183,13 +193,17 @@ do {
                         }
                         // Números
                         if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
-                            if (State.globalA > 0 && State.globalA != 1 && State.globalB != 0) {
+                            if (isNumeric(State.globalA) &&
+                                isNumeric(State.globalB) &&
+                                State.globalA > 0 &&
+                                State.globalA != 1 &&
+                                State.globalB != 0) {
                                 Analyze.logarithmic(State.globalA, State.globalB, State.globalC);
                             }
                             // Constante
                             else if (State.globalA == 0 || State.globalA == 1 || State.globalB == 0) {
                                 Error.constantFunction(tr("logarítmica", "logarithmic"));
-                                if (State.globalA == 1) {
+                                if (State.globalA == 1 && isNumeric(State.globalB) && isNumeric(State.globalC)) {
                                     State.globalC += State.globalB;
                                 }
                                 State.globalA = 0;
@@ -199,7 +213,7 @@ do {
                                 State.loop = true;
                             }
                             // Error de base
-                            else if (State.globalA < 0) {
+                            else if (isNumeric(State.globalA) && State.globalA < 0) {
                                 Error.invalidFunction(tr("logarítmica", "logarithmic"));
                                 State.askCoeffs = true;
                                 State.loop = true;
@@ -207,7 +221,12 @@ do {
                         }
                     }
                     // Manter
-                    else if ((6 <= subType && subType <= 9) || Commands.names().includes(subType)) {
+                    else if (typeof subType === "number" && 6 <= subType && subType <= 9) {
+                        State.type = subType;
+                        State.loop = true;
+                        State.keepType = true;
+                    }
+                    else if (isCommand(subType)) {
                         State.type = subType;
                         State.loop = true;
                         if (subType != "exit") {
@@ -253,9 +272,9 @@ do {
                     " | 0 = " +
                     tr("Voltar", "Back"), "", true, 0, true);
                 subLoop = false;
-                if ((0 <= subType && subType <= 3) ||
-                    (6 <= subType && subType <= 9) ||
-                    Commands.names().includes(subType)) {
+                if ((typeof subType === "number" && 0 <= subType && subType <= 3) ||
+                    (typeof subType === "number" && 6 <= subType && subType <= 9) ||
+                    (typeof subType === "string" && Commands.names().includes(subType))) {
                     // Seno
                     if (subType == 1) {
                         // Incógnitas
@@ -298,7 +317,7 @@ do {
                             // Constante
                             else if (State.globalA == 0 || State.globalB == 0) {
                                 Error.constantFunction(tr("cosseno", "cosine"));
-                                if (State.globalA == 0) {
+                                if (State.globalA == 0 && isNumeric(State.globalC) && isNumeric(State.globalB)) {
                                     State.globalC += State.globalB;
                                 }
                                 State.globalA = 0;
@@ -335,7 +354,12 @@ do {
                         }
                     }
                     // Manter
-                    else if ((6 <= subType && subType <= 9) || Commands.names().includes(subType)) {
+                    else if (typeof subType === "number" && 6 <= subType && subType <= 9) {
+                        State.type = subType;
+                        State.loop = true;
+                        State.keepType = true;
+                    }
+                    else if (isCommand(subType)) {
                         State.type = subType;
                         State.loop = true;
                         if (subType != "exit") {
@@ -368,14 +392,15 @@ do {
                     "\n", answer = 0, option = 1;
                 // Mostra histórico
                 for (let func = State.history.length - 1; func >= 0; func--) {
+                    const stored = State.history[func];
                     message +=
                         String(option) +
                             " ⇒ “a” = " +
-                            Writing.decimal(State.history[func][0]) +
+                            Writing.decimal(stored[0]) +
                             "; “b” = " +
-                            Writing.decimal(State.history[func][1]) +
+                            Writing.decimal(stored[1]) +
                             "; “c” = " +
-                            Writing.decimal(State.history[func][2]) +
+                            Writing.decimal(stored[2]) +
                             "\n";
                     option++;
                 }
@@ -384,9 +409,10 @@ do {
                 if (answer != 0) {
                     // Restaura função
                     let index = State.history.length - answer;
-                    State.globalA = State.history[index][0];
-                    State.globalB = State.history[index][1];
-                    State.globalC = State.history[index][2];
+                    const stored = State.history[index];
+                    State.globalA = stored[0];
+                    State.globalB = stored[1];
+                    State.globalC = stored[2];
                     if (State.globalA != State.currentFunc[0] ||
                         State.globalB != State.currentFunc[1] ||
                         State.globalC != State.currentFunc[2]) {
@@ -477,9 +503,7 @@ do {
                         message = message.slice(0, -2);
                         // Confirmação
                         if (Ui.warning(message, tr("Obs.₁: Isso irá afetar todas as configurações acima\nObs.₂: Essa alteração é permanente", "Note₁: This will affect all the settings above\nNote₂: This change is permanent"), true)) {
-                            keys.forEach((key) => {
-                                Config[key] = DEFAULT_CONFIG[key];
-                            });
+                            resetConfig();
                         }
                     }
                 }
@@ -631,11 +655,12 @@ do {
                     }
                     // Graus
                     else if (choice == 6) {
-                        Config.degrees = Ui.confirm(Writing.configItem(tr("Usar graus em vez de radianos?", "Use degrees instead of radians?"), "degrees"), tr("Obs.₁: Isso irá afetar as funções trigonométricas, tais como seno, cosseno e tangente\nObs.₂: Ativar isso irá fazer com que os ângulos sejam interpretados como graus, e não π radianos", "Note₁: This will affect trigonometric functions, such as sine, cosine and tangent\nNote₂: Enabling this will make angles be interpreted as degrees, not π radians"));
+                        const useDegrees = Ui.confirm(Writing.configItem(tr("Usar graus em vez de radianos?", "Use degrees instead of radians?"), "degrees"), tr("Obs.₁: Isso irá afetar as funções trigonométricas, tais como seno, cosseno e tangente\nObs.₂: Ativar isso irá fazer com que os ângulos sejam interpretados como graus, e não π radianos", "Note₁: This will affect trigonometric functions, such as sine, cosine and tangent\nNote₂: Enabling this will make angles be interpreted as degrees, not π radians"));
+                        Config.degrees = useDegrees ? "deg" : "rad";
                     }
                 }
                 // Salvar as configurações
-                if (1 <= choice && choice <= 6) {
+                if (isNumeric(choice) && 1 <= choice && choice <= 6) {
                     saveConfig();
                 }
             } while (choice != 0);

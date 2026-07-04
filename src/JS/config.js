@@ -3,6 +3,7 @@ import defaultConfigJson from "../JSON/config.json" with { type: "json" };
  * Configurações ativas do programa
  */
 export const Config = structuredClone(defaultConfigJson);
+export const DEFAULT_CONFIG = structuredClone(defaultConfigJson);
 /**
  * Versão do programa (MAJOR.MINOR.PATCH)
  */
