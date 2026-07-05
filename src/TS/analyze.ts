@@ -6,7 +6,7 @@ import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
-import type { Numeric, Value } from "./values.js"
+import type { CommandsNames, Numeric } from "./values.js"
 
 const BASE_OPTIONS: [string, string][] = [
     ["Domínio", "Domain"],
@@ -28,25 +28,25 @@ export const Analyze = {
     /**
      * [FUNÇÃO] Monta uma função constante: ƒ(x) = c
      * @param coefC - Coeficiente c da função constante
-     * @returns {number[]} - Retorna: [coefC]
+     * @returns - Retorna: [coefC]
      * @since v6.1.0
      */
-    constant(coefC: Value = State.globalC): number[] {
-        let option = 0,
-            page = 1,
-            menuResp: Numeric[]
+    constant(coefC: Numeric = State.globalC as Numeric): Numeric[] {
+        let option: Numeric = 0,
+            page: Numeric = 1,
+            menuResp: [Numeric | CommandsNames, Numeric]
 
         // Mostra
         Ui.function(0, 0, coefC)
 
         // Loop
-        let limit = 0
+        let limit: Numeric = 0
         do {
             // Menu
             menuResp = Ui.menu(trArr(BASE_OPTIONS.slice()), page)
-            option = menuResp[0]
+            option = menuResp[0] as Numeric
             page = menuResp[1]
-            if (Commands.names().includes(menuResp[0])) {
+            if (Commands.names().includes(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -69,7 +69,7 @@ export const Analyze = {
 
                 // Interseção com o eixo x
                 else if (option == 3) {
-                    Helpers.xAxis(0, coefC)
+                    Helpers.xAxis(0, String(coefC))
                 }
 
                 // Interseção com o eixo y
@@ -117,38 +117,30 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta uma função afim: ƒ(x) = bx + c
-     * @param {number} coefB - Coeficiente b da função afim
-     * @param {number} coefC - Coeficiente c da função afim
-     * @returns {number[]} - Retorna: [coefB, coefC]
+     * @param coefB - Coeficiente b da função afim
+     * @param coefC - Coeficiente c da função afim
+     * @returns - Retorna: [coefB, coefC]
      * @since v6.1.0
      */
-    affine(coefB: Value = State.globalB, coefC: Value = State.globalC): number[] {
+    affine(coefB: Numeric = State.globalB as Numeric, coefC: Numeric = State.globalC as Numeric): Numeric[] {
         let option: Numeric,
             page: Numeric = 1,
-            menuResp: Numeric[]
+            menuResp: [Numeric | CommandsNames, Numeric]
 
         // Mostra
         Ui.function(0, coefB, coefC)
 
         // Cálculo
-        let root = Helpers.calcRoot(0, coefB, coefC)
+        let root: Numeric = Helpers.calcRoot(0, coefB, coefC) as Numeric
 
         // Loop
-        let limit = 0
+        let limit: Numeric = 0
         do {
             // Menu
-            menuResp = Ui.menu(
-                trArr(
-                    [
-                        ["Inclinação", "Slope"],
-                        ["Raiz", "Root"],
-                    ].concat(BASE_OPTIONS)
-                ),
-                page
-            )
-            page = menuResp[1]
-            option = menuResp[0]
-            if (Commands.names().includes(menuResp[0])) {
+            menuResp = Ui.menu(trArr([["Inclinação", "Slope"], ["Raiz", "Root"], ...BASE_OPTIONS]), page)
+            option = menuResp[0] as Numeric
+            page = menuResp[1] as Numeric
+            if (Commands.names().includes(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -225,41 +217,39 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta uma função quadrática: ƒ(x) = ax² + bx + c
-     * @param {number} coefA - Coeficiente a da função quadrática
-     * @param {number} coefB - Coeficiente b da função quadrática
-     * @param {number} coefC - Coeficiente c da função quadrática
-     * @returns {number[]} - Retorna: [coefA, coefB, coefC]
+     * @param coefA - Coeficiente a da função quadrática
+     * @param coefB - Coeficiente b da função quadrática
+     * @param coefC - Coeficiente c da função quadrática
+     * @returns - Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
-    quadratic(coefA: Value = State.globalA, coefB: Value = State.globalB, coefC: Value = State.globalC): number[] {
+    quadratic(
+        coefA: Numeric = State.globalA as Numeric,
+        coefB: Numeric = State.globalB as Numeric,
+        coefC: Numeric = State.globalC as Numeric
+    ): Numeric[] {
         let option: Numeric,
             page: Numeric = 1,
-            menuResp: Numeric[]
+            menuResp: [Numeric | CommandsNames, Numeric]
 
         // Mostra
         Ui.function(coefA, coefB, coefC)
 
         // Cálculo
-        let delta = Helpers.calcDelta(coefA, coefB, coefC),
-            vertex = Helpers.vertex(coefA, coefB, delta[0])
+        let delta: Numeric[] = Helpers.calcDelta(coefA, coefB, coefC),
+            vertex: Numeric[] = Helpers.vertex(coefA, coefB, delta[0])
 
         // Loop
-        let limit = 0
+        let limit: Numeric = 0
         do {
             // Menu
             menuResp = Ui.menu(
-                trArr(
-                    [
-                        ["Concavidade", "Concavity"],
-                        ["Raízes", "Roots"],
-                        ["Vértice", "Vertex"],
-                    ].concat(BASE_OPTIONS)
-                ),
+                trArr([["Concavidade", "Concavity"], ["Raízes", "Roots"], ["Vértice", "Vertex"], ...BASE_OPTIONS]),
                 page
             )
-            option = menuResp[0]
-            page = menuResp[1]
-            if (Commands.names().includes(menuResp[0])) {
+            option = menuResp[0] as Numeric
+            page = menuResp[1] as Numeric
+            if (Commands.names().includes(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -297,8 +287,10 @@ export const Analyze = {
                         tr(
                             "Ponto mais baixo (ou mais alto, conforme a concavidade) da função.",
                             "Lowest (or highest, depending on concavity) point of the function"
-                        ),
-                        tr("Ponto", "Point") + "(-b / (2 · a), -Δ / (4 · a))"
+                        ) +
+                            "\n" +
+                            tr("Ponto", "Point") +
+                            "(-b / (2 · a), -Δ / (4 · a))"
                     )
                 }
 
@@ -388,40 +380,38 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta uma função exponencial: ƒ(x) = b × aˣ + c
-     * @param {number} coefA - Coeficiente a da função exponencial
-     * @param {number} coefB - Coeficiente b da função exponencial
-     * @param {number} coefC - Coeficiente c da função exponencial
-     * @returns {number[]} - Retorna: [coefA, coefB, coefC]
+     * @param coefA - Coeficiente a da função exponencial
+     * @param coefB - Coeficiente b da função exponencial
+     * @param coefC - Coeficiente c da função exponencial
+     * @returns - Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
-    exponential(coefA: number = State.globalA, coefB: number = State.globalB, coefC: number = State.globalC): number[] {
+    exponential(
+        coefA: Numeric = State.globalA as Numeric,
+        coefB: Numeric = State.globalB as Numeric,
+        coefC: Numeric = State.globalC as Numeric
+    ): Numeric[] {
         let option: Numeric,
             page: Numeric = 1,
-            menuResp: Numeric[]
+            menuResp: [Numeric | CommandsNames, Numeric]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, true)
 
         // Cálculo
-        let root = Helpers.calcRoot(coefA, coefB, coefC, true)
+        let root: Numeric = Helpers.calcRoot(coefA, coefB, coefC, true) as Numeric
 
         // Loop
-        let limit = 0
+        let limit: Numeric = 0
         do {
             // Menu
             menuResp = Ui.menu(
-                trArr(
-                    [
-                        ["Curva", "Curve"],
-                        ["Raiz", "Root"],
-                        ["Assíntota", "Asymptote"],
-                    ].concat(BASE_OPTIONS)
-                ),
+                trArr([["Curva", "Curve"], ["Raiz", "Root"], ["Assíntota", "Asymptote"], ...BASE_OPTIONS]),
                 page
             )
-            option = menuResp[0]
-            page = menuResp[1]
-            if (Commands.names().includes(menuResp[0])) {
+            option = menuResp[0] as Numeric
+            page = menuResp[1] as Numeric
+            if (Commands.names().includes(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -519,39 +509,35 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta a função logarítmica: b × logₐ(x) + c
-     * @param {number} coefA - Coeficiente a da função logarítmica
-     * @param {number} coefB - Coeficiente b da função logarítmica
-     * @param {number} coefC - Coeficiente c da função logarítmica
-     * @returns {number[]} - Retorna: [coefA, coefB, coefC]
+     * @param coefA - Coeficiente a da função logarítmica
+     * @param coefB - Coeficiente b da função logarítmica
+     * @param coefC - Coeficiente c da função logarítmica
+     * @returns - Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
-    logarithmic(coefA: number = State.globalA, coefB: number = State.globalB, coefC: number = State.globalC): number[] {
+    logarithmic(
+        coefA: Numeric = State.globalA as Numeric,
+        coefB: Numeric = State.globalB as Numeric,
+        coefC: Numeric = State.globalC as Numeric
+    ): Numeric[] {
         let option: Numeric,
             page: Numeric = 1,
-            menuResp: Numeric[]
+            menuResp: [Numeric | CommandsNames, Numeric]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, true)
 
         // Cálculo
-        let root = Algebra.round(coefA ** Algebra.division(-coefC, coefB, false))
+        let root: Numeric = Algebra.round(coefA ** Algebra.division(-coefC, coefB, false)) as Numeric
 
         // Loop
-        let limit = 0
+        let limit: Numeric = 0
         do {
             // Menu
-            menuResp = Ui.menu(
-                trArr(
-                    [
-                        ["Curva", "Curve"],
-                        ["Raiz", "Root"],
-                    ].concat(BASE_OPTIONS)
-                ),
-                page
-            )
-            option = menuResp[0]
-            page = menuResp[1]
-            if (Commands.names().includes(menuResp[0])) {
+            menuResp = Ui.menu(trArr([["Curva", "Curve"], ["Raiz", "Root"], ...BASE_OPTIONS]), page)
+            option = menuResp[0] as Numeric
+            page = menuResp[1] as Numeric
+            if (Commands.names().includes(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -628,38 +614,34 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta a função seno: b × sin(a · x) + c
-     * @param {number} coefA - Coeficiente a da função seno
-     * @param {number} coefB - Coeficiente b da função seno
-     * @param {number} coefC - Coeficiente c da função seno
-     * @returns {number[]} - Retorna: [coefA, coefB, coefC]
+     * @param coefA - Coeficiente a da função seno
+     * @param coefB - Coeficiente b da função seno
+     * @param coefC - Coeficiente c da função seno
+     * @returns - Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
-    sine(coefA: number = State.globalA, coefB: number = State.globalB, coefC: number = State.globalC): number[] {
+    sine(
+        coefA: Numeric = State.globalA as Numeric,
+        coefB: Numeric = State.globalB as Numeric,
+        coefC: Numeric = State.globalC as Numeric
+    ): Numeric[] {
         let option: Numeric,
             page: Numeric = 1,
-            menuResp: Numeric[]
+            menuResp: [Numeric | CommandsNames, Numeric]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "sin")
 
         // Cálculo
-        let root = Algebra.round(Math.asin(Algebra.division(-coefC, coefB)) / coefA)
+        let root: Numeric = Algebra.round(Math.asin(Algebra.division(-coefC, coefB)) / coefA) as Numeric
 
         // Loop
-        let limit = 0
+        let limit: Numeric = 0
         do {
-            menuResp = Ui.menu(
-                trArr(
-                    [
-                        ["Amplitude", "Amplitude"],
-                        ["Período", "Period"],
-                    ].concat(BASE_OPTIONS)
-                ),
-                page
-            )
-            option = menuResp[0]
-            page = menuResp[1]
-            if (Commands.names().includes(menuResp[0])) {
+            menuResp = Ui.menu(trArr([["Amplitude", "Amplitude"], ["Período", "Period"], ...BASE_OPTIONS]), page)
+            option = menuResp[0] as Numeric
+            page = menuResp[1] as Numeric
+            if (Commands.names().includes(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -722,38 +704,34 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta a função cosseno: b × cos(a · x) + c
-     * @param {number} coefA - Coeficiente a da função cosseno
-     * @param {number} coefB - Coeficiente b da função cosseno
-     * @param {number} coefC - Coeficiente c da função cosseno
-     * @returns {number[]} - Retorna: [coefA, coefB, coefC]
+     * @param coefA - Coeficiente a da função cosseno
+     * @param coefB - Coeficiente b da função cosseno
+     * @param coefC - Coeficiente c da função cosseno
+     * @returns - Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
-    cosine(coefA: number = State.globalA, coefB: number = State.globalB, coefC: number = State.globalC): number[] {
+    cosine(
+        coefA: Numeric = State.globalA as Numeric,
+        coefB: Numeric = State.globalB as Numeric,
+        coefC: Numeric = State.globalC as Numeric
+    ): Numeric[] {
         let option: Numeric,
             page: Numeric = 1,
-            menuResp: Numeric[]
+            menuResp: [Numeric | CommandsNames, Numeric]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "cos")
 
         // Cálculo
-        let root = Algebra.round(Math.acos(Algebra.division(-coefC, coefB)) / coefA)
+        let root: Numeric = Algebra.round(Math.acos(Algebra.division(-coefC, coefB)) / coefA) as Numeric
 
         // Loop
-        let limit = 0
+        let limit: Numeric = 0
         do {
-            menuResp = Ui.menu(
-                trArr(
-                    [
-                        ["Amplitude", "Amplitude"],
-                        ["Período", "Period"],
-                    ].concat(BASE_OPTIONS)
-                ),
-                page
-            )
-            option = menuResp[0]
-            page = menuResp[1]
-            if (Commands.names().includes(menuResp[0])) {
+            menuResp = Ui.menu(trArr([["Amplitude", "Amplitude"], ["Período", "Period"], ...BASE_OPTIONS]), page)
+            option = menuResp[0] as Numeric
+            page = menuResp[1] as Numeric
+            if (Commands.names().includes(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -816,38 +794,37 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta a função tangente: b × tan(a · x) + c
-     * @param {number} coefA - Coeficiente a da função tangente
-     * @param {number} coefB - Coeficiente b da função tangente
-     * @param {number} coefC - Coeficiente c da função tangente
-     * @returns {number[]} - Retorna: [coefA, coefB, coefC]
+     * @param coefA - Coeficiente a da função tangente
+     * @param coefB - Coeficiente b da função tangente
+     * @param coefC - Coeficiente c da função tangente
+     * @returns - Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
-    tangent(coefA: number = State.globalA, coefB: number = State.globalB, coefC: number = State.globalC): number[] {
+    tangent(
+        coefA: Numeric = State.globalA as Numeric,
+        coefB: Numeric = State.globalB as Numeric,
+        coefC: Numeric = State.globalC as Numeric
+    ): Numeric[] {
         let option: Numeric,
             page: Numeric = 1,
-            menuResp: Numeric[]
+            menuResp: [Numeric | CommandsNames, Numeric]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "tan")
 
         // Cálculo
-        let root = Algebra.round(Math.atan(Algebra.division(-coefC, coefB)) / coefA)
+        let root: Numeric = Algebra.round(Math.atan(Algebra.division(-coefC, coefB)) / coefA) as Numeric
 
         // Loop
-        let limit = 0
+        let limit: Numeric = 0
         do {
             menuResp = Ui.menu(
-                trArr(
-                    [
-                        ["Assíntotas verticais", "Vertical asymptotes"],
-                        ["Período", "Period"],
-                    ].concat(BASE_OPTIONS)
-                ),
+                trArr([["Assíntotas verticais", "Vertical asymptotes"], ["Período", "Period"], ...BASE_OPTIONS]),
                 page
             )
-            option = menuResp[0]
-            page = menuResp[1]
-            if (Commands.names().includes(menuResp[0])) {
+            option = menuResp[0] as Numeric
+            page = menuResp[1] as Numeric
+            if (Commands.names().includes(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }

@@ -30,6 +30,8 @@ export type ConfigType = {
     degrees: Degrees
 }
 
+export type ConfigKey = keyof ConfigType
+
 /**
  * Configurações ativas do programa
  */

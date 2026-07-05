@@ -9,10 +9,10 @@ import { tr } from "./i18n.js";
 export const Writing = {
     /**
      * [TEXTO] Substituição de strings
-     * @param {string} text - Texto
-     * @param {string} from - O que será removido
-     * @param {string} to - O que será colocado no lugar
-     * @returns {string} - Texto convertido
+     * @param text - Texto
+     * @param from - O que será removido
+     * @param to - O que será colocado no lugar
+     * @returns - Texto convertido
      * @since v6.1.0
      */
     replace(text = "", from = "", to = "") {
@@ -21,7 +21,7 @@ export const Writing = {
     /**
      * [TEXTO] Substituição de várias strings
      * @param text - Texto
-     * @param {string[][]} list - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
+     * @param {Text[][]} list - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
      * @returns - Texto convertido
      * @since v6.1.0
      */
@@ -35,8 +35,8 @@ export const Writing = {
     },
     /**
      * [TEXTO] Substituição da grafia de Unicode
-     * @param {string} text - Texto
-     * @returns {string} - Texto convertido
+     * @param text - Texto
+     * @returns - Texto convertido
      * @since v6.1.0
      */
     noUnicode(text = "") {
@@ -199,7 +199,7 @@ export const Writing = {
     },
     /**
      * [TEXTO] Substituição da grafia de acentos
-     * @param {string} text Texto
+     * @param text Texto
      * @returns Texto convertido
      */
     noAccents(text = "") {
@@ -280,8 +280,8 @@ export const Writing = {
     },
     /**
      * [TEXTO] Conversão para minúsculas
-     * @param {string} text - Texto
-     * @returns {string} - Texto convertido
+     * @param text - Texto
+     * @returns - Texto convertido
      * @since v6.1.0
      */
     lowercase(text = "") {
@@ -292,14 +292,14 @@ export const Writing = {
     },
     /**
      * [TEXTO] Conversão para maiúsculas
-     * @param {string} text - Texto
-     * @returns {string} - Texto convertido
+     * @param text - Texto
+     * @returns - Texto convertido
      * @since v6.1.0
      */
     uppercase(text = "") {
         text = text.toUpperCase();
         // Caso especial para a letra latina f, que matematicamente tem uma forma diferente em maiúscula e minúscula
-        text = Writing.replace(text, "Ƒ", "ƒ");
+        text = Writing.replace(String(text), "Ƒ", "ƒ");
         return text;
     },
     /**
@@ -323,23 +323,23 @@ export const Writing = {
         }
         // Se separadorDecimal é verdadeiro, troca pontos por vírgulas para exibição
         if (Config.decimalSeparator) {
-            return Writing.replace(number, ".", ",");
+            return Writing.replace(String(number), ".", ",");
         }
         return number;
     },
     /**
      * [TEXTO] Simplificação de símbolos de multiplicação
-     * @param {string} text - Texto
-     * @returns {string} - Texto convertido
+     * @param text - Texto
+     * @returns - Texto convertido
      * @since v6.1.0
      */
     simplifyMultiplication(text = "") {
-        return Writing.replace(text, " · ", "");
+        return Writing.replace(String(text), " · ", "");
     },
     /**
      * [TEXTO] Tradução de texto sem Unicode para a linguagem configurada
-     * @param {string} text - Texto
-     * @returns {string} - Texto traduzido
+     * @param text - Texto
+     * @returns - Texto traduzido
      */
     translateUnicode(text = "") {
         let replacements = [
@@ -384,9 +384,9 @@ export const Writing = {
     },
     /**
      * [TEXTO] Formatação geral de mensagens
-     * @param {string} message - Mensagem
-     * @param {string} explanation - Mensagem para a explicação
-     * @returns {string} - Mensagem formatada
+     * @param message - Mensagem
+     * @param explanation - Mensagem para a explicação
+     * @returns - Mensagem formatada
      * @since v6.1.0
      */
     format(message = "", explanation = "") {
@@ -439,7 +439,7 @@ export const Writing = {
             [".", "․"],
         ];
         // Substitui os números por seus equivalentes em sobrescrito
-        text = Writing.replaceGroup(text, replacements);
+        text = Writing.replaceGroup(String(text), replacements);
         return text;
     },
     /**
@@ -468,13 +468,13 @@ export const Writing = {
             [".", "․"],
         ];
         // Substitui os números por seus equivalentes em subscrito
-        text = Writing.replaceGroup(text, replacements);
+        text = Writing.replaceGroup(String(text), replacements);
         return text;
     },
     /**
      * [TEXTO] Formatação de valores booleans
-     * @param {string | number | boolean} value - Valor
-     * @returns {string} - Valor formatado
+     * @param {Text | number | boolean} value - Valor
+     * @returns - Valor formatado
      * @since v6.1.0
      */
     formatValue(value = true) {
@@ -485,12 +485,12 @@ export const Writing = {
     },
     /**
      * [TEXTO] Formatação de itens de configuração
-     * @param {string} message - Mensagem
-     * @param {string} name - Nome em "config"
-     * @returns {string} - Mensagem formatada
+     * @param message - Mensagem
+     * @param name - Nome em "config"
+     * @returns - Mensagem formatada
      * @since v6.1.0
      */
-    configItem(message = "", name = "") {
+    configItem(message, name) {
         return (message +
             " | “" +
             tr("Atual", "Current") +
@@ -504,8 +504,8 @@ export const Writing = {
     },
     /**
      * [TEXTO] Análise de texto para conversão de graus para radianos
-     * @param {string} text - Texto
-     * @returns {number} - Ângulo em radianos
+     * @param text - Texto
+     * @returns - Ângulo em radianos
      * @since v6.1.0
      */
     parseDegree(text = "") {
@@ -514,18 +514,18 @@ export const Writing = {
     },
     /**
      * [TEXTO] Análise de texto para conversão de radianos para graus
-     * @param {string} text - Texto
-     * @returns {number} - Ângulo em graus
+     * @param text - Texto
+     * @returns - Ângulo em graus
      * @since v6.1.0
      */
     parseRadian(text = "") {
-        let parts = text.split("/"), denominator = parts[1] ? parseFloat(parts[1]) : 1, multiParts = parts[0].split("*"), multiplier = multiParts.length > 1 ? parseFloat(multiParts[0]) : 1;
+        let parts = text.split("/"), denominator = parts[1] ? parseFloat(parts[1]) : 1, multiParts = String(parts[0]).split("*"), multiplier = multiParts.length > 1 ? parseFloat(String(multiParts[0])) : 1;
         return (multiplier * Math.PI) / denominator;
     },
     /**
      * [TEXTO] Análise de texto para conversão de ângulos
-     * @param {string} text - Texto
-     * @returns {number} - Ângulo em graus ou radianos
+     * @param text - Texto
+     * @returns - Ângulo em graus ou radianos
      * @since v6.1.0
      */
     parseAngle(text = "") {
@@ -538,8 +538,8 @@ export const Writing = {
     },
     /**
      * [TEXTO] Formatação de ângulos para exibição
-     * @param {number} value - Ângulo em radianos
-     * @returns {string} - Ângulo formatado
+     * @param value - Ângulo em radianos
+     * @returns - Ângulo formatado
      * @since v6.1.0
      */
     formatAngle(value = 0) {
@@ -550,7 +550,7 @@ export const Writing = {
             if (Algebra.absolute(numerator / denominator - ratio) < 1e-9) {
                 // Achou uma fração exata
                 if (numerator == 0) {
-                    return "0";
+                    return 0;
                 }
                 else if (denominator == 1) {
                     return numerator == 1 ? "PI" : numerator + " * PI";

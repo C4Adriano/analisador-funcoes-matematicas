@@ -13,8 +13,8 @@ import { Writing } from "./writing.js";
 export const Helpers = {
     /**
      * [FUNÇÃO] Monta o domínio de uma função
-     * @param {string} belongs - Intervalo de pertencimento
-     * @param {string} explanation - Explicação
+     * @param belongs - Intervalo de pertencimento
+     * @param explanation - Explicação
      * @since v6.1.0
      */
     domain(belongs = "∈ ℝ", explanation = tr("A função pode assumir qualquer x real", "The function can take any real x")) {
@@ -22,9 +22,9 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Monta a imagem de uma função
-     * @param {string} belongs - Intervalo de pertencimento
-     * @param {string} interval - Se a função deve assumir algum intervalo diferente
-     * @param {string} explanation - Explicação
+     * @param belongs - Intervalo de pertencimento
+     * @param interval - Se a função deve assumir algum intervalo diferente
+     * @param explanation - Explicação
      * @since v6.1.0
      */
     range(belongs = "∈ ℝ", interval = ".", explanation = tr("A função pode assumir qualquer y real", "The function can assume any real y")) {
@@ -32,16 +32,16 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Monta a intercessão com o eixo x de uma função
-     * @param {number} root - Raiz
-     * @param {string} explanation - Explicação
-     * @param {string} noHave - Mensagem quando não há interseção com o eixo x
+     * @param root - Raiz
+     * @param explanation - Explicação
+     * @param noHave - Mensagem quando não há interseção com o eixo x
      * @since v6.1.0
      */
     xAxis(root = 0, explanation = "c", noHave = tr("Não existe raiz real, portanto não há interseção com o eixo x.", "There is no real root, therefore there is no intersection with the x‐axis.")) {
         let intersection = tr("Interseção com o eixo x: ", "Intersection with the x‐axis: ");
         if (root == 0) {
             // Constante
-            if (explanation == 0) {
+            if (explanation == "0") {
                 // Se c = 0, a função é nula, então existe infinitas raízes
                 Ui.display(intersection + "∃∞ x ∈ ℝ", "y = 0 ⇒ ∀ x ∈ ℝ");
             }
@@ -64,9 +64,9 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Monta a intercessão com o eixo y de uma função
-     * @param {string | number} point - Ponto
-     * @param {string} function - Função
-     * @param {string} explanation - Explicação
+     * @param point - Ponto
+     * @param func - Função
+     * @param explanation - Explicação
      * @since v6.1.0
      */
     yAxis(point = 0, func = "c", explanation = "c") {
@@ -75,11 +75,11 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Monta o valor de y para o x dado
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} coefC - Coeficiente c
-     * @param {boolean} funcExp - Exponencial
-     * @param {boolean} funcLog - Logarítmica
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @param funcExp - Exponencial
+     * @param funcLog - Logarítmica
      * @since v6.1.0
      */
     xValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
@@ -120,11 +120,11 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Monta o valor de x para o y dado
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} coefC - Coeficiente c
-     * @param {boolean} funcExp - Exponencial
-     * @param {boolean} funcLog - Logarítmica
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @param funcExp - Exponencial
+     * @param funcLog - Logarítmica
      * @since v6.1.0
      */
     yValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
@@ -178,12 +178,12 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Monta o estudo do sinal de uma função
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} coefC - Coeficiente c
-     * @param {boolean} funcExp - Exponencial
-     * @param {boolean} funcLog - Logarítmica
-     * @param {string} funcTrig - Trigonométrica (sin, cos ou tan)
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @param funcExp - Exponencial
+     * @param funcLog - Logarítmica
+     * @param funcTrig - Trigonométrica (sin, cos ou tan)
      * @since v6.1.0
      */
     sign(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
@@ -386,11 +386,11 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Monta a equação de duas funções
-     * @param {boolean} polinomial - Polinomial
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} coefC - Coeficiente c
-     * @returns {number} - Operação futura
+     * @param polinomial - Polinomial
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @returns - Operação futura
      * @since v6.1.0
      */
     equations(polinomial = true, coefA = 0, coefB = 0, coefC = 0) {
@@ -414,13 +414,14 @@ export const Helpers = {
         else {
             // Não polinomial
             Ui.warning(tr("Ainda não posso resolver equações com funções não polinomiais.", "I cannot yet resolve equations with non-polynomial functions."), tr("Em construção.", "Under construction."));
+            return 0;
         }
     },
     /**
      * [FUNÇÃO] Monta a curva de uma função
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {boolean} polynomial - Polinomial
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param polynomial - Polinomial
      * @since v6.1.0
      */
     curve(coefA = 0, coefB = 0, polynomial = true) {
@@ -453,12 +454,12 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Calcula a raiz de uma função
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} coefC - Coeficiente c
-     * @param {boolean} funcExp - Exponencial
-     * @param {boolean} funcLog - Logarítmica
-     * @returns {number | number[]} - Raiz
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @param funcExp - Exponencial
+     * @param funcLog - Logarítmica
+     * @returns {Numeric | Numeric[]} - Raiz
      * @since v6.1.0
      */
     calcRoot(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
@@ -484,15 +485,16 @@ export const Helpers = {
                 }
             }
             else if (funcLog) {
-                return Algebra.round(coefA ** exponent);
+                return Number(Algebra.round(coefA ** exponent));
             }
         }
+        return NaN;
     },
     /**
      * [FUNÇÃO] Mostra a raiz de uma função
-     * @param {string} root - Raiz
-     * @param {string} explanation - Explicação
-     * @param {string} noHave - Mensagem quando não há raiz
+     * @param root - Raiz
+     * @param explanation - Explicação
+     * @param noHave - Mensagem quando não há raiz
      * @since v6.1.0
      */
     showRoot(root = 0, explanation = "c", noHave = "") {
@@ -506,30 +508,30 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Calcula o Delta de uma função
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} coefC - Coeficiente c
-     * @returns {number[]} - Delta
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @returns - Delta
      * @since v6.1.0
      */
     calcDelta(coefA = 0, coefB = 0, coefC = 0) {
-        let array = [coefB ** 2 - 4 * coefA * coefC];
-        array.push(array[0] >= 0 ? Algebra.division(-coefB + Math.sqrt(array[0]), 2 * coefA) : NaN);
-        array.push(array[0] > 0 ? Algebra.division(-coefB - Math.sqrt(array[0]), 2 * coefA) : NaN);
-        if (array[0] > 0 && array[1] > array[2]) {
-            let temp = array[2];
-            array[2] = array[1];
-            array[1] = temp;
+        let array = [coefB ** 2 - 4 * coefA * coefC], delta = array[0], x1 = array[1], x2 = array[2];
+        array.push(delta >= 0 ? Algebra.division(-coefB + Math.sqrt(delta), 2 * coefA) : NaN);
+        array.push(delta > 0 ? Algebra.division(-coefB - Math.sqrt(delta), 2 * coefA) : NaN);
+        if (delta > 0 && x1 > x2) {
+            let temp = x2;
+            x2 = x1;
+            x1 = temp;
         }
         return array;
     },
     /**
      * [FUNÇÃO] Exibe o Delta de uma função
-     * @param {number} delta - Delta
-     * @param {string} lower - Mensagem para Delta < 0
-     * @param {string} equal - Mensagem para Delta = 0
-     * @param {string} higher - Mensagem para Delta > 0
-     * @param {boolean} hasY - Se é (c − y)
+     * @param delta - Delta
+     * @param lower - Mensagem para Delta < 0
+     * @param equal - Mensagem para Delta = 0
+     * @param higher - Mensagem para Delta > 0
+     * @param hasY - Se é (c − y)
      * @since v6.1.0
      */
     showDelta(delta = 0, lower = "", equal = "", higher = "", hasY = false) {
@@ -545,10 +547,10 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Calcula o vértice de uma função
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} delta - Delta
-     * @returns {number[]} - Vértice
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param delta - Delta
+     * @returns - Vértice
      * @since v6.1.0
      */
     vertex(coefA = 0, coefB = 0, delta = 0) {
@@ -557,7 +559,7 @@ export const Helpers = {
     /**
      * [FUNÇÃO] Vê se estourou o limite
      * @param limit - Limite
-     * @returns {boolean} - Se estourou o limite
+     * @returns - Se estourou o limite
      * @since v6.1.0
      */
     exceededLimit(limit = Config.interactionLimit) {
@@ -570,9 +572,9 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Calcula o período de uma função
-     * @param {number} coefA - Coeficiente a (frequência angular)
-     * @param {boolean} funcTan - Se é função tangente (tan tem período π / |a|)
-     * @returns {number} - Período
+     * @param coefA - Coeficiente a (frequência angular)
+     * @param funcTan - Se é função tangente (tan tem período π / |a|)
+     * @returns - Período
      * @since v6.1.0
      */
     calcPeriod(coefA = 0, funcTan = false) {
@@ -580,8 +582,8 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Exibe o período de uma função
-     * @param {number} coefA - Coeficiente a (frequência angular)
-     * @param {boolean} funcTan - Se é função tangente
+     * @param coefA - Coeficiente a (frequência angular)
+     * @param funcTan - Se é função tangente
      * @since v6.1.0
      */
     showPeriod(coefA = 0, funcTan = false) {
@@ -594,7 +596,7 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Exibe a amplitude de uma função
-     * @param {number} coefB - Coeficiente b (amplitude)
+     * @param coefB - Coeficiente b (amplitude)
      * @since v6.1.0
      */
     amplitude(coefB = 0) {
@@ -602,7 +604,7 @@ export const Helpers = {
     },
     /**
      * [FUNÇÃO] Exibe as assíntotas verticais da tangente
-     * @param {number} coefA - Coeficiente a (frequência angular)
+     * @param coefA - Coeficiente a (frequência angular)
      * @since v6.1.0
      */
     verticalAsymptotes(coefA = 0) {

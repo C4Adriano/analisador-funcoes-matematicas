@@ -23,6 +23,7 @@
     },
     "homepage": "https://github.com/C4Adriano/analisador-funcoes-matematicas#readme",
     "devDependencies": {
+        "@types/node": "^26.1.0",
         "prettier": "^3.8.5",
         "typescript": "^6.0.3"
     }

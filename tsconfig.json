@@ -2,6 +2,7 @@
     "compilerOptions": {
         "target": "es2025",
         "module": "esnext",
+        "types": ["node"],
 
         "rootDir": "./src/TS",
         "outDir": "./src/JS",
@@ -21,5 +22,5 @@
     },
 
     "include": ["./src/TS/*"],
-    "exclude": ["./pessoal", "./node_modules"]
+    "exclude": ["./pessoal/*", "./node_modules/*"]
 }

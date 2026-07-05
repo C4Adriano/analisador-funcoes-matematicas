@@ -24,7 +24,7 @@ export function tr(pt: Text = "", en: Text = ""): Text {
  * @returns Array na língua configurada
  * @since v6.2.0
  */
-export function trArr(pairs: [Text, Text][] = []): Text[] {
+export function trArr(pairs: [Text, Text][] = [["", ""]]): Text[] {
     return pairs.map(pair => tr(pair[0], pair[1]))
 }
 

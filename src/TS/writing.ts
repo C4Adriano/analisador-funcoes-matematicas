@@ -1,5 +1,5 @@
 import { Algebra } from "./algebra.js"
-import { Config, DEFAULT_CONFIG } from "./config.js"
+import { Config, ConfigKey, ConfigType, DEFAULT_CONFIG } from "./config.js"
 import { tr } from "./i18n.js"
 
 import type { Text, Numeric, Value, Places } from "./values.js"
@@ -12,20 +12,20 @@ import type { Text, Numeric, Value, Places } from "./values.js"
 export const Writing = {
     /**
      * [TEXTO] Substituição de strings
-     * @param {string} text - Texto
-     * @param {string} from - O que será removido
-     * @param {string} to - O que será colocado no lugar
-     * @returns {string} - Texto convertido
+     * @param text - Texto
+     * @param from - O que será removido
+     * @param to - O que será colocado no lugar
+     * @returns - Texto convertido
      * @since v6.1.0
      */
-    replace(text: string = "", from: string = "", to: string = ""): string {
+    replace(text: Text = "", from: Text = "", to: Text = ""): Text {
         return String(text).split(from).join(to)
     },
 
     /**
      * [TEXTO] Substituição de várias strings
      * @param text - Texto
-     * @param {string[][]} list - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
+     * @param {Text[][]} list - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
      * @returns - Texto convertido
      * @since v6.1.0
      */
@@ -40,12 +40,12 @@ export const Writing = {
 
     /**
      * [TEXTO] Substituição da grafia de Unicode
-     * @param {string} text - Texto
-     * @returns {string} - Texto convertido
+     * @param text - Texto
+     * @returns - Texto convertido
      * @since v6.1.0
      */
-    noUnicode(text: string = ""): string {
-        let replacements = [
+    noUnicode(text: Text = ""): Text {
+        let replacements: [Text, Text][] = [
             // === LETRAS / SÍMBOLOS ESPECIAIS ===
             ["©", "(c)"],
             ["Δ", "Delta"],
@@ -218,11 +218,11 @@ export const Writing = {
 
     /**
      * [TEXTO] Substituição da grafia de acentos
-     * @param {string} text Texto
+     * @param text Texto
      * @returns Texto convertido
      */
-    noAccents(text: string = "") {
-        let replacements = [
+    noAccents(text: Text = "") {
+        let replacements: [Text, Text][] = [
             // === AGUDOS (´) ===
             ["á", "a"], // A agudo (espanhol, português)
             ["Á", "A"],
@@ -307,11 +307,11 @@ export const Writing = {
 
     /**
      * [TEXTO] Conversão para minúsculas
-     * @param {string} text - Texto
-     * @returns {string} - Texto convertido
+     * @param text - Texto
+     * @returns - Texto convertido
      * @since v6.1.0
      */
-    lowercase(text: string = ""): string {
+    lowercase(text: Text = ""): Text {
         text = text.toLowerCase()
         // Caso especial para a letra grega delta, que matematicamente tem uma forma diferente em maiúscula e minúscula
         text = Writing.replace(text, "δ", "Δ")
@@ -321,14 +321,14 @@ export const Writing = {
 
     /**
      * [TEXTO] Conversão para maiúsculas
-     * @param {string} text - Texto
-     * @returns {string} - Texto convertido
+     * @param text - Texto
+     * @returns - Texto convertido
      * @since v6.1.0
      */
-    uppercase(text: string = ""): string {
+    uppercase(text: Text = ""): Text {
         text = text.toUpperCase()
         // Caso especial para a letra latina f, que matematicamente tem uma forma diferente em maiúscula e minúscula
-        text = Writing.replace(text, "Ƒ", "ƒ")
+        text = Writing.replace(String(text), "Ƒ", "ƒ")
 
         return text
     },
@@ -357,7 +357,7 @@ export const Writing = {
 
         // Se separadorDecimal é verdadeiro, troca pontos por vírgulas para exibição
         if (Config.decimalSeparator) {
-            return Writing.replace(number, ".", ",")
+            return Writing.replace(String(number), ".", ",")
         }
 
         return number
@@ -365,21 +365,21 @@ export const Writing = {
 
     /**
      * [TEXTO] Simplificação de símbolos de multiplicação
-     * @param {string} text - Texto
-     * @returns {string} - Texto convertido
+     * @param text - Texto
+     * @returns - Texto convertido
      * @since v6.1.0
      */
-    simplifyMultiplication(text: string = ""): string {
-        return Writing.replace(text, " · ", "")
+    simplifyMultiplication(text: Text = ""): Text {
+        return Writing.replace(String(text), " · ", "")
     },
 
     /**
      * [TEXTO] Tradução de texto sem Unicode para a linguagem configurada
-     * @param {string} text - Texto
-     * @returns {string} - Texto traduzido
+     * @param text - Texto
+     * @returns - Texto traduzido
      */
-    translateUnicode(text: string = ""): string {
-        let replacements = [
+    translateUnicode(text: Text = ""): Text {
+        let replacements: [Text, Text][] = [
             ["alfa", "alpha"],
             ["para todo", "for all"],
             ["existe um único", "there exists exactly one"],
@@ -424,12 +424,12 @@ export const Writing = {
 
     /**
      * [TEXTO] Formatação geral de mensagens
-     * @param {string} message - Mensagem
-     * @param {string} explanation - Mensagem para a explicação
-     * @returns {string} - Mensagem formatada
+     * @param message - Mensagem
+     * @param explanation - Mensagem para a explicação
+     * @returns - Mensagem formatada
      * @since v6.1.0
      */
-    format(message: string = "", explanation: string = ""): string {
+    format(message: Text = "", explanation: Text = ""): Text {
         if (Config.explanations && explanation != "") {
             message += "\n\n" + explanation
         }
@@ -464,13 +464,13 @@ export const Writing = {
      * @returns Número convertido
      * @since v6.1.0
      */
-    superscript(text: Value = ""): string {
+    superscript(text: Value = ""): Text {
         // Se Unicode está desativado, retorna o texto com um símbolo de sobrescrito simples
         if (!Config.unicode) {
             return "^" + text
         }
 
-        let replacements = [
+        let replacements: [Text, Text][] = [
             ["0", "⁰"],
             ["1", "¹"],
             ["2", "²"],
@@ -486,7 +486,7 @@ export const Writing = {
         ]
 
         // Substitui os números por seus equivalentes em sobrescrito
-        text = Writing.replaceGroup(text, replacements)
+        text = Writing.replaceGroup(String(text), replacements)
 
         return text
     },
@@ -497,13 +497,13 @@ export const Writing = {
      * @returns Número subscrito
      * @since v6.1.0
      */
-    subscript(text: Value = ""): string {
+    subscript(text: Value = ""): Text {
         // Se Unicode está desativado, retorna o texto com um símbolo de subscrito simples
         if (!Config.unicode) {
             return "_" + text
         }
 
-        let replacements = [
+        let replacements: [Text, Text][] = [
             ["0", "₀"],
             ["1", "₁"],
             ["2", "₂"],
@@ -519,18 +519,18 @@ export const Writing = {
         ]
 
         // Substitui os números por seus equivalentes em subscrito
-        text = Writing.replaceGroup(text, replacements)
+        text = Writing.replaceGroup(String(text), replacements)
 
         return text
     },
 
     /**
      * [TEXTO] Formatação de valores booleans
-     * @param {string | number | boolean} value - Valor
-     * @returns {string} - Valor formatado
+     * @param {Text | number | boolean} value - Valor
+     * @returns - Valor formatado
      * @since v6.1.0
      */
-    formatValue(value: string | number | boolean = true): string {
+    formatValue(value: Text | number | boolean = true): Text {
         if (value == true || value == false) {
             return value ? tr("Sim", "Yes") : tr("Não", "No")
         }
@@ -540,12 +540,12 @@ export const Writing = {
 
     /**
      * [TEXTO] Formatação de itens de configuração
-     * @param {string} message - Mensagem
-     * @param {string} name - Nome em "config"
-     * @returns {string} - Mensagem formatada
+     * @param message - Mensagem
+     * @param name - Nome em "config"
+     * @returns - Mensagem formatada
      * @since v6.1.0
      */
-    configItem(message: string = "", name: string = ""): string {
+    configItem(message: Text, name: ConfigKey): Text {
         return (
             message +
             " | “" +
@@ -562,36 +562,36 @@ export const Writing = {
 
     /**
      * [TEXTO] Análise de texto para conversão de graus para radianos
-     * @param {string} text - Texto
-     * @returns {number} - Ângulo em radianos
+     * @param text - Texto
+     * @returns - Ângulo em radianos
      * @since v6.1.0
      */
-    parseDegree(text: string = ""): number {
+    parseDegree(text: Text = ""): Numeric {
         let degrees = parseFloat(Writing.replace(text, "°", ""))
         return degrees * (Math.PI / 180)
     },
 
     /**
      * [TEXTO] Análise de texto para conversão de radianos para graus
-     * @param {string} text - Texto
-     * @returns {number} - Ângulo em graus
+     * @param text - Texto
+     * @returns - Ângulo em graus
      * @since v6.1.0
      */
-    parseRadian(text: string = ""): number {
-        let parts = text.split("/"),
-            denominator = parts[1] ? parseFloat(parts[1]) : 1,
-            multiParts = parts[0].split("*"),
-            multiplier = multiParts.length > 1 ? parseFloat(multiParts[0]) : 1
+    parseRadian(text: Text = ""): Numeric {
+        let parts: Text[] = text.split("/"),
+            denominator: Numeric = parts[1] ? parseFloat(parts[1]) : 1,
+            multiParts: Text[] = String(parts[0]).split("*"),
+            multiplier: Numeric = multiParts.length > 1 ? parseFloat(String(multiParts[0])) : 1
         return (multiplier * Math.PI) / denominator
     },
 
     /**
      * [TEXTO] Análise de texto para conversão de ângulos
-     * @param {string} text - Texto
-     * @returns {number} - Ângulo em graus ou radianos
+     * @param text - Texto
+     * @returns - Ângulo em graus ou radianos
      * @since v6.1.0
      */
-    parseAngle(text: string = ""): number {
+    parseAngle(text: Text = ""): Numeric {
         if (text.includes("°")) {
             return Writing.parseDegree(text)
         } else {
@@ -601,20 +601,20 @@ export const Writing = {
 
     /**
      * [TEXTO] Formatação de ângulos para exibição
-     * @param {number} value - Ângulo em radianos
-     * @returns {string} - Ângulo formatado
+     * @param value - Ângulo em radianos
+     * @returns - Ângulo formatado
      * @since v6.1.0
      */
-    formatAngle(value: number = 0): string {
+    formatAngle(value: Numeric = 0): Value {
         let ratio = value / Math.PI // PI/6 → ratio = 1/6 ≈ 0.1666...
 
         // Testa denominadores comuns (1 a 12 cobre os casos típicos)
         for (let denominator = 1; denominator <= 12; denominator++) {
-            let numerator = Algebra.round(ratio * denominator, 0)
+            let numerator: Numeric = Algebra.round(ratio * denominator, 0) as Numeric
             if (Algebra.absolute(numerator / denominator - ratio) < 1e-9) {
                 // Achou uma fração exata
                 if (numerator == 0) {
-                    return "0"
+                    return 0
                 } else if (denominator == 1) {
                     return numerator == 1 ? "PI" : numerator + " * PI"
                 } else {

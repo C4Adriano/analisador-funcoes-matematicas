@@ -3,6 +3,9 @@ import { tr, changeLanguage } from "./i18n.js";
 import { State } from "./state.js";
 import { Ui } from "./ui.js";
 import { Writing } from "./writing.js";
+function isConfigKey(value) {
+    return Object.prototype.hasOwnProperty.call(Config, value);
+}
 /**
  * [JS] Processamento de comandos do usuário
  * - Use o comando "/help" para ver todos os comandos disponíveis
@@ -11,17 +14,21 @@ import { Writing } from "./writing.js";
 export const Commands = {
     /**
      * [JS] Processa um comando slash
-     * @param  raw - Texto digitado pelo usuário
-     * @returns {string | null} - Ação a executar, ou null se não for comando
+     * @param raw - Texto digitado pelo usuário
+     * @returns {Text | null} - Ação a executar, ou null se não for comando
      * @since v6.1.0
      */
     process(raw = "") {
         if (typeof raw !== "string" || raw.length === 0 || raw[0] !== "/") {
             return null;
         }
-        let parts = Writing.noAccents(raw.slice(1).toLowerCase()).split(" "), cmd = parts[0], arg = Commands.parseBool(parts[1]), canonical = Commands.resolveCmd(cmd), cmds = Commands.listCmd();
+        const parts = Writing.noAccents(raw.slice(1).toLowerCase()).split(" ");
+        const cmd = parts[0] ?? "";
+        const arg = Commands.parseBool(parts[1] ?? "");
+        const canonical = Commands.resolveCmd(cmd);
+        const cmds = Commands.listCmd();
         if (canonical == null) {
-            let suggestion = Commands.suggestCmd(cmd);
+            const suggestion = Commands.suggestCmd(cmd);
             if (suggestion.type == "suggestion") {
                 let answer = Ui.confirm(tr("Você quis dizer: ", "Did you mean: ") + "“/" + suggestion.canonical + "”?", tr("Comando não reconhecido: ", "Unrecognized command: ") +
                     "“/" +
@@ -48,31 +55,41 @@ export const Commands = {
                 tr("Digite “/ajuda” para ver todos os comandos", "Type “/help” to see all commands"));
             return null;
         }
-        return cmds[canonical].action(arg, parts);
+        const command = cmds[canonical];
+        if (command == undefined) {
+            return null;
+        }
+        return command.action(arg, parts);
     },
     /**
      * [JS] Calcula a distância de Levenshtein entre duas strings
-     * @param  wrong - A string digitada pelo usuário
-     * @param  correct - A string de um comando conhecido
-     * @returns {number}
+     * @param wrong - A Text digitada pelo usuário
+     * @param correct - A Text de um comando conhecido
      * @since v6.1.0
      */
     levenshtein(wrong = "", correct = "") {
-        let rows = correct.length + 1, cols = wrong.length + 1, matrix = [], row = 0, col = 0;
+        let rows = correct.length + 1, cols = wrong.length + 1, matrix = [], row = 0, col = 0, nowRow = [], backRow = [], diagonal, up, left;
+        // Primeira coluna
         for (row = 0; row < rows; row++) {
             matrix[row] = [row];
         }
+        // Primeira linha
         for (col = 0; col < cols; col++) {
             matrix[0][col] = col;
         }
+        // Restante da matriz
         for (row = 1; row < rows; row++) {
+            nowRow = matrix[row];
+            backRow = matrix[row - 1];
             for (col = 1; col < cols; col++) {
-                if (correct[row - 1] == wrong[col - 1]) {
-                    matrix[row][col] = matrix[row - 1][col - 1];
+                diagonal = backRow[col - 1];
+                up = backRow[col];
+                left = nowRow[col - 1];
+                if (correct[row - 1] === wrong[col - 1]) {
+                    nowRow[col] = diagonal;
                 }
                 else {
-                    matrix[row][col] =
-                        1 + Math.min(matrix[row - 1][col], matrix[row][col - 1], matrix[row - 1][col - 1]);
+                    nowRow[col] = 1 + Math.min(diagonal, up, left);
                 }
             }
         }
@@ -86,9 +103,11 @@ export const Commands = {
      */
     suggestCmd(typed = "") {
         const LIMIT = 3;
-        let cmds = Commands.listCmd(), keys = Object.keys(cmds), best = "", lowerDist = Infinity, candidates = [];
+        const cmds = Commands.listCmd();
+        const keys = Object.keys(cmds);
+        let best = "", lowerDist = Infinity, candidates = [];
         keys.forEach(key => {
-            candidates = [key].concat(cmds[key].variations);
+            candidates = [key, ...cmds[key].variations];
             candidates.forEach(candidate => {
                 let dist = Commands.levenshtein(typed, candidate);
                 if (dist < lowerDist) {
@@ -105,16 +124,22 @@ export const Commands = {
     /**
      * [JS] Pesquisa comandos por termo — busca no canônico, variações, short e long
      * @param  term - Termo de pesquisa
-     * @returns {string[]} - Lista de nomes canônicos dos comandos encontrados
+     * @returns {Text[]} - Lista de nomes canônicos dos comandos encontrados
      * @since v6.2.0
      */
     searchCmd(term = "") {
         if (term == "") {
             return [];
         }
-        let cmds = Commands.listCmd(), keys = Object.keys(cmds), results = [], cmd, candidates = [];
+        const cmds = Commands.listCmd();
+        const keys = Object.keys(cmds);
+        const results = [];
+        let candidates = [];
         keys.forEach(key => {
-            cmd = cmds[key];
+            const cmd = cmds[key];
+            if (cmd == undefined) {
+                return;
+            }
             candidates = [key, cmd.short, cmd.long].concat(cmd.variations);
             candidates.forEach(candidate => {
                 if (Writing.noAccents(candidate.toLowerCase()).includes(Writing.noAccents(term.toLowerCase()))) {
@@ -159,7 +184,7 @@ export const Commands = {
                 short: tr("sobre o programa", "about the program"),
                 long: tr("Exibe informações sobre o projeto, autor e repositório.", "Displays information about the project, author and repository."),
                 variations: ["sobre", "about", "info", "informacoes", "informacao", "projeto"],
-                action() {
+                action(arg) {
                     return Commands.about();
                 },
             },
@@ -169,9 +194,9 @@ export const Commands = {
                 variations: ["config", "configuracoes", "conf", "settings", "cfg"],
                 action(arg, parts) {
                     if (parts[1] != undefined) {
-                        let canonical = Commands.resolveCmd(parts[1]);
-                        if (canonical != null && Config[canonical] != undefined) {
-                            return Commands.change(canonical, arg);
+                        const configKey = parts[1];
+                        if (isConfigKey(configKey)) {
+                            return Commands.change(configKey, arg);
                         }
                         Ui.error(tr("Configuração inválida", "Invalid setting"), "“" + parts[1] + "” " + tr("não é uma configuração válida", "is not a valid setting"));
                         return null;
@@ -352,7 +377,14 @@ export const Commands = {
                 long: tr("Alterna entre graus e radianos nos cálculos.", "Toggles between degrees and radians in calculations."),
                 variations: ["graus", "grau", "degrees", "degree", "deg", "rad", "radianos", "radians"],
                 action(arg) {
-                    return Commands.change("degrees", arg);
+                    let value;
+                    if (arg) {
+                        value = "deg";
+                    }
+                    else {
+                        value = "rad";
+                    }
+                    return Commands.change("degrees", value);
                 },
             },
             language: {
@@ -474,16 +506,19 @@ export const Commands = {
     /**
      * [JS] Resolve um comando específico para seu nome canônico
      * @param  specific - Comando específico
-     * @returns {string | null} - Nome canônico do comando, ou null se não for encontrado
+     * @returns {Text | null} - Nome canônico do comando, ou null se não for encontrado
      * @since v6.1.0
      */
     resolveCmd(specific = "") {
         if (typeof specific !== "string" || specific === "") {
             return null;
         }
-        let cmds = Commands.listCmd(), cmdKeys = Object.keys(cmds), canonical = specific;
+        const cmds = Commands.listCmd();
+        const cmdKeys = Object.keys(cmds);
+        let canonical = specific;
         cmdKeys.forEach(key => {
-            if (cmds[key].variations.includes(specific)) {
+            const cmd = cmds[key];
+            if (cmd != undefined && cmd.variations.includes(specific)) {
                 canonical = key;
             }
         });
@@ -492,7 +527,7 @@ export const Commands = {
     /**
      * [JS] Converte um texto em um valor boolean
      * @param  text - Texto
-     * @returns {boolean | null} - Se é parecido com um valor boolean verdadeiro / falso ou se não é reconhecido
+     * @returns {boolean | undefined} - Se é parecido com um valor boolean verdadeiro / falso ou se não é reconhecido
      * @since v6.1.0
      */
     parseBool(text = "") {
@@ -502,7 +537,7 @@ export const Commands = {
         if (["false", "0", "nao", "no", "off", "inativo", "disable", "disabled", "desligar", "desativar"].includes(text)) {
             return false;
         }
-        return null;
+        return undefined;
     },
     /**
      * [JS] Exibe ajuda sobre um comando específico ou lista paginada de todos os comandos
@@ -511,18 +546,23 @@ export const Commands = {
      * @since v6.1.0
      */
     help(specific = "") {
-        let cmds = Commands.listCmd();
+        const cmds = Commands.listCmd();
         if (specific != "") {
-            let canonical = Commands.resolveCmd(specific);
+            const canonical = Commands.resolveCmd(specific);
             if (canonical != null) {
-                let cmd = cmds[canonical], shortList = [canonical].concat(cmd.variations).join(", ");
-                Ui.display("“/" + canonical + "” — " + cmd.long + "\n" + tr("Variações: ", "Variations: ") + shortList);
+                const cmd = cmds[canonical];
+                if (cmd != undefined) {
+                    const shortList = [canonical].concat(cmd.variations).join(", ");
+                    Ui.display("“/" + canonical + "” — " + cmd.long + "\n" + tr("Variações: ", "Variations: ") + shortList);
+                }
                 return null;
             }
             Ui.error(tr("Comando desconhecido", "Unknown command"), "“/" + specific + "” " + tr("não é um comando válido", "is not a valid command"));
             return null;
         }
-        let key = Object.keys(cmds), total = Math.ceil(key.length / 5), page = 1, answer = 0;
+        const key = Object.keys(cmds);
+        const total = Math.ceil(key.length / 5);
+        let page = 1, answer = 0;
         do {
             if (page < 1) {
                 page = 1;
@@ -530,7 +570,9 @@ export const Commands = {
             else if (page > total) {
                 page = total;
             }
-            let start = (page - 1) * 5, end = Math.min(start + 5, key.length), menu = "=== " +
+            const start = (page - 1) * 5;
+            const end = Math.min(start + 5, key.length);
+            let menu = "=== " +
                 tr("Ajuda", "Help") +
                 " ===" +
                 "\n" +
@@ -540,7 +582,7 @@ export const Commands = {
                 String(total) +
                 "\n";
             for (let i = start; i < end; i++) {
-                let aliases = [key[i]].concat(cmds[key[i]].variations).join(", ");
+                let aliases = [key[i], ...cmds[key[i]].variations].join(", ");
                 menu += "\n/" + key[i] + " — " + cmds[key[i]].short + "\n  ↳ " + aliases;
             }
             menu +=
@@ -572,12 +614,14 @@ export const Commands = {
             return null;
         }
         term = Writing.noAccents(term.toLowerCase());
-        let results = Commands.searchCmd(term), cmds = Commands.listCmd();
+        const results = Commands.searchCmd(term);
+        const cmds = Commands.listCmd();
         if (results.length == 0) {
             Ui.warning(tr("Nenhum comando encontrado para ", "No commands found for ") + "“" + term + "”");
             return null;
         }
-        let total = Math.ceil(results.length / 5), page = 1, answer = 0;
+        const total = Math.ceil(results.length / 5);
+        let page = 1, answer = 0;
         do {
             if (page < 1) {
                 page = 1;
@@ -585,7 +629,9 @@ export const Commands = {
             else if (page > total) {
                 page = total;
             }
-            let start = (page - 1) * 5, end = Math.min(start + 5, results.length), menu = "=== " +
+            const start = (page - 1) * 5;
+            const end = Math.min(start + 5, results.length);
+            let menu = "=== " +
                 tr("Pesquisa", "Search") +
                 ": “" +
                 term +
@@ -629,12 +675,14 @@ export const Commands = {
             Ui.error(tr("Comando não informado", "Command not provided"), tr("Use: /atalhos <comando>\nExemplo: /atalhos language", "Usage: /shortcuts <command>\nExample: /shortcuts language"));
             return null;
         }
-        let cmds = Commands.listCmd(), canonical = Commands.resolveCmd(specific);
+        const cmds = Commands.listCmd();
+        const canonical = Commands.resolveCmd(specific);
         if (canonical == null) {
             Ui.error(tr("Comando desconhecido", "Unknown command"), "“/" + specific + "” " + tr("não é um comando válido", "is not a valid command"));
             return null;
         }
-        let all = cmds[canonical].variations, list = all
+        const all = cmds[canonical].variations;
+        const list = all
             .map(function (v) {
             return "“/" + v;
         })
@@ -684,37 +732,35 @@ export const Commands = {
             "====================================================");
         return null;
     },
-    /**
-     * [JS] Altera uma configuração do programa
-     * @param  name - Nome da configuração
-     * @param {any} value - Novo valor para a configuração
-     * @returns {null}
-     * @since v6.1.0
-     */
-    change(name = "", value = null) {
-        if (Config[name] === undefined) {
+    change(name, value) {
+        const currentValue = Config[name];
+        if (currentValue === undefined) {
             Ui.error("[Commands.change] Configuração inexistente.", "'" + name + "' não existe em Config.", true);
             return null;
         }
-        if (value != null && typeof value !== typeof Config[name]) {
-            Ui.error("[Commands.change] Tipo inválido.", "Esperado: " + typeof Config[name] + " | Recebido: " + typeof value, true);
+        if (value !== undefined && typeof value !== typeof currentValue) {
+            Ui.error("[Commands.change] Tipo inválido.", "Esperado: " + typeof currentValue + " | Recebido: " + typeof value, true);
             return null;
         }
-        if (value != null) {
+        if (value !== undefined) {
             Config[name] = value;
         }
-        else {
-            Config[name] = !Config[name];
+        else if (typeof currentValue === "boolean") {
+            Config[name] = !currentValue;
         }
-        if (name == "capitalized" && Config.capitalized) {
+        else {
+            Ui.error("[Commands.change] Valor inválido.", "Esta configuração não suporta alternância simples.", true);
+            return null;
+        }
+        if (name === "capitalized" && Config.capitalized) {
             Config.uppercase = false;
             Config.lowercase = false;
         }
-        else if (name == "uppercase" && Config.uppercase) {
+        else if (name === "uppercase" && Config.uppercase) {
             Config.capitalized = false;
             Config.lowercase = false;
         }
-        else if (name == "lowercase" && Config.lowercase) {
+        else if (name === "lowercase" && Config.lowercase) {
             Config.capitalized = false;
             Config.uppercase = false;
         }
@@ -724,7 +770,7 @@ export const Commands = {
     },
     /**
      * [JS] Retorna uma lista com os nomes canônicos dos comandos que alteram o fluxo de estado
-     * @returns {string[]} - Lista de nomes canônicos
+     * @returns {Text[]} - Lista de nomes canônicos
      * @since v6.1.0
      */
     names() {

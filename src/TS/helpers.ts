@@ -16,43 +16,43 @@ import type { Text, Numeric, Value } from "./values.js"
 export const Helpers = {
     /**
      * [FUNÇÃO] Monta o domínio de uma função
-     * @param {string} belongs - Intervalo de pertencimento
-     * @param {string} explanation - Explicação
+     * @param belongs - Intervalo de pertencimento
+     * @param explanation - Explicação
      * @since v6.1.0
      */
     domain(
-        belongs = "∈ ℝ",
-        explanation = tr("A função pode assumir qualquer x real", "The function can take any real x")
+        belongs: Text = "∈ ℝ",
+        explanation: Text = tr("A função pode assumir qualquer x real", "The function can take any real x")
     ) {
         Ui.display(tr("Domínio: ", "Domain: ") + "x " + belongs, explanation)
     },
 
     /**
      * [FUNÇÃO] Monta a imagem de uma função
-     * @param {string} belongs - Intervalo de pertencimento
-     * @param {string} interval - Se a função deve assumir algum intervalo diferente
-     * @param {string} explanation - Explicação
+     * @param belongs - Intervalo de pertencimento
+     * @param interval - Se a função deve assumir algum intervalo diferente
+     * @param explanation - Explicação
      * @since v6.1.0
      */
     range(
-        belongs = "∈ ℝ",
-        interval = ".",
-        explanation = tr("A função pode assumir qualquer y real", "The function can assume any real y")
+        belongs: Text = "∈ ℝ",
+        interval: Text = ".",
+        explanation: Text = tr("A função pode assumir qualquer y real", "The function can assume any real y")
     ) {
         Ui.display(tr("Imagem: ", "Range: ") + "y " + belongs, explanation + interval)
     },
 
     /**
      * [FUNÇÃO] Monta a intercessão com o eixo x de uma função
-     * @param {number} root - Raiz
-     * @param {string} explanation - Explicação
-     * @param {string} noHave - Mensagem quando não há interseção com o eixo x
+     * @param root - Raiz
+     * @param explanation - Explicação
+     * @param noHave - Mensagem quando não há interseção com o eixo x
      * @since v6.1.0
      */
     xAxis(
-        root = 0,
-        explanation = "c",
-        noHave = tr(
+        root: Numeric = 0,
+        explanation: Text = "c",
+        noHave: Text = tr(
             "Não existe raiz real, portanto não há interseção com o eixo x.",
             "There is no real root, therefore there is no intersection with the x‐axis."
         )
@@ -61,7 +61,7 @@ export const Helpers = {
 
         if (root == 0) {
             // Constante
-            if (explanation == 0) {
+            if (explanation == "0") {
                 // Se c = 0, a função é nula, então existe infinitas raízes
                 Ui.display(intersection + "∃∞ x ∈ ℝ", "y = 0 ⇒ ∀ x ∈ ℝ")
             } else {
@@ -85,12 +85,12 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Monta a intercessão com o eixo y de uma função
-     * @param {string | number} point - Ponto
-     * @param {string} function - Função
-     * @param {string} explanation - Explicação
+     * @param point - Ponto
+     * @param func - Função
+     * @param explanation - Explicação
      * @since v6.1.0
      */
-    yAxis(point = 0, func = "c", explanation = "c") {
+    yAxis(point: Value = 0, func: Text = "c", explanation: Text = "c") {
         Ui.display(
             tr("Interseção com o eixo y: ", "Intersection with the y‐axis: ") +
                 (point != "∄" ? "(0, " + Writing.decimal(point) + ")" : "∄"),
@@ -100,15 +100,22 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Monta o valor de y para o x dado
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} coefC - Coeficiente c
-     * @param {boolean} funcExp - Exponencial
-     * @param {boolean} funcLog - Logarítmica
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @param funcExp - Exponencial
+     * @param funcLog - Logarítmica
      * @since v6.1.0
      */
-    xValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
-        let x = Ui.input("x = ", "", true),
+    xValues(
+        coefA: Numeric = 0,
+        coefB: Numeric = 0,
+        coefC: Numeric = 0,
+        funcExp: boolean = false,
+        funcLog: boolean = false,
+        funcTrig = ""
+    ) {
+        let x: Numeric = Ui.input("x = ", "", true) as Numeric,
             message = tr("Para x = ", "Since x = ") + Writing.decimal(x) + ", "
 
         if (!funcExp && !funcLog && funcTrig == "") {
@@ -155,15 +162,22 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Monta o valor de x para o y dado
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} coefC - Coeficiente c
-     * @param {boolean} funcExp - Exponencial
-     * @param {boolean} funcLog - Logarítmica
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @param funcExp - Exponencial
+     * @param funcLog - Logarítmica
      * @since v6.1.0
      */
-    yValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
-        let y = Ui.input("y = ", "", true),
+    yValues(
+        coefA: Numeric = 0,
+        coefB: Numeric = 0,
+        coefC: Numeric = 0,
+        funcExp: boolean = false,
+        funcLog: boolean = false,
+        funcTrig = ""
+    ) {
+        let y: Numeric = Ui.input("y = ", "", true) as Numeric,
             message = tr("Para y = ", "Since y = ") + Writing.decimal(y) + ", "
 
         if (!funcExp && !funcLog && funcTrig == "") {
@@ -224,23 +238,30 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Monta o estudo do sinal de uma função
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} coefC - Coeficiente c
-     * @param {boolean} funcExp - Exponencial
-     * @param {boolean} funcLog - Logarítmica
-     * @param {string} funcTrig - Trigonométrica (sin, cos ou tan)
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @param funcExp - Exponencial
+     * @param funcLog - Logarítmica
+     * @param funcTrig - Trigonométrica (sin, cos ou tan)
      * @since v6.1.0
      */
-    sign(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
-        let operations = { positive: ">", negative: "<" },
+    sign(
+        coefA: Numeric = 0,
+        coefB: Numeric = 0,
+        coefC: Numeric = 0,
+        funcExp: boolean = false,
+        funcLog: boolean = false,
+        funcTrig: Text = ""
+    ) {
+        let operations: { positive: ">"; negative: "<" } = { positive: ">", negative: "<" },
             words = { positive: tr("positiva", "positive"), negative: tr("negativa", "negative") }
 
         if (!funcExp && !funcLog && funcTrig == "") {
             // Polinomial
             if (coefA == 0 && coefB == 0) {
                 // Constante
-                let operation = coefC > 0 ? "positive" : "negative"
+                let operation: "positive" | "negative" = coefC > 0 ? "positive" : "negative"
                 Ui.display(
                     "ƒ(x) " + (coefC != 0 ? operations[operation] : "=") + " 0, ∀ x ∈ ℝ",
                     "c " +
@@ -252,8 +273,8 @@ export const Helpers = {
             } else if (coefA == 0 && coefB != 0) {
                 // Afim
                 let affineRoot = Helpers.calcRoot(0, coefB, coefC),
-                    operation = coefB > 0 ? "positive" : "negative",
-                    opposite = operation == "positive" ? "negative" : "positive"
+                    operation: "positive" | "negative" = coefB > 0 ? "positive" : "negative",
+                    opposite: "positive" | "negative" = operation == "positive" ? "negative" : "positive"
                 Ui.display(
                     "ƒ(x) " +
                         operations[operation] +
@@ -279,8 +300,8 @@ export const Helpers = {
                 )
             } else if (coefA != 0) {
                 // Quadrática
-                let quadRoot = Helpers.calcRoot(coefA, coefB, coefC),
-                    operation = coefA > 0 ? "positive" : "negative"
+                let quadRoot: [Numeric, Numeric, Numeric] = Helpers.calcRoot(coefA, coefB, coefC) as [Numeric, Numeric, Numeric],
+                    operation: "positive" | "negative" = coefA > 0 ? "positive" : "negative"
                 if (quadRoot[1] > quadRoot[2]) {
                     // Inverte para ficar de menor a maior
                     let temp = quadRoot[2]
@@ -366,7 +387,7 @@ export const Helpers = {
                 // Exponencial
                 if (Algebra.division(-coefC, coefB, false) > 0) {
                     // Raiz
-                    let expRoot = Helpers.calcRoot(coefA, coefB, coefC, true)
+                    let expRoot: Numeric = Helpers.calcRoot(coefA, coefB, coefC, true) as Numeric
                     if ((coefA < 1 && coefB < 0) || (coefA > 1 && coefB > 0)) {
                         // Curva para cima
                         Ui.display(
@@ -411,7 +432,7 @@ export const Helpers = {
                 }
             } else if (funcLog) {
                 // Logarítmica
-                let logRoot = Helpers.calcRoot(coefA, coefB, coefC, false, true)
+                let logRoot: Numeric = Helpers.calcRoot(coefA, coefB, coefC, false, true) as Numeric
                 if ((coefA < 1 && coefB < 0) || (coefA > 1 && coefB > 0)) {
                     // Curva para cima
                     Ui.display(
@@ -462,14 +483,14 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Monta a equação de duas funções
-     * @param {boolean} polinomial - Polinomial
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} coefC - Coeficiente c
-     * @returns {number} - Operação futura
+     * @param polinomial - Polinomial
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @returns - Operação futura
      * @since v6.1.0
      */
-    equations(polinomial = true, coefA = 0, coefB = 0, coefC = 0) {
+    equations(polinomial: boolean = true, coefA: Numeric = 0, coefB: Numeric = 0, coefC: Numeric = 0): 0 | 1 {
         if (polinomial) {
             // Polinomial
             if (State.baseFunc.length == 0) {
@@ -494,17 +515,18 @@ export const Helpers = {
                 ),
                 tr("Em construção.", "Under construction.")
             )
+            return 0
         }
     },
 
     /**
      * [FUNÇÃO] Monta a curva de uma função
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {boolean} polynomial - Polinomial
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param polynomial - Polinomial
      * @since v6.1.0
      */
-    curve(coefA = 0, coefB = 0, polynomial = true) {
+    curve(coefA: Numeric = 0, coefB: Numeric = 0, polynomial: boolean = true) {
         if (!polynomial) {
             if ((coefA < 1 && coefB < 0) || (coefA > 1 && coefB > 0)) {
                 Ui.display(tr("Crescente", "Increasing"), "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)")
@@ -536,15 +558,21 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Calcula a raiz de uma função
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} coefC - Coeficiente c
-     * @param {boolean} funcExp - Exponencial
-     * @param {boolean} funcLog - Logarítmica
-     * @returns {number | number[]} - Raiz
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @param funcExp - Exponencial
+     * @param funcLog - Logarítmica
+     * @returns {Numeric | Numeric[]} - Raiz
      * @since v6.1.0
      */
-    calcRoot(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
+    calcRoot(
+        coefA: Numeric = 0,
+        coefB: Numeric = 0,
+        coefC: Numeric = 0,
+        funcExp: boolean = false,
+        funcLog: boolean = false
+    ): Numeric | [Numeric, Numeric, Numeric] {
         if (!funcExp && !funcLog) {
             if (coefA == 0 && coefB == 0) {
                 return NaN
@@ -562,19 +590,20 @@ export const Helpers = {
                     return NaN
                 }
             } else if (funcLog) {
-                return Algebra.round(coefA ** exponent)
+                return Number(Algebra.round(coefA ** exponent))
             }
         }
+        return NaN
     },
 
     /**
      * [FUNÇÃO] Mostra a raiz de uma função
-     * @param {string} root - Raiz
-     * @param {string} explanation - Explicação
-     * @param {string} noHave - Mensagem quando não há raiz
+     * @param root - Raiz
+     * @param explanation - Explicação
+     * @param noHave - Mensagem quando não há raiz
      * @since v6.1.0
      */
-    showRoot(root = 0, explanation = "c", noHave = "") {
+    showRoot(root: Numeric = 0, explanation: Text = "c", noHave: Text = "") {
         let intersection = tr("Raiz real: ", "Real root: ")
         if (isNaN(root)) {
             Ui.display(intersection + "∄! x ∈ ℝ", noHave)
@@ -588,36 +617,39 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Calcula o Delta de uma função
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} coefC - Coeficiente c
-     * @returns {number[]} - Delta
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param coefC - Coeficiente c
+     * @returns - Delta
      * @since v6.1.0
      */
-    calcDelta(coefA = 0, coefB = 0, coefC = 0) {
-        let array = [coefB ** 2 - 4 * coefA * coefC]
-        array.push(array[0] >= 0 ? Algebra.division(-coefB + Math.sqrt(array[0]), 2 * coefA) : NaN)
-        array.push(array[0] > 0 ? Algebra.division(-coefB - Math.sqrt(array[0]), 2 * coefA) : NaN)
+    calcDelta(coefA: Numeric = 0, coefB: Numeric = 0, coefC: Numeric = 0): [Numeric, Numeric, Numeric] {
+        let array: Numeric[] = [coefB ** 2 - 4 * coefA * coefC],
+            delta: Numeric = array[0] as Numeric,
+            x1: Numeric = array[1] as Numeric,
+            x2: Numeric = array[2] as Numeric
+        array.push(delta >= 0 ? Algebra.division(-coefB + Math.sqrt(delta), 2 * coefA) : NaN)
+        array.push(delta > 0 ? Algebra.division(-coefB - Math.sqrt(delta), 2 * coefA) : NaN)
 
-        if (array[0] > 0 && array[1] > array[2]) {
-            let temp = array[2]
-            array[2] = array[1]
-            array[1] = temp
+        if (delta > 0 && x1 > x2) {
+            let temp = x2
+            x2 = x1
+            x1 = temp
         }
 
-        return array
+        return array as [Numeric, Numeric, Numeric]
     },
 
     /**
      * [FUNÇÃO] Exibe o Delta de uma função
-     * @param {number} delta - Delta
-     * @param {string} lower - Mensagem para Delta < 0
-     * @param {string} equal - Mensagem para Delta = 0
-     * @param {string} higher - Mensagem para Delta > 0
-     * @param {boolean} hasY - Se é (c − y)
+     * @param delta - Delta
+     * @param lower - Mensagem para Delta < 0
+     * @param equal - Mensagem para Delta = 0
+     * @param higher - Mensagem para Delta > 0
+     * @param hasY - Se é (c − y)
      * @since v6.1.0
      */
-    showDelta(delta = 0, lower = "", equal = "", higher = "", hasY = false) {
+    showDelta(delta: Numeric = 0, lower: Text = "", equal: Text = "", higher: Text = "", hasY: boolean = false) {
         if (delta < 0) {
             Ui.display(lower, "Δ = b² − 4 · a · " + (hasY ? "(c − y)" : "c") + " ⇒ Δ < 0 ⇒ x ∉ ℝ")
         } else if (delta == 0) {
@@ -632,23 +664,23 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Calcula o vértice de uma função
-     * @param {number} coefA - Coeficiente a
-     * @param {number} coefB - Coeficiente b
-     * @param {number} delta - Delta
-     * @returns {number[]} - Vértice
+     * @param coefA - Coeficiente a
+     * @param coefB - Coeficiente b
+     * @param delta - Delta
+     * @returns - Vértice
      * @since v6.1.0
      */
-    vertex(coefA = 0, coefB = 0, delta = 0) {
+    vertex(coefA: Numeric = 0, coefB: Numeric = 0, delta: Numeric = 0): Numeric[] {
         return [Algebra.division(-coefB, 2 * coefA), Algebra.division(-delta, 4 * coefA)]
     },
 
     /**
      * [FUNÇÃO] Vê se estourou o limite
      * @param limit - Limite
-     * @returns {boolean} - Se estourou o limite
+     * @returns - Se estourou o limite
      * @since v6.1.0
      */
-    exceededLimit(limit: number = Config.interactionLimit) {
+    exceededLimit(limit: Numeric = Config.interactionLimit): boolean {
         let exceeded = limit >= Config.interactionLimit
 
         // Exibe o erro se estourou o limite
@@ -661,22 +693,22 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Calcula o período de uma função
-     * @param {number} coefA - Coeficiente a (frequência angular)
-     * @param {boolean} funcTan - Se é função tangente (tan tem período π / |a|)
-     * @returns {number} - Período
+     * @param coefA - Coeficiente a (frequência angular)
+     * @param funcTan - Se é função tangente (tan tem período π / |a|)
+     * @returns - Período
      * @since v6.1.0
      */
-    calcPeriod(coefA = 0, funcTan = false) {
+    calcPeriod(coefA: Numeric = 0, funcTan: boolean = false): Value {
         return Writing.decimal((funcTan ? Math.PI : 2 * Math.PI) / Algebra.absolute(coefA))
     },
 
     /**
      * [FUNÇÃO] Exibe o período de uma função
-     * @param {number} coefA - Coeficiente a (frequência angular)
-     * @param {boolean} funcTan - Se é função tangente
+     * @param coefA - Coeficiente a (frequência angular)
+     * @param funcTan - Se é função tangente
      * @since v6.1.0
      */
-    showPeriod(coefA = 0, funcTan = false) {
+    showPeriod(coefA: Numeric = 0, funcTan: boolean = false) {
         if (coefA != 0) {
             Ui.display(
                 tr("Período: ", "Period: ") + Helpers.calcPeriod(coefA, funcTan),
@@ -695,19 +727,19 @@ export const Helpers = {
 
     /**
      * [FUNÇÃO] Exibe a amplitude de uma função
-     * @param {number} coefB - Coeficiente b (amplitude)
+     * @param coefB - Coeficiente b (amplitude)
      * @since v6.1.0
      */
-    amplitude(coefB = 0) {
+    amplitude(coefB: Numeric = 0) {
         Ui.display("Amplitude: " + Writing.decimal(Algebra.absolute(coefB)), "Amplitude = |b|")
     },
 
     /**
      * [FUNÇÃO] Exibe as assíntotas verticais da tangente
-     * @param {number} coefA - Coeficiente a (frequência angular)
+     * @param coefA - Coeficiente a (frequência angular)
      * @since v6.1.0
      */
-    verticalAsymptotes(coefA = 0) {
+    verticalAsymptotes(coefA: Numeric = 0) {
         if (coefA != 0) {
             Ui.display(
                 tr("Assíntotas verticais: ", "Vertical asymptote: ") + "x = (π / 2 + n · π) / a,  n ∈ ℤ",

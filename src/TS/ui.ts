@@ -97,7 +97,7 @@ export const Ui = {
      * @returns Retorna a resposta, a página atual, as opções por página
      * @since v6.1.0
      */
-    menu(options: Text[] = ["---"], page: Numeric = 1) {
+    menu(options: Text[] = ["---"], page: Numeric = 1): [Numeric | CommandsNames, Numeric] {
         let answer: CommandsNames | Digit | -1,
             menu: Text = "",
             option: Numeric = 1,
@@ -180,7 +180,7 @@ export const Ui = {
             }
         } while (typeof answer != "number" && typeof answer != "string")
 
-        return [answer, page]
+        return [(answer as Numeric | CommandsNames), page]
     },
 
     /**
