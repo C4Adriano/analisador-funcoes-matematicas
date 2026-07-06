@@ -3,7 +3,7 @@ import defaultConfigJson from "../JSON/config.json" with { type: "json" }
 import type { Text, Degrees, Language, Numeric, Places, Precision } from "./values"
 
 /**
- * Tipo automático baseado no JSON
+ * Tipo de configuração baseado no JSON
  */
 export type ConfigType = {
     language: Language

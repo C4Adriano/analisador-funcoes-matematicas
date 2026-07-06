@@ -300,7 +300,11 @@ export const Helpers = {
                 )
             } else if (coefA != 0) {
                 // Quadrática
-                let quadRoot: [Numeric, Numeric, Numeric] = Helpers.calcRoot(coefA, coefB, coefC) as [Numeric, Numeric, Numeric],
+                let quadRoot: [Numeric, Numeric, Numeric] = Helpers.calcRoot(coefA, coefB, coefC) as [
+                        Numeric,
+                        Numeric,
+                        Numeric,
+                    ],
                     operation: "positive" | "negative" = coefA > 0 ? "positive" : "negative"
                 if (quadRoot[1] > quadRoot[2]) {
                     // Inverte para ficar de menor a maior
@@ -487,7 +491,7 @@ export const Helpers = {
      * @param coefA - Coeficiente a
      * @param coefB - Coeficiente b
      * @param coefC - Coeficiente c
-     * @returns - Operação futura
+     * @returns Operação futura
      * @since v6.1.0
      */
     equations(polinomial: boolean = true, coefA: Numeric = 0, coefB: Numeric = 0, coefC: Numeric = 0): 0 | 1 {
@@ -620,7 +624,7 @@ export const Helpers = {
      * @param coefA - Coeficiente a
      * @param coefB - Coeficiente b
      * @param coefC - Coeficiente c
-     * @returns - Delta
+     * @returns Delta
      * @since v6.1.0
      */
     calcDelta(coefA: Numeric = 0, coefB: Numeric = 0, coefC: Numeric = 0): [Numeric, Numeric, Numeric] {
@@ -667,7 +671,7 @@ export const Helpers = {
      * @param coefA - Coeficiente a
      * @param coefB - Coeficiente b
      * @param delta - Delta
-     * @returns - Vértice
+     * @returns Vértice
      * @since v6.1.0
      */
     vertex(coefA: Numeric = 0, coefB: Numeric = 0, delta: Numeric = 0): Numeric[] {
@@ -677,7 +681,7 @@ export const Helpers = {
     /**
      * [FUNÇÃO] Vê se estourou o limite
      * @param limit - Limite
-     * @returns - Se estourou o limite
+     * @returns Se estourou o limite
      * @since v6.1.0
      */
     exceededLimit(limit: Numeric = Config.interactionLimit): boolean {
@@ -695,7 +699,7 @@ export const Helpers = {
      * [FUNÇÃO] Calcula o período de uma função
      * @param coefA - Coeficiente a (frequência angular)
      * @param funcTan - Se é função tangente (tan tem período π / |a|)
-     * @returns - Período
+     * @returns Período
      * @since v6.1.0
      */
     calcPeriod(coefA: Numeric = 0, funcTan: boolean = false): Value {

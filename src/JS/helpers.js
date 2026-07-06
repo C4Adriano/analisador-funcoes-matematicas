@@ -390,7 +390,7 @@ export const Helpers = {
      * @param coefA - Coeficiente a
      * @param coefB - Coeficiente b
      * @param coefC - Coeficiente c
-     * @returns - Operação futura
+     * @returns Operação futura
      * @since v6.1.0
      */
     equations(polinomial = true, coefA = 0, coefB = 0, coefC = 0) {
@@ -511,7 +511,7 @@ export const Helpers = {
      * @param coefA - Coeficiente a
      * @param coefB - Coeficiente b
      * @param coefC - Coeficiente c
-     * @returns - Delta
+     * @returns Delta
      * @since v6.1.0
      */
     calcDelta(coefA = 0, coefB = 0, coefC = 0) {
@@ -550,7 +550,7 @@ export const Helpers = {
      * @param coefA - Coeficiente a
      * @param coefB - Coeficiente b
      * @param delta - Delta
-     * @returns - Vértice
+     * @returns Vértice
      * @since v6.1.0
      */
     vertex(coefA = 0, coefB = 0, delta = 0) {
@@ -559,7 +559,7 @@ export const Helpers = {
     /**
      * [FUNÇÃO] Vê se estourou o limite
      * @param limit - Limite
-     * @returns - Se estourou o limite
+     * @returns Se estourou o limite
      * @since v6.1.0
      */
     exceededLimit(limit = Config.interactionLimit) {
@@ -574,7 +574,7 @@ export const Helpers = {
      * [FUNÇÃO] Calcula o período de uma função
      * @param coefA - Coeficiente a (frequência angular)
      * @param funcTan - Se é função tangente (tan tem período π / |a|)
-     * @returns - Período
+     * @returns Período
      * @since v6.1.0
      */
     calcPeriod(coefA = 0, funcTan = false) {

@@ -147,14 +147,18 @@ do {
                     // Exponencial
                     if (subType == 1) {
                         // Incógnitas
-                        if (typeof State.globalA === "string" || typeof State.globalB === "string" || typeof State.globalC === "string") {
+                        if (typeof State.globalA === "string" ||
+                            typeof State.globalB === "string" ||
+                            typeof State.globalC === "string") {
                             State.coefficients = Algebra.unknown(State.globalA, State.globalB, State.globalC, true);
                             State.globalA = Algebra.round(State.coefficients[0]);
                             State.globalB = Algebra.round(State.coefficients[1]);
                             State.globalC = Algebra.round(State.coefficients[2]);
                         }
                         // Números
-                        if (typeof State.globalA === "number" && typeof State.globalB === "number" && typeof State.globalC === "number") {
+                        if (typeof State.globalA === "number" &&
+                            typeof State.globalB === "number" &&
+                            typeof State.globalC === "number") {
                             if (isNumeric(State.globalA) &&
                                 isNumeric(State.globalB) &&
                                 State.globalA > 0 &&
@@ -192,7 +196,9 @@ do {
                             State.globalC = Algebra.round(State.coefficients[2]);
                         }
                         // Números
-                        if (typeof State.globalA === "number" && typeof State.globalB == "number" && typeof State.globalC == "number") {
+                        if (typeof State.globalA === "number" &&
+                            typeof State.globalB == "number" &&
+                            typeof State.globalC == "number") {
                             if (isNumeric(State.globalA) &&
                                 isNumeric(State.globalB) &&
                                 State.globalA > 0 &&
@@ -278,14 +284,18 @@ do {
                     // Seno
                     if (subType == 1) {
                         // Incógnitas
-                        if (typeof State.globalA === "string" || typeof State.globalB === "string" || typeof State.globalC === "string") {
+                        if (typeof State.globalA === "string" ||
+                            typeof State.globalB === "string" ||
+                            typeof State.globalC === "string") {
                             State.coefficients = Algebra.unknown(State.globalA, State.globalB, State.globalC, false, false, "sin");
                             State.globalA = Algebra.round(State.coefficients[0]);
                             State.globalB = Algebra.round(State.coefficients[1]);
                             State.globalC = Algebra.round(State.coefficients[2]);
                         }
                         // Números
-                        if (typeof State.globalA === "number" && typeof State.globalB == "number" && typeof State.globalC == "number") {
+                        if (typeof State.globalA === "number" &&
+                            typeof State.globalB == "number" &&
+                            typeof State.globalC == "number") {
                             if (State.globalA != 0 && State.globalB != 0) {
                                 Analyze.sine(State.globalA, State.globalB, State.globalC);
                             }
@@ -303,14 +313,18 @@ do {
                     // Cosseno
                     else if (subType == 2) {
                         // Incógnitas
-                        if (typeof State.globalA === "string" || typeof State.globalB === "string" || typeof State.globalC === "string") {
+                        if (typeof State.globalA === "string" ||
+                            typeof State.globalB === "string" ||
+                            typeof State.globalC === "string") {
                             State.coefficients = Algebra.unknown(State.globalA, State.globalB, State.globalC, false, false, "cos");
                             State.globalA = Algebra.round(State.coefficients[0]);
                             State.globalB = Algebra.round(State.coefficients[1]);
                             State.globalC = Algebra.round(State.coefficients[2]);
                         }
                         // Números
-                        if (typeof State.globalA === "number" && typeof State.globalB === "number" && typeof State.globalC === "number") {
+                        if (typeof State.globalA === "number" &&
+                            typeof State.globalB === "number" &&
+                            typeof State.globalC === "number") {
                             if (State.globalA != 0 && State.globalB != 0) {
                                 Analyze.cosine(State.globalA, State.globalB, State.globalC);
                             }
@@ -331,14 +345,18 @@ do {
                     // Tangente
                     else if (subType == 3) {
                         // Incógnitas
-                        if (typeof State.globalA === "string" || typeof State.globalB === "string" || typeof State.globalC === "string") {
+                        if (typeof State.globalA === "string" ||
+                            typeof State.globalB === "string" ||
+                            typeof State.globalC === "string") {
                             State.coefficients = Algebra.unknown(State.globalA, State.globalB, State.globalC, false, false, "tan");
                             State.globalA = Algebra.round(State.coefficients[0]);
                             State.globalB = Algebra.round(State.coefficients[1]);
                             State.globalC = Algebra.round(State.coefficients[2]);
                         }
                         // Números
-                        if (typeof State.globalA === "number" && typeof State.globalB == "number" && typeof State.globalC == "number") {
+                        if (typeof State.globalA === "number" &&
+                            typeof State.globalB == "number" &&
+                            typeof State.globalC == "number") {
                             if (State.globalA != 0 && State.globalB != 0) {
                                 Analyze.tangent(State.globalA, State.globalB, State.globalC);
                             }

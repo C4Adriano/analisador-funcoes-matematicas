@@ -1,3 +1,4 @@
+import { Checks } from "./checks.js"
 import { Config } from "./config.js"
 import { Error } from "./error.js"
 import { Helpers } from "./helpers.js"
@@ -7,14 +8,6 @@ import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
 import type { Value, Numeric, Variable, Precision, Places, ValueArray, TrigonometricFunction } from "./values.js"
-
-function isNumeric(value: Value | undefined): value is Numeric {
-    return typeof value === "number" && isFinite(value)
-}
-
-function numericPoint(points: ValueArray, index: number): Numeric {
-    return Number(Writing.decimal(points[index] ?? 0, true))
-}
 
 /**
  * [NUMÉRICO] Objeto base para as funções envolvendo algebra
@@ -267,7 +260,7 @@ export const Algebra = {
                 if (coefA == 0 && coefB == 0) {
                     points = Algebra.point()
 
-                    coefC = numericPoint(points, 1)
+                    coefC = Checks.numericPoint(points, 1)
                 }
 
                 // Afim
@@ -278,8 +271,8 @@ export const Algebra = {
                         (typeof coefC == "string" && typeof coefB == "number")
                     ) {
                         points = Algebra.point()
-                        const x0 = numericPoint(points, 0)
-                        const x1 = numericPoint(points, 1)
+                        const x0 = Checks.numericPoint(points, 0)
+                        const x1 = Checks.numericPoint(points, 1)
 
                         if (typeof coefC == "string") {
                             const b = coefB as Numeric
@@ -297,10 +290,10 @@ export const Algebra = {
                     // Duplas
                     else if (typeof coefB == "string" && typeof coefC == "string") {
                         points = Algebra.point(2)
-                        const x0 = numericPoint(points, 0)
-                        const x1 = numericPoint(points, 1)
-                        const x2 = numericPoint(points, 2)
-                        const x3 = numericPoint(points, 3)
+                        const x0 = Checks.numericPoint(points, 0)
+                        const x1 = Checks.numericPoint(points, 1)
+                        const x2 = Checks.numericPoint(points, 2)
+                        const x3 = Checks.numericPoint(points, 3)
 
                         if (x0 != x2 && (x0 != 0 || x2 != 0)) {
                             coefB = Algebra.division(x3 - x1, x2 - x0)
@@ -319,8 +312,8 @@ export const Algebra = {
                     // a
                     if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "number") {
                         points = Algebra.point()
-                        const x0 = numericPoint(points, 0)
-                        const x1 = numericPoint(points, 1)
+                        const x0 = Checks.numericPoint(points, 0)
+                        const x1 = Checks.numericPoint(points, 1)
 
                         if (x0 != 0) {
                             coefA = Algebra.division(x1 - coefB * x0 - coefC, x0 * x0)
@@ -333,8 +326,8 @@ export const Algebra = {
                     // b
                     else if (typeof coefB == "string" && typeof coefA == "number" && typeof coefC == "number") {
                         points = Algebra.point()
-                        const x0 = numericPoint(points, 0)
-                        const x1 = numericPoint(points, 1)
+                        const x0 = Checks.numericPoint(points, 0)
+                        const x1 = Checks.numericPoint(points, 1)
 
                         if (x0 != 0) {
                             coefB = Algebra.division(x1 - coefA * (x0 * x0) - coefC, x0)
@@ -347,8 +340,8 @@ export const Algebra = {
                     // c
                     else if (typeof coefC == "string" && typeof coefB == "number" && typeof coefA == "number") {
                         points = Algebra.point()
-                        const x0 = numericPoint(points, 0)
-                        const x1 = numericPoint(points, 1)
+                        const x0 = Checks.numericPoint(points, 0)
+                        const x1 = Checks.numericPoint(points, 1)
 
                         coefC = x1 - coefA * (x0 * x0) - coefB * x0
                     }
@@ -358,10 +351,10 @@ export const Algebra = {
                     // a, b
                     else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "number") {
                         points = Algebra.point(2)
-                        const x0 = numericPoint(points, 0)
-                        const x1 = numericPoint(points, 1)
-                        const x2 = numericPoint(points, 2)
-                        const x3 = numericPoint(points, 3)
+                        const x0 = Checks.numericPoint(points, 0)
+                        const x1 = Checks.numericPoint(points, 1)
+                        const x2 = Checks.numericPoint(points, 2)
+                        const x3 = Checks.numericPoint(points, 3)
 
                         if (x0 != 0 && x0 != x2) {
                             denominator = x0 * x2 * (x0 - x2)
@@ -376,10 +369,10 @@ export const Algebra = {
                     // a, c
                     else if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "string") {
                         points = Algebra.point(2)
-                        const x0 = numericPoint(points, 0)
-                        const x1 = numericPoint(points, 1)
-                        const x2 = numericPoint(points, 2)
-                        const x3 = numericPoint(points, 3)
+                        const x0 = Checks.numericPoint(points, 0)
+                        const x1 = Checks.numericPoint(points, 1)
+                        const x2 = Checks.numericPoint(points, 2)
+                        const x3 = Checks.numericPoint(points, 3)
 
                         denominator = x0 * x0 - x2 * x2
                         if (denominator != 0) {
@@ -394,10 +387,10 @@ export const Algebra = {
                     // b, c
                     else if (typeof coefA == "number" && typeof coefB == "string" && typeof coefC == "string") {
                         points = Algebra.point(2)
-                        const x0 = numericPoint(points, 0)
-                        const x1 = numericPoint(points, 1)
-                        const x2 = numericPoint(points, 2)
-                        const x3 = numericPoint(points, 3)
+                        const x0 = Checks.numericPoint(points, 0)
+                        const x1 = Checks.numericPoint(points, 1)
+                        const x2 = Checks.numericPoint(points, 2)
+                        const x3 = Checks.numericPoint(points, 3)
 
                         if (x0 != x2) {
                             coefB = Algebra.division(x3 - coefA * x2 * x2 - (x1 - coefA * x0 * x0), x2 - x0)
@@ -411,12 +404,12 @@ export const Algebra = {
                     // Triplas
                     else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "string") {
                         points = Algebra.point(3)
-                        const x0 = numericPoint(points, 0)
-                        const x1 = numericPoint(points, 1)
-                        const x2 = numericPoint(points, 2)
-                        const x3 = numericPoint(points, 3)
-                        const x4 = numericPoint(points, 4)
-                        const x5 = numericPoint(points, 5)
+                        const x0 = Checks.numericPoint(points, 0)
+                        const x1 = Checks.numericPoint(points, 1)
+                        const x2 = Checks.numericPoint(points, 2)
+                        const x3 = Checks.numericPoint(points, 3)
+                        const x4 = Checks.numericPoint(points, 4)
+                        const x5 = Checks.numericPoint(points, 5)
 
                         diff1 = x3 - x1
                         diff2 = x5 - x1
@@ -445,8 +438,8 @@ export const Algebra = {
                 // a
                 if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "number") {
                     points = Algebra.point()
-                    const x0 = numericPoint(points, 0)
-                    const x1 = numericPoint(points, 1)
+                    const x0 = Checks.numericPoint(points, 0)
+                    const x1 = Checks.numericPoint(points, 1)
 
                     coefA = Algebra.round(Algebra.division(x1 - coefC, coefB, false) ** Algebra.division(1, x0, false))
                 }
@@ -454,8 +447,8 @@ export const Algebra = {
                 // b
                 else if (typeof coefB == "string" && typeof coefA == "number" && typeof coefC == "number") {
                     points = Algebra.point()
-                    const x0 = numericPoint(points, 0)
-                    const x1 = numericPoint(points, 1)
+                    const x0 = Checks.numericPoint(points, 0)
+                    const x1 = Checks.numericPoint(points, 1)
 
                     coefB = Algebra.division(x1 - coefC, coefA ** x0)
                 }
@@ -463,8 +456,8 @@ export const Algebra = {
                 // c
                 else if (typeof coefC == "string" && typeof coefB == "number" && typeof coefA == "number") {
                     points = Algebra.point()
-                    const x0 = numericPoint(points, 0)
-                    const x1 = numericPoint(points, 1)
+                    const x0 = Checks.numericPoint(points, 0)
+                    const x1 = Checks.numericPoint(points, 1)
 
                     coefC = x1 - coefB * coefA ** x0
                 }
@@ -474,10 +467,10 @@ export const Algebra = {
                 // a, b
                 else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "number") {
                     points = Algebra.point(2)
-                    const x0 = numericPoint(points, 0)
-                    const x1 = numericPoint(points, 1)
-                    const x2 = numericPoint(points, 2)
-                    const x3 = numericPoint(points, 3)
+                    const x0 = Checks.numericPoint(points, 0)
+                    const x1 = Checks.numericPoint(points, 1)
+                    const x2 = Checks.numericPoint(points, 2)
+                    const x3 = Checks.numericPoint(points, 3)
 
                     const a = Algebra.round(
                         Algebra.division(x1 - coefC, x3 - coefC, false) ** Algebra.division(1, x0 - x2, false)
@@ -504,10 +497,10 @@ export const Algebra = {
                 // b, c
                 else if (typeof coefA == "number" && typeof coefB == "string" && typeof coefC == "string") {
                     points = Algebra.point(2)
-                    const x0 = numericPoint(points, 0)
-                    const x1 = numericPoint(points, 1)
-                    const x2 = numericPoint(points, 2)
-                    const x3 = numericPoint(points, 3)
+                    const x0 = Checks.numericPoint(points, 0)
+                    const x1 = Checks.numericPoint(points, 1)
+                    const x2 = Checks.numericPoint(points, 2)
+                    const x3 = Checks.numericPoint(points, 3)
 
                     const b = Algebra.division(x3 - x1, coefA ** x2 - coefA ** x0)
                     coefB = b
@@ -522,8 +515,8 @@ export const Algebra = {
                 // a
                 if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "number") {
                     points = Algebra.point()
-                    const x0 = numericPoint(points, 0)
-                    const x1 = numericPoint(points, 1)
+                    const x0 = Checks.numericPoint(points, 0)
+                    const x1 = Checks.numericPoint(points, 1)
 
                     coefA = Algebra.round(x0 ** Algebra.division(coefB, x1 - coefC, false)) as Numeric
                 }
@@ -531,8 +524,8 @@ export const Algebra = {
                 // b
                 else if (typeof coefA == "number" && typeof coefB == "string" && typeof coefC == "number") {
                     points = Algebra.point()
-                    const x0 = numericPoint(points, 0)
-                    const x1 = numericPoint(points, 1)
+                    const x0 = Checks.numericPoint(points, 0)
+                    const x1 = Checks.numericPoint(points, 1)
 
                     coefB = Algebra.division(x1 - coefC, Algebra.log(x0, coefA))
                 }
@@ -540,8 +533,8 @@ export const Algebra = {
                 // c
                 else if (typeof coefA == "number" && typeof coefB == "number" && typeof coefC == "string") {
                     points = Algebra.point()
-                    const x0 = numericPoint(points, 0)
-                    const x1 = numericPoint(points, 1)
+                    const x0 = Checks.numericPoint(points, 0)
+                    const x1 = Checks.numericPoint(points, 1)
 
                     coefC = x1 - Number(Algebra.round(coefB * Algebra.log(x0, coefA)))
                 }
@@ -567,10 +560,10 @@ export const Algebra = {
                 // a, c
                 else if (typeof coefA == "string" && typeof coefB == "number" && typeof coefC == "string") {
                     points = Algebra.point(2)
-                    const x0 = numericPoint(points, 0)
-                    const x1 = numericPoint(points, 1)
-                    const x2 = numericPoint(points, 2)
-                    const x3 = numericPoint(points, 3)
+                    const x0 = Checks.numericPoint(points, 0)
+                    const x1 = Checks.numericPoint(points, 1)
+                    const x2 = Checks.numericPoint(points, 2)
+                    const x3 = Checks.numericPoint(points, 3)
 
                     const a = Algebra.round(
                         Algebra.division(x0, x2, false) ** Algebra.division(coefB, x1 - x3, false)
@@ -582,10 +575,10 @@ export const Algebra = {
                 // b, c
                 else if (typeof coefA == "number" && typeof coefB == "string" && typeof coefC == "string") {
                     points = Algebra.point(2)
-                    const x0 = numericPoint(points, 0)
-                    const x1 = numericPoint(points, 1)
-                    const x2 = numericPoint(points, 2)
-                    const x3 = numericPoint(points, 3)
+                    const x0 = Checks.numericPoint(points, 0)
+                    const x1 = Checks.numericPoint(points, 1)
+                    const x2 = Checks.numericPoint(points, 2)
+                    const x3 = Checks.numericPoint(points, 3)
 
                     coefB = Algebra.division(x1 - x3, Algebra.log(x0, coefA) - Algebra.log(x2, coefA))
                     coefC = x1 - coefB * Algebra.log(x0, coefA)

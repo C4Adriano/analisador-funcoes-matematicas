@@ -1,7 +1,7 @@
 import { tr } from "./i18n.js"
 import { Ui } from "./ui.js"
 
-import type { Text, Numeric, Value } from "./values.js"
+import type { Text, Numeric } from "./values.js"
 
 /**
  * [ERRO] Mensagens de erro padronizadas do programa

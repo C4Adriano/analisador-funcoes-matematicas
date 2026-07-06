@@ -196,7 +196,7 @@ export const Ui = {
             // Número
             if (valid && number && typeof text == "number") {
                 if (angle == "rad") {
-                    value = Writing.parseAngle(text);
+                    value = Writing.parseAngle(String(text));
                 }
                 else if (angle == "deg") {
                     value = Number(Writing.decimal(text, true));

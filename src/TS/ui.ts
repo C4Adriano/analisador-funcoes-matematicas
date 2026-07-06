@@ -180,7 +180,7 @@ export const Ui = {
             }
         } while (typeof answer != "number" && typeof answer != "string")
 
-        return [(answer as Numeric | CommandsNames), page]
+        return [answer as Numeric | CommandsNames, page]
     },
 
     /**
@@ -215,7 +215,7 @@ export const Ui = {
                 valid = false
                 continue
             } else {
-                text = String(raw).trim()
+                text = String(raw).trim() as Text | Numeric
                 valid = text != ""
             }
 
@@ -231,7 +231,7 @@ export const Ui = {
             // Número
             if (valid && number && typeof text == "number") {
                 if (angle == "rad") {
-                    value = Writing.parseAngle(text)
+                    value = Writing.parseAngle(String(text))
                 } else if (angle == "deg") {
                     value = Number(Writing.decimal(text, true))
                 }

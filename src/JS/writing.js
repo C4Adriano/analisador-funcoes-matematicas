@@ -12,7 +12,7 @@ export const Writing = {
      * @param text - Texto
      * @param from - O que será removido
      * @param to - O que será colocado no lugar
-     * @returns - Texto convertido
+     * @returns Texto convertido
      * @since v6.1.0
      */
     replace(text = "", from = "", to = "") {
@@ -22,7 +22,7 @@ export const Writing = {
      * [TEXTO] Substituição de várias strings
      * @param text - Texto
      * @param {Text[][]} list - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
-     * @returns - Texto convertido
+     * @returns Texto convertido
      * @since v6.1.0
      */
     replaceGroup(text = "", list = [["", ""]]) {
@@ -36,7 +36,7 @@ export const Writing = {
     /**
      * [TEXTO] Substituição da grafia de Unicode
      * @param text - Texto
-     * @returns - Texto convertido
+     * @returns Texto convertido
      * @since v6.1.0
      */
     noUnicode(text = "") {
@@ -281,7 +281,7 @@ export const Writing = {
     /**
      * [TEXTO] Conversão para minúsculas
      * @param text - Texto
-     * @returns - Texto convertido
+     * @returns Texto convertido
      * @since v6.1.0
      */
     lowercase(text = "") {
@@ -293,7 +293,7 @@ export const Writing = {
     /**
      * [TEXTO] Conversão para maiúsculas
      * @param text - Texto
-     * @returns - Texto convertido
+     * @returns Texto convertido
      * @since v6.1.0
      */
     uppercase(text = "") {
@@ -330,7 +330,7 @@ export const Writing = {
     /**
      * [TEXTO] Simplificação de símbolos de multiplicação
      * @param text - Texto
-     * @returns - Texto convertido
+     * @returns Texto convertido
      * @since v6.1.0
      */
     simplifyMultiplication(text = "") {
@@ -339,7 +339,7 @@ export const Writing = {
     /**
      * [TEXTO] Tradução de texto sem Unicode para a linguagem configurada
      * @param text - Texto
-     * @returns - Texto traduzido
+     * @returns Texto traduzido
      */
     translateUnicode(text = "") {
         let replacements = [
@@ -386,7 +386,7 @@ export const Writing = {
      * [TEXTO] Formatação geral de mensagens
      * @param message - Mensagem
      * @param explanation - Mensagem para a explicação
-     * @returns - Mensagem formatada
+     * @returns Mensagem formatada
      * @since v6.1.0
      */
     format(message = "", explanation = "") {
@@ -474,7 +474,7 @@ export const Writing = {
     /**
      * [TEXTO] Formatação de valores booleans
      * @param {Text | number | boolean} value - Valor
-     * @returns - Valor formatado
+     * @returns Valor formatado
      * @since v6.1.0
      */
     formatValue(value = true) {
@@ -487,7 +487,7 @@ export const Writing = {
      * [TEXTO] Formatação de itens de configuração
      * @param message - Mensagem
      * @param name - Nome em "config"
-     * @returns - Mensagem formatada
+     * @returns Mensagem formatada
      * @since v6.1.0
      */
     configItem(message, name) {
@@ -505,7 +505,7 @@ export const Writing = {
     /**
      * [TEXTO] Análise de texto para conversão de graus para radianos
      * @param text - Texto
-     * @returns - Ângulo em radianos
+     * @returns Ângulo em radianos
      * @since v6.1.0
      */
     parseDegree(text = "") {
@@ -515,7 +515,7 @@ export const Writing = {
     /**
      * [TEXTO] Análise de texto para conversão de radianos para graus
      * @param text - Texto
-     * @returns - Ângulo em graus
+     * @returns Ângulo em graus
      * @since v6.1.0
      */
     parseRadian(text = "") {
@@ -525,7 +525,7 @@ export const Writing = {
     /**
      * [TEXTO] Análise de texto para conversão de ângulos
      * @param text - Texto
-     * @returns - Ângulo em graus ou radianos
+     * @returns Ângulo em graus ou radianos
      * @since v6.1.0
      */
     parseAngle(text = "") {
@@ -539,7 +539,7 @@ export const Writing = {
     /**
      * [TEXTO] Formatação de ângulos para exibição
      * @param value - Ângulo em radianos
-     * @returns - Ângulo formatado
+     * @returns Ângulo formatado
      * @since v6.1.0
      */
     formatAngle(value = 0) {

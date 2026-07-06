@@ -1,5 +1,5 @@
 import { Algebra } from "./algebra.js"
-import { Config, ConfigKey, ConfigType, DEFAULT_CONFIG } from "./config.js"
+import { Config, ConfigKey, DEFAULT_CONFIG } from "./config.js"
 import { tr } from "./i18n.js"
 
 import type { Text, Numeric, Value, Places } from "./values.js"
@@ -15,7 +15,7 @@ export const Writing = {
      * @param text - Texto
      * @param from - O que será removido
      * @param to - O que será colocado no lugar
-     * @returns - Texto convertido
+     * @returns Texto convertido
      * @since v6.1.0
      */
     replace(text: Text = "", from: Text = "", to: Text = ""): Text {
@@ -26,7 +26,7 @@ export const Writing = {
      * [TEXTO] Substituição de várias strings
      * @param text - Texto
      * @param {Text[][]} list - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
-     * @returns - Texto convertido
+     * @returns Texto convertido
      * @since v6.1.0
      */
     replaceGroup(text: Text = "", list: [Text, Text][] = [["", ""]]): Text {
@@ -41,7 +41,7 @@ export const Writing = {
     /**
      * [TEXTO] Substituição da grafia de Unicode
      * @param text - Texto
-     * @returns - Texto convertido
+     * @returns Texto convertido
      * @since v6.1.0
      */
     noUnicode(text: Text = ""): Text {
@@ -308,7 +308,7 @@ export const Writing = {
     /**
      * [TEXTO] Conversão para minúsculas
      * @param text - Texto
-     * @returns - Texto convertido
+     * @returns Texto convertido
      * @since v6.1.0
      */
     lowercase(text: Text = ""): Text {
@@ -322,7 +322,7 @@ export const Writing = {
     /**
      * [TEXTO] Conversão para maiúsculas
      * @param text - Texto
-     * @returns - Texto convertido
+     * @returns Texto convertido
      * @since v6.1.0
      */
     uppercase(text: Text = ""): Text {
@@ -366,7 +366,7 @@ export const Writing = {
     /**
      * [TEXTO] Simplificação de símbolos de multiplicação
      * @param text - Texto
-     * @returns - Texto convertido
+     * @returns Texto convertido
      * @since v6.1.0
      */
     simplifyMultiplication(text: Text = ""): Text {
@@ -376,7 +376,7 @@ export const Writing = {
     /**
      * [TEXTO] Tradução de texto sem Unicode para a linguagem configurada
      * @param text - Texto
-     * @returns - Texto traduzido
+     * @returns Texto traduzido
      */
     translateUnicode(text: Text = ""): Text {
         let replacements: [Text, Text][] = [
@@ -426,7 +426,7 @@ export const Writing = {
      * [TEXTO] Formatação geral de mensagens
      * @param message - Mensagem
      * @param explanation - Mensagem para a explicação
-     * @returns - Mensagem formatada
+     * @returns Mensagem formatada
      * @since v6.1.0
      */
     format(message: Text = "", explanation: Text = ""): Text {
@@ -527,7 +527,7 @@ export const Writing = {
     /**
      * [TEXTO] Formatação de valores booleans
      * @param {Text | number | boolean} value - Valor
-     * @returns - Valor formatado
+     * @returns Valor formatado
      * @since v6.1.0
      */
     formatValue(value: Text | number | boolean = true): Text {
@@ -542,7 +542,7 @@ export const Writing = {
      * [TEXTO] Formatação de itens de configuração
      * @param message - Mensagem
      * @param name - Nome em "config"
-     * @returns - Mensagem formatada
+     * @returns Mensagem formatada
      * @since v6.1.0
      */
     configItem(message: Text, name: ConfigKey): Text {
@@ -563,7 +563,7 @@ export const Writing = {
     /**
      * [TEXTO] Análise de texto para conversão de graus para radianos
      * @param text - Texto
-     * @returns - Ângulo em radianos
+     * @returns Ângulo em radianos
      * @since v6.1.0
      */
     parseDegree(text: Text = ""): Numeric {
@@ -574,7 +574,7 @@ export const Writing = {
     /**
      * [TEXTO] Análise de texto para conversão de radianos para graus
      * @param text - Texto
-     * @returns - Ângulo em graus
+     * @returns Ângulo em graus
      * @since v6.1.0
      */
     parseRadian(text: Text = ""): Numeric {
@@ -588,7 +588,7 @@ export const Writing = {
     /**
      * [TEXTO] Análise de texto para conversão de ângulos
      * @param text - Texto
-     * @returns - Ângulo em graus ou radianos
+     * @returns Ângulo em graus ou radianos
      * @since v6.1.0
      */
     parseAngle(text: Text = ""): Numeric {
@@ -602,7 +602,7 @@ export const Writing = {
     /**
      * [TEXTO] Formatação de ângulos para exibição
      * @param value - Ângulo em radianos
-     * @returns - Ângulo formatado
+     * @returns Ângulo formatado
      * @since v6.1.0
      */
     formatAngle(value: Numeric = 0): Value {

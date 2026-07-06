@@ -1,6 +1,6 @@
 import stateJson from "../JSON/state.json" with { type: "json" }
 
-import type { CommandsNames, Numeric, Value, ValueArray } from "./values.js"
+import type { CommandsNames, Numeric, Value, ValueArray, ValueMatrix } from "./values.js"
 
 export type StateType = {
     loop: boolean
@@ -16,7 +16,7 @@ export type StateType = {
     baseFunc: ValueArray
     coefficients: ValueArray
     currentFunc: ValueArray
-    history: ValueArray[]
+    history: ValueMatrix
 }
 
 export const State: StateType = structuredClone(stateJson)

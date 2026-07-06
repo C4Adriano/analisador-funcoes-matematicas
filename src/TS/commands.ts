@@ -4,9 +4,8 @@ import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
-import type { Text, Numeric, Value } from "./values.js"
-import type { ConfigKey, ConfigType } from "./config.js"
-import { Degrees } from "./values"
+import type { Text, Numeric, Degrees } from "./values.js"
+import type { ConfigKey } from "./config.js"
 
 type CommandAction = (arg: boolean | undefined, parts: Text[]) => Text | null
 

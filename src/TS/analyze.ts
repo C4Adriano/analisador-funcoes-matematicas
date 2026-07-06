@@ -28,7 +28,7 @@ export const Analyze = {
     /**
      * [FUNÇÃO] Monta uma função constante: ƒ(x) = c
      * @param coefC - Coeficiente c da função constante
-     * @returns - Retorna: [coefC]
+     * @returns Retorna: [coefC]
      * @since v6.1.0
      */
     constant(coefC: Numeric = State.globalC as Numeric): Numeric[] {
@@ -119,7 +119,7 @@ export const Analyze = {
      * [FUNÇÃO] Monta uma função afim: ƒ(x) = bx + c
      * @param coefB - Coeficiente b da função afim
      * @param coefC - Coeficiente c da função afim
-     * @returns - Retorna: [coefB, coefC]
+     * @returns Retorna: [coefB, coefC]
      * @since v6.1.0
      */
     affine(coefB: Numeric = State.globalB as Numeric, coefC: Numeric = State.globalC as Numeric): Numeric[] {
@@ -220,7 +220,7 @@ export const Analyze = {
      * @param coefA - Coeficiente a da função quadrática
      * @param coefB - Coeficiente b da função quadrática
      * @param coefC - Coeficiente c da função quadrática
-     * @returns - Retorna: [coefA, coefB, coefC]
+     * @returns Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
     quadratic(
@@ -383,7 +383,7 @@ export const Analyze = {
      * @param coefA - Coeficiente a da função exponencial
      * @param coefB - Coeficiente b da função exponencial
      * @param coefC - Coeficiente c da função exponencial
-     * @returns - Retorna: [coefA, coefB, coefC]
+     * @returns Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
     exponential(
@@ -512,7 +512,7 @@ export const Analyze = {
      * @param coefA - Coeficiente a da função logarítmica
      * @param coefB - Coeficiente b da função logarítmica
      * @param coefC - Coeficiente c da função logarítmica
-     * @returns - Retorna: [coefA, coefB, coefC]
+     * @returns Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
     logarithmic(
@@ -617,7 +617,7 @@ export const Analyze = {
      * @param coefA - Coeficiente a da função seno
      * @param coefB - Coeficiente b da função seno
      * @param coefC - Coeficiente c da função seno
-     * @returns - Retorna: [coefA, coefB, coefC]
+     * @returns Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
     sine(
@@ -707,7 +707,7 @@ export const Analyze = {
      * @param coefA - Coeficiente a da função cosseno
      * @param coefB - Coeficiente b da função cosseno
      * @param coefC - Coeficiente c da função cosseno
-     * @returns - Retorna: [coefA, coefB, coefC]
+     * @returns Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
     cosine(
@@ -797,7 +797,7 @@ export const Analyze = {
      * @param coefA - Coeficiente a da função tangente
      * @param coefB - Coeficiente b da função tangente
      * @param coefC - Coeficiente c da função tangente
-     * @returns - Retorna: [coefA, coefB, coefC]
+     * @returns Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
     tangent(
