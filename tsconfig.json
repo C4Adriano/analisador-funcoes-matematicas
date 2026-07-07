@@ -1,8 +1,9 @@
 {
     "compilerOptions": {
         "target": "es2025",
-        "module": "esnext",
-        "types": ["node"],
+        "lib": ["ES2025", "DOM"],
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
 
         "rootDir": "./src/TS",
         "outDir": "./src/JS",
@@ -18,9 +19,10 @@
         "skipLibCheck": true,
 
         "noUncheckedIndexedAccess": true,
+        "noEmitOnError": true,
         "exactOptionalPropertyTypes": true
     },
 
-    "include": ["./src/TS/*"],
+    "include": ["./src/TS/**/*"],
     "exclude": ["./pessoal/*", "./node_modules/*"]
 }

@@ -22,6 +22,12 @@
         "url": "https://github.com/C4Adriano/analisador-funcoes-matematicas/issues"
     },
     "homepage": "https://github.com/C4Adriano/analisador-funcoes-matematicas#readme",
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc --watch",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
     "devDependencies": {
         "@types/node": "^26.1.0",
         "prettier": "^3.8.5",
