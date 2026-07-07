@@ -16,6 +16,7 @@ export const Ui = {
      * [UI] Exibe um alert personalizado
      * @param message - Mensagem
      * @param explanation - Explicação
+     * @param debug - Se true, exibe no console, se false, exibe no alert
      * @since v6.1.0
      */
     display(message = "", explanation = "", debug = Config.debug) {
@@ -33,6 +34,7 @@ export const Ui = {
      * [UI] Exibe um confirm personalizado
      * @param message - Mensagem
      * @param explanation - Explicação
+     * @param debug - Se true, exibe no console, se false, exibe no confirm
      * @returns Sim / Não
      * @since v6.1.0
      */
@@ -52,6 +54,7 @@ export const Ui = {
      * [UI] Exibe uma mensagem de erro
      * @param message - Mensagem
      * @param explanation - Explicação
+     * @param debug - Se true, exibe no console, se false, exibe no confirm
      * @since v6.1.0
      */
     error(message = "", explanation = "", debug = Config.debug) {
@@ -64,6 +67,7 @@ export const Ui = {
      * @param message - Mensagem
      * @param explanation - Explicação
      * @param type - Tipo da mensagem
+     * @param debug - Se true, exibe no console, se false, exibe no confirm
      * @since v6.1.0
      */
     warning(message = "", explanation = "", type = false, debug = Config.debug) {
@@ -194,12 +198,10 @@ export const Ui = {
                 valid = false;
             }
             // Número
-            if (valid && number && typeof text == "number") {
+            if (valid && number) {
+                text = Number(Writing.decimal(text, true));
                 if (angle == "rad") {
                     value = Writing.parseAngle(String(text));
-                }
-                else if (angle == "deg") {
-                    value = Number(Writing.decimal(text, true));
                 }
                 valid = isFinite(value);
             }
