@@ -23,14 +23,14 @@ export const Algebra = {
      * @since v6.1.0
      */
     round(number: Value = 0, places: Places = Config.decimalPlaces): Value {
-        if (!isFinite(places) || places < 0 || !Number.isInteger(places)) {
+        if (!Checks.isFiniteNumber(places) || places < 0) {
             Ui.error("[Algebra.round] 'places' inválido: " + places, "Usando padrão: " + Config.decimalPlaces, true)
             places = Config.decimalPlaces
         }
 
-        number = Writing.decimal(number, true)
+        number = Number(Writing.decimal(number, true))
 
-        if (typeof number == "number" && isFinite(number)) {
+        if (Checks.isFiniteNumber(number)) {
             number = Math.round(number * 10 ** places) / 10 ** places
             if (number == 0) {
                 number = 0
@@ -60,8 +60,8 @@ export const Algebra = {
             )
         )
 
-        value = Writing.decimal(value, true)
-        if (typeof value == "number" && isFinite(value)) {
+        value = Number(Writing.decimal(value, true))
+        if (Checks.isFiniteNumber(value)) {
             return Algebra.round(value)
         }
 

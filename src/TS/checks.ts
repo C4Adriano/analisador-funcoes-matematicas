@@ -1,13 +1,25 @@
 import { Writing } from "./writing.js"
 
-import type * as Values from "./values.js"
+import type { Numeric, Value, Text, ValueArray } from "./values.js"
 
 export const Checks = {
-    isNumeric(value: Values.Value | undefined): value is Values.Numeric {
-        return typeof value === "number" && isFinite(value)
+    isText(value: unknown): value is Text {
+        return typeof value === "string"
     },
 
-    numericPoint(points: Values.ValueArray, index: number): Values.Numeric {
+    isNumeric(value: unknown): value is Numeric {
+        return typeof value === "number"
+    },
+
+    isFiniteNumber(value: unknown): value is Numeric {
+        return typeof value === "number" && Number.isFinite(value)
+    },
+
+    isValue(value: unknown): value is Value {
+        return Checks.isText(value) || Checks.isNumeric(value)
+    },
+
+    numericPoint(points: ValueArray, index: Numeric): Numeric {
         return Number(Writing.decimal(points[index] ?? 0, true))
     },
 }

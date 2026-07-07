@@ -1,6 +1,6 @@
 import defaultConfigJson from "../JSON/config.json" with { type: "json" }
 
-import type { Text, Degrees, Language, Numeric, Places, Precision } from "./values"
+import type { Text, Degrees, Language, Numeric, Places, Precision } from "./values.js"
 
 /**
  * Tipo de configuração baseado no JSON

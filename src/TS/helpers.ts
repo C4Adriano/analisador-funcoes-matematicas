@@ -627,21 +627,12 @@ export const Helpers = {
      * @returns Delta
      * @since v6.1.0
      */
-    calcDelta(coefA: Numeric = 0, coefB: Numeric = 0, coefC: Numeric = 0): [Numeric, Numeric, Numeric] {
-        let array: Numeric[] = [coefB ** 2 - 4 * coefA * coefC],
-            delta: Numeric = array[0] as Numeric,
-            x1: Numeric = array[1] as Numeric,
-            x2: Numeric = array[2] as Numeric
-        array.push(delta >= 0 ? Algebra.division(-coefB + Math.sqrt(delta), 2 * coefA) : NaN)
-        array.push(delta > 0 ? Algebra.division(-coefB - Math.sqrt(delta), 2 * coefA) : NaN)
-
-        if (delta > 0 && x1 > x2) {
-            let temp = x2
-            x2 = x1
-            x1 = temp
-        }
-
-        return array as [Numeric, Numeric, Numeric]
+    calcDelta(coefA = 0, coefB = 0, coefC = 0): [Numeric, Numeric, Numeric] {
+        const delta = coefB ** 2 - 4 * coefA * coefC
+        let x1 = delta >= 0 ? Algebra.division(-coefB + Math.sqrt(delta), 2 * coefA) : NaN
+        let x2 = delta > 0 ? Algebra.division(-coefB - Math.sqrt(delta), 2 * coefA) : NaN
+        if (delta > 0 && x1 > x2) [x1, x2] = [x2, x1]
+        return [delta, x1, x2]
     },
 
     /**
