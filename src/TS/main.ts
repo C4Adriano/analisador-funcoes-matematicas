@@ -1,5 +1,6 @@
 import { Algebra } from "./algebra.js"
 import { Analyze } from "./analyze.js"
+import { Checks } from "./checks.js"
 import { Commands } from "./commands.js"
 import { Config, VERSION, saveConfig, loadConfig, resetConfig, ConfigType, DEFAULT_CONFIG } from "./config.js"
 import { Error } from "./error.js"
@@ -8,7 +9,7 @@ import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
-import type { CommandsNames, Numeric, Places, Precision, Value, Language } from "./values.js"
+import type { CommandsNames, Numeric, Places, Precision, Value, Language, Text } from "./values.js"
 
 Ui.display(
     "====================================================" +
@@ -39,22 +40,45 @@ Ui.display(
 
 // === OBJETOS GLOBAIS ===
 // Para alterar o HTML também, conforme a língua
-document.title = tr("Analisador de Funções Matemáticas", "Mathematical Function Analyzer")
-let h1: HTMLElement | null = document.querySelector("h1")
-if (h1) {
-    h1.textContent = tr("Matemática", "Mathematics")
-} else {
-    Ui.error("[main] Elemento 'h1' não encontrado no DOM.", "", true)
+function setMeta(name: Text, content: Text): void {
+    const meta = document.querySelector(`meta[name="${name}"]`)
+    if (meta) {
+        meta.setAttribute("content", content)
+    }
 }
+
+function setProperty(property: Text, content: Text): void {
+    const meta = document.querySelector(`meta[property="${property}"]`)
+    if (meta) {
+        meta.setAttribute("content", content)
+    }
+}
+
+const title = tr("Analisador de Funções Matemáticas", "Mathematical Function Analyzer")
+
+const description = tr(
+    "Analisador de Funções Matemáticas desenvolvido em JavaScript e TypeScript.",
+    "Mathematical Function Analyzer developed in JavaScript and TypeScript."
+)
+
+const locales = {
+    pt: "pt_BR",
+    en: "en_US",
+} as Record<Language, string>
+
 document.documentElement.lang = Config.language
+setProperty("og:locale", locales[Config.language])
 
-function isNumeric(value: Value): value is Numeric {
-    return typeof value === "number" && isFinite(value)
-}
+document.title = title
 
-function isCommand(value: Value): value is CommandsNames {
-    return typeof value === "string" && Commands.names().includes(value)
-}
+setMeta("title", title)
+setMeta("description", description)
+
+setProperty("og:title", title)
+setProperty("og:description", description)
+
+setMeta("twitter:title", title)
+setMeta("twitter:description", description)
 
 type ChoiceType = Numeric | CommandsNames
 
@@ -137,7 +161,11 @@ do {
         // Polinomiais
         if (State.type == 1) {
             // Incógnitas
-            if (!isNumeric(State.globalA) || !isNumeric(State.globalB) || !isNumeric(State.globalC)) {
+            if (
+                !Checks.isNumeric(State.globalA) ||
+                !Checks.isNumeric(State.globalB) ||
+                !Checks.isNumeric(State.globalC)
+            ) {
                 State.coefficients = Algebra.unknown(State.globalA, State.globalB, State.globalC)
                 State.globalA = Algebra.round(State.coefficients[0])
                 State.globalB = Algebra.round(State.coefficients[1])
@@ -145,7 +173,7 @@ do {
             }
 
             // Números
-            if (isNumeric(State.globalA) && isNumeric(State.globalB) && isNumeric(State.globalC)) {
+            if (Checks.isNumeric(State.globalA) && Checks.isNumeric(State.globalB) && Checks.isNumeric(State.globalC)) {
                 if (State.globalA == 0 && State.globalB == 0) {
                     Analyze.constant(State.globalC)
                 } else if (State.globalA == 0 && State.globalB != 0) {
@@ -215,8 +243,8 @@ do {
                             typeof State.globalC === "number"
                         ) {
                             if (
-                                isNumeric(State.globalA) &&
-                                isNumeric(State.globalB) &&
+                                Checks.isNumeric(State.globalA) &&
+                                Checks.isNumeric(State.globalB) &&
                                 State.globalA > 0 &&
                                 State.globalA != 1 &&
                                 State.globalB != 0
@@ -228,7 +256,11 @@ do {
                             else if (State.globalA == 0 || State.globalA == 1 || State.globalB == 0) {
                                 Error.constantFunction(tr("exponencial", "exponential"))
 
-                                if (State.globalA == 1 && isNumeric(State.globalB) && isNumeric(State.globalC)) {
+                                if (
+                                    State.globalA == 1 &&
+                                    Checks.isNumeric(State.globalB) &&
+                                    Checks.isNumeric(State.globalC)
+                                ) {
                                     State.globalC += State.globalB
                                 }
                                 State.globalA = 0
@@ -239,7 +271,7 @@ do {
                             }
 
                             // Error de base
-                            else if (isNumeric(State.globalA) && State.globalA < 0) {
+                            else if (Checks.isNumeric(State.globalA) && State.globalA < 0) {
                                 Error.invalidFunction(tr("exponencial", "exponential"))
 
                                 State.askCoeffs = true
@@ -271,8 +303,8 @@ do {
                             typeof State.globalC == "number"
                         ) {
                             if (
-                                isNumeric(State.globalA) &&
-                                isNumeric(State.globalB) &&
+                                Checks.isNumeric(State.globalA) &&
+                                Checks.isNumeric(State.globalB) &&
                                 State.globalA > 0 &&
                                 State.globalA != 1 &&
                                 State.globalB != 0
@@ -283,7 +315,11 @@ do {
                             // Constante
                             else if (State.globalA == 0 || State.globalA == 1 || State.globalB == 0) {
                                 Error.constantFunction(tr("logarítmica", "logarithmic"))
-                                if (State.globalA == 1 && isNumeric(State.globalB) && isNumeric(State.globalC)) {
+                                if (
+                                    State.globalA == 1 &&
+                                    Checks.isNumeric(State.globalB) &&
+                                    Checks.isNumeric(State.globalC)
+                                ) {
                                     State.globalC += State.globalB
                                 }
                                 State.globalA = 0
@@ -294,7 +330,7 @@ do {
                             }
 
                             // Error de base
-                            else if (isNumeric(State.globalA) && State.globalA < 0) {
+                            else if (Checks.isNumeric(State.globalA) && State.globalA < 0) {
                                 Error.invalidFunction(tr("logarítmica", "logarithmic"))
                                 State.askCoeffs = true
                                 State.loop = true
@@ -307,7 +343,7 @@ do {
                         State.type = subType
                         State.loop = true
                         State.keepType = true
-                    } else if (isCommand(subType)) {
+                    } else if (Checks.isCommand(subType)) {
                         State.type = subType
                         State.loop = true
                         if (subType != "exit") {
@@ -448,7 +484,11 @@ do {
                             else if (State.globalA == 0 || State.globalB == 0) {
                                 Error.constantFunction(tr("cosseno", "cosine"))
 
-                                if (State.globalA == 0 && isNumeric(State.globalC) && isNumeric(State.globalB)) {
+                                if (
+                                    State.globalA == 0 &&
+                                    Checks.isNumeric(State.globalC) &&
+                                    Checks.isNumeric(State.globalB)
+                                ) {
                                     State.globalC += State.globalB
                                 }
                                 State.globalA = 0
@@ -509,7 +549,7 @@ do {
                         State.type = subType
                         State.loop = true
                         State.keepType = true
-                    } else if (isCommand(subType)) {
+                    } else if (Checks.isCommand(subType)) {
                         State.type = subType
                         State.loop = true
                         if (subType != "exit") {
@@ -1038,7 +1078,7 @@ do {
                 }
 
                 // Salvar as configurações
-                if (isNumeric(choice) && 1 <= choice && choice <= 6) {
+                if (Checks.isNumeric(choice) && 1 <= choice && choice <= 6) {
                     saveConfig()
                 }
             } while (choice != 0)

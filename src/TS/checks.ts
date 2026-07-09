@@ -1,6 +1,7 @@
+import { Commands } from "./commands.js"
 import { Writing } from "./writing.js"
 
-import type { Numeric, Value, Text, ValueArray } from "./values.js"
+import type { Numeric, Value, Text, ValueArray, CommandsNames } from "./values.js"
 
 export const Checks = {
     isText(value: unknown): value is Text {
@@ -25,6 +26,10 @@ export const Checks = {
 
     isValidValue(value: unknown): value is Value {
         return Checks.isValidText(value) || Checks.isFiniteNumber(value)
+    },
+
+    isCommand(value: Value): value is CommandsNames {
+        return typeof value === "string" && Commands.names().includes(value)
     },
 
     numericPoint(points: ValueArray, index: Numeric): Numeric {

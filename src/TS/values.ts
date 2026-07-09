@@ -56,7 +56,7 @@ export type Degrees = "deg" | "rad"
 /**
  * Idiomas suportados pelo programa.
  */
-export type Language = "pt" | "pt-br" | "en"
+export type Language = "pt" | "pt-br" | "en" | "en-us"
 
 /**
  * Comandos suportados pelo programa.

@@ -1,3 +1,4 @@
+import { Commands } from "./commands.js";
 import { Writing } from "./writing.js";
 export const Checks = {
     isText(value) {
@@ -17,6 +18,9 @@ export const Checks = {
     },
     isValidValue(value) {
         return Checks.isValidText(value) || Checks.isFiniteNumber(value);
+    },
+    isCommand(value) {
+        return typeof value === "string" && Commands.names().includes(value);
     },
     numericPoint(points, index) {
         return Number(Writing.decimal(points[index] ?? 0, true));
