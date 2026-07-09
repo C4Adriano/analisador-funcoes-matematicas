@@ -289,7 +289,7 @@ export const Analyze = {
                             "Lowest (or highest, depending on concavity) point of the function"
                         ) +
                             "\n" +
-                            tr("Ponto", "Point") +
+                            tr("Ponto: ", "Point: ") +
                             "(-b / (2 · a), -Δ / (4 · a))"
                     )
                 }
@@ -322,11 +322,11 @@ export const Analyze = {
                     Helpers.showDelta(
                         delta[0],
                         tr("Não há interseção com o eixo x.", "There is no intersection with the x‐axis"),
-                        tr("Interseção com o eixo x:", "Intersection with the x‐axis") +
+                        tr("Interseção com o eixo x: ", "Intersection with the x‐axis: ") +
                             "(" +
                             Writing.decimal(delta[1]) +
                             ", 0)",
-                        tr("Interseções com o eixo x:", "Intersections with the x‐axis") +
+                        tr("Interseções com o eixo x: ", "Intersections with the x‐axis: ") +
                             "(" +
                             Writing.decimal(delta[1]) +
                             ", 0), (" +

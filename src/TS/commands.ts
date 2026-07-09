@@ -23,7 +23,7 @@ type CommandSuggestionResult =
     | { type: "unknown"; canonical: ""; distance: -1 }
 
 function isConfigKey(value: Text): value is ConfigKey {
-    return Object.prototype.hasOwnProperty.call(Config, value)
+    return Object.keys(Config).some(key => key.toLowerCase() === value.toLowerCase())
 }
 
 /**

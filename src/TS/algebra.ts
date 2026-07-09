@@ -48,7 +48,7 @@ export const Algebra = {
      */
     variables(name: Variable = "x"): Value {
         if (typeof name != "string" || name.trim() == "") {
-            Ui.error("[Algebra.variables] 'name' inválido:" + name, "Usando 'x'", true)
+            Ui.error("[Algebra.variables] 'name' inválido: " + name, "Usando 'x'", true)
             name = "x"
         }
 
@@ -76,7 +76,7 @@ export const Algebra = {
      */
     point(type: Numeric = 1): ValueArray {
         if (type != 1 && type != 2 && type != 3) {
-            console.warn("[Algebra.point] 'type' inválido:", type, "— usando 1")
+            console.warn("[Algebra.point] 'type' inválido: ", type, "— usando 1")
             type = 1
         }
 

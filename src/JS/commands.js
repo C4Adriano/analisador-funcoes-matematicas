@@ -4,7 +4,7 @@ import { State } from "./state.js";
 import { Ui } from "./ui.js";
 import { Writing } from "./writing.js";
 function isConfigKey(value) {
-    return Object.prototype.hasOwnProperty.call(Config, value);
+    return Object.keys(Config).some(key => key.toLowerCase() === value.toLowerCase());
 }
 /**
  * [JS] Processamento de comandos do usuário

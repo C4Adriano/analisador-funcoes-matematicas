@@ -235,9 +235,10 @@ export const Ui = {
 
             // Número
             if (valid && number) {
-                text = Number(Writing.decimal(text, true))
                 if (angle == "rad") {
                     value = Writing.parseAngle(String(text))
+                } else if (angle == "deg") {
+                    value = Number(Writing.decimal(text, true))
                 }
                 valid = isFinite(value)
             }

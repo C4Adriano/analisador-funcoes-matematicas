@@ -24,12 +24,23 @@
     "homepage": "https://github.com/C4Adriano/analisador-funcoes-matematicas#readme",
     "scripts": {
         "build": "tsc",
-        "watch": "tsc --watch",
+        "typecheck": "tsc --noEmit",
         "format": "prettier --write .",
-        "format:check": "prettier --check ."
+        "format:check": "prettier --check .",
+        "prepare": "husky"
+    },
+    "lint-staged": {
+        "src/TS/**/*.ts": [
+            "prettier --write"
+        ],
+        "*.{json,md}": [
+            "prettier --write"
+        ]
     },
     "devDependencies": {
         "@types/node": "^26.1.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^17.0.8",
         "prettier": "^3.8.5",
         "typescript": "^6.0.3"
     }

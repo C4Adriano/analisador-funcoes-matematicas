@@ -41,7 +41,7 @@ export const Algebra = {
      */
     variables(name = "x") {
         if (typeof name != "string" || name.trim() == "") {
-            Ui.error("[Algebra.variables] 'name' inválido:" + name, "Usando 'x'", true);
+            Ui.error("[Algebra.variables] 'name' inválido: " + name, "Usando 'x'", true);
             name = "x";
         }
         let value = Ui.input(name + " = ", tr("Digite “" + name + "” caso queira que “" + name + "” seja uma incógnita.", "Type “" + name + "” if you want “" + name + "” to be an unknown variable."));
@@ -59,7 +59,7 @@ export const Algebra = {
      */
     point(type = 1) {
         if (type != 1 && type != 2 && type != 3) {
-            console.warn("[Algebra.point] 'type' inválido:", type, "— usando 1");
+            console.warn("[Algebra.point] 'type' inválido: ", type, "— usando 1");
             type = 1;
         }
         let array = [], x1, y1, x2, y2, x3, y3;

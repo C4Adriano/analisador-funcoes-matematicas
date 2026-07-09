@@ -1047,7 +1047,7 @@ do {
         // Rever
         else if (State.type == 8 || State.type == "review") {
             Ui.display(
-                tr("Valores:", "Values:") +
+                tr("Valores: ", "Values: ") +
                     "\n“a” = " +
                     Writing.decimal(State.globalA) +
                     "\n“b” = " +

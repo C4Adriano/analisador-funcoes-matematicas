@@ -220,7 +220,7 @@ export const Analyze = {
                         Writing.decimal(vertex[1]) +
                         ")", tr("Ponto mais baixo (ou mais alto, conforme a concavidade) da função.", "Lowest (or highest, depending on concavity) point of the function") +
                         "\n" +
-                        tr("Ponto", "Point") +
+                        tr("Ponto: ", "Point: ") +
                         "(-b / (2 · a), -Δ / (4 · a))");
                 }
                 // Domínio
@@ -241,10 +241,10 @@ export const Analyze = {
             else if (page == 2) {
                 // Interseção com o eixo x
                 if (option == 1) {
-                    Helpers.showDelta(delta[0], tr("Não há interseção com o eixo x.", "There is no intersection with the x‐axis"), tr("Interseção com o eixo x:", "Intersection with the x‐axis") +
+                    Helpers.showDelta(delta[0], tr("Não há interseção com o eixo x.", "There is no intersection with the x‐axis"), tr("Interseção com o eixo x: ", "Intersection with the x‐axis: ") +
                         "(" +
                         Writing.decimal(delta[1]) +
-                        ", 0)", tr("Interseções com o eixo x:", "Intersections with the x‐axis") +
+                        ", 0)", tr("Interseções com o eixo x: ", "Intersections with the x‐axis: ") +
                         "(" +
                         Writing.decimal(delta[1]) +
                         ", 0), (" +
