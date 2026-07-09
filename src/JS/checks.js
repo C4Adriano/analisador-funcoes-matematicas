@@ -22,4 +22,3 @@ export const Checks = {
         return Number(Writing.decimal(points[index] ?? 0, true));
     },
 };
-//# sourceMappingURL=checks.js.map

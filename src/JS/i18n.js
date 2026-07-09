@@ -43,4 +43,3 @@ export function changeLanguage(language) {
         saveConfig();
     }
 }
-//# sourceMappingURL=i18n.js.map

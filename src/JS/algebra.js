@@ -589,4 +589,3 @@ export const Algebra = {
         return Math.abs(number);
     },
 };
-//# sourceMappingURL=algebra.js.map

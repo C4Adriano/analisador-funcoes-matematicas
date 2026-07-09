@@ -777,4 +777,3 @@ export const Commands = {
         return ["config", "exit", "start", "review", "history", "change"];
     },
 };
-//# sourceMappingURL=commands.js.map

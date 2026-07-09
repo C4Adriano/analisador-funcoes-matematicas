@@ -564,4 +564,3 @@ export const Writing = {
         return Writing.decimal(value);
     },
 };
-//# sourceMappingURL=writing.js.map

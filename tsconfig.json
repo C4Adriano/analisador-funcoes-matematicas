@@ -14,8 +14,6 @@
 
         "strict": true,
 
-        "sourceMap": true,
-
         "skipLibCheck": true,
 
         "noUncheckedIndexedAccess": true,

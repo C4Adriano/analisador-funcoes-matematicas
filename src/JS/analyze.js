@@ -684,4 +684,3 @@ export const Analyze = {
         return [coefA, coefB, coefC];
     },
 };
-//# sourceMappingURL=analyze.js.map

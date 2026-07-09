@@ -66,4 +66,3 @@ export function resetConfig() {
     localStorage.removeItem("configVersion");
     Object.assign(Config, structuredClone(defaultConfigJson));
 }
-//# sourceMappingURL=config.js.map

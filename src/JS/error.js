@@ -88,4 +88,3 @@ export const Error = {
             : tr("Tu tentaste calcular um logaritmo com base menor ou igual a 1, o que não é possível.", "You tried to calculate a logarithm with a base less than or equal to 1, which is not possible."));
     },
 };
-//# sourceMappingURL=error.js.map
