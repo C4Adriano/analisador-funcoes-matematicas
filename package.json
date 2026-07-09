@@ -31,7 +31,7 @@
         "prepare": "husky"
     },
     "lint-staged": {
-        "**/*": [
+        "**/*.{js,ts,json,jsonc,json5,html,css,scss,md,yaml,yml}": [
             "prettier --write"
         ]
     },
