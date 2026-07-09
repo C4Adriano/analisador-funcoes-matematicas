@@ -1,0 +1,76 @@
+// Variáveis
+$bg-color: black;
+$font-stack: "Times New Roman", Times, serif;
+
+// Cores do ciclo RGB, na ordem em que aparecem na animação
+$rgb-colors: (
+    0%: (
+        255,
+        0,
+        0
+    ),
+    // red
+    16%: (
+            255,
+            255,
+            0
+        ),
+    // yellow
+    33%: (
+            0,
+            255,
+            0
+        ),
+    // green
+    50%: (
+            0,
+            255,
+            255
+        ),
+    // cyan
+    66%: (
+            0,
+            0,
+            255
+        ),
+    // blue
+    83%: (
+            255,
+            0,
+            255
+        ),
+    // magenta
+    100%: (
+            255,
+            0,
+            0
+        ) // Volta pro red
+);
+
+body {
+    background-color: $bg-color;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    cursor: default;
+}
+
+h1 {
+    font-family: $font-stack;
+    font-size: clamp(3rem, 15vw, 10rem);
+    font-variant: small-caps;
+    letter-spacing: 0.05em;
+    user-select: none;
+    animation: rgbColors 35s linear infinite;
+}
+
+// RGB colors animation
+@keyframes rgbColors {
+    @each $stop, $rgb in $rgb-colors {
+        #{$stop} {
+            color: rgb($rgb...);
+        }
+    }
+}

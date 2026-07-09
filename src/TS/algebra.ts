@@ -347,7 +347,6 @@ export const Algebra = {
                     }
 
                     // Duplas
-
                     // a, b
                     else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "number") {
                         points = Algebra.point(2)
@@ -463,7 +462,6 @@ export const Algebra = {
                 }
 
                 // Duplas
-
                 // a, b
                 else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "number") {
                     points = Algebra.point(2)
@@ -540,7 +538,6 @@ export const Algebra = {
                 }
 
                 // Duplas
-
                 // a, b
                 else if (typeof coefA == "string" && typeof coefB == "string" && typeof coefC == "number") {
                     // pontoLog = algebra.ponto(2)

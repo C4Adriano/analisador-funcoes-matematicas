@@ -44,7 +44,7 @@ notes.md
 TODO.md
 node_modules/
 pessoal/
-*-lock.json
+*.map
 *.txt
 
 # === CREDENCIAIS ===

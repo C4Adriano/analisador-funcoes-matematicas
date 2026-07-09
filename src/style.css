@@ -17,27 +17,26 @@ h1 {
     animation: rgbColors 35s linear infinite;
 }
 
-/* RGB colors animation */
 @keyframes rgbColors {
     0% {
         color: rgb(255, 0, 0);
-    } /* red */
+    }
     16% {
         color: rgb(255, 255, 0);
-    } /* yellow */
+    }
     33% {
         color: rgb(0, 255, 0);
-    } /* green */
+    }
     50% {
         color: rgb(0, 255, 255);
-    } /* cyan */
+    }
     66% {
         color: rgb(0, 0, 255);
-    } /* blue */
+    }
     83% {
         color: rgb(255, 0, 255);
-    } /* magenta */
+    }
     100% {
         color: rgb(255, 0, 0);
-    } /* back to red */
+    }
 }
