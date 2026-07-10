@@ -1,0 +1,47 @@
+# .github/workflows/release-draft.yml
+name: Draft Release from Template
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  draft-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # necessário para acessar todas as tags/histórico
+
+      - name: Resolver versões e data
+        id: vars
+        run: |
+          CURRENT_TAG="${GITHUB_REF_NAME}"
+          PREV_TAG=$(git describe --tags --abbrev=0 "${CURRENT_TAG}^" 2>/dev/null || echo "")
+          DATE=$(date +'%Y-%m-%d')
+
+          echo "current_tag=$CURRENT_TAG" >> "$GITHUB_OUTPUT"
+          echo "prev_tag=$PREV_TAG" >> "$GITHUB_OUTPUT"
+          echo "date=$DATE" >> "$GITHUB_OUTPUT"
+
+      - name: Preencher template
+        run: |
+          CURRENT="${{ steps.vars.outputs.current_tag }}"
+          PREV="${{ steps.vars.outputs.prev_tag }}"
+          DATE="${{ steps.vars.outputs.date }}"
+
+          sed \
+            -e "s/vX\.X\.X/${CURRENT}/g" \
+            -e "s/vPREV/${PREV:-$CURRENT}/g" \
+            -e "s/YYYY-MM-DD/${DATE}/g" \
+            .github/RELEASE_TEMPLATE.md > release_body.md
+
+      - name: Criar draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          body_path: release_body.md
+          tag_name: ${{ steps.vars.outputs.current_tag }}

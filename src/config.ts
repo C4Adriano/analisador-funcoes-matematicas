@@ -1,4 +1,5 @@
 import defaultConfigJson from "../src/JSON/config.json" with { type: "json" }
+import { VERSION } from "./version.js"
 
 import type { Text, Degrees, Language, Numeric, Places, Precision } from "./values.js"
 
@@ -37,11 +38,6 @@ export type ConfigKey = keyof ConfigType
  */
 export const Config: ConfigType = structuredClone(defaultConfigJson) as ConfigType
 export const DEFAULT_CONFIG: ConfigType = structuredClone(defaultConfigJson) as ConfigType
-
-/**
- * Versão do programa (MAJOR.MINOR.PATCH)
- */
-export const VERSION: Text = "v6.2.0"
 
 /**
  * Carrega configurações salvas no localStorage

@@ -2,11 +2,12 @@ import { Algebra } from "./algebra.js"
 import { Analyze } from "./analyze.js"
 import { Checks } from "./checks.js"
 import { Commands } from "./commands.js"
-import { Config, VERSION, saveConfig, loadConfig, resetConfig, DEFAULT_CONFIG } from "./config.js"
+import { Config, saveConfig, loadConfig, resetConfig, DEFAULT_CONFIG } from "./config.js"
 import { Error } from "./error.js"
 import { tr, changeLanguage } from "./i18n.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
+import { VERSION } from "./version.js"
 import { Writing } from "./writing.js"
 
 Ui.display(

@@ -1,8 +1,9 @@
-import { Config, VERSION, saveConfig, resetConfig } from "./config.js"
+import { Config, saveConfig, resetConfig } from "./config.js"
 import { Checks } from "./checks.js"
 import { tr, changeLanguage } from "./i18n.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
+import { VERSION } from "./version.js"
 import { Writing } from "./writing.js"
 
 /**

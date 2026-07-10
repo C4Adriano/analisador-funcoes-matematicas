@@ -1,3 +1,7 @@
+## Highlights / Destaques
+
+-
+
 ## What's new / O que há de novo
 
 ### Additions / Adições
@@ -18,8 +22,9 @@
 
 ## Information / Informações
 
-- **Lines of code / Linhas de código:** `x`
+- **Version / Versão:** `vX.X.X`
 - **Date / Data:** `YYYY-MM-DD`
+- **Compare changes / Comparar mudanças:** [`vPREV...vX.X.X`](https://github.com/C4Adriano/analisador-funcoes-matematicas/compare/vPREV...vX.X.X)
 - **Full changelog / Changelog completo:** [CHANGELOG.md](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/CHANGELOG.md)
 
 ---
