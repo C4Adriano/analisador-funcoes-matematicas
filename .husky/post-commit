@@ -1,0 +1,3 @@
+node scripts/bump-version.js
+git add package.json src/version.ts
+git commit --amend --no-edit --no-verify

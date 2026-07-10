@@ -7,10 +7,16 @@ import { fileURLToPath } from "url"
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const msgFile = process.argv[2]
-const message = fs
-    .readFileSync(msgFile, "utf8")
-    .replace(/^\uFEFF/, "") // remove o BOM se existir
-    .trim()
+const message = msgFile
+    ? fs
+          .readFileSync(msgFile, "utf8")
+          .replace(/^\uFEFF/, "")
+          .trim()
+    : execSync("git log -1 --pretty=%B")
+          .toString()
+          .replace(/^\uFEFF/, "")
+          .trim()
+
 const firstLine = message.split("\n")[0]
 
 const pkgPath = path.join(__dirname, "..", "package.json")
@@ -40,7 +46,5 @@ const versionFileContent =
     `// Arquivo gerado automaticamente pelo hook de commit. Não editar manualmente.\n` +
     `export const VERSION: string = '${newVersion}';\n`
 fs.writeFileSync(path.join(__dirname, "..", "src", "version.ts"), versionFileContent)
-
-execSync("git add package.json src/version.ts")
 
 console.log(`[version-bump] ${pkg.version} <- "${firstLine}"`)
