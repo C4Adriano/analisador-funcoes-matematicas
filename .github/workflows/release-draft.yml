@@ -1,4 +1,3 @@
-# .github/workflows/release-draft.yml
 name: Draft Release from Template
 
 on:
