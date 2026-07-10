@@ -8,13 +8,14 @@
         "rootDir": "./src/",
         "outDir": "./src/",
 
-        "allowJs": true,
+        "allowJs": false,
         "checkJs": false,
         "resolveJsonModule": true,
         "removeComments": true,
         "strict": true,
 
         "skipLibCheck": true,
+        "noImplicitAny": false,
 
         "noUncheckedIndexedAccess": true,
         "noEmitOnError": true,
@@ -22,5 +23,5 @@
     },
 
     "include": ["src/*.ts"],
-    "exclude": ["./pessoal/*", "./node_modules/*"]
+    "exclude": ["src/*.js", "./pessoal/*", "./node_modules/*"]
 }

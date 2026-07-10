@@ -23,6 +23,6 @@ export const Checks = {
         return typeof value === "string" && Commands.names().includes(value);
     },
     numericPoint(points, index) {
-        return Number(Writing.decimal(points[index] ?? 0, true));
+        return Number(Writing.decimal((points[index] ?? 0), true));
     },
 };

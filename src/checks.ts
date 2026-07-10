@@ -33,6 +33,6 @@ export const Checks = {
     },
 
     numericPoint(points: ValueArray, index: Numeric): Numeric {
-        return Number(Writing.decimal(points[index] ?? 0, true))
+        return Number(Writing.decimal((points[index] ?? 0) as Numeric, true))
     },
 }
