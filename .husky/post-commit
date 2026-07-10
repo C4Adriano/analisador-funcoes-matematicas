@@ -1,7 +1,13 @@
+#!/usr/bin/env sh
+set -x
+
 if [ "$SKIP_VERSION_BUMP" = "1" ]; then
   exit 0
 fi
 
 node scripts/bump-version.js
-git add package.json src/version.ts
+git status --short
+git add package.json src/version.js src/version.d.ts
+git status --short
 SKIP_VERSION_BUMP=1 git commit --amend --no-edit --no-verify
+echo "POST-COMMIT RODOU"
