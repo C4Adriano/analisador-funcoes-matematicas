@@ -6,18 +6,7 @@ import { Writing } from "./writing.js";
 function isConfigKey(value) {
     return Object.keys(Config).some(key => key.toLowerCase() === value.toLowerCase());
 }
-/**
- * [JS] Processamento de comandos do usuário
- * - Use o comando "/help" para ver todos os comandos disponíveis
- * @since v6.1.0
- */
 export const Commands = {
-    /**
-     * [JS] Processa um comando slash
-     * @param raw - Texto digitado pelo usuário
-     * @returns {Text | null} - Ação a executar, ou null se não for comando
-     * @since v6.1.0
-     */
     process(raw = "") {
         if (typeof raw !== "string" || raw.length === 0 || raw[0] !== "/") {
             return null;
@@ -61,23 +50,14 @@ export const Commands = {
         }
         return command.action(arg, parts);
     },
-    /**
-     * [JS] Calcula a distância de Levenshtein entre duas strings
-     * @param wrong - A Text digitada pelo usuário
-     * @param correct - A Text de um comando conhecido
-     * @since v6.1.0
-     */
     levenshtein(wrong = "", correct = "") {
         let rows = correct.length + 1, cols = wrong.length + 1, matrix = [], row = 0, col = 0, nowRow = [], backRow = [], diagonal, up, left;
-        // Primeira coluna
         for (row = 0; row < rows; row++) {
             matrix[row] = [row];
         }
-        // Primeira linha
         for (col = 0; col < cols; col++) {
             matrix[0][col] = col;
         }
-        // Restante da matriz
         for (row = 1; row < rows; row++) {
             nowRow = matrix[row];
             backRow = matrix[row - 1];
@@ -95,12 +75,6 @@ export const Commands = {
         }
         return matrix[rows - 1][cols - 1];
     },
-    /**
-     * [JS] Sugere um comando baseado no digitado pelo usuário usando distância de Levenshtein
-     * @param typed - O digitado pelo usuário
-     * @returns A sugestão de comando
-     * @since v6.1.0
-     */
     suggestCmd(typed = "") {
         const LIMIT = 3;
         const cmds = Commands.listCmd();
@@ -121,12 +95,6 @@ export const Commands = {
         }
         return { type: "unknown", canonical: "", distance: -1 };
     },
-    /**
-     * [JS] Pesquisa comandos por termo — busca no canônico, variações, short e long
-     * @param  term - Termo de pesquisa
-     * @returns {Text[]} - Lista de nomes canônicos dos comandos encontrados
-     * @since v6.2.0
-     */
     searchCmd(term = "") {
         if (term == "") {
             return [];
@@ -149,11 +117,6 @@ export const Commands = {
         });
         return results;
     },
-    /**
-     * [JS] Retorna a lista de comandos disponíveis
-     * @returns {object} - Lista de comandos com suas descrições, variações e ações
-     * @since v6.1.0
-     */
     listCmd() {
         return {
             help: {
@@ -395,7 +358,6 @@ export const Commands = {
                     "language",
                     "lang",
                     "idioma",
-                    // Português
                     "pt",
                     "pt-br",
                     "pt-pt",
@@ -405,7 +367,6 @@ export const Commands = {
                     "brazilian",
                     "br",
                     "ptbr",
-                    // Inglês
                     "en",
                     "en-us",
                     "en-gb",
@@ -419,12 +380,9 @@ export const Commands = {
                 action(arg, parts) {
                     let target = parts[1] != undefined ? parts[1] : parts[0];
                     target = Writing.noAccents(Writing.lowercase(target));
-                    // Português
                     if ([
-                        // Geral
                         "lusitano",
                         "lusitana",
-                        // BR
                         "br",
                         "pt-br",
                         "ptbr",
@@ -432,7 +390,6 @@ export const Commands = {
                         "brazilian",
                         "brasil",
                         "brazil",
-                        // PT
                         "pt",
                         "pt-pt",
                         "ptpt",
@@ -447,21 +404,17 @@ export const Commands = {
                             changeLanguage("pt");
                         }
                     }
-                    // Inglês
                     else if ([
-                        // Geral
                         "en",
                         "anglo",
                         "anglo-saxon",
                         "anglosaxon",
-                        // US
                         "en-us",
                         "enus",
                         "americano",
                         "american",
                         "eua",
                         "usa",
-                        // GB
                         "en-gb",
                         "engb",
                         "ingles",
@@ -477,7 +430,6 @@ export const Commands = {
                             changeLanguage("en");
                         }
                     }
-                    // Erro — só mostra se o utilizador tentou passar um argumento explícito
                     else if (parts[1] != undefined) {
                         Ui.error(tr("Língua inválida", "Invalid language"), "“" + target + "” " + tr("não é uma língua válida", "is not a valid language"));
                     }
@@ -503,12 +455,6 @@ export const Commands = {
             },
         };
     },
-    /**
-     * [JS] Resolve um comando específico para seu nome canônico
-     * @param  specific - Comando específico
-     * @returns {Text | null} - Nome canônico do comando, ou null se não for encontrado
-     * @since v6.1.0
-     */
     resolveCmd(specific = "") {
         if (typeof specific !== "string" || specific === "") {
             return null;
@@ -524,12 +470,6 @@ export const Commands = {
         });
         return cmds[canonical] != undefined ? canonical : null;
     },
-    /**
-     * [JS] Converte um texto em um valor boolean
-     * @param  text - Texto
-     * @returns {boolean | undefined} - Se é parecido com um valor boolean verdadeiro / falso ou se não é reconhecido
-     * @since v6.1.0
-     */
     parseBool(text = "") {
         if (["true", "1", "sim", "yes", "on", "ativo", "enable", "enabled", "ligar", "ativar"].includes(text)) {
             return true;
@@ -539,12 +479,6 @@ export const Commands = {
         }
         return undefined;
     },
-    /**
-     * [JS] Exibe ajuda sobre um comando específico ou lista paginada de todos os comandos
-     * @param  specific - Nome ou variação de um comando específico (opcional)
-     * @returns {null}
-     * @since v6.1.0
-     */
     help(specific = "") {
         const cmds = Commands.listCmd();
         if (specific != "") {
@@ -602,12 +536,6 @@ export const Commands = {
         } while (answer != 0);
         return null;
     },
-    /**
-     * [JS] Exibe os resultados de uma pesquisa de comandos de forma paginada
-     * @param  term - Termo de pesquisa
-     * @returns {null}
-     * @since v6.2.0
-     */
     searchHelp(term = "") {
         if (term == "") {
             Ui.error(tr("Pesquisa vazia", "Empty search"), tr("Use: /pesquisa <termo>\nExemplo: /pesquisa lingua", "Usage: /search <term>\nExample: /search language"));
@@ -664,12 +592,6 @@ export const Commands = {
         } while (answer != 0);
         return null;
     },
-    /**
-     * [JS] Exibe todas as variações aceitas de um comando
-     * @param  specific - Nome ou variação do comando
-     * @returns {null}
-     * @since v6.2.0
-     */
     shortcuts(specific = "") {
         if (specific == "") {
             Ui.error(tr("Comando não informado", "Command not provided"), tr("Use: /atalhos <comando>\nExemplo: /atalhos language", "Usage: /shortcuts <command>\nExample: /shortcuts language"));
@@ -690,11 +612,6 @@ export const Commands = {
         Ui.display(tr("Variações de ", "Variations of ") + "“/" + canonical + "”:\n" + list);
         return null;
     },
-    /**
-     * [JS] Exibe informações sobre o projeto
-     * @returns {null}
-     * @since v6.2.0
-     */
     about() {
         Ui.display("====================================================" +
             "\n" +
@@ -714,11 +631,6 @@ export const Commands = {
             "====================================================");
         return null;
     },
-    /**
-     * [JS] Exibe a versão do programa
-     * @returns {null}
-     * @since v6.1.0
-     */
     version() {
         Ui.display("====================================================" +
             "\n" +
@@ -768,11 +680,6 @@ export const Commands = {
         Ui.warning(Writing.configItem(tr("Alterado: ", "Changed: ") + "“" + name + "”", name));
         return null;
     },
-    /**
-     * [JS] Retorna uma lista com os nomes canônicos dos comandos que alteram o fluxo de estado
-     * @returns {Text[]} - Lista de nomes canônicos
-     * @since v6.1.0
-     */
     names() {
         return ["config", "exit", "start", "review", "history", "change"];
     },

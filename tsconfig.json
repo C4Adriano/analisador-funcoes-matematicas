@@ -5,13 +5,13 @@
         "module": "nodenext",
         "moduleResolution": "nodenext",
 
-        "rootDir": "./src/TS",
-        "outDir": "./src/JS",
+        "rootDir": "./src/",
+        "outDir": "./src/",
 
         "allowJs": true,
-        "checkJs": true,
+        "checkJs": false,
         "resolveJsonModule": true,
-
+        "removeComments": true,
         "strict": true,
 
         "skipLibCheck": true,
@@ -21,6 +21,6 @@
         "exactOptionalPropertyTypes": true
     },
 
-    "include": ["./src/TS/**/*"],
+    "include": ["src/*.ts"],
     "exclude": ["./pessoal/*", "./node_modules/*"]
 }

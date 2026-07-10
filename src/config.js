@@ -1,16 +1,7 @@
-import defaultConfigJson from "../JSON/config.json" with { type: "json" };
-/**
- * Configurações ativas do programa
- */
+import defaultConfigJson from "../src/JSON/config.json" with { type: "json" };
 export const Config = structuredClone(defaultConfigJson);
 export const DEFAULT_CONFIG = structuredClone(defaultConfigJson);
-/**
- * Versão do programa (MAJOR.MINOR.PATCH)
- */
 export const VERSION = "v6.2.0";
-/**
- * Carrega configurações salvas no localStorage
- */
 export function loadConfig() {
     const saved = localStorage.getItem("config");
     const savedVersion = localStorage.getItem("configVersion");
@@ -46,9 +37,6 @@ export function loadConfig() {
         }
     }
 }
-/**
- * Salva configurações atuais no localStorage
- */
 export function saveConfig() {
     try {
         localStorage.setItem("config", JSON.stringify(Config));
@@ -58,9 +46,6 @@ export function saveConfig() {
         console.warn("[saveConfig] Não foi possível salvar as configurações.", e);
     }
 }
-/**
- * Reseta para os valores padrão do JSON
- */
 export function resetConfig() {
     localStorage.removeItem("config");
     localStorage.removeItem("configVersion");

@@ -1,4 +1,4 @@
-import stateJson from "../JSON/state.json" with { type: "json" }
+import stateJson from "./JSON/state.json" with { type: "json" }
 
 import type { CommandsNames, Numeric, Value, ValueArray, ValueMatrix } from "./values.js"
 
