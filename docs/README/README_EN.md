@@ -1,7 +1,7 @@
 <div align="center">
-    <h1>Mathematical <b>Function Analyzer</b></h1>
+    <h1><b>Mathematical Function Analyzer</b></h1>
     <h2>README</h2>
-    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
+    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - present</em></p>
 </div>
 
 ---

@@ -1,7 +1,7 @@
 <div align="center">
-    <h1>Analisador de <b>Funções Matemáticas</b></h1>
+    <h1><b>Analisador de Funções Matemáticas</b></h1>
     <h2>Perguntas Frequentes</h2>
-    <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
+    <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - presente</em></p>
 </div>
 
 ---
@@ -33,7 +33,7 @@ Ou localmente:
 3. Não é necessário instalar nada
 
 **Por que o programa usa `prompt` e `alert` em vez de uma interface gráfica?**
-O projeto foi desenvolvido intencionalmente em JavaScript puro, sem frameworks ou bibliotecas externas. Os menus via `prompt` e `alert` tornam o código simples e acessível.
+O projeto foi desenvolvido intencionalmente sem frameworks ou bibliotecas gráficas. Os menus via `prompt` e `alert` tornam o código simples e acessível.
 
 **Quais tipos de função são suportados?**
 
@@ -42,6 +42,7 @@ O projeto foi desenvolvido intencionalmente em JavaScript puro, sem frameworks o
 - Quadrática — `f(x) = ax² + bx + c`
 - Exponencial — `f(x) = b · aˣ`
 - Logarítmica — `f(x) = b · log_a(x) + c`
+- Seno, Cosseno, Tangente
 
 **O que o programa consegue analisar?**
 Domínio, imagem, raízes, vértice, interseções com os eixos, estudo do sinal, assíntota, curva, valores de `x` e `y`, e equações entre funções.
@@ -63,10 +64,10 @@ Pelo menu principal do programa, onde cada configuração pode ser alterada indi
 ### Técnico
 
 **Quais tecnologias foram usadas?**
-Apenas JavaScript puro e HTML. Sem bibliotecas, frameworks ou dependências externas.
+O projeto é desenvolvido principalmente em JavaScript, com módulos curtos e simples escritos em TypeScript para checagem de tipos durante o desenvolvimento. Não são usados frameworks ou bibliotecas gráficas — os módulos TypeScript são compilados para JavaScript puro via `tsc`, e o navegador só executa JS puro. Husky e lint-staged são usados como ferramentas de desenvolvimento (checagens em pre-commit); nenhuma dependência de execução é enviada ao navegador.
 
 **Posso contribuir?**
-Não. Leia o [`CONTRIBUTING.md`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/CONTRIBUTING.md).
+Sim, contribuições pontuais são bem-vindas. Leia o [`CONTRIBUTING.md`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTING/CONTRIBUTING_PT.md) para mais informações.
 
 **Encontrei um erro. O que faço?**
 Abra uma issue usando o template `bug_report`. Descreva o que aconteceu, qual função estava usando e o resultado esperado.

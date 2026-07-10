@@ -1,7 +1,7 @@
 <div align="center">
-    <h1>Mathematical <b>Function Analyzer</b></h1>
+    <h1><b>Mathematical Function Analyzer</b></h1>
     <h2>FAQ</h2>
-    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
+    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - present</em></p>
 </div>
 
 ---
@@ -33,7 +33,7 @@ Or locally:
 3. No installation required
 
 **Why does the program use `prompt` and `alert` instead of a graphical interface?**
-The project was intentionally built in pure JavaScript, with no frameworks or external libraries. Menus via `prompt` and `alert` keep the code simple and accessible.
+The project was intentionally built without UI frameworks or graphical libraries. Menus via `prompt` and `alert` keep the code simple and accessible.
 
 **Which function types are supported?**
 
@@ -42,6 +42,7 @@ The project was intentionally built in pure JavaScript, with no frameworks or ex
 - Quadratic — `f(x) = ax² + bx + c`
 - Exponential — `f(x) = b · aˣ`
 - Logarithmic — `f(x) = b · log_a(x) + c`
+- Sine, Cosine, Tangent
 
 **What can the program analyze?**
 Domain, range, roots, vertex, axis intercepts, sign study, asymptote, curve, values of `x` and `y`, and equations between functions.
@@ -63,10 +64,10 @@ Through the main menu of the program, where each setting can be changed individu
 ### Technical
 
 **What technologies were used?**
-Pure JavaScript and HTML only. No libraries, frameworks, or external dependencies.
+The project is built primarily in JavaScript, with short, simple modules written in TypeScript for type-checking during development. No UI frameworks or graphical libraries are used — the TypeScript modules compile to plain JavaScript via `tsc`, and the browser only ever runs plain JS. Husky and lint-staged are used as development tooling (pre-commit checks); no runtime dependencies are shipped to the browser.
 
 **Can I contribute?**
-No. Read [`CONTRIBUTING.md`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/CONTRIBUTING.md).
+Yes, occasional contributions are welcome. Read [`CONTRIBUTING.md`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTING/CONTRIBUTING_EN.md) for more information.
 
 **I found a bug. What do I do?**
 Open an issue using the `bug_report` template. Describe what happened, which function you were using, and the expected result.

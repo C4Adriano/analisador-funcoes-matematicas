@@ -1,7 +1,7 @@
 <div align="center">
-    <h1>Mathematical <b>Function Analyzer</b></h1>
+    <h1><b>Mathematical Function Analyzer</b></h1>
     <h2>CONTRIBUTORS</h2>
-    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
+    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - present</em></p>
 </div>
 
 ---
@@ -11,6 +11,8 @@
 ---
 
 Thanks to everyone who contributed to this project.
+
+> **Note:** AI assistants are listed below for transparency, as tools used during development. Their inclusion does not constitute a claim of authorship, ownership, or any other intellectual property right — all such rights remain exclusively with the **Author**, as set out in the [License](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/LICENSE.md).
 
 ---
 

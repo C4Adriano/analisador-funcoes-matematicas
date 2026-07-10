@@ -1,7 +1,7 @@
 <div align="center">
-    <h1>Mathematical <b>Function Analyzer</b></h1>
+    <h1><b>Mathematical Function Analyzer</b></h1>
     <h2>CONTRIBUTING</h2>
-    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
+    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - present</em></p>
 </div>
 
 ---
@@ -17,5 +17,9 @@ I'm not looking for permanent contributors, but occasional contributions are wel
 If you find a bug or have a suggestion, feel free to open an [issue](https://github.com/C4Adriano/analisador-funcoes-matematicas/issues) — I'll try to respond when possible.
 
 Pull requests may be considered, but there's no guarantee they will be accepted.
+
+By participating in this project — issues, discussions, or pull requests — you agree to follow the [Code of Conduct](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CODE_OF_CONDUCT/CODE_OF_CONDUCT_EN.md).
+
+Any contribution submitted (including pull requests, patches, or suggestions) becomes part of the **Software** and is governed by the [License](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/LICENSE.md), unless otherwise agreed in writing by the **Author**.
 
 ---

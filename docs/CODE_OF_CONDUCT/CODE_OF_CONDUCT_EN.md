@@ -1,7 +1,7 @@
 <div align="center">
-    <h1>Mathematical <b>Function Analyzer</b></h1>
+    <h1><b>Mathematical Function Analyzer</b></h1>
     <h2>CODE OF CONDUCT</h2>
-    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
+    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - present</em></p>
 </div>
 
 ---
@@ -9,6 +9,10 @@
 🌐 [Back to Documentation](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/README.md) | 🌐 [Back to main](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CODE_OF_CONDUCT.md) | 🇧🇷 [Português](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CODE_OF_CONDUCT/CODE_OF_CONDUCT_PT.md)
 
 ---
+
+### Scope
+
+This **Code of Conduct** applies to all official spaces of this project — including **Issues**, **Discussions**, **Pull Requests**, commit comments, and any other communication channel officially associated with the **Software**.
 
 ### Our Standards
 
@@ -28,6 +32,6 @@ Examples of unacceptable behavior:
 
 ### Enforcement
 
-Unacceptable behavior may result in issues/discussions being closed or the user being blocked.
+Unacceptable behavior may result in issues/discussions being closed or the user being blocked, at the **Author**'s sole discretion, with or without prior notice.
 
 ---

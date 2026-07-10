@@ -1,7 +1,7 @@
 <div align="center">
-    <h1>Analisador de <b>Funções Matemáticas</b></h1>
+    <h1><b>Analisador de Funções Matemáticas</b></h1>
     <h2>Contribuidores</h2>
-    <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
+    <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - presente</em></p>
 </div>
 
 ---
@@ -11,6 +11,8 @@
 ---
 
 Obrigado a todos que contribuíram com este projeto.
+
+> **Nota:** As IAs listadas abaixo aparecem por transparência, como ferramentas utilizadas durante o desenvolvimento. Sua inclusão não constitui reivindicação de autoria, titularidade ou qualquer outro direito de propriedade intelectual — todos esses direitos permanecem exclusivamente com o **Autor**, conforme estabelecido na [Licença](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/LICENSE.md).
 
 ---
 

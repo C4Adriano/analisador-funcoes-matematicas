@@ -1,7 +1,7 @@
 <div align="center">
-    <h1>Analisador de <b>Funções Matemáticas</b></h1>
+    <h1><b>Analisador de Funções Matemáticas</b></h1>
     <h2>CHANGELOG</h2>
-    <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
+    <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - presente</em></p>
 </div>
 
 ---

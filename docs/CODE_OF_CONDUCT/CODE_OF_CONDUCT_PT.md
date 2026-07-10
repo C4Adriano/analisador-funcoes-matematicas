@@ -1,7 +1,7 @@
 <div align="center">
-    <h1>Analisador de <b>Funções Matemáticas</b></h1>
+    <h1><b>Analisador de Funções Matemáticas</b></h1>
     <h2>Código de Conduta</h2>
-    <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - 2026</em></p>
+    <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - presente</em></p>
 </div>
 
 ---
@@ -9,6 +9,10 @@
 🌐 [Voltar à Documentação](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/README.md) | 🌐 [Voltar ao geral](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CODE_OF_CONDUCT.md) | 🇺🇸 [English](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CODE_OF_CONDUCT/CODE_OF_CONDUCT_EN.md)
 
 ---
+
+### Escopo
+
+Este **Código de Conduta** aplica-se a todos os espaços oficiais deste projeto — incluindo **Issues**, **Discussions**, **Pull Requests**, comentários de commits e qualquer outro canal de comunicação oficialmente associado ao **_Software_**.
 
 ### Nossos Padrões
 
@@ -28,6 +32,6 @@ Exemplos de comportamento inaceitável:
 
 ### Aplicação
 
-Comportamento inaceitável pode resultar no fechamento de issues/discussões ou no bloqueio do usuário.
+Comportamento inaceitável pode resultar no fechamento de issues/discussões ou no bloqueio do usuário, a critério exclusivo do **Autor**, com ou sem aviso prévio.
 
 ---
