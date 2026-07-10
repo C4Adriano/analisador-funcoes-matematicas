@@ -44,7 +44,7 @@ fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n")
 
 const versionFileContent =
     `// Arquivo gerado automaticamente pelo hook de commit. Não editar manualmente.\n` +
-    `export const VERSION: string = '${newVersion}';\n`
-fs.writeFileSync(path.join(__dirname, "..", "src", "version.ts"), versionFileContent)
+    `export const VERSION = '${newVersion}';\n`
+fs.writeFileSync(path.join(__dirname, "..", "src", "version.js"), versionFileContent)
 
 console.log(`[version-bump] ${pkg.version} <- "${firstLine}"`)
