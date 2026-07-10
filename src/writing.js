@@ -10,10 +10,10 @@ import { tr } from "./i18n.js"
 export const Writing = {
     /**
      * [TEXTO] Substituição de strings
-     * @param text - Texto
+     * @param {string} text - Texto
      * @param from - O que será removido
      * @param to - O que será colocado no lugar
-     * @returns Texto convertido
+     * @returns {string} Texto convertido
      * @since v6.1.0
      */
     replace(text = "", from = "", to = "") {
@@ -22,9 +22,9 @@ export const Writing = {
 
     /**
      * [TEXTO] Substituição de várias strings
-     * @param text - Texto
-     * @param[][]} list - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
-     * @returns Texto convertido
+     * @param {string} text - Texto
+     * @param {string[][]} list - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
+     * @returns {string} Texto convertido
      * @since v6.1.0
      */
     replaceGroup(text = "", list = [["", ""]]) {
@@ -38,8 +38,8 @@ export const Writing = {
 
     /**
      * [TEXTO] Substituição da grafia de Unicode
-     * @param text - Texto
-     * @returns Texto convertido
+     * @param {string} text - Texto
+     * @returns {string} Texto convertido
      * @since v6.1.0
      */
     noUnicode(text = "") {
@@ -216,8 +216,8 @@ export const Writing = {
 
     /**
      * [TEXTO] Substituição da grafia de acentos
-     * @param text Texto
-     * @returns Texto convertido
+     * @param {string} text Texto
+     * @returns {string} Texto convertido
      */
     noAccents(text = "") {
         let replacements = [
@@ -305,8 +305,8 @@ export const Writing = {
 
     /**
      * [TEXTO] Conversão para minúsculas
-     * @param text - Texto
-     * @returns Texto convertido
+     * @param {string} text - Texto
+     * @returns {string} Texto convertido
      * @since v6.1.0
      */
     lowercase(text = "") {
@@ -319,8 +319,8 @@ export const Writing = {
 
     /**
      * [TEXTO] Conversão para maiúsculas
-     * @param text - Texto
-     * @returns Texto convertido
+     * @param {string} text - Texto
+     * @returns {string} Texto convertido
      * @since v6.1.0
      */
     uppercase(text = "") {
@@ -363,8 +363,8 @@ export const Writing = {
 
     /**
      * [TEXTO] Simplificação de símbolos de multiplicação
-     * @param text - Texto
-     * @returns Texto convertido
+     * @param {string} text - Texto
+     * @returns {string} Texto convertido
      * @since v6.1.0
      */
     simplifyMultiplication(text = "") {
@@ -373,8 +373,8 @@ export const Writing = {
 
     /**
      * [TEXTO] Tradução de texto sem Unicode para a linguagem configurada
-     * @param text - Texto
-     * @returns Texto traduzido
+     * @param {string} text - Texto
+     * @returns {string} Texto traduzido
      */
     translateUnicode(text = "") {
         let replacements = [
@@ -422,9 +422,9 @@ export const Writing = {
 
     /**
      * [TEXTO] Formatação geral de mensagens
-     * @param message - Mensagem
+     * @param {string} message - Mensagem
      * @param explanation - Mensagem para a explicação
-     * @returns Mensagem formatada
+     * @returns {string} Mensagem formatada
      * @since v6.1.0
      */
     format(message = "", explanation = "") {
@@ -458,7 +458,7 @@ export const Writing = {
 
     /**
      * [TEXTO] Conversão para sobrescrito
-     * @param text - Número
+     * @param {string} text - Número
      * @returns Número convertido
      * @since v6.1.0
      */
@@ -491,8 +491,8 @@ export const Writing = {
 
     /**
      * [TEXTO] Conversão para subscrito
-     * @param text - Número
-     * @returns Número subscrito
+     * @param {string} text - Número
+     * @returns {string} Número subscrito
      * @since v6.1.0
      */
     subscript(text = "") {
@@ -538,9 +538,9 @@ export const Writing = {
 
     /**
      * [TEXTO] Formatação de itens de configuração
-     * @param message - Mensagem
-     * @param name - Nome em "config"
-     * @returns Mensagem formatada
+     * @param {string} message - Mensagem
+     * @param {string} name - Nome em "config"
+     * @returns {string} Mensagem formatada
      * @since v6.1.0
      */
     configItem(message, name) {
@@ -560,7 +560,7 @@ export const Writing = {
 
     /**
      * [TEXTO] Análise de texto para conversão de graus para radianos
-     * @param text - Texto
+     * @param {string} text - Texto
      * @returns Ângulo em radianos
      * @since v6.1.0
      */
@@ -571,7 +571,7 @@ export const Writing = {
 
     /**
      * [TEXTO] Análise de texto para conversão de radianos para graus
-     * @param text - Texto
+     * @param {string} text - Texto
      * @returns Ângulo em graus
      * @since v6.1.0
      */
@@ -585,7 +585,7 @@ export const Writing = {
 
     /**
      * [TEXTO] Análise de texto para conversão de ângulos
-     * @param text - Texto
+     * @param {string} text - Texto
      * @returns Ângulo em graus ou radianos
      * @since v6.1.0
      */

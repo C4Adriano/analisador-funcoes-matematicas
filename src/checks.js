@@ -1,4 +1,5 @@
 import { Commands } from "./commands.js";
+import { Config } from "./config.js";
 import { Writing } from "./writing.js";
 export const Checks = {
     isText(value) {
@@ -20,7 +21,10 @@ export const Checks = {
         return Checks.isValidText(value) || Checks.isFiniteNumber(value);
     },
     isCommand(value) {
-        return typeof value === "string" && Commands.names().includes(value);
+        return Checks.isText(value) && Commands.names().includes(value);
+    },
+    isConfigKey(value) {
+        return Checks.isValidText(value) && Object.keys(Config).includes(value);
     },
     numericPoint(points, index) {
         return Number(Writing.decimal((points[index] ?? 0), true));

@@ -6,6 +6,7 @@ import { tr } from "./i18n.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
+
 /**
  * [NUMÉRICO] Objeto base para as funções envolvendo algebra
  * - Use as funções daqui para fazer cálculos, arredondar números, pedir variáveis e pontos, etc.
@@ -14,9 +15,9 @@ import { Writing } from "./writing.js"
 export const Algebra = {
     /**
      * [NUMÉRICO] Arredonda um número
-     * @param number - Número
-     * @param places - Casas decimais
-     * @returns Número arredondado
+     * @param {string | number} number - Número
+     * @param {number} places - Casas decimais
+     * @returns {string | number} Número arredondado
      * @since v6.1.0
      */
     round(number = 0, places = Config.decimalPlaces) {
@@ -39,8 +40,8 @@ export const Algebra = {
 
     /**
      * [UI] Pede uma variável
-     * @param name - Nome da variável
-     * @returns Se a variável tiver valor numérico, retorna o valor. Se não, retorna o nome
+     * @param {string} name - Nome da variável
+     * @returns {string | number} Se a variável tiver valor numérico, retorna o valor. Se não, retorna o nome
      * @since v6.1.0
      */
     variables(name = "x") {
@@ -67,8 +68,8 @@ export const Algebra = {
 
     /**
      * [UI] Pede um(ns) ponto(s)
-     * @param type - Quantos pontos vão ser pedidos (1, 2 ou 3)
-     * @returns Um array com os pontos, na ordem: [x₁, y₁, x₂, y₂, x₃, y₃]
+     * @param {number} type - Quantos pontos vão ser pedidos (1, 2 ou 3)
+     * @returns {number[]} Um array com os pontos, na ordem: [x₁, y₁, x₂, y₂, x₃, y₃]
      * @since v6.1.0
      */
     point(type = 1) {
@@ -77,27 +78,21 @@ export const Algebra = {
             type = 1
         }
 
-        let array = [],
-            x1,
-            y1,
-            x2,
-            y2,
-            x3,
-            y3
+        let array = []
 
         // Pergunta
-        x1 = Ui.input("x₁ = ", "", true)
-        y1 = Ui.input("y₁ = ", "", true)
+        let x1 = Ui.input("x₁ = ", "", true)
+        let y1 = Ui.input("y₁ = ", "", true)
         array.push(x1, y1)
 
         if (type == 2 || type == 3) {
-            x2 = Ui.input("x₂ = ", "", true)
-            y2 = Ui.input("y₂ = ", "", true)
+            let x2 = Ui.input("x₂ = ", "", true)
+            let y2 = Ui.input("y₂ = ", "", true)
             array.push(x2, y2)
 
             if (type == 3) {
-                x3 = Ui.input("x₃ = ", "", true)
-                y3 = Ui.input("y₃ = ", "", true)
+                let x3 = Ui.input("x₃ = ", "", true)
+                let y3 = Ui.input("y₃ = ", "", true)
                 array.push(x3, y3)
             }
         }
@@ -107,8 +102,8 @@ export const Algebra = {
 
     /**
      * [UI] Vê se as funções têm pontos de encontro
-     * @param func1 - Primeira função [a, b, c]
-     * @param func2 - Segunda função [a, b, c]
+     * @param {number[]} func1 - Primeira função [a, b, c]
+     * @param {number[]} func2 - Segunda função [a, b, c]
      * @since v6.1.0
      */
     equations(func1 = [0, 0, 0], func2 = [0, 0, 0]) {
@@ -120,27 +115,21 @@ export const Algebra = {
             Ui.error("[Algebra.equations] 'func2' inválido: " + func2, "Usando [0, 0, 0]", true)
             func2 = [0, 0, 0]
         }
-        if (!func1.every(value => typeof value == "number" && isFinite(value))) {
+        if (!func1.every(value => Checks.isFiniteNumber(value))) {
             Ui.error("[Algebra.equations] 'func1' contém valores inválidos: " + func1, "Usando [0, 0, 0]", true)
             func1 = [0, 0, 0]
         }
-        if (!func2.every(value => typeof value == "number" && isFinite(value))) {
+        if (!func2.every(value => Checks.isFiniteNumber(value))) {
             Ui.error("[Algebra.equations] 'func2' contém valores inválidos: " + func2, "Usando [0, 0, 0]", true)
             func2 = [0, 0, 0]
         }
 
-        let coefA = 0,
-            coefB = 0,
-            coefC = 0,
+        const [a1 = 0, b1 = 0, c1 = 0] = func1
+        const [a2 = 0, b2 = 0, c2 = 0] = func2
+        let coefA = a1 - a2,
+            coefB = b1 - b2,
+            coefC = c1 - c2,
             x = 0
-
-        if (func1.every(value => typeof value == "number") && func2.every(value => typeof value == "number")) {
-            const [a1 = 0, b1 = 0, c1 = 0] = func1
-            const [a2 = 0, b2 = 0, c2 = 0] = func2
-            coefA = a1 - a2
-            coefB = b1 - b2
-            coefC = c1 - c2
-        }
 
         // Constante
         if (coefA == 0 && coefB == 0) {
@@ -199,36 +188,36 @@ export const Algebra = {
 
     /**
      * [NUMÉRICO] Descobre quais são as incógnitas
-     * @param coefA - Coeficiente a
-     * @param coefB - Coeficiente b
-     * @param coefC - Coeficiente c
-     * @param funcExp - Se é exponencial
-     * @param funcLog - Se é logarítmica
-     * @param funcTrig - Se é trigonométrica, e qual (sin, cos, tan)
+     * @param {string | number} coefA - Coeficiente a
+     * @param {string | number} coefB - Coeficiente b
+     * @param {string | number} coefC - Coeficiente c
+     * @param {boolean} funcExp - Se é exponencial
+     * @param {boolean} funcLog - Se é logarítmica
+     * @param {string} funcTrig - Se é trigonométrica, e qual (sin, cos, tan)
      * @returns Retorna os coeficientes em formato de array numérico [a, b, c]
      * @since v6.1.0
      */
     unknown(coefA, coefB, coefC, funcExp = false, funcLog = false, funcTrig = "") {
         let repeat = false,
-            points,
-            denominator,
-            diff1,
-            diff2,
-            term1,
-            term2,
-            term3,
-            term4
+            points = [],
+            denominator = 0,
+            diff1 = 0,
+            diff2 = 0,
+            term1 = 0,
+            term2 = 0,
+            term3 = 0,
+            term4 = 0
 
         if (funcExp || funcLog) {
             // Valida
             if (coefA == 0 || coefA == 1 || coefB == 0) {
-                if (coefA != "a" && !isFinite(coefA)) {
+                if (!Checks.isFiniteNumber(coefA)) {
                     coefA = 0
                 }
-                if (coefB != "b" && !isFinite(coefB)) {
+                if (!Checks.isFiniteNumber(coefB)) {
                     coefB = 0
                 }
-                if (coefC != "c" && !isFinite(coefC)) {
+                if (!Checks.isFiniteNumber(coefC)) {
                     coefC = 0
                 }
 
@@ -568,7 +557,7 @@ export const Algebra = {
             }
 
             // Erro
-            if (!isFinite(coefA) || !isFinite(coefB) || !isFinite(coefC)) {
+            if (!Checks.isFiniteNumber(coefA) || !Checks.isFiniteNumber(coefB) || !Checks.isFiniteNumber(coefC)) {
                 Error.divZero("Valores inválidos.")
                 if (
                     Ui.confirm(
@@ -589,13 +578,13 @@ export const Algebra = {
                     State.loop = true
                     repeat = false
                 } else {
-                    if (!isFinite(coefA)) {
+                    if (!Checks.isFiniteNumber(coefA)) {
                         coefA = "a"
                     }
-                    if (!isFinite(coefB)) {
+                    if (!Checks.isFiniteNumber(coefB)) {
                         coefB = "b"
                     }
-                    if (!isFinite(coefC)) {
+                    if (!Checks.isFiniteNumber(coefC)) {
                         coefC = "c"
                     }
                     repeat = true
@@ -613,18 +602,18 @@ export const Algebra = {
 
     /**
      * [NUMÉRICO] Log de x na base
-     * @param x - Número
-     * @param base - Base
-     * @param precision - Casas decimais
-     * @returns Resultado
+     * @param {number} x - Número
+     * @param {number} base - Base
+     * @param {number} precision - Casas decimais
+     * @returns {number} Resultado
      * @since v6.1.0
      */
     log(x = 1, base = Math.E, precision = Config.logPrecision) {
         let y = x > 1 ? 1 : -1,
-            number,
-            delta,
-            lnX,
-            lnBase
+            number = 0,
+            delta = 0,
+            lnX = 0,
+            lnBase = 0
 
         // Valida
         if (x <= 0 || base <= 0 || base == 1) {
@@ -639,7 +628,7 @@ export const Algebra = {
         if (base < 1) {
             lnX = Algebra.ln(x)
             lnBase = Algebra.ln(base)
-            if (!isFinite(lnX) || !isFinite(lnBase) || lnBase == 0) {
+            if (!Checks.isFiniteNumber(lnX) || !Checks.isFiniteNumber(lnBase) || lnBase == 0) {
                 return NaN
             }
 
@@ -663,9 +652,9 @@ export const Algebra = {
 
     /**
      * [NUMÉRICO] Log de x na base E
-     * @param x - Número
-     * @param precision - Casas decimais
-     * @returns Resultado
+     * @param {number} x - Número
+     * @param {number} precision - Casas decimais
+     * @returns {number} Resultado
      * @since v6.1.0
      */
     ln(x = 1, precision = Config.logPrecision) {
@@ -696,21 +685,21 @@ export const Algebra = {
 
     /**
      * [NUMÉRICO] Divide dois números
-     * @param numerator - Parte de cima da fração
-     * @param denominator - Parte de baixo da fração
-     * @param round - Se irá arredondar
-     * @param precision - Precisão do arredondamento
-     * @returns Resultado
+     * @param {number} numerator - Parte de cima da fração
+     * @param {number} denominator - Parte de baixo da fração
+     * @param {boolean} round - Se irá arredondar
+     * @param {number} precision - Precisão do arredondamento
+     * @returns {number} Resultado
      * @since v6.1.0
      */
     division(numerator = 0, denominator = 1, round = true, precision = Config.divPrecision) {
-        let result
+        let result = 0
 
         numerator = Writing.decimal(numerator, true)
         denominator = Writing.decimal(denominator, true)
 
         // Valida
-        if (denominator == 0 || !isFinite(numerator) || !isFinite(denominator)) {
+        if (denominator == 0 || !Checks.isFiniteNumber(numerator) || !Checks.isFiniteNumber(denominator)) {
             Ui.error(
                 "[Algebra.division] Entrada inválida.",
                 "numerator: " + String(numerator) + "denominator: " + String(denominator),
@@ -728,7 +717,7 @@ export const Algebra = {
         result = numerator / denominator
 
         // Infinito
-        if (!isFinite(result)) {
+        if (!Checks.isFiniteNumber(result)) {
             return NaN
         }
 
@@ -742,9 +731,9 @@ export const Algebra = {
 
     /**
      * [NUMÉRICO] Calcula o valor absoluto de um número
-     * @param number - Número
-     * @param round - Se irá arredondar
-     * @param places - Casas decimais
+     * @param {number} number - Número
+     * @param {boolean} round - Se irá arredondar
+     * @param {number} places - Casas decimais
      * @returns Número absoluto
      * @since v6.1.0
      */
@@ -752,7 +741,7 @@ export const Algebra = {
         number = Writing.decimal(number, true)
 
         // Valida
-        if (!isFinite(number)) {
+        if (!Checks.isFiniteNumber(number)) {
             Ui.error("[Algebra.absolute] Valor inválido: " + number, "", true)
             return NaN
         }

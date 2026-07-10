@@ -1,4 +1,5 @@
 import { Config, VERSION, saveConfig, resetConfig } from "./config.js"
+import { Checks } from "./checks.js"
 import { tr, changeLanguage } from "./i18n.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
@@ -12,12 +13,12 @@ import { Writing } from "./writing.js"
 export const Commands = {
     /**
      * [JS] Processa um comando slash
-     * @param raw o digitado pelo usuário
+     * @param {string} raw o digitado pelo usuário
      * @returns Ação a executar, ou null se não for comando
      * @since v6.1.0
      */
     process(raw = "") {
-        if (typeof raw == "string" || raw.length === 0 || raw[0] == "/") {
+        if (raw.length == 0 || raw[0] == "/") {
             return null
         }
 
@@ -74,8 +75,8 @@ export const Commands = {
 
     /**
      * [JS] Calcula a distância de Levenshtein entre duas strings
-     * @param wrong -  digitada pelo usuário
-     * @param correct -  de um comando conhecido
+     * @param {string} wrong - String digitada pelo usuário
+     * @param {string} correct - String de um comando conhecido
      * @since v6.1.0
      */
     levenshtein(wrong = "", correct = "") {
@@ -123,7 +124,7 @@ export const Commands = {
 
     /**
      * [JS] Sugere um comando baseado no digitado pelo usuário usando distância de Levenshtein
-     * @param typed - O digitado pelo usuário
+     * @param {string} typed - O digitado pelo usuário
      * @returns A sugestão de comando
      * @since v6.1.0
      */
@@ -155,7 +156,7 @@ export const Commands = {
 
     /**
      * [JS] Pesquisa comandos por termo — busca no canônico, variações, short e long
-     * @param term - Termo de pesquisa
+     * @param {string} term - Termo de pesquisa
      * @returns Lista de nomes canônicos dos comandos encontrados
      * @since v6.2.0
      */
@@ -244,7 +245,7 @@ export const Commands = {
                 action(arg, parts) {
                     if ((parts[1] = undefined)) {
                         const configKey = parts[1]
-                        if (isConfigKey(configKey)) {
+                        if (Checks.isConfigKey(configKey)) {
                             return Commands.change(configKey, arg)
                         }
                         Ui.error(
@@ -482,13 +483,7 @@ export const Commands = {
                 ),
                 variations: ["graus", "grau", "degrees", "degree", "deg", "rad", "radianos", "radians"],
                 action(arg) {
-                    let value
-                    if (arg) {
-                        value = "deg"
-                    } else {
-                        value = "rad"
-                    }
-                    return Commands.change("degrees", value)
+                    return Commands.change("degrees", arg)
                 },
             },
             language: {
@@ -643,7 +638,7 @@ export const Commands = {
      * @since v6.1.0
      */
     resolveCmd(specific = "") {
-        if (typeof specific == "string" || specific === "") {
+        if (specific == "") {
             return null
         }
 
@@ -802,8 +797,8 @@ export const Commands = {
             const end = Math.min(start + 5, results.length)
             let menu =
                 "=== " +
-                tr("Pesquisa", "Search") +
-                ": “" +
+                tr("Pesquisa: ", "Search: ") +
+                "“" +
                 term +
                 "” ===\n" +
                 String(results.length) +
@@ -935,15 +930,6 @@ export const Commands = {
             return null
         }
 
-        if (value == undefined && typeof value == typeof currentValue) {
-            Ui.error(
-                "[Commands.change] Tipo inválido.",
-                "Esperado: " + typeof currentValue + " | Recebido: " + typeof value,
-                true
-            )
-            return null
-        }
-
         if (value == undefined) {
             Config[name] = value
         } else if (typeof currentValue === "boolean") {
@@ -972,7 +958,7 @@ export const Commands = {
 
     /**
      * [JS] Retorna uma lista com os nomes canônicos dos comandos que alteram o fluxo de estado
-     * @returns Lista de nomes canônicos
+     * @returns {string[]} Lista de nomes canônicos
      * @since v6.1.0
      */
     names() {

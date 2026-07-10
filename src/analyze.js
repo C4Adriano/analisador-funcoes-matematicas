@@ -1,5 +1,6 @@
 import { Algebra } from "./algebra.js"
 import { Commands } from "./commands.js"
+import { Checks } from "./checks.js"
 import { Helpers } from "./helpers.js"
 import { tr, trArr } from "./i18n.js"
 import { State } from "./state.js"
@@ -25,14 +26,14 @@ const BASE_OPTIONS = [
 export const Analyze = {
     /**
      * [FUNÇÃO] Monta uma função constante: ƒ(x) = c
-     * @param coefC - Coeficiente c da função constante
-     * @returns Retorna: [coefC]
+     * @param {string | number} coefC - Coeficiente c da função constante
+     * @returns {(string | number)[]} Retorna: [coefC]
      * @since v6.1.0
      */
     constant(coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(0, 0, coefC)
@@ -44,7 +45,7 @@ export const Analyze = {
             menuResp = Ui.menu(trArr(BASE_OPTIONS.slice()), page)
             option = menuResp[0]
             page = menuResp[1]
-            if (Commands.names().includes(String(menuResp[0]))) {
+            if (Checks.isCommand(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -115,15 +116,15 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta uma função afim: ƒ(x) = bx + c
-     * @param coefB - Coeficiente b da função afim
-     * @param coefC - Coeficiente c da função afim
-     * @returns Retorna: [coefB, coefC]
+     * @param {string | number} coefB - Coeficiente b da função afim
+     * @param {string | number} coefC - Coeficiente c da função afim
+     * @returns {(string | number)[]} Retorna: [coefB, coefC]
      * @since v6.1.0
      */
     affine(coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(0, coefB, coefC)
@@ -138,7 +139,7 @@ export const Analyze = {
             menuResp = Ui.menu(trArr([["Inclinação", "Slope"], ["Raiz", "Root"], ...BASE_OPTIONS]), page)
             option = menuResp[0]
             page = menuResp[1]
-            if (Commands.names().includes(String(menuResp[0]))) {
+            if (Checks.isCommand(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -215,16 +216,16 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta uma função quadrática: ƒ(x) = ax² + bx + c
-     * @param coefA - Coeficiente a da função quadrática
-     * @param coefB - Coeficiente b da função quadrática
-     * @param coefC - Coeficiente c da função quadrática
-     * @returns Retorna: [coefA, coefB, coefC]
+     * @param {string | number} coefA - Coeficiente a da função quadrática
+     * @param {string | number} coefB - Coeficiente b da função quadrática
+     * @param {string | number} coefC - Coeficiente c da função quadrática
+     * @returns {(string | number)[]} Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
     quadratic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(coefA, coefB, coefC)
@@ -243,7 +244,7 @@ export const Analyze = {
             )
             option = menuResp[0]
             page = menuResp[1]
-            if (Commands.names().includes(String(menuResp[0]))) {
+            if (Checks.isCommand(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -374,16 +375,16 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta uma função exponencial: ƒ(x) = b × aˣ + c
-     * @param coefA - Coeficiente a da função exponencial
-     * @param coefB - Coeficiente b da função exponencial
-     * @param coefC - Coeficiente c da função exponencial
-     * @returns Retorna: [coefA, coefB, coefC]
+     * @param {string | number} coefA - Coeficiente a da função exponencial
+     * @param {string | number} coefB - Coeficiente b da função exponencial
+     * @param {string | number} coefC - Coeficiente c da função exponencial
+     * @returns {(string | number)[]} Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
     exponential(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, true)
@@ -401,7 +402,7 @@ export const Analyze = {
             )
             option = menuResp[0]
             page = menuResp[1]
-            if (Commands.names().includes(String(menuResp[0]))) {
+            if (Checks.isCommand(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -499,16 +500,16 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta a função logarítmica: b × logₐ(x) + c
-     * @param coefA - Coeficiente a da função logarítmica
-     * @param coefB - Coeficiente b da função logarítmica
-     * @param coefC - Coeficiente c da função logarítmica
-     * @returns Retorna: [coefA, coefB, coefC]
+     * @param {string | number} coefA - Coeficiente a da função logarítmica
+     * @param {string | number} coefB - Coeficiente b da função logarítmica
+     * @param {string | number} coefC - Coeficiente c da função logarítmica
+     * @returns {(string | number)[]} Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
     logarithmic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, true)
@@ -523,7 +524,7 @@ export const Analyze = {
             menuResp = Ui.menu(trArr([["Curva", "Curve"], ["Raiz", "Root"], ...BASE_OPTIONS]), page)
             option = menuResp[0]
             page = menuResp[1]
-            if (Commands.names().includes(String(menuResp[0]))) {
+            if (Checks.isCommand(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -600,16 +601,16 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta a função seno: b × sin(a · x) + c
-     * @param coefA - Coeficiente a da função seno
-     * @param coefB - Coeficiente b da função seno
-     * @param coefC - Coeficiente c da função seno
-     * @returns Retorna: [coefA, coefB, coefC]
+     * @param {string | number} coefA - Coeficiente a da função seno
+     * @param {string | number} coefB - Coeficiente b da função seno
+     * @param {string | number} coefC - Coeficiente c da função seno
+     * @returns {(string | number)[]} Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
     sine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "sin")
@@ -623,7 +624,7 @@ export const Analyze = {
             menuResp = Ui.menu(trArr([["Amplitude", "Amplitude"], ["Período", "Period"], ...BASE_OPTIONS]), page)
             option = menuResp[0]
             page = menuResp[1]
-            if (Commands.names().includes(String(menuResp[0]))) {
+            if (Checks.isCommand(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -686,16 +687,16 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta a função cosseno: b × cos(a · x) + c
-     * @param coefA - Coeficiente a da função cosseno
-     * @param coefB - Coeficiente b da função cosseno
-     * @param coefC - Coeficiente c da função cosseno
-     * @returns Retorna: [coefA, coefB, coefC]
+     * @param {string | number} coefA - Coeficiente a da função cosseno
+     * @param {string | number} coefB - Coeficiente b da função cosseno
+     * @param {string | number} coefC - Coeficiente c da função cosseno
+     * @returns {(string | number)[]} Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
     cosine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "cos")
@@ -709,7 +710,7 @@ export const Analyze = {
             menuResp = Ui.menu(trArr([["Amplitude", "Amplitude"], ["Período", "Period"], ...BASE_OPTIONS]), page)
             option = menuResp[0]
             page = menuResp[1]
-            if (Commands.names().includes(String(menuResp[0]))) {
+            if (Checks.isCommand(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }
@@ -772,16 +773,16 @@ export const Analyze = {
 
     /**
      * [FUNÇÃO] Monta a função tangente: b × tan(a · x) + c
-     * @param coefA - Coeficiente a da função tangente
-     * @param coefB - Coeficiente b da função tangente
-     * @param coefC - Coeficiente c da função tangente
-     * @returns Retorna: [coefA, coefB, coefC]
+     * @param {string | number} coefA - Coeficiente a da função tangente
+     * @param {string | number} coefB - Coeficiente b da função tangente
+     * @param {string | number} coefC - Coeficiente c da função tangente
+     * @returns {(string | number)[]} Retorna: [coefA, coefB, coefC]
      * @since v6.1.0
      */
     tangent(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
-            menuResp
+            menuResp = [0, 1]
 
         // Mostra
         Ui.function(coefA, coefB, coefC, false, false, "tan")
@@ -798,7 +799,7 @@ export const Analyze = {
             )
             option = menuResp[0]
             page = menuResp[1]
-            if (Commands.names().includes(String(menuResp[0]))) {
+            if (Checks.isCommand(String(menuResp[0]))) {
                 option = 0
                 page = 1
             }

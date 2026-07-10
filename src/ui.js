@@ -121,7 +121,7 @@ export const Ui = {
             // Pergunta
             menu =
                 "=== Menu ===\n" +
-                tr("Página ", "Page ") +
+                tr("Página: ", "Page: ") +
                 String(page) +
                 "/" +
                 String(total) +
@@ -166,7 +166,7 @@ export const Ui = {
                 // +1
                 answer = -1
                 page += 1
-            } else if (Commands.names().includes(String(answer))) {
+            } else if (Checks.isCommand(answer)) {
                 State.loop = true
                 State.keepType = true
             }
@@ -176,7 +176,7 @@ export const Ui = {
                 answer = 0
                 State.loop = true
             }
-        } while (typeof answer != "number" && typeof answer != "string")
+        } while ((0 <= answer && answer <= 9) || Checks.isCommand(answer))
 
         return [answer, page]
     },
@@ -582,7 +582,7 @@ export const Ui = {
             value = Ui.input(message, explanation, true, places, allowCommands)
 
             // Comandos
-            if (typeof value == "string" && Commands.names().includes(value)) {
+            if (typeof value == "string" && Checks.isCommand(value)) {
                 return value
             }
 

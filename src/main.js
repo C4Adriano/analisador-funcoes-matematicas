@@ -150,9 +150,9 @@ do {
     State.loop = false
 
     if (
-        (typeof State.type === "number" &&
-            ((0 <= State.type && State.type <= 3) || (6 <= State.type && State.type <= 9))) ||
-        (typeof State.type === "string" && Commands.names().includes(State.type))
+        (0 <= State.type && State.type <= 3) ||
+        (6 <= State.type && State.type <= 9) ||
+        Commands.names().includes(State.type)
     ) {
         // Polinomiais
         if (State.type == 1) {
@@ -214,18 +214,14 @@ do {
                 subLoop = false
 
                 if (
-                    (typeof subType === "number" && 0 <= subType && subType <= 2) ||
-                    (typeof subType === "number" && 6 <= subType && subType <= 9) ||
-                    (typeof subType === "string" && Commands.names().includes(subType))
+                    (0 <= subType && subType <= 2) ||
+                    (6 <= subType && subType <= 9) ||
+                    Commands.names().includes(subType)
                 ) {
                     // Exponencial
                     if (subType == 1) {
                         // Incógnitas
-                        if (
-                            typeof State.globalA === "string" ||
-                            typeof State.globalB === "string" ||
-                            typeof State.globalC === "string"
-                        ) {
+                        if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
                             State.coefficients = Algebra.unknown(State.globalA, State.globalB, State.globalC, true)
                             State.globalA = Algebra.round(State.coefficients[0])
                             State.globalB = Algebra.round(State.coefficients[1])
@@ -233,11 +229,7 @@ do {
                         }
 
                         // Números
-                        if (
-                            typeof State.globalA === "number" &&
-                            typeof State.globalB === "number" &&
-                            typeof State.globalC === "number"
-                        ) {
+                        if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
                             if (
                                 Checks.isNumeric(State.globalA) &&
                                 Checks.isNumeric(State.globalB) &&
@@ -279,7 +271,7 @@ do {
                     // Logarítmica
                     else if (subType == 2) {
                         // Incógnitas
-                        if (typeof State.globalA === "string" || State.globalB == "b" || State.globalC == "c") {
+                        if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
                             State.coefficients = Algebra.unknown(
                                 State.globalA,
                                 State.globalB,
@@ -293,11 +285,7 @@ do {
                         }
 
                         // Números
-                        if (
-                            typeof State.globalA === "number" &&
-                            typeof State.globalB == "number" &&
-                            typeof State.globalC == "number"
-                        ) {
+                        if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
                             if (
                                 Checks.isNumeric(State.globalA) &&
                                 Checks.isNumeric(State.globalB) &&
@@ -335,7 +323,7 @@ do {
                     }
 
                     // Manter
-                    else if (typeof subType === "number" && 6 <= subType && subType <= 9) {
+                    else if (6 <= subType && subType <= 9) {
                         State.type = subType
                         State.loop = true
                         State.keepType = true
@@ -397,18 +385,14 @@ do {
                 subLoop = false
 
                 if (
-                    (typeof subType === "number" && 0 <= subType && subType <= 3) ||
-                    (typeof subType === "number" && 6 <= subType && subType <= 9) ||
-                    (typeof subType === "string" && Commands.names().includes(subType))
+                    (0 <= subType && subType <= 3) ||
+                    (6 <= subType && subType <= 9) ||
+                    Commands.names().includes(subType)
                 ) {
                     // Seno
                     if (subType == 1) {
                         // Incógnitas
-                        if (
-                            typeof State.globalA === "string" ||
-                            typeof State.globalB === "string" ||
-                            typeof State.globalC === "string"
-                        ) {
+                        if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
                             State.coefficients = Algebra.unknown(
                                 State.globalA,
                                 State.globalB,
@@ -423,11 +407,7 @@ do {
                         }
 
                         // Números
-                        if (
-                            typeof State.globalA === "number" &&
-                            typeof State.globalB == "number" &&
-                            typeof State.globalC == "number"
-                        ) {
+                        if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
                             if (State.globalA != 0 && State.globalB != 0) {
                                 Analyze.sine(State.globalA, State.globalB, State.globalC)
                             }
@@ -448,11 +428,7 @@ do {
                     // Cosseno
                     else if (subType == 2) {
                         // Incógnitas
-                        if (
-                            typeof State.globalA === "string" ||
-                            typeof State.globalB === "string" ||
-                            typeof State.globalC === "string"
-                        ) {
+                        if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
                             State.coefficients = Algebra.unknown(
                                 State.globalA,
                                 State.globalB,
@@ -467,11 +443,7 @@ do {
                         }
 
                         // Números
-                        if (
-                            typeof State.globalA === "number" &&
-                            typeof State.globalB === "number" &&
-                            typeof State.globalC === "number"
-                        ) {
+                        if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
                             if (State.globalA != 0 && State.globalB != 0) {
                                 Analyze.cosine(State.globalA, State.globalB, State.globalC)
                             }
@@ -499,11 +471,7 @@ do {
                     // Tangente
                     else if (subType == 3) {
                         // Incógnitas
-                        if (
-                            typeof State.globalA === "string" ||
-                            typeof State.globalB === "string" ||
-                            typeof State.globalC === "string"
-                        ) {
+                        if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
                             State.coefficients = Algebra.unknown(
                                 State.globalA,
                                 State.globalB,
@@ -518,11 +486,7 @@ do {
                         }
 
                         // Números
-                        if (
-                            typeof State.globalA === "number" &&
-                            typeof State.globalB == "number" &&
-                            typeof State.globalC == "number"
-                        ) {
+                        if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
                             if (State.globalA != 0 && State.globalB != 0) {
                                 Analyze.tangent(State.globalA, State.globalB, State.globalC)
                             }
@@ -541,7 +505,7 @@ do {
                     }
 
                     // Manter
-                    else if (typeof subType === "number" && 6 <= subType && subType <= 9) {
+                    else if (6 <= subType && subType <= 9) {
                         State.type = subType
                         State.loop = true
                         State.keepType = true
@@ -961,13 +925,13 @@ do {
                         )
 
                         // Arredonda novamente
-                        if (typeof State.globalA === "number") {
+                        if (State.globalA != "a") {
                             State.globalA = Algebra.round(State.globalA)
                         }
-                        if (typeof State.globalB === "number") {
+                        if (State.globalB != "b") {
                             State.globalB = Algebra.round(State.globalB)
                         }
-                        if (typeof State.globalC === "number") {
+                        if (State.globalC != "c") {
                             State.globalC = Algebra.round(State.globalC)
                         }
                     }
