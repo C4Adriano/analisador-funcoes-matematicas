@@ -10,4 +10,3 @@ git status --short
 git add package.json src/version.js
 git status --short
 SKIP_VERSION_BUMP=1 git commit --amend --no-edit --no-verify
-echo "POST-COMMIT RODOU"
