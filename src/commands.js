@@ -231,8 +231,8 @@ export const Commands = {
             about: {
                 short: tr("sobre o programa", "about the program"),
                 long: tr(
-                    "Exibe informações sobre o projeto, autor e repositório.",
-                    "Displays information about the project, author and repository."
+                    "Exibe informações sobre o Projeto, Autor e repositório.",
+                    "Displays information about the Project, Author and repository."
                 ),
                 variations: ["sobre", "about", "info", "informacoes", "informacao", "projeto"],
                 action(arg) {
@@ -876,7 +876,7 @@ export const Commands = {
     },
 
     /**
-     * [JS] Exibe informações sobre o projeto
+     * [JS] Exibe informações sobre o Projeto
      * @returns {null}
      * @since v6.2.0
      */

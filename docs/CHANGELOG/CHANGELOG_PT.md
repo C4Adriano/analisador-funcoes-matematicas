@@ -1,6 +1,6 @@
 <div align="center">
     <h1><b>Analisador de Funções Matemáticas</b></h1>
-    <h2>CHANGELOG</h2>
+    <h2>Registro de Alterações <em>(Changelog)</em></h2>
     <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - presente</em></p>
 </div>
 
@@ -288,14 +288,14 @@
 > **Linhas nestas versões:** _`1568`_<br>
 > **Datada de:** _`2025-12-30 -> 2026-03-04`_
 
-### Versão **4.0** - **Funções JS**
+### Versão **4.0** - **Funções _JS_**
 
 > **Linhas nesta versão:** _`1220`_<br>
 > **Datada de:** _`2025-12-30 -> 2026-03-04`_
 
 #### Adições
 
-- Adicionadas **Funções JS**
+- Adicionadas **Funções _JS_**
 - Adicionadas equações entre **Funções** _(exceto **Exponenciais**)_
 
 #### Mudanças
@@ -316,11 +316,11 @@
 
 #### Adições
 
-- Adicionadas **Funções JS** para cada uma das **Funções Matemáticas** _(exceto **Exponencial**)_
+- Adicionadas **Funções _JS_** para cada uma das **Funções Matemáticas** _(exceto **Exponencial**)_
 
 #### Mudanças
 
-- Melhorias nas **Funções JS**
+- Melhorias nas **Funções _JS_**
 - Padronização dos menus, criando opções globais
 
 #### Correções
@@ -339,14 +339,14 @@
 
 ---
 
-### Versão **4.2** - **Funções JS** nas **Funções Exponenciais**
+### Versão **4.2** - **Funções _JS_** nas **Funções Exponenciais**
 
 > **Linhas nesta versão:** _`1209`_<br>
 > **Datada de:** _`2025-09-17 -> 2025-12-30`_
 
 #### Adições
 
-- Adicionadas **Funções JS** para **Funções Exponenciais**
+- Adicionadas **Funções _JS_** para **Funções Exponenciais**
 
 #### Mudanças
 
@@ -407,7 +407,7 @@
 #### Adições
 
 - Adicionadas **Funções Logarítmicas**
-- Adicionadas as **Funções JS** de `log` e `ln`
+- Adicionadas as **Funções _JS_** de `log` e `ln`
 
 #### Menus
 
@@ -452,12 +452,12 @@
 
 #### Adições
 
-- Adicionada a **Função JS** `erro`, que padroniza as mensagens de erro para melhor entendimento
+- Adicionada a **Função _JS_** `erro`, que padroniza as mensagens de erro para melhor entendimento
 
 #### Mudanças
 
 - Mudança técnica no código principal, sem muitas alterações para o usuário
-- Mudança das mensagens para o usuário, com utilização dos comandos Unicode para melhor entendimento — sem alterações no código
+- Mudança das mensagens para o usuário, com utilização dos comandos _Unicode_ para melhor entendimento — sem alterações no código
 - Mudados os nomes das variáveis para melhor entendimento — sem alterações no código
 
 ---
@@ -473,7 +473,7 @@
 
 #### Mudanças
 
-- Então, por causa das configurações, várias **Funções JS** e variáveis podem ser mudadas conforme o que o usuário quiser
+- Então, por causa das configurações, várias **Funções _JS_** e variáveis podem ser mudadas conforme o que o usuário quiser
 - A opção _Sair_ dos menus foi alterada para _Voltar ao menu principal_ — só há _Sair_ nos menus do menu principal
 
 #### Menus
@@ -482,7 +482,7 @@
     - 1 = Quantidade de casas decimais
     - 2 = Confirmações de entrada
     - 3 = Mensagens de erro
-    - 4 = Caracteres Unicode
+    - 4 = Caracteres _Unicode_
     - 5 = Explicações
     - 6 = Mostrar **Função**
     - 7 = Acentos
@@ -498,7 +498,7 @@
 
 #### Mudanças
 
-- As **Funções JS** foram unidas em objetos para melhor entendimento do código
+- As **Funções _JS_** foram unidas em objetos para melhor entendimento do código
 - As configurações têm uma forma padrão
 - As configurações têm a opção _Voltar ao padrão_
 - O menu das configurações tem páginas com _Avançar página_ e _Voltar página_
@@ -514,7 +514,7 @@
         - 1 = Quantidade de casas decimais — **Padrão:** `6`
         - 2 = Confirmações de entrada — **Padrão:** `Não`
         - 3 = Mensagens de erro — **Padrão:** `Sim`
-        - 4 = Caracteres Unicode — **Padrão:** `Sim`
+        - 4 = Caracteres _Unicode_ — **Padrão:** `Sim`
         - 5 = Explicações — **Padrão:** `Sim`
         - 6 = Mostrar **Função** — **Padrão:** `Sim`
     - **Página 2:**
@@ -548,7 +548,7 @@
 
 - **Configurações:**
     - **Página 1 _(Visual)_:**
-        - 1 = Unicode
+        - 1 = _Unicode_
         - 2 = Explicações
         - 3 = Acentos
         - 4 = Capitalizadas
@@ -731,7 +731,7 @@
 # **Próximas atualizações:**
 
 - Adicionar opção de verificar quais **Funções** podem ser válidas para os pontos conhecidos
-- Adicionar comandos com `/` para acessar as **Funções JS** e as **Funções de Ajuda**
+- Adicionar comandos com `/` para acessar as **Funções _JS_** e as **Funções de Ajuda**
 - Adicionar ajuda, resumos, relatórios, etc. para cada tipo de **Função**
 - Adicionar uma **Função** que faz contas de maneira segura
 - Adicionar equações entre **Funções Exponenciais**

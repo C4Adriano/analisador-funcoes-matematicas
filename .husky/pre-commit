@@ -1,4 +1,4 @@
 npm run typecheck
 npm run build
 npx lint-staged
-git add src
+git add .

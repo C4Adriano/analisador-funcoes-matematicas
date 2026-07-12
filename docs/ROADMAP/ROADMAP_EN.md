@@ -1,6 +1,6 @@
 <div align="center">
     <h1><b>Mathematical Function Analyzer</b></h1>
-    <h2>ROADMAP</h2>
+    <h2>Roadmap</h2>
     <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - present</em></p>
 </div>
 
@@ -17,10 +17,8 @@ The status of each item is updated as development progresses.
 
 ### Planned
 
-- [ ] Verify which **Functions** are valid for a set of known points
-- [ ] Integrated help per function type (summaries and contextual explanations)
-- [ ] Reports per function type
-- [ ] Equations between **Exponential Functions**
+- [ ] Translations into _Spanish_ and other languages
+- [ ] Internal code improvements, such as the migration to **TS**
 
 ### Completed
 
@@ -34,5 +32,6 @@ The status of each item is updated as development progresses.
 - [x] Public release on **GitHub** with **GitHub Pages**
 - [x] Full English translation _(PT-BR / EN)_
 - [x] `/` commands for quick menu access
+- [x] **Trigonometric Functions** _(Sine, Cosine, Tangent)_
 
 ---

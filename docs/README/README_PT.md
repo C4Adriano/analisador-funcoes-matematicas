@@ -1,6 +1,6 @@
 <div align="center">
     <h1><b>Analisador de Funções Matemáticas</b></h1>
-    <h2>README</h2>
+    <h2>LEIA-ME <em>(README)</em></h2>
     <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - presente</em></p>
 </div>
 
@@ -18,16 +18,16 @@
 
 Uma ferramenta interativa, rodando no navegador, que analisa **Funções Matemáticas** e exibe suas propriedades passo a passo — com explicações detalhadas opcionais.
 
-Desenvolvida inteiramente em **_JavaScript_** puro, sem bibliotecas externas.
+Desenvolvida principalmente em **_JavaScript_** puro, com módulos curtos e simples escritos em **_TypeScript_** para checagem de tipos durante o desenvolvimento.
 
 ### Funcionalidades
 
-- **Funções suportadas:** **Constante**, **Afim**, **Quadrática**, **Exponencial**, **Logarítmica**, **Seno**, **Cosseno**, **Tangente** e mais.
+- **Funções suportadas: Constante, Afim, Quadrática, Exponencial, Logarítmica, Seno, Cosseno, Tangente** e mais.
 - **Análises disponíveis:** Domínio, Imagem, Raízes, Vértice, Interseções com os eixos, Estudo do Sinal, Assíntota, Curva, Valores de `x` e `y`, Equações entre **Funções**, etc.
-- **Coeficientes variáveis:** `a`, `b`, `c` podem ser deixados como incógnitas — o programa calcula seus valores a partir de pontos conhecidos.
+- **Coeficientes variáveis:** `a`, `b`, `c` podem ser deixados como incógnitas — o **Programa** calcula seus valores a partir de pontos conhecidos.
 - **Histórico:** Salva e recupera **Funções** anteriores durante a sessão.
-- **Configurações:** **Unicode**, acentos, casas decimais, formatação de texto, separador decimal, precisão de log e divisão, limite de iterações, idioma _(PT-BR / EN)_ e mais.
-- **Bilíngue:** **Português Brasileiro** _(PT-BR)_ e **Inglês** _(EN)_.
+- **Configurações: _Unicode_**, acentos, casas decimais, formatação de texto, separador decimal, precisão de log e divisão, limite de iterações, idioma _(PT-BR / EN)_ e mais.
+- **Bilíngue: Português Brasileiro** _(PT-BR)_ e **Inglês** _(EN)_.
 
 ### Como usar
 
@@ -38,23 +38,26 @@ Obs.: Não é necessário instalar nada.
 
 Ou acesse diretamente: [![GitHub Pages](https://img.shields.io/badge/Access%20here-GitHub%20Pages-blue)](https://c4adriano.github.io/analisador-funcoes-matematicas/)
 
-### [Estrutura do código](https://github.com/C4Adriano/analisador-funcoes-matematicas/tree/main/src/JS)
+### [Estrutura do código](https://github.com/C4Adriano/analisador-funcoes-matematicas/tree/main/src)
 
-| Objeto                                                                                                 | Responsabilidade                                     |
-| ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
-| [`algebra`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/algebra.js)   | Cálculos matemáticos (log, ln, divisão segura, etc.) |
-| [`analyze`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/analyze.js)   | Análise de cada tipo de função                       |
-| [`commands`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/commands.js) | Comandos do programa                                 |
-| [`config`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/config.js)     | Configurações globais do programa                    |
-| [`error`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/error.js)       | Mensagens de erro padronizadas                       |
-| [`helpers`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/helpers.js)   | Cálculos e montagem de resultados comuns             |
-| [`parse`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/parse.js)       | Análise e parsing das **Funções**                    |
-| [`state`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/state.js)       | Gerenciamento do estado do programa                  |
-| [`test`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/test.js)         | Testes do programa                                   |
-| [`ui`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/ui.js)             | Interação com o usuário (menus, entradas, erros)     |
-| [`writing`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/JS/writing.js)   | Formatação, tradução e conversão de texto            |
+| Objeto                                                                                              | Responsabilidade                                         |
+| --------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| [`algebra`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/algebra.js)   | Cálculos **Matemáticos** (log, ln, divisão segura, etc.) |
+| [`analyze`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/analyze.js)   | Análise de cada tipo de função                           |
+| [`checks`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/checks.ts)     | Verificações de tipo para os arquivos `.ts`              |
+| [`commands`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/commands.js) | Comandos do **Programa**                                 |
+| [`config`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/config.ts)     | Configurações globais do **Programa**                    |
+| [`error`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/error.ts)       | Mensagens de erro padronizadas                           |
+| [`helpers`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/helpers.js)   | Cálculos e montagem de resultados comuns                 |
+| [`i18n`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/i18n.ts)         | Funções de idioma _(internacionalização)_                |
+| [`main`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/main.js)         | Orquestra o **Programa**                                 |
+| [`state`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/state.ts)       | Gerenciamento do estado do **Programa**                  |
+| [`ui`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/ui.js)             | Interação com o usuário (menus, entradas, erros)         |
+| [`values`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/values.ts)     | Tipos compartilhados para os arquivos `.ts`              |
+| [`version`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/version.js)   | Versão atual                                             |
+| [`writing`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/writing.js)   | Formatação, tradução e conversão de texto                |
 
-### Histórico resumido
+### Registro de Alterações resumido
 
 | Versão                                                                                                                                                                                                      | Destaque                                                  |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
@@ -64,24 +67,35 @@ Ou acesse diretamente: [![GitHub Pages](https://img.shields.io/badge/Access%20he
 | [4.4](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md#vers%C3%A3o-44---fun%C3%A7%C3%B5es-logar%C3%ADtmicas)                                            | **Funções Logarítmicas**                                  |
 | [4.5](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md#vers%C3%A3o-45---lan%C3%A7amento-oficial)                                                        | Pré-Lançamento                                            |
 | [5.1](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md#vers%C3%A3o-51---melhorias)                                                                      | Sistema de configurações                                  |
-| [5.2](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md#vers%C3%A3o-52---objetos-e-melhorias-das-configura%C3%A7%C3%B5es)                                | Objetos **JS**. Padrão de configurações                   |
+| [5.2](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md#vers%C3%A3o-52---objetos-e-melhorias-das-configura%C3%A7%C3%B5es)                                | Objetos **_JS_**. Padrão de configurações                 |
 | [5.5](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md#vers%C3%A3o-55---melhorias)                                                                      | Objeto `helpers`, histórico de **Funções**, tradução _EN_ |
 | [6.0](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md#vers%C3%A3o-60---lan%C3%A7amento)                                                                | Lançamento no **GitHub**                                  |
 
-Changelog completo em [`CHANGELOG`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md).
+**Registro de Alterações** completo **[`aqui`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md)**.
 
-### Próximas atualizações
+### Próximas Atualizações resumidas
 
-- Verificar quais **Funções** são válidas para pontos conhecidos
-- Comandos com `/` para acesso rápido _(em desenvolvimento)_
-- Ajuda, resumos e relatórios por tipo de função
-- Equações entre Funções Exponenciais
+- Traduções em _Espanhol_ e outros idiomas
+- Melhorias internas de código, como a passagem para **_TS_**
 
-Próximas atualizações completo em [`ROADMAP`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP/ROADMAP_PT.md)
+**Próximas Atualizações** completas **[`aqui`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP/ROADMAP_PT.md)**
+
+### Documentação
+
+- **[Perguntas Frequentes](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/FAQ/FAQ_PT.md)**
+- **[Glossário](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/GLOSSARY/GLOSSARY_PT.md)**
+- **[Registro de Alterações](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md)**
+- **[Próximas Atualizações](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP/ROADMAP_PT.md)**
+- **[Código de Conduta](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CODE_OF_CONDUCT/CODE_OF_CONDUCT_PT.md)**
+- **[Contribuindo](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTING/CONTRIBUTING_PT.md)**
+- **[Contribuidores](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTORS/CONTRIBUTORS_PT.md)**
+- **[Política de Segurança](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/SECURITY.md)**
+- **[Licença](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/LICENSE.md)**
 
 ### Tecnologias
 
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![HTML](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS)
 

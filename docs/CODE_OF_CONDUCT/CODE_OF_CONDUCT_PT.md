@@ -1,6 +1,6 @@
 <div align="center">
     <h1><b>Analisador de Funções Matemáticas</b></h1>
-    <h2>Código de Conduta</h2>
+    <h2>Código de Conduta <em>(Code of Conduct)</em></h2>
     <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - presente</em></p>
 </div>
 
@@ -12,17 +12,17 @@
 
 ### Escopo
 
-Este **Código de Conduta** aplica-se a todos os espaços oficiais deste projeto — incluindo **Issues**, **Discussions**, **Pull Requests**, comentários de commits e qualquer outro canal de comunicação oficialmente associado ao **_Software_**.
+Este **Código de Conduta** aplica-se a todos os espaços oficiais deste **Projeto** — incluindo **_Issues_, Discussions, Pull Requests**, comentários de _commits_ e qualquer outro canal de comunicação oficialmente associado ao **_Software_**.
 
 ### Nossos Padrões
 
-Este é um projeto pessoal. Interações em issues e discussões devem ser respeitosas e construtivas.
+Este é um **Projeto Pessoal**. Interações em **_Issues_** e **Discussões** devem ser respeitosas e construtivas.
 
 Exemplos de comportamento aceitável:
 
 - Reportar bugs de forma clara e objetiva
 - Fazer sugestões com educação
-- Respeitar as decisões do autor
+- Respeitar as decisões do **Autor**
 
 Exemplos de comportamento inaceitável:
 
@@ -32,6 +32,6 @@ Exemplos de comportamento inaceitável:
 
 ### Aplicação
 
-Comportamento inaceitável pode resultar no fechamento de issues/discussões ou no bloqueio do usuário, a critério exclusivo do **Autor**, com ou sem aviso prévio.
+Comportamento inaceitável pode resultar no fechamento de **_Issues_**/**Discussões** ou no bloqueio do usuário, a critério exclusivo do **Autor**, com ou sem aviso prévio.
 
 ---

@@ -1,6 +1,6 @@
 <div align="center">
     <h1><b>Mathematical Function Analyzer</b></h1>
-    <h2>CHANGELOG</h2>
+    <h2>Changelog</h2>
     <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - present</em></p>
 </div>
 

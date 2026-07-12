@@ -4,7 +4,7 @@
 
 **Copyright © 2025–present Adriano Lima (GitHub: [@C4Adriano](https://github.com/C4Adriano)). All rights reserved.**
 
-For the purposes of this **License**, **Software** includes, without limitation, its **Source Code**, **Documentation**, **Assets**, **Media**, **Examples**, **Tests**, **Configuration Files**, **Build Files**, **Scripts**, and any other **Files** or **Materials** distributed with, included in, or otherwise related to the **Software**.
+For the purposes of this **License, Software** includes, without limitation, its **Source Code, Documentation, Assets, Media, Examples, Tests, Configuration Files, Build Files, Scripts**, and any other **Files** or **Materials** distributed with, included in, or otherwise related to the **Software**.
 
 This **Software** is the exclusive property of the **Author**.
 
@@ -20,7 +20,7 @@ Any contribution submitted to this **Software** — including, but not limited t
 
 ### 3. Attribution, Identity, and Representation
 
-The name of the **Software**, its **Title**, **Branding**, **Trademarks**, **Service Marks**, **Logos**, **Icons**, **Visual Identity**, **Domain Names**, and any other identifying elements associated with the **Software** may not be used, reproduced, imitated, modified, registered, or represented without the **Author**'s prior written permission.
+The name of the **Software**, its **Title, Branding, Trademarks, Service Marks, Logos, Icons, Visual Identity, Domain Names**, and any other identifying elements associated with the **Software** may not be used, reproduced, imitated, modified, registered, or represented without the **Author**'s prior written permission.
 
 **Copyright** notices, **Author** identification, ownership notices, attribution notices, and this **License** may not be removed, altered, concealed, falsified, replaced, or circumvented.
 
@@ -60,7 +60,7 @@ Any rights not expressly granted by the **Author** are reserved.
 
 **Direitos Autorais © 2025–presente Adriano Lima (GitHub: [@C4Adriano](https://github.com/C4Adriano)). Todos os direitos reservados.**
 
-Para os fins desta **Licença**, **_Software_** inclui, sem limitação, seu **Código-Fonte**, **Documentação**, **Recursos**, **Mídias**, **Exemplos**, **Testes**, **Arquivos de Configuração**, **Arquivos de Compilação**, **_Scripts_** e quaisquer outros **Arquivos** ou **Materiais** distribuídos com, incluídos em, ou de qualquer outra forma relacionados ao **_Software_**.
+Para os fins desta **Licença, _Software_** inclui, sem limitação, seu **Código-Fonte, Documentação, Recursos, Mídias, Exemplos, Testes, Arquivos de Configuração, Arquivos de Compilação, _Scripts_** e quaisquer outros **Arquivos** ou **Materiais** distribuídos com, incluídos em, ou de qualquer outra forma relacionados ao **_Software_**.
 
 Este **_Software_** é de propriedade exclusiva do **Autor**.
 
@@ -76,7 +76,7 @@ Qualquer contribuição submetida a este **_Software_** — incluindo, entre out
 
 ### 3. Atribuição, Identidade e Representação
 
-O nome do **_Software_**, seu **Título**, **Identidade Visual**, **Marcas**, **Marcas de Serviço**, **Logotipos**, **Ícones**, **Nomes de Domínio** e quaisquer outros elementos de identificação associados ao **_Software_** não poderão ser utilizados, reproduzidos, imitados, modificados, registrados ou representados sem autorização prévia e por escrito do **Autor**.
+O nome do **_Software_**, seu **Título, Identidade Visual, Marcas, Marcas de Serviço, Logotipos, Ícones, Nomes de Domínio** e quaisquer outros elementos de identificação associados ao **_Software_** não poderão ser utilizados, reproduzidos, imitados, modificados, registrados ou representados sem autorização prévia e por escrito do **Autor**.
 
 Os avisos de **Direitos Autorais**, a identificação do **Autor**, os avisos de titularidade, os avisos de atribuição de autoria e esta **Licença** não poderão ser removidos, alterados, ocultados, falsificados, substituídos ou burlados.
 

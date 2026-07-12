@@ -1,6 +1,6 @@
 <div align="center">
     <h1><b>Mathematical Function Analyzer</b></h1>
-    <h2>CODE OF CONDUCT</h2>
+    <h2>Code of Conduct</h2>
     <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - present</em></p>
 </div>
 
@@ -12,17 +12,17 @@
 
 ### Scope
 
-This **Code of Conduct** applies to all official spaces of this project — including **Issues**, **Discussions**, **Pull Requests**, commit comments, and any other communication channel officially associated with the **Software**.
+This **Code of Conduct** applies to all official spaces of this **Project** — including **Issues, Discussions, Pull Requests**, commit comments, and any other communication channel officially associated with the **Software**.
 
 ### Our Standards
 
-This is a personal project. Interactions in issues and discussions must be respectful and constructive.
+This is a **Personal Project**. Interactions in **Issues** and **Discussions** must be respectful and constructive.
 
 Examples of acceptable behavior:
 
 - Reporting bugs clearly and objectively
 - Making suggestions politely
-- Respecting the author's decisions
+- Respecting the **Author**'s decisions
 
 Examples of unacceptable behavior:
 
@@ -32,6 +32,6 @@ Examples of unacceptable behavior:
 
 ### Enforcement
 
-Unacceptable behavior may result in issues/discussions being closed or the user being blocked, at the **Author**'s sole discretion, with or without prior notice.
+Unacceptable behavior may result in **Issues**/**Discussions** being closed or the user being blocked, at the **Author**'s sole discretion, with or without prior notice.
 
 ---

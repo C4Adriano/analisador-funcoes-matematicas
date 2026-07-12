@@ -1,6 +1,6 @@
 <div align="center">
     <h1><b>Analisador de Funções Matemáticas</b></h1>
-    <h2>Roteiro</h2>
+    <h2>Próximas Atualizações <em>(Roadmap)</em></h2>
     <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - presente</em></p>
 </div>
 
@@ -17,10 +17,8 @@ O status de cada item é atualizado conforme o desenvolvimento avança.
 
 ### Planejado
 
-- [ ] Verificar quais funções são válidas para um conjunto de pontos conhecidos
-- [ ] Ajuda integrada por tipo de função (resumos e explicações contextuais)
-- [ ] Relatórios por tipo de função
-- [ ] Equações entre **Funções Exponenciais**
+- [ ] Traduções em _Espanhol_ e outros idiomas
+- [ ] Melhorias internas de código, como a passagem para **_TS_**
 
 ### Concluído
 
@@ -29,10 +27,11 @@ O status de cada item é atualizado conforme o desenvolvimento avança.
 - [x] Coeficientes como variáveis (incógnitas calculadas a partir de pontos)
 - [x] **Funções Logarítmicas**
 - [x] Sistema de configurações
-- [x] Arquitetura em objetos **JS**
+- [x] Arquitetura em objetos **_JS_**
 - [x] Histórico de funções durante a sessão
 - [x] Lançamento público no **GitHub** com **GitHub Pages**
 - [x] Tradução completa para inglês _(PT-BR / EN)_
 - [x] Comandos com `/` para acesso rápido aos menus
+- [x] **Funções Trigonométricas** _(Seno, Cosseno, Tangente)_
 
 ---

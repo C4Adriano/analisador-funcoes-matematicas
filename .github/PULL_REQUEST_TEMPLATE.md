@@ -1,8 +1,8 @@
 # Pull Request
 
-> ⚠️ **English:** This is a personal project and pull requests are not accepted.
-> Please open an [issue](https://github.com/C4Adriano/analisador-funcoes-matematicas/issues) instead.
-> ⚠️ **Português:** Este é um projeto pessoal e pull requests não são aceitos.
-> Por favor, abre uma [issue](https://github.com/C4Adriano/analisador-funcoes-matematicas/issues) no lugar.
+> ⚠️ **English:** This is a **Personal Project** and Pull Requests are not accepted.
+> Please open an **[Issue](https://github.com/C4Adriano/analisador-funcoes-matematicas/issues)** instead.
+> ⚠️ **Português:** Este é um **Projeto Pessoal** e _Pull Requests_ não são aceitos.
+> Por favor, abre uma **_[Issue](https://github.com/C4Adriano/analisador-funcoes-matematicas/issues)_** no lugar.
 
 ---
