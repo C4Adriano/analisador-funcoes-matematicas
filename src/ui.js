@@ -298,10 +298,10 @@ export const Ui = {
             // Polinomial
             if (coefA == 0 && coefB == 0) {
                 // Constante
-                if (typeof coefC == "string") {
+                if (coefC == "c") {
                     // Variável
                     funcStr += "c"
-                } else if (typeof coefC == "number") {
+                } else if (coefC != "c") {
                     // Não variável
                     funcStr += String(coefC)
                 }
@@ -315,10 +315,10 @@ export const Ui = {
                 }
             } else if (coefA == 0 && coefB != 0) {
                 // Afim
-                if (typeof coefB == "string") {
+                if (coefB == "b") {
                     // Variável
                     funcStr += "b · x"
-                } else if (typeof coefB == "number") {
+                } else if (coefB != "b") {
                     // Não variável
                     if (Algebra.absolute(coefB) == 1) {
                         // Se for 1 ou -1, não mostra o número, só o sinal
@@ -333,10 +333,10 @@ export const Ui = {
                     }
                 }
 
-                if (typeof coefC == "string") {
+                if (coefC == "c") {
                     // Variável
                     funcStr += " + c"
-                } else if (typeof coefC == "number") {
+                } else if (coefC != "c") {
                     // Não variável
                     if (coefC > 0) {
                         // Se for positivo, mostra o sinal de mais
@@ -362,10 +362,10 @@ export const Ui = {
                 }
             } else if (coefA != 0) {
                 // Quadrática
-                if (typeof coefA == "string") {
+                if (coefA == "a") {
                     // Variável
                     funcStr += "a · x²"
-                } else if (typeof coefA == "number") {
+                } else if (coefA != "a") {
                     // Não variável
                     if (Algebra.absolute(coefA) == 1) {
                         // Se for 1 ou -1, não mostra o número, só o sinal
@@ -380,10 +380,10 @@ export const Ui = {
                     }
                 }
 
-                if (typeof coefB == "string") {
+                if (coefB == "b") {
                     // Variável
                     funcStr += " + b · x"
-                } else if (typeof coefB == "number" && coefB != 0) {
+                } else if (coefB != "b" && coefB != 0) {
                     // Não variável e diferente de zero
                     if (coefB > 0) {
                         // Se for positivo, mostra o sinal de mais
@@ -402,10 +402,10 @@ export const Ui = {
                     }
                 }
 
-                if (typeof coefC == "string") {
+                if (coefC == "c") {
                     // Variável
                     funcStr += " + c"
-                } else if (typeof coefC == "number" && coefC != 0) {
+                } else if (coefC != "c" && coefC != 0) {
                     // Não variável
                     if (coefC > 0) {
                         // Se for positivo, mostra o sinal de mais
@@ -432,26 +432,26 @@ export const Ui = {
             }
         } else if (funcExp && funcTrig == "") {
             // Exponencial
-            if (typeof coefB == "number" && coefB != 0) {
+            if (coefB != "b" && coefB != 0) {
                 // Não variável
                 if (coefB != 1) {
                     // Se for diferente de 1, mostra o número
                     funcStr += String(coefB) + " × "
                 }
-            } else if (typeof coefB == "string") {
+            } else if (coefB == "b") {
                 // Variável
                 funcStr += "b × "
             }
 
-            if (typeof coefA == "number" && coefA != 0) {
+            if (coefA != "a" && coefA != 0) {
                 // Não variável
                 funcStr += String(coefA) + "ˣ"
-            } else if (typeof coefA == "string") {
+            } else if (coefA == "a") {
                 // Variável
                 funcStr += "aˣ"
             }
 
-            if (typeof coefC == "number" && coefC != 0) {
+            if (coefC != "c" && coefC != 0) {
                 // Não variável
                 if (coefC > 0) {
                     // Se for positivo, mostra o sinal de mais
@@ -460,7 +460,7 @@ export const Ui = {
                     // Se for negativo, mostra o sinal de menos e o número positivo
                     funcStr += " − " + String(-coefC)
                 }
-            } else if (typeof coefC == "string") {
+            } else if (coefC == "c") {
                 // Variável
                 funcStr += " + c"
             }
@@ -478,25 +478,25 @@ export const Ui = {
             }
         } else if (funcLog && funcTrig == "") {
             // Logarítmica
-            if (typeof coefB == "number" && coefB != 0) {
+            if (coefB != "b" && coefB != 0) {
                 // Não variável
                 if (coefB != 1) {
                     funcStr += String(coefB) + " × "
                 }
-            } else if (typeof coefB == "string") {
+            } else if (coefB == "b") {
                 // Variável
                 funcStr += "b × "
             }
 
-            if (typeof coefA == "number" && coefA != 0) {
+            if (coefA != "a" && coefA != 0) {
                 // Não variável
                 funcStr += "log" + Writing.subscript(coefA) + "(x)"
-            } else if (typeof coefA == "string") {
+            } else if (coefA == "a") {
                 // Variável
                 funcStr += "logₐ(x)"
             }
 
-            if (typeof coefC == "number" && coefC != 0) {
+            if (coefC != "c" && coefC != 0) {
                 // Não variável
                 if (coefC > 0) {
                     // Se for positivo, mostra o sinal de mais
@@ -505,7 +505,7 @@ export const Ui = {
                     // Se for negativo, mostra o sinal de menos e o número positivo
                     funcStr += " − " + String(-coefC)
                 }
-            } else if (typeof coefC == "string") {
+            } else if (coefC == "c") {
                 // Variável
                 funcStr += " + c"
             }
@@ -526,24 +526,24 @@ export const Ui = {
             }
         } else if (funcTrig != "") {
             // Trigonométrica
-            if (typeof coefB == "number" && coefB != 0) {
+            if (coefB != "b" && coefB != 0) {
                 // Não variável
                 if (coefB != 1) {
                     funcStr += String(coefB) + " × "
                 }
-            } else if (typeof coefB == "string") {
+            } else if (coefB == "b") {
                 // Variável
                 funcStr += "b × "
             }
 
-            if (typeof coefA == "number" && coefA != 0) {
+            if (coefA != "a" && coefA != 0) {
                 // Não variável
                 funcStr += funcTrig + "(" + String(coefA) + " · x)"
-            } else if (typeof coefA == "string") {
+            } else if (coefA == "a") {
                 funcStr += funcTrig + "(a · x)"
             }
 
-            if (typeof coefC == "number" && coefC != 0) {
+            if (coefC != "c" && coefC != 0) {
                 // Não variável
                 if (coefC > 0) {
                     // Se for positivo, mostra o sinal de mais
@@ -552,7 +552,7 @@ export const Ui = {
                     // Se for negativo, mostra o sinal de menos e o número positivo
                     funcStr += " − " + String(-coefC)
                 }
-            } else if (typeof coefC == "string") {
+            } else if (coefC == "c") {
                 // Variável
                 funcStr += " + c"
             }
@@ -582,16 +582,16 @@ export const Ui = {
             value = Ui.input(message, explanation, true, places, allowCommands)
 
             // Comandos
-            if (typeof value == "string" && Checks.isCommand(value)) {
+            if (Checks.isCommand(value)) {
                 return value
             }
 
             // Encerrar intervalo
-            else if (typeof value == "string" && value == "end") {
+            else if (value == "end") {
                 return 0
             }
 
-            if (typeof value == "number" && !(min <= value && value <= max)) {
+            if (!(min <= value && value <= max)) {
                 // Se o valor não estiver entre o intervalo, mostra um erro
                 Error.range(min, max)
                 i = false
