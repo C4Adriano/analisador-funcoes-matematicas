@@ -244,7 +244,7 @@ export const Commands = {
                 long: tr("Abre o menu de configurações do programa.", "Opens the program settings menu."),
                 variations: ["config", "configuracoes", "conf", "settings", "cfg"],
                 action(arg, parts) {
-                    if ((parts[1] = undefined)) {
+                    if (parts[1] != undefined) {
                         const configKey = parts[1]
                         if (Checks.isConfigKey(configKey)) {
                             return Commands.change(configKey, arg)
@@ -522,7 +522,7 @@ export const Commands = {
                     "uk",
                 ],
                 action(arg, parts) {
-                    let target = (parts[1] = undefined ? parts[1] : parts[0])
+                    let target = parts[1] != undefined ? parts[1] : parts[0]
                     target = Writing.noAccents(Writing.lowercase(target))
 
                     // Português
@@ -599,7 +599,7 @@ export const Commands = {
                     }
 
                     // Erro — só mostra se o utilizador tentou passar um argumento explícito
-                    else if ((parts[1] = undefined)) {
+                    else if (parts[1] != undefined) {
                         Ui.error(
                             tr("Língua inválida", "Invalid language"),
                             "“" + target + "” " + tr("não é uma língua válida", "is not a valid language")
@@ -649,12 +649,12 @@ export const Commands = {
 
         cmdKeys.forEach(key => {
             const cmd = cmds[key]
-            if ((cmd = undefined && cmd.variations.includes(specific))) {
+            if (cmd != undefined && cmd.variations.includes(specific)) {
                 canonical = key
             }
         })
 
-        return (cmds[canonical] = undefined ? canonical : null)
+        return cmds[canonical] != undefined ? canonical : null
     },
 
     /**
@@ -684,12 +684,12 @@ export const Commands = {
     help(specific = "") {
         const cmds = Commands.listCmd()
 
-        if ((specific = "")) {
+        if (specific != "") {
             const canonical = Commands.resolveCmd(specific)
 
-            if ((canonical = null)) {
+            if (canonical != null) {
                 const cmd = cmds[canonical]
-                if ((cmd = undefined)) {
+                if (cmd != undefined) {
                     const shortList = [canonical].concat(cmd.variations).join(", ")
                     Ui.display(
                         "“/" + canonical + "” — " + cmd.long + "\n" + tr("Variações: ", "Variations: ") + shortList
@@ -750,7 +750,7 @@ export const Commands = {
             } else if (answer == 9) {
                 page++
             }
-        } while ((answer = 0))
+        } while (answer != 0)
 
         return null
     },
@@ -830,7 +830,7 @@ export const Commands = {
             } else if (answer == 9) {
                 page++
             }
-        } while ((answer = 0))
+        } while (answer != 0)
 
         return null
     },

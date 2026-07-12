@@ -260,7 +260,7 @@ export const Ui = {
 
             // Limite
             if (Helpers.exceededLimit(++limit)) {
-                return "end"
+                valid = true
             }
         } while (!valid)
 

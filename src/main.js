@@ -62,7 +62,9 @@ const description = tr(
 
 const locales = {
     pt: "pt_BR",
+    "pt-br": "pt_BR",
     en: "en_US",
+    "en-us": "en_US",
 }
 
 document.documentElement.lang = Config.language
@@ -570,7 +572,7 @@ do {
                 }
 
                 // Escolha
-                answer = Ui.range(message, "", 0, State.history.length - 1)
+                answer = Ui.range(message, "", 0, State.history.length)
 
                 if (answer != 0) {
                     // Restaura função
