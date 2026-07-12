@@ -196,7 +196,7 @@ export const Ui = {
         number = false,
         places = Config.decimalPlaces,
         allowCommands = false,
-        angle = Config.degrees
+        angle = false
     ) {
         let raw = "",
             text = "",
@@ -260,7 +260,7 @@ export const Ui = {
 
             // Limite
             if (Helpers.exceededLimit(++limit)) {
-                valid = true
+                return "end"
             }
         } while (!valid)
 

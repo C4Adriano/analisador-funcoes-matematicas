@@ -19,7 +19,7 @@ export const Commands = {
      * @since v6.1.0
      */
     process(raw = "") {
-        if (raw.length == 0 || raw[0] == "/") {
+        if (raw.length == 0 || raw[0] != "/") {
             return null
         }
 
@@ -931,10 +931,10 @@ export const Commands = {
             return null
         }
 
-        if (value == undefined) {
-            Config[name] = value
-        } else if (typeof currentValue === "boolean") {
+        if (typeof currentValue === "boolean" && value == undefined) {
             Config[name] = !currentValue
+        } else if (value != undefined && typeof currentValue === typeof value) {
+            Config[name] = value
         } else {
             Ui.error("[Commands.change] Valor inválido.", "Esta configuração não suporta alternância simples.", true)
             return null

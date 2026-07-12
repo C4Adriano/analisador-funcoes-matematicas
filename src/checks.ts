@@ -19,7 +19,7 @@ export const Checks = {
     },
 
     isFiniteNumber(value: unknown): value is Numeric {
-        return Checks.isNumeric(value) || (Checks.isText(value) && Number.isFinite(value))
+        return Checks.isNumeric(value) || (Checks.isValidText(value) && isFinite(Number(value)))
     },
 
     isValue(value: unknown): value is Value {
