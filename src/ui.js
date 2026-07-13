@@ -211,7 +211,6 @@ export const Ui = {
             // Cancelar
             if (raw == null) {
                 valid = false
-                continue
             } else {
                 text = String(raw).trim()
                 valid = text != ""
@@ -230,7 +229,7 @@ export const Ui = {
             if (valid && number) {
                 if (angle == "rad") {
                     value = Writing.parseAngle(String(text))
-                } else if (angle == "deg") {
+                } else {
                     value = Number(Writing.decimal(text, true))
                 }
                 valid = isFinite(value)
