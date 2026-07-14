@@ -2,8 +2,8 @@ import { Commands } from "./commands.js"
 import { Config } from "./config.js"
 import { Writing } from "./writing.js"
 
-import type { Numeric, Value, Text, ValueArray, CommandsNames } from "./values.js"
 import type { ConfigKey } from "./config.js"
+import type { CommandsNames, Numeric, Text, Value, ValueArray } from "./values.js"
 
 export const Checks = {
     isText(value: unknown): value is Text {

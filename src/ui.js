@@ -23,9 +23,9 @@ export const Ui = {
      */
     display(message = "", explanation = "", debug = Config.debug) {
         if (debug) {
-            console.log(message)
+            console.warn(message)
             if (explanation != "") {
-                console.log(explanation)
+                console.warn(explanation)
             }
         } else {
             alert(Writing.format(message, explanation))
@@ -42,9 +42,9 @@ export const Ui = {
      */
     confirm(message = "", explanation = "", debug = Config.debug) {
         if (debug) {
-            console.log(message)
+            console.warn(message)
             if (explanation != "") {
-                console.log(explanation)
+                console.warn(explanation)
             }
             return true
         } else {
@@ -86,6 +86,7 @@ export const Ui = {
             // Se tipo for verdadeiro, é um aviso de confirmação, como um confirm
             return Ui.confirm("=== " + tr("Aviso", "Warning") + " ===\n" + message, explanation, debug)
         }
+        return null
     },
 
     /**
@@ -558,6 +559,7 @@ export const Ui = {
         }
 
         Ui.display("=== " + tr("Função Atual", "Current Function") + " ===\n" + Writing.decimal(funcStr))
+        return ""
     },
 
     /**

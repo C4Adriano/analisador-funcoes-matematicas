@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from "vitest"
-import { Helpers } from "../src/helpers.js"
+import { beforeEach, describe, expect, it } from "vitest"
 import { Config } from "../src/config.js"
+import { Helpers } from "../src/helpers.js"
 import { State } from "../src/state.js"
 import "./setup.js"
 

@@ -333,7 +333,7 @@ export const Writing = {
 
     /**
      * [TEXTO] Manipulação de separadores decimais
-     * @param number - Número
+     * @param {string | number} number - Número
      * @param invert - Para inverter e não afetar nas contas
      * @param round - Arredondar
      * @param places - Casas decimais

@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from "vitest"
-import { tr, trArr, changeLanguage } from "../src/i18n.js"
+import { beforeEach, describe, expect, it } from "vitest"
 import { Config } from "../src/config.js"
+import { changeLanguage, tr, trArr } from "../src/i18n.js"
 import "./setup.js"
 
 beforeEach(() => {

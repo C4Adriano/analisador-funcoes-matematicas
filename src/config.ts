@@ -1,7 +1,7 @@
 import defaultConfigJson from "../src/JSON/config.json" with { type: "json" }
 import { VERSION } from "./version.js"
 
-import type { Text, Degrees, Language, Numeric, Places, Precision } from "./values.js"
+import type { Degrees, Language, Numeric, Places, Precision, Text } from "./values.js"
 
 /**
  * Tipo de configuração baseado no JSON
@@ -74,7 +74,7 @@ export function loadConfig(): void {
         const newValue = parsed[key]
 
         if (typeof newValue === currentType) {
-            ;(Config as any)[key] = newValue
+            ;(Config as Record<string, unknown>)[key] = newValue
         } else {
             console.warn(
                 `[loadConfig] Tipo inválido para '${String(key)}'.`,

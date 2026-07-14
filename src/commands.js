@@ -1,6 +1,6 @@
-import { Config, saveConfig, resetConfig } from "./config.js"
 import { Checks } from "./checks.js"
-import { tr, changeLanguage } from "./i18n.js"
+import { Config, resetConfig, saveConfig } from "./config.js"
+import { changeLanguage, tr } from "./i18n.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { VERSION } from "./version.js"
@@ -235,7 +235,7 @@ export const Commands = {
                     "Displays information about the Project, Author and repository."
                 ),
                 variations: ["sobre", "about", "info", "informacoes", "informacao", "projeto"],
-                action(arg) {
+                action() {
                     return Commands.about()
                 },
             },

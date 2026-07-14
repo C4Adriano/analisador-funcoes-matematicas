@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from "vitest"
-import { Config, DEFAULT_CONFIG, loadConfig, saveConfig, resetConfig } from "../src/config.js"
+import { beforeEach, describe, expect, it } from "vitest"
+import { Config, DEFAULT_CONFIG, loadConfig, resetConfig, saveConfig } from "../src/config.js"
 import "./setup.js"
 
 beforeEach(() => {

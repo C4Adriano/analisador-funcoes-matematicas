@@ -1,5 +1,4 @@
 import { Algebra } from "./algebra.js"
-import { Commands } from "./commands.js"
 import { Checks } from "./checks.js"
 import { Helpers } from "./helpers.js"
 import { tr, trArr } from "./i18n.js"
@@ -60,9 +59,9 @@ export const Analyze = {
                 // Imagem
                 else if (option == 2) {
                     Helpers.range(
-                        "= " + Writing.decimal(coefC),
+                        `= ${Writing.decimal(coefC)}`,
                         ".",
-                        "y = c ⇒ ƒ(x) " + tr("assume apenas esse valor", "takes only this value")
+                        `y = c ⇒ ƒ(x) ${tr("assume apenas esse valor", "takes only this value")}`
                     )
                 }
 
@@ -261,31 +260,19 @@ export const Analyze = {
                     Helpers.showDelta(
                         delta[0],
                         tr("Não há raízes reais.", "There are no real roots"),
-                        tr("Raiz real: ", "Real root: ") + "x₁ = x₂ = " + Writing.decimal(delta[1]),
-                        tr("Raízes reais: ", "Real roots: ") +
-                            "x₁ = " +
-                            Writing.decimal(delta[1]) +
-                            ", x₂ = " +
-                            Writing.decimal(delta[2])
+                        `${tr("Raiz real", "Real root")}: x₁ = x₂ = ${Writing.decimal(delta[1])}`,
+                        `${tr("Raízes reais", "Real roots")}: x₁ = ${Writing.decimal(delta[1])}, x₂ = ${Writing.decimal(delta[2])}`
                     )
                 }
 
                 // Vértice
                 else if (option == 3) {
                     Ui.display(
-                        tr("Vértice: ", "Vertex: ") +
-                            "(" +
-                            Writing.decimal(vertex[0]) +
-                            ", " +
-                            Writing.decimal(vertex[1]) +
-                            ")",
-                        tr(
+                        `${tr("Vértice", "Vertex")}: (${Writing.decimal(vertex[0])}, ${Writing.decimal(vertex[1])})`,
+                        `${tr(
                             "Ponto mais baixo (ou mais alto, conforme a concavidade) da função.",
                             "Lowest (or highest, depending on concavity) point of the function"
-                        ) +
-                            "\n" +
-                            tr("Ponto: ", "Point: ") +
-                            "(-b / (2 · a), -Δ / (4 · a))"
+                        )}\n${tr("Ponto", "Point")}: (-b / (2 · a), -Δ / (4 · a))`
                     )
                 }
 
@@ -298,12 +285,12 @@ export const Analyze = {
                 else if (option == 5) {
                     if (coefA > 0) {
                         Helpers.range(
-                            "∈ [" + Writing.decimal(vertex[1]) + ", ∞)",
+                            `∈ [${Writing.decimal(vertex[1])}, ∞)`,
                             tr(" entre o vértice e o ∞.", " between the vertex and the ∞.")
                         )
                     } else if (coefA < 0) {
                         Helpers.range(
-                            "∈ (-∞, " + Writing.decimal(vertex[1]) + "]",
+                            `∈ (-∞, ${Writing.decimal(vertex[1])} ]`,
                             tr(" entre -∞ e o vértice.", " between the -∞ and the vertex")
                         )
                     }
@@ -317,16 +304,8 @@ export const Analyze = {
                     Helpers.showDelta(
                         delta[0],
                         tr("Não há interseção com o eixo x.", "There is no intersection with the x‐axis"),
-                        tr("Interseção com o eixo x: ", "Intersection with the x‐axis: ") +
-                            "(" +
-                            Writing.decimal(delta[1]) +
-                            ", 0)",
-                        tr("Interseções com o eixo x: ", "Intersections with the x‐axis: ") +
-                            "(" +
-                            Writing.decimal(delta[1]) +
-                            ", 0), (" +
-                            Writing.decimal(delta[2]) +
-                            ", 0)"
+                        `${tr("Interseção com o eixo x", "Intersection with the x‐axis")}: (${Writing.decimal(delta[1])}, 0)`,
+                        `${tr("Interseções com o eixo x", "Intersections with the x‐axis")}: (${Writing.decimal(delta[1])}, 0), (${Writing.decimal(delta[2])}, 0)`
                     )
                 }
 
@@ -422,7 +401,7 @@ export const Analyze = {
                 // Assíntota
                 else if (option == 3) {
                     Ui.display(
-                        tr("Assíntota horizontal: ", "Horizontal asymptote: ") + "y = " + Writing.decimal(coefC),
+                        `${tr("Assíntota horizontal", "Horizontal asymptote")}: y = ${Writing.decimal(coefC)}`,
                         "y = c"
                     )
                 }
@@ -436,12 +415,12 @@ export const Analyze = {
                 else if (option == 5) {
                     if (coefB > 0) {
                         Helpers.range(
-                            "∈ (" + Writing.decimal(coefC) + ", ∞)",
+                            `∈ (${Writing.decimal(coefC)}, ∞)`,
                             tr(" entre c e ∞, exceto o próprio c.", " between c and ∞, excluding c itself")
                         )
                     } else {
                         Helpers.range(
-                            "∈ (-∞, " + Writing.decimal(coefC) + ")",
+                            `∈ (-∞, ${Writing.decimal(coefC)})`,
                             tr(" entre -∞ e c, exceto o próprio c.", " between -∞ and c, excluding c itself")
                         )
                     }
@@ -638,20 +617,13 @@ export const Analyze = {
                 } else if (option == 3) {
                     Helpers.domain()
                 } else if (option == 4) {
-                    Helpers.range(
-                        "∈ [" +
-                            Writing.decimal(-Algebra.absolute(coefB) + coefC) +
-                            ", " +
-                            Writing.decimal(Algebra.absolute(coefB) + coefC) +
-                            "]",
-                        "",
-                        "−|b| + c ≤ y ≤ |b| + c"
-                    )
+                    const modB = Writing.decimal(Algebra.absolute(coefB) + coefC)
+                    Helpers.range(`∈ [${-modB}, ${modB}]`, "", "−|b| + c ≤ y ≤ |b| + c")
                 } else if (option == 5) {
                     Helpers.xAxis(
                         root,
                         "arcsin(−c / b) / a",
-                        "|(−c / b)| > 1, " + tr("sem raiz real", "without real root")
+                        `|(−c / b)| > 1, ${tr("sem raiz real", "without real root")}`
                     )
                 }
             }

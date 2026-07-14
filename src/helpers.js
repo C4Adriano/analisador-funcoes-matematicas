@@ -231,8 +231,7 @@ export const Helpers = {
      * @since v6.1.0
      */
     sign(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
-        let operations = { positive: ">", negative: "<" },
-            words = { positive: tr("positiva", "positive"), negative: tr("negativa", "negative") }
+        let operations = { positive: ">", negative: "<" }
 
         if (!funcExp && !funcLog && funcTrig == "") {
             // Polinomial

@@ -22,7 +22,7 @@ export const Algebra = {
      */
     round(number = 0, places = Config.decimalPlaces) {
         if (!Checks.isFiniteNumber(places) || places < 0) {
-            Ui.error("[Algebra.round] 'places' inválido: " + places, "Usando padrão: " + Config.decimalPlaces, true)
+            Ui.error(`"[Algebra.round] 'places' inválido: ${places}`, `Usando padrão: ${Config.decimalPlaces}`, true)
             places = Config.decimalPlaces
         }
 
@@ -46,15 +46,15 @@ export const Algebra = {
      */
     variables(name = "x") {
         if (name.trim() == "") {
-            Ui.error("[Algebra.variables] 'name' inválido: " + name, "Usando 'x'", true)
+            Ui.error(`[Algebra.variables] 'name' inválido: ${name}`, `Usando 'x'`, true)
             name = "x"
         }
 
         let value = Ui.input(
             name + " = ",
             tr(
-                "Digite “" + name + "” caso queira que “" + name + "” seja uma incógnita.",
-                "Type “" + name + "” if you want “" + name + "” to be an unknown variable."
+                `Digite “${name}” caso queira que “${name}” seja uma incógnita.`,
+                `Type “${name}” if you want “${name}” to be an unknown variable.`
             )
         )
 
@@ -108,19 +108,19 @@ export const Algebra = {
      */
     equations(func1 = [0, 0, 0], func2 = [0, 0, 0]) {
         if (!Array.isArray(func1) || func1.length != 3) {
-            Ui.error("[Algebra.equations] 'func1' inválido: " + func1, "Usando [0, 0, 0]", true)
+            Ui.error(`[Algebra.equations] 'func1' inválido: ${func1}`, "Usando [0, 0, 0]", true)
             func1 = [0, 0, 0]
         }
         if (!Array.isArray(func2) || func2.length != 3) {
-            Ui.error("[Algebra.equations] 'func2' inválido: " + func2, "Usando [0, 0, 0]", true)
+            Ui.error(`[Algebra.equations] 'func2' inválido: ${func2}`, "Usando [0, 0, 0]", true)
             func2 = [0, 0, 0]
         }
         if (!func1.every(value => Checks.isFiniteNumber(value))) {
-            Ui.error("[Algebra.equations] 'func1' contém valores inválidos: " + func1, "Usando [0, 0, 0]", true)
+            Ui.error(`[Algebra.equations] 'func1' contém valores inválidos: ${func1}`, "Usando [0, 0, 0]", true)
             func1 = [0, 0, 0]
         }
         if (!func2.every(value => Checks.isFiniteNumber(value))) {
-            Ui.error("[Algebra.equations] 'func2' contém valores inválidos: " + func2, "Usando [0, 0, 0]", true)
+            Ui.error(`[Algebra.equations] 'func2' contém valores inválidos: ${func2}`, "Usando [0, 0, 0]", true)
             func2 = [0, 0, 0]
         }
 
@@ -162,7 +162,7 @@ export const Algebra = {
         else if (coefA == 0 && coefB != 0) {
             x = Algebra.division(-coefC, coefB)
             Ui.display(
-                tr("As funções se encontram em: ", "The functions coincide at: ") + "x = " + Writing.decimal(x),
+                `${tr("As funções se encontram em", "The functions coincide at")}: x = ${Writing.decimal(x)}`,
                 "x = −c / b"
             )
         }
@@ -176,12 +176,8 @@ export const Algebra = {
                     "As funções não possuem pontos de interseção reais",
                     "The functions have no real intersection points"
                 ),
-                tr("As funções se encontram em: ", "The functions intersect at: ") + "x = " + Writing.decimal(delta[1]),
-                tr("As funções se encontram em: ", "The functions intersect at: ") +
-                    "x₁ = " +
-                    Writing.decimal(delta[1]) +
-                    ", x₂ = " +
-                    Writing.decimal(delta[2])
+                `${tr("As funções se encontram em", "The functions intersect at")}: x = ${Writing.decimal(delta[1])}`,
+                `${tr("As funções se encontram em", "The functions intersect at")}: x₁ = ${Writing.decimal(delta[1])}, x₂ = ${Writing.decimal(delta[2])}`
             )
         }
     },
@@ -702,7 +698,7 @@ export const Algebra = {
         if (denominator == 0 || !Checks.isFiniteNumber(numerator) || !Checks.isFiniteNumber(denominator)) {
             Ui.error(
                 "[Algebra.division] Entrada inválida.",
-                "numerator: " + String(numerator) + "denominator: " + String(denominator),
+                `numerator: ${String(numerator)} denominator: ${String(denominator)}`,
                 true
             )
             return NaN
@@ -742,7 +738,7 @@ export const Algebra = {
 
         // Valida
         if (!Checks.isFiniteNumber(number)) {
-            Ui.error("[Algebra.absolute] Valor inválido: " + number, "", true)
+            Ui.error(`[Algebra.absolute] Valor inválido: ${number}`, "", true)
             return NaN
         }
 

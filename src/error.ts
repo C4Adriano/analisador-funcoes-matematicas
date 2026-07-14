@@ -1,7 +1,7 @@
 import { tr } from "./i18n.js"
 import { Ui } from "./ui.js"
 
-import type { Text, Numeric } from "./values.js"
+import type { Numeric, Text } from "./values.js"
 
 /**
  * [ERRO] Mensagens de erro padronizadas do programa
@@ -17,20 +17,21 @@ export const Error = {
      */
     range(min: Numeric = 0, max: Numeric = 1): void {
         if (!isFinite(min) || !isFinite(max)) {
-            Ui.error("[Error.range] Parâmetros inválidos.", "Min: " + min + " | Max: " + max, true)
+            Ui.error("[Error.range] Parâmetros inválidos.", `Min: ${min} | Max: ${max}`, true)
             min = 0
             max = 1
         }
 
-        Ui.error(
-            tr("ERRO-001: Valor fora do intervalo. Escolha entre ", "ERROR-001: Value out of range. Choose between ") +
-                /* Se min = 0, o range exibido começa em 1 (0 é reservado para "voltar/sair") */
-                String(min + (min == 0 ? 1 : 0)) +
-                tr(" e ", " and ") +
-                String(max) +
-                (min == 0 ? tr(" ou 0 para voltar / sair", " or 0 to go back / exit") : ""),
-            tr("Valor fora do intervalo permitido.", "Value outside the allowed range.")
-        )
+        const firstValue = min + (min == 0 ? 1 : 0)
+
+        const msg = `${tr(
+            "ERRO-001: Valor fora do intervalo. Escolha entre",
+            "ERROR-001: Value out of range. Choose between"
+        )} ${firstValue} ${tr("e", "and")} ${max}${
+            min == 0 ? tr(" ou 0 para voltar / sair", " or 0 to go back / exit") : ""
+        }`
+
+        Ui.error(msg, tr("Valor fora do intervalo permitido.", "Value outside the allowed range."))
     },
 
     /**
@@ -40,14 +41,14 @@ export const Error = {
      */
     divZero(reason: Text = ""): void {
         if (typeof reason !== "string") {
-            Ui.error("[Error.divZero] 'reason' inválido.", "Recebido: " + reason, true)
+            Ui.error("[Error.divZero] 'reason' inválido.", `Recebido: ${reason}`, true)
             reason = ""
         }
 
         Ui.error(
             tr("ERRO-002: Divisão por zero", "ERROR-002: Division by zero"),
             reason != ""
-                ? tr("Motivo: ", "Reason: ") + reason
+                ? `${tr("Motivo", "Reason")}: ${reason}`
                 : tr("Não é possível dividir por zero.", "Division by zero is not defined.")
         )
     },
@@ -73,9 +74,7 @@ export const Error = {
      */
     constantFunction(type: Text = ""): void {
         Ui.error(
-            tr("ERRO-004: A função não é ", "ERROR-004: The function is not ") +
-                type +
-                tr("; é constante", "; it is constant"),
+            `${tr("ERRO-004: A função não é", "ERROR-004: The function is not")} ${type}; ${tr("é constante", "it is constant")}`,
             "(a = 0) ∨ (a = 1) ∨ (b = 0)"
         )
     },
@@ -87,11 +86,11 @@ export const Error = {
      */
     invalidFunction(type: Text = ""): void {
         if (typeof type != "string") {
-            Ui.error("[Error.invalidFunction] 'type' inválido.", "Recebido: " + type, true)
+            Ui.error("[Error.invalidFunction] 'type' inválido.", `Recebido: ${type}`, true)
             type = ""
         }
 
-        Ui.error(tr("ERRO-005: A função não é ", "ERROR-005: The function is not ") + type, "a < 0")
+        Ui.error(`${tr("ERRO-005: A função não é", "ERROR-005: The function is not")} ${type}`, "a < 0")
     },
 
     /**
@@ -102,18 +101,18 @@ export const Error = {
      */
     invalidLog(type: "log" | "ln" = "log", reason: Text = "") {
         if (typeof type != "string") {
-            Ui.error("[Error.invalidLog] 'type' inválido.", "Recebido: " + type, true)
+            Ui.error("[Error.invalidLog] 'type' inválido.", `Recebido: ${type}`, true)
             type = "log"
         }
         if (typeof reason != "string") {
-            Ui.error("[Error.invalidLog] 'reason' inválido.", "Recebido: " + reason, true)
+            Ui.error("[Error.invalidLog] 'reason' inválido.", `Recebido: ${reason}`, true)
             reason = ""
         }
 
         Ui.error(
-            tr("ERRO-006: ", "ERROR-006: ") + type + tr(" inválido", " invalid"),
+            `${tr("ERRO-006", "ERROR-006")}: ${type} ${tr("inválido", "invalid")}`,
             reason != ""
-                ? tr("Motivo: ", "Reason: ") + reason
+                ? `${tr("Motivo", "Reason")}: ${reason}`
                 : tr(
                       "Tu tentaste calcular um logaritmo com base menor ou igual a 1, o que não é possível.",
                       "You tried to calculate a logarithm with a base less than or equal to 1, which is not possible."

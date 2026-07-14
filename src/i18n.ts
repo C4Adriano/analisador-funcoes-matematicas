@@ -1,6 +1,6 @@
 import { Config, saveConfig } from "./config.js"
 
-import type { Text, Language } from "./values.js"
+import type { Language, Text } from "./values.js"
 
 /**
  * [I18N] Retorna o texto na língua configurada
@@ -34,9 +34,7 @@ export function trArr(pairs: [Text, Text][] = [["", ""]]): Text[] {
  * @since v6.2.0
  */
 export function changeLanguage(language: Language) {
-    if (
-        confirm(tr("Tu queres alterar a língua para: “", "Do you want to change the language to: “") + language + "”?")
-    ) {
+    if (confirm(`${tr("Tu queres alterar a língua para", "Do you want to change the language to")}: “${language}”?`)) {
         if (language == "pt") {
             Config.decimalSeparator = true
             Config.accents = true

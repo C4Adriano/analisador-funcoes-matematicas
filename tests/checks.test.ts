@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { describe, expect, it } from "vitest"
 import { Checks } from "../src/checks.js"
 import "./setup.js"
 

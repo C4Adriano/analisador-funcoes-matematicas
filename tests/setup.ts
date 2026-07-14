@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Config } from "../src/config.js"
 
 // [SETUP] Garante execução determinística e sem UI de navegador nos testes

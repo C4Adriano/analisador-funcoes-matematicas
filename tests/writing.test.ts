@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from "vitest"
-import { Writing } from "../src/writing.js"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { beforeEach, describe, expect, it } from "vitest"
 import { Config } from "../src/config.js"
+import { Writing } from "../src/writing.js"
 import "./setup.js"
 
 beforeEach(() => {

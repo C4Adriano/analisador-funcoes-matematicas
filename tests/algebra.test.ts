@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach } from "vitest"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { beforeEach, describe, expect, it } from "vitest"
 import { Algebra } from "../src/algebra.js"
 import { Config } from "../src/config.js"
-import { queuePrompt, clearPromptQueue } from "./setup.js"
+import { clearPromptQueue, queuePrompt } from "./setup.js"
 
 beforeEach(() => {
     clearPromptQueue()
