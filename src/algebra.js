@@ -34,6 +34,7 @@ export const Algebra = {
                 number = 0
             }
         }
+
         return number
     },
 
