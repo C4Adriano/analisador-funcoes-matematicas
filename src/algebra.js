@@ -35,6 +35,7 @@ export const Algebra = {
             }
         }
 
+        Algebra.round(1.11111111, 0)
         return number
     },
 
@@ -134,37 +135,16 @@ export const Algebra = {
         // Constante
         if (coefA == 0 && coefB == 0) {
             if (coefC == 0) {
-                Ui.display(
-                    tr(
-                        "As funções coincidem: ƒ₁(x) = ƒ₂(x), ∀ x ∈ ℝ",
-                        "The functions are identical: ƒ₁(x) = ƒ₂(x), ∀ x ∈ ℝ"
-                    ),
-                    tr(
-                        "Porque as funções são iguais em todos os pontos, elas coincidem.",
-                        "The functions coincide at every point."
-                    )
-                )
+                Ui.display(tr("algebra.constantCoincide"), tr("algebra.constantCoincideExp"))
             } else if (coefC != 0) {
-                Ui.display(
-                    tr(
-                        "As funções nunca se encontrarão: ƒ₁(x) ≠ ƒ₂(x), ∀ x ∈ ℝ",
-                        "The functions are distinct: ƒ₁(x) ≠ ƒ₂(x), ∀ x ∈ ℝ"
-                    ),
-                    tr(
-                        "As funções são distintas: não há ponto de interseção.",
-                        "The functions are distinct: there is no intersection point."
-                    )
-                )
+                Ui.display(tr("algebra.constantDistinct"), tr("algebra.constantDistinctExp"))
             }
         }
 
         // Afim
         else if (coefA == 0 && coefB != 0) {
             x = Algebra.division(-coefC, coefB)
-            Ui.display(
-                `${tr("As funções se encontram em", "The functions coincide at")}: x = ${Writing.decimal(x)}`,
-                "x = −c / b"
-            )
+            Ui.display(tr("algebra.oneRoot", { x: Writing.decimal(x) }), "x = −c / b")
         }
 
         // Quadrática
@@ -172,12 +152,9 @@ export const Algebra = {
             let delta = Helpers.calcDelta(coefA, coefB, coefC)
             Helpers.showDelta(
                 delta[0],
-                tr(
-                    "As funções não possuem pontos de interseção reais",
-                    "The functions have no real intersection points"
-                ),
-                `${tr("As funções se encontram em", "The functions intersect at")}: x = ${Writing.decimal(delta[1])}`,
-                `${tr("As funções se encontram em", "The functions intersect at")}: x₁ = ${Writing.decimal(delta[1])}, x₂ = ${Writing.decimal(delta[2])}`
+                tr("algebra.quadraticDistinc"),
+                tr("algebra.oneRoot", { x: Writing.decimal(delta[1]) }),
+                tr("algebra.twoRoots", { x1: Writing.decimal(delta[1]), x2: Writing.decimal(delta[2]) })
             )
         }
     },
@@ -451,14 +428,11 @@ export const Algebra = {
 
                 // a, c
                 else if (coefA == "a" && coefB != "b" && coefC == "c") {
-                    // pontoExp = algebra.ponto(2)
+                    // points = Algebra.point(2)
 
                     Ui.warning(
-                        tr(
-                            "Não posso ainda descobrir o valor de a e c quando tenho somente o b",
-                            "I cannot yet determine the value of a and c when I only have b"
-                        ),
-                        tr("Em construção.", "Under construction.")
+                        tr("algebra.cannotDetermine", { v1: "a", v2: "c", v3: "b" }),
+                        tr("algebra.underConstruction")
                     )
                     coefA = -1
                     coefC = 0
@@ -512,14 +486,11 @@ export const Algebra = {
                 // Duplas
                 // a, b
                 else if (coefA == "a" && coefB == "b" && coefC != "c") {
-                    // pontoLog = algebra.ponto(2)
+                    // points = Algebra.point(2)
 
                     Ui.warning(
-                        tr(
-                            "Não posso ainda descobrir o valor de a e b quando tenho somente o c",
-                            "I cannot yet determine the value of a and b when I only have c"
-                        ),
-                        tr("Em construção.", "Under construction.")
+                        tr("algebra.cannotDetermine", { v1: "a", v2: "b", v3: "c" }),
+                        tr("algebra.underConstruction")
                     )
                     coefA = -1
                     coefB = 1
@@ -554,19 +525,8 @@ export const Algebra = {
 
             // Erro
             if (!Checks.isFiniteNumber(coefA) || !Checks.isFiniteNumber(coefB) || !Checks.isFiniteNumber(coefC)) {
-                Error.divZero("Valores inválidos.")
-                if (
-                    Ui.confirm(
-                        tr(
-                            "Queres mudar os valores dos coeficientes?",
-                            "Do you want to change the coefficients values?"
-                        ),
-                        tr(
-                            "Se quiser alterar os valores dos pontos, escolha “Cancelar”",
-                            "If you want to change the point values, chose “Cancel”"
-                        )
-                    )
-                ) {
+                Error.divZero(tr("algebra.invalidValues"))
+                if (Ui.confirm(tr("algebra.changeValues"), tr("algebra.changeValuesExp"))) {
                     coefA = "a"
                     coefB = "b"
                     coefC = "c"

@@ -1,6 +1,6 @@
 {
   "name": "analisador",
-  "version": "6.3.1",
+  "version": "6.4.0",
   "description": "Mathematical Function Analyzer / Analisador de Funções Matemáticas",
   "repository": {
     "type": "git",
@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
+    "@typescript/typescript6": "^6.0.2",
     "@vitest/coverage-v8": "^4.1.10",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.8",

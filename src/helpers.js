@@ -18,11 +18,8 @@ export const Helpers = {
      * @param explanation - Explicação
      * @since v6.1.0
      */
-    domain(
-        belongs = "∈ ℝ",
-        explanation = tr("A função pode assumir qualquer x real", "The function can take any real x")
-    ) {
-        Ui.display(tr("Domínio: ", "Domain: ") + "x " + belongs, explanation)
+    domain(belongs = "∈ ℝ", explanation = tr("helpers.functionTakeX")) {
+        Ui.display(tr("helpers.domain") + "x " + belongs, explanation)
     },
 
     /**
@@ -32,12 +29,8 @@ export const Helpers = {
      * @param explanation - Explicação
      * @since v6.1.0
      */
-    range(
-        belongs = "∈ ℝ",
-        interval = ".",
-        explanation = tr("A função pode assumir qualquer y real", "The function can assume any real y")
-    ) {
-        Ui.display(tr("Imagem: ", "Range: ") + "y " + belongs, explanation + interval)
+    range(belongs = "∈ ℝ", interval = "", explanation = tr("helpers.functionTakeY")) {
+        Ui.display(tr("helpers.range") + "y " + belongs, `${explanation} ${interval}`)
     },
 
     /**
@@ -47,15 +40,8 @@ export const Helpers = {
      * @param noHave - Mensagem quando não há interseção com o eixo x
      * @since v6.1.0
      */
-    xAxis(
-        root = 0,
-        explanation = "c",
-        noHave = tr(
-            "Não existe raiz real, portanto não há interseção com o eixo x.",
-            "There is no real root, therefore there is no intersection with the x‐axis."
-        )
-    ) {
-        let intersection = tr("Interseção com o eixo x: ", "Intersection with the x‐axis: ")
+    xAxis(root = 0, explanation = "c", noHave = tr("helpers.noRoots")) {
+        let intersection = tr("helpers.intersectionXAxis")
 
         if (root == 0) {
             // Constante
@@ -75,7 +61,7 @@ export const Helpers = {
                 // Afim
                 Ui.display(
                     intersection + "(" + Writing.decimal(root) + ", 0)",
-                    tr("Ponto da raiz: ", "Root point: ") + "(" + explanation + ", 0)"
+                    tr("helpers.rootPoint") + "(" + explanation + ", 0)"
                 )
             }
         }
@@ -90,9 +76,8 @@ export const Helpers = {
      */
     yAxis(point = 0, func = "c", explanation = "c") {
         Ui.display(
-            tr("Interseção com o eixo y: ", "Intersection with the y‐axis: ") +
-                (point != "∄" ? "(0, " + Writing.decimal(point) + ")" : "∄"),
-            tr("Como y = ", "Since y = ") + func + (point != "∄" ? " ⇒ (0, " + explanation + ")" : explanation)
+            tr("helpers.intersectionYAxis") + (point != "∄" ? "(0, " + Writing.decimal(point) + ")" : "∄"),
+            tr("helpers.sinceY") + func + (point != "∄" ? " ⇒ (0, " + explanation + ")" : explanation)
         )
     },
 
@@ -107,7 +92,7 @@ export const Helpers = {
      */
     xValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
         let x = Ui.input("x = ", "", true),
-            message = tr("Para x = ", "Since x = ") + Writing.decimal(x) + ", "
+            message = tr("helpers.sinceX") + Writing.decimal(x) + ", "
 
         if (!funcExp && !funcLog && funcTrig == "") {
             // Polinomial
@@ -162,7 +147,7 @@ export const Helpers = {
      */
     yValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
         let y = Ui.input("y = ", "", true),
-            message = tr("Para y = ", "Since y = ") + Writing.decimal(y) + ", "
+            message = tr("helpers.sinceY2") + Writing.decimal(y) + ", "
 
         if (!funcExp && !funcLog && funcTrig == "") {
             // Polinomial
@@ -210,13 +195,7 @@ export const Helpers = {
             }
         } else if (funcTrig != "") {
             // Trigonométrica
-            Ui.display(
-                tr(
-                    "Valor de x para y ainda não disponível para funções trigonométricas.",
-                    "X value for a given y is not yet available to the trigonometric functions."
-                ),
-                tr("Em construção.", "Under construction.")
-            )
+            Ui.display(tr("helpers.notTrigonometric"), tr("algebra.underConstruction"))
         }
     },
 
@@ -255,24 +234,24 @@ export const Helpers = {
                     "ƒ(x) " +
                         operations[operation] +
                         " 0 " +
-                        tr("se", "if") +
+                        tr("helpers.if") +
                         " x " +
                         operations[opposite] +
                         " " +
                         affineRoot +
                         "\nƒ(x) = 0 " +
-                        tr("em", "in") +
+                        tr("helpers.in") +
                         " x = " +
                         affineRoot +
                         "\nƒ(x) " +
                         operations[opposite] +
                         " 0 " +
-                        tr("se", "if") +
+                        tr("helpers.if") +
                         " x " +
                         operations[operation] +
                         " " +
                         affineRoot,
-                    "b " + operations[operation] + " 0 ⇒ ƒ(x) " + tr("crescente", "increasing")
+                    "b " + operations[operation] + " 0 ⇒ ƒ(x) " + tr("helpers.increasing")
                 )
             } else if (coefA != 0) {
                 // Quadrática
@@ -296,7 +275,7 @@ export const Helpers = {
                         "ƒ(x) " +
                             operations[operation] +
                             " 0, " +
-                            tr("exceto em", "except in") +
+                            tr("helpers.exceptIn") +
                             " x = " +
                             Writing.decimal(quadRoot[1]),
                         "a " +
@@ -312,19 +291,19 @@ export const Helpers = {
                         // Concavidade para baixo
                         Ui.display(
                             "ƒ(x) > 0 " +
-                                tr("se", "if") +
+                                tr("helpers.if") +
                                 " " +
                                 Writing.decimal(quadRoot[1]) +
                                 " < x < " +
                                 Writing.decimal(quadRoot[2]) +
                                 "\nƒ(x) = 0 " +
-                                tr("em", "in") +
+                                tr("helpers.in") +
                                 " x = " +
                                 Writing.decimal(quadRoot[1]) +
                                 " ∨ x = " +
                                 Writing.decimal(quadRoot[2]) +
                                 "\nƒ(x) < 0 " +
-                                tr("se", "if") +
+                                tr("helpers.if") +
                                 " x < " +
                                 Writing.decimal(quadRoot[1]) +
                                 " ∨ x > " +
@@ -335,19 +314,19 @@ export const Helpers = {
                         // Concavidade para cima
                         Ui.display(
                             "ƒ(x) > 0 " +
-                                tr("se", "if") +
+                                tr("helpers.if") +
                                 " x < " +
                                 Writing.decimal(quadRoot[1]) +
                                 " ∨ x > " +
                                 Writing.decimal(quadRoot[2]) +
                                 "\nƒ(x) = 0 " +
-                                tr("em", "in") +
+                                tr("helpers.in") +
                                 " x = " +
                                 Writing.decimal(quadRoot[1]) +
                                 " ∨ x = " +
                                 Writing.decimal(quadRoot[2]) +
                                 "\nƒ(x) < 0 " +
-                                tr("se", "if") +
+                                tr("helpers.if") +
                                 " " +
                                 Writing.decimal(quadRoot[1]) +
                                 " < x < " +
@@ -368,15 +347,15 @@ export const Helpers = {
                         // Curva para cima
                         Ui.display(
                             "ƒ(x) > 0 " +
-                                tr("se", "if") +
+                                tr("helpers.if") +
                                 " x > " +
                                 Writing.decimal(expRoot) +
                                 "\nƒ(x) = 0 " +
-                                tr("em", "in") +
+                                tr("helpers.in") +
                                 " x = " +
                                 Writing.decimal(expRoot) +
                                 "\nƒ(x) < 0 " +
-                                tr("se", "if") +
+                                tr("helpers.if") +
                                 " x < " +
                                 Writing.decimal(expRoot),
                             "a > 0 ∧ (−c) / b > 0."
@@ -385,15 +364,15 @@ export const Helpers = {
                         // Curva para baixo
                         Ui.display(
                             "ƒ(x) > 0 " +
-                                tr("se", "if") +
+                                tr("helpers.if") +
                                 " x < " +
                                 Writing.decimal(expRoot) +
                                 "\nƒ(x) = 0 " +
-                                tr("em", "in") +
+                                tr("helpers.in") +
                                 " x = " +
                                 Writing.decimal(expRoot) +
                                 "\nƒ(x) < 0 " +
-                                tr("se", "if") +
+                                tr("helpers.if") +
                                 " x > " +
                                 Writing.decimal(expRoot),
                             "a < 0 ∧ (−c) / b > 0."
@@ -401,10 +380,10 @@ export const Helpers = {
                     }
                 } else if (coefB > 0) {
                     // Sem raiz, mas curva para cima
-                    Ui.display("ƒ(x) > 0, ∀ x ∈ ℝ", tr("Conforme", "According to") + "b > 0 ∧ (−c) / b ≤ 0.")
+                    Ui.display("ƒ(x) > 0, ∀ x ∈ ℝ", tr("helpers.accordingTo") + "b > 0 ∧ (−c) / b ≤ 0.")
                 } else {
                     // Sem raiz, mas curva para baixo
-                    Ui.display("ƒ(x) < 0, ∀ x ∈ ℝ", tr("Conforme", "According to") + "b < 0 ∧ (−c) / b ≤ 0.")
+                    Ui.display("ƒ(x) < 0, ∀ x ∈ ℝ", tr("helpers.accordingTo") + "b < 0 ∧ (−c) / b ≤ 0.")
                 }
             } else if (funcLog) {
                 // Logarítmica
@@ -413,15 +392,15 @@ export const Helpers = {
                     // Curva para cima
                     Ui.display(
                         "ƒ(x) > 0 " +
-                            tr("se", "if") +
+                            tr("helpers.if") +
                             " x > " +
                             Writing.decimal(logRoot) +
                             "\nƒ(x) = 0 " +
-                            tr("em", "in") +
+                            tr("helpers.in") +
                             " x = " +
                             Writing.decimal(logRoot) +
                             "\nƒ(x) < 0 " +
-                            tr("se", "if") +
+                            tr("helpers.if") +
                             " x < " +
                             Writing.decimal(logRoot),
                         "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)"
@@ -430,15 +409,15 @@ export const Helpers = {
                     // Curva para baixo
                     Ui.display(
                         "ƒ(x) > 0 " +
-                            tr("se", "if") +
+                            tr("helpers.if") +
                             " x < " +
                             Writing.decimal(logRoot) +
                             "\nƒ(x) = 0 " +
-                            tr("em", "in") +
+                            tr("helpers.in") +
                             " x = " +
                             Writing.decimal(logRoot) +
                             "\nƒ(x) < 0 " +
-                            tr("se", "if") +
+                            tr("helpers.if") +
                             " x > " +
                             Writing.decimal(logRoot),
                         "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)"
@@ -447,13 +426,7 @@ export const Helpers = {
             }
         } else if (funcTrig != "") {
             // Trigonométrica
-            Ui.display(
-                tr(
-                    "Estudo do sinal para funções trigonométricas ainda não disponível.",
-                    "Sign analysis not yet available for trigonometric functions."
-                ),
-                tr("Em construção.", "Under construction.")
-            )
+            Ui.display(tr("helpers.singNotTrigonometric"), tr("algebra.underConstruction"))
         }
     },
 
@@ -474,7 +447,7 @@ export const Helpers = {
                 State.baseFunc = [coefA, coefB, coefC]
                 State.askCoeffs = true
                 State.loop = true
-                Ui.warning("ƒ₁(x) " + tr("salva", "saved"), tr("Digite ƒ₂(x) para comparar.", "Type ƒ₂(x) to compare"))
+                Ui.warning("ƒ₁(x) " + tr("helpers.saved"), tr("helpers.typeSecondFunction"))
                 return 0
             } else {
                 // Comparar as duas funções
@@ -484,13 +457,7 @@ export const Helpers = {
             }
         } else {
             // Não polinomial
-            Ui.warning(
-                tr(
-                    "Ainda não posso resolver equações com funções não polinomiais.",
-                    "I cannot yet resolve equations with non-polynomial functions."
-                ),
-                tr("Em construção.", "Under construction.")
-            )
+            Ui.warning(tr("helpers.equationsNonPolynomial"), tr("algebra.underConstruction"))
             return 0
         }
     },
@@ -505,28 +472,22 @@ export const Helpers = {
     curve(coefA = 0, coefB = 0, polynomial = true) {
         if (!polynomial) {
             if ((coefA < 1 && coefB < 0) || (coefA > 1 && coefB > 0)) {
-                Ui.display(tr("Crescente", "Increasing"), "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)")
+                Ui.display(tr("helpers.increasingUpper"), "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)")
             } else if ((coefA > 1 && coefB < 0) || (coefA < 1 && coefB > 0)) {
-                Ui.display(tr("Decrescente", "Decreasing"), "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)")
+                Ui.display(tr("helpers.decreasing"), "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)")
             }
         } else {
             if (coefB != 0) {
                 if (coefB > 0) {
-                    Ui.display(
-                        tr("Crescente", "Increasing"),
-                        tr("Aponta para cima, pois ", "Points upward, since ") + "b > 0"
-                    )
+                    Ui.display(tr("helpers.increasingUpper"), tr("helpers.pointsUpward") + "b > 0")
                 } else if (coefB < 0) {
-                    Ui.display(
-                        tr("Decrescente", "Decreasing"),
-                        tr("Aponta para baixo, pois ", "Points downward, since ") + "b < 0"
-                    )
+                    Ui.display(tr("helpers.decreasing"), tr("helpers.pointsDownward") + "b < 0")
                 }
             } else if (coefA != 0) {
                 if (coefA > 0) {
-                    Ui.display(tr("Concavidade para cima", "Upward concavity"), "a > 0")
+                    Ui.display(tr("helpers.upwardConcavity"), "a > 0")
                 } else if (coefA < 0) {
-                    Ui.display(tr("Concavidade para baixo", "Downward concavity"), "a < 0")
+                    Ui.display(tr("helpers.downwardConcavity"), "a < 0")
                 }
             }
         }
@@ -574,14 +535,11 @@ export const Helpers = {
      * @since v6.1.0
      */
     showRoot(root = 0, explanation = "c", noHave = "") {
-        let intersection = tr("Raiz real: ", "Real root: ")
+        let intersection = tr("helpers.realRoot")
         if (isNaN(root)) {
             Ui.display(intersection + "∄! x ∈ ℝ", noHave)
         } else {
-            Ui.display(
-                intersection + "x = " + Writing.decimal(root),
-                tr("A raiz é x = ", "The root is x = ") + explanation
-            )
+            Ui.display(intersection + "x = " + Writing.decimal(root), tr("helpers.theRootIs") + explanation)
         }
     },
 
@@ -672,17 +630,11 @@ export const Helpers = {
     showPeriod(coefA = 0, funcTan = false) {
         if (coefA != 0) {
             Ui.display(
-                tr("Período: ", "Period: ") + Helpers.calcPeriod(coefA, funcTan),
-                tr("Período = ", "Period = ") + (funcTan ? "π" : "2π") + " / |a|"
+                tr("helpers.period") + Helpers.calcPeriod(coefA, funcTan),
+                tr("helpers.periodEquals") + (funcTan ? "π" : "2π") + " / |a|"
             )
         } else {
-            Ui.display(
-                tr("Período: ∞", "Period: ∞"),
-                tr(
-                    "Se a = 0, a função é constante, então o período é infinito.",
-                    "Since a = 0, the function is constant, so the period is infinity."
-                )
-            )
+            Ui.display(tr("helpers.periodInfinity"), tr("helpers.constantPeriod"))
         }
     },
 
@@ -703,21 +655,15 @@ export const Helpers = {
     verticalAsymptotes(coefA = 0) {
         if (coefA != 0) {
             Ui.display(
-                tr("Assíntotas verticais: ", "Vertical asymptote: ") + "x = (π / 2 + n · π) /,  n ∈ ℤ",
+                tr("helpers.verticalAsymptote") + "x = (π / 2 + n · π) /,  n ∈ ℤ",
                 "tan(a · x) " +
-                    tr("é indefinida quando ", "is undefined when ") +
+                    tr("helpers.eIndefinidaQuando") +
                     "cos(a · x) = 0, " +
-                    tr("ou seja, ", "i.e., ") +
+                    tr("helpers.ie") +
                     "a · x = π / 2 + n · π"
             )
         } else {
-            Ui.display(
-                tr("Assíntotas verticais: ", "Vertical asymptote: ") + "∄",
-                tr(
-                    "Se a = 0, a função é constante, então não há assíntotas.",
-                    "If a = 0, the function is constant, so there are no asymptotes."
-                )
-            )
+            Ui.display(tr("helpers.verticalAsymptote") + "∄", tr("helpers.noAsymptote"))
         }
     },
 }

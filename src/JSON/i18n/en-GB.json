@@ -1,0 +1,19 @@
+{
+    "commands": {
+        "commandSuggestionExp": "Unrecognised command: “/{command}”\nSuggestion: “/{suggestion}” (distance {distance})\nRun it?",
+        "shortCapitalize": "toggles capitalisation",
+        "longCapitalize": "Enables or disables capitalisation of first letters.",
+        "title": "Mathematical Function Analyser",
+        "languageAlready": "The language is already set to British English."
+    },
+    "main": {
+        "welcomeTitle": "Welcome to the Mathematical Function Analyser!",
+        "welcomeDescription": "This program analyses functions of the types constant, affine, quadratic, exponential, logarithmic, sine, cosine, tangent, etc. — identifying their properties and characteristics. To get started, enter the function data when prompted.",
+        "documentDescription": "Mathematical Function Analyser developed in JavaScript and TypeScript.",
+        "capitalized": "Capitalised",
+        "enableCapitalized": "Enable capitalised letters?",
+        "noteCapitalized": "Note₁: This setting will make text “normal”, i.e., the first letter of each sentence capitalised and the rest lowercase\nNote₂: This setting will disable “uppercase” and “lowercase”",
+        "noteUppercase": "Note₁: This setting will transform all letters to uppercase\nNote₂: This setting will disable “capitalised” and “lowercase”",
+        "noteLowercase": "Note₁: This setting will transform all letters to lowercase\nNote₂: This setting will disable “capitalised” and “uppercase”"
+    }
+}

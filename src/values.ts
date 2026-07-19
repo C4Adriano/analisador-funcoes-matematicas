@@ -56,9 +56,14 @@ export type Degrees = "deg" | "rad"
 /**
  * Idiomas suportados pelo programa.
  */
-export type Language = "pt" | "pt-br" | "en" | "en-us"
+export type Language = "en-us" | "en-gb" | "pt-br" | "pt-pt" | "es-419" | "es-es"
 
 /**
  * Comandos suportados pelo programa.
  */
 export type CommandsNames = "config" | "start" | "review" | "change" | "history" | "exit"
+
+/**
+ * Tipo genérico para representar um objeto parcial profundo.
+ */
+export type DeepPartial<T> = T extends object ? { [K in keyof T]?: DeepPartial<T[K]> } : T

@@ -1,0 +1,23 @@
+{
+    "commands": {
+        "shortConfig": "abre los ajustes",
+        "longConfig": "Abre el menú de ajustes del programa.",
+        "invalidSetting": "Ajuste inválido",
+        "invalidSettingExp": "«{setting}» no es un ajuste válido",
+        "shortReset": "restaura los ajustes",
+        "longReset": "Elimina los ajustes guardados y restaura los valores predeterminados.",
+        "resetConfirm": "Ajustes restaurados a los valores predeterminados.",
+        "languageAlready": "El idioma ya está definido como Español de España."
+    },
+    "main": {
+        "settings": "Ajustes",
+        "settingsNote": "Nota: los ajustes pueden no guardarse al cerrar",
+        "allSettingsDefault": "Todos los ajustes ya están en los valores predeterminados.",
+        "wantRestoreDefault": "¿Quieres restaurar los ajustes predeterminados?\nAjustes afectados:\n",
+        "noteRestoreDefault": "Nota₁: Esto afectará todos los ajustes anteriores\nNota₂: Este cambio es permanente",
+        "noteSettingsExit": "Nota: los ajustes pueden restablecerse al salir."
+    },
+    "ui": {
+        "inputConfirmNote": "Nota₁: Si esta es una variable y lo escrito no es un número, se transformará en el nombre de la variable, no en lo que se escribió\nNota₂: Estos mensajes se pueden deshabilitar en los ajustes, en «Confirmaciones de entrada»."
+    }
+}

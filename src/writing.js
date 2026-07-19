@@ -37,81 +37,16 @@ export const Writing = {
     },
 
     /**
-     * [TEXTO] Substituição da grafia de Unicode
+     * [TEXTO] Substituição da grafia de Unicode, traduzindo os termos textuais para o idioma configurado
      * @param {string} text - Texto
      * @returns {string} Texto convertido
      * @since v6.1.0
      */
     noUnicode(text = "") {
-        let replacements = [
-            // === LETRAS / SÍMBOLOS ESPECIAIS ===
+        // Símbolos universais — não dependem de idioma, mesma substituição em qualquer dicionário
+        const staticReplacements = [
             ["©", "(c)"],
-            ["Δ", "Delta"],
-            ["π", "pi"],
-            ["ℯ", "_e"],
-            ["φ", "phi"],
-            ["θ", "theta"],
-            ["λ", "lambda"],
-            ["μ", "mu"],
-            ["σ", "sigma"],
-            ["ρ", "rho"],
-            ["τ", "tau"],
-            ["ε", "epsilon"],
-            ["γ", "gamma"],
-            ["η", "eta"],
-            ["ζ", "zeta"],
-            ["κ", "kappa"],
-            ["ν", "nu"],
-            ["ξ", "xi"],
-            ["ω", "omega"],
-            ["α", "alfa"],
-            ["β", "beta"],
-            ["χ", "chi"],
-            ["ψ", "psi"],
-
-            // === FUNÇÕES MATEMÁTICAS ===
             ["ƒ", "f"],
-            ["∑", "soma"],
-            ["∏", "produto"],
-            ["∫", "integral"],
-            ["∬", "integral dupla"],
-            ["∭", "integral tripla"],
-            ["∮", "integral de linha"],
-            ["∯", "integral de superfície"],
-            ["∰", "integral de volume"],
-            ["∂", "derivada parcial"],
-            ["∇", "nabla"],
-
-            // === CONJUNTOS MATEMÁTICOS ===
-            ["ℝ", "Reais"],
-            ["ℤ", "Inteiros"],
-            ["ℕ", "Naturais"],
-            ["ℚ", "Racionais"],
-            ["ℂ", "Complexos"],
-            ["∅", "vazio"],
-            ["∪", "união"],
-            ["∩", "interseção"],
-            ["⊆", "subconjunto de"],
-            ["⊇", "superconjunto de"],
-            ["⊈", "não é subconjunto de"],
-            ["⊉", "não é superconjunto de"],
-
-            // === QUANTIFICADORES / EXISTÊNCIA ===
-            ["∀", "para todo"],
-            ["∃", "existe"],
-            ["∄", "não existe"],
-            ["∃!", "existe um único"],
-            ["∄!", "não existe um único"],
-            ["∃∞", "existem infinitos"],
-            ["∄∞", "não existem infinitos"],
-
-            // === PERTENCIMENTO ===
-            ["∈", "pertencente a"],
-            ["∉", "não pertencente a"],
-            ["∋", "contém como elemento"],
-            ["∌", "não contém como elemento"],
-
-            // === ÍNDICES / EXPOENTES ===
             ["₁", "1"],
             ["₂", "2"],
             ["₃", "3"],
@@ -136,55 +71,27 @@ export const Writing = {
             ["₌", "="],
             ["₋", "-"],
             ["₊", "+"],
-
-            // === OPERADORES RELACIONAIS ===
             ["≠", "!="],
             ["≤", "<="],
             ["≥", ">="],
             ["≪", "<<"],
             ["≫", ">>"],
-            ["∝", "proporcional a"],
-            ["∠", "ângulo"],
-            ["∼", "semelhante a"],
-            ["≅", "congruente a"],
-            ["≈", "aproximadamente igual a"],
-            ["≡", "idêntico a"],
-
-            // === OPERADORES ARITMÉTICOS ===
             ["·", "*"],
             ["×", "*"],
             ["±", "+/-"],
             ["∓", "-/+"],
             ["÷", "/"],
             ["∖", "-"],
-
-            // === RADICAIS / INFINITOS ===
-            ["√", "raiz quadrada de "],
-            ["∛", "raiz cúbica de "],
-            ["∜", "raiz quarta de "],
-            ["-∞", "menos infinito"],
-            ["∞", "infinito"],
-
-            // === LÓGICA ===
             ["⇒", "=>"],
             ["⇐", "<="],
             ["⇑", "^^"],
             ["⇓", "vv"],
             ["⇔", "<=>"],
             ["⇕", "^^vv"],
-            ["⇖", "\\\\"],
+            ["⇖", "\\"],
             ["⇗", "//"],
-            ["⇘", "\\\\"],
+            ["⇘", "\\"],
             ["⇙", "//"],
-            ["∴", "portanto"],
-            ["∵", "porque"],
-            ["∨", "ou"],
-            ["∧", "e"],
-            ["¬", "não "],
-            ["⊕", "ou exclusivo"],
-            ["⊗", "ou não exclusivo"],
-
-            // === SETAS / DIREÇÕES ===
             ["→", "->"],
             ["←", "<-"],
             ["↑", "^"],
@@ -196,12 +103,12 @@ export const Writing = {
             ["↗", "/"],
             ["↘", "\\"],
             ["↙", "/"],
-
-            // === PONTUAÇÃO / TEXTO ===
             ["“", "'"],
             ["”", "'"],
             ["‘", "'"],
             ["’", "'"],
+            ["«", "'"],
+            ["»", "'"],
             ["…", "..."],
             ["—", "-"],
             ["–", "-"],
@@ -209,7 +116,93 @@ export const Writing = {
             ["•", "*"],
         ]
 
-        text = Writing.replaceGroup(text, replacements)
+        // Termos textuais — resolvidos via tr() no idioma ativo
+        // Ordem importa: formas compostas (∃!, ∄!, ∃∞, ∄∞) devem vir antes das formas simples (∃, ∄),
+        // senão o caractere simples já foi substituído quando a busca pela forma composta acontece
+        const localizedReplacements = [
+            ["Δ", tr("symbols.delta")],
+            ["π", tr("symbols.pi")],
+            ["ℯ", tr("symbols.eNumber")],
+            ["φ", tr("symbols.phi")],
+            ["θ", tr("symbols.theta")],
+            ["λ", tr("symbols.lambda")],
+            ["μ", tr("symbols.mu")],
+            ["σ", tr("symbols.sigma")],
+            ["ρ", tr("symbols.rho")],
+            ["τ", tr("symbols.tau")],
+            ["ε", tr("symbols.epsilon")],
+            ["γ", tr("symbols.gamma")],
+            ["η", tr("symbols.eta")],
+            ["ζ", tr("symbols.zeta")],
+            ["κ", tr("symbols.kappa")],
+            ["ν", tr("symbols.nu")],
+            ["ξ", tr("symbols.xi")],
+            ["ω", tr("symbols.omega")],
+            ["α", tr("symbols.alpha")],
+            ["β", tr("symbols.beta")],
+            ["χ", tr("symbols.chi")],
+            ["ψ", tr("symbols.psi")],
+
+            ["∑", tr("symbols.sum")],
+            ["∏", tr("symbols.product")],
+            ["∫", tr("symbols.integral")],
+            ["∬", tr("symbols.doubleIntegral")],
+            ["∭", tr("symbols.tripleIntegral")],
+            ["∮", tr("symbols.lineIntegral")],
+            ["∯", tr("symbols.surfaceIntegral")],
+            ["∰", tr("symbols.volumeIntegral")],
+            ["∂", tr("symbols.partialDerivative")],
+            ["∇", tr("symbols.nabla")],
+
+            ["ℝ", tr("symbols.reals")],
+            ["ℤ", tr("symbols.integers")],
+            ["ℕ", tr("symbols.naturals")],
+            ["ℚ", tr("symbols.rationals")],
+            ["ℂ", tr("symbols.complexes")],
+            ["∅", tr("symbols.emptySet")],
+            ["∪", tr("symbols.union")],
+            ["∩", tr("symbols.intersection")],
+            ["⊆", tr("symbols.subsetOf")],
+            ["⊇", tr("symbols.supersetOf")],
+            ["⊈", tr("symbols.notSubsetOf")],
+            ["⊉", tr("symbols.notSupersetOf")],
+
+            ["∃!", tr("symbols.existsUniqueOne")],
+            ["∄!", tr("symbols.notExistsUniqueOne")],
+            ["∃∞", tr("symbols.existsInfinite")],
+            ["∄∞", tr("symbols.notExistsInfinite")],
+            ["∀", tr("symbols.forAll")],
+            ["∃", tr("symbols.exists")],
+            ["∄", tr("symbols.notExists")],
+
+            ["∈", tr("symbols.belongsTo")],
+            ["∉", tr("symbols.notBelongsTo")],
+            ["∋", tr("symbols.containsAsElement")],
+            ["∌", tr("symbols.notContainsAsElement")],
+
+            ["∝", tr("symbols.proportionalTo")],
+            ["∠", tr("symbols.angle")],
+            ["∼", tr("symbols.similarTo")],
+            ["≅", tr("symbols.congruentTo")],
+            ["≈", tr("symbols.approximatelyEqualTo")],
+            ["≡", tr("symbols.identicalTo")],
+
+            ["√", tr("symbols.squareRootOf")],
+            ["∛", tr("symbols.cubeRootOf")],
+            ["∜", tr("symbols.fourthRootOf")],
+            ["-∞", tr("symbols.negativeInfinity")],
+            ["∞", tr("symbols.infinity")],
+
+            ["∴", tr("symbols.therefore")],
+            ["∵", tr("symbols.because")],
+            ["∨", tr("symbols.or")],
+            ["∧", tr("symbols.and")],
+            ["¬", tr("symbols.notWord")],
+            ["⊕", tr("symbols.exclusiveOr")],
+            ["⊗", tr("symbols.notExclusiveOr")],
+        ]
+
+        text = Writing.replaceGroup(text, [...localizedReplacements, ...staticReplacements])
 
         return text
     },
@@ -372,55 +365,6 @@ export const Writing = {
     },
 
     /**
-     * [TEXTO] Tradução de texto sem Unicode para a linguagem configurada
-     * @param {string} text - Texto
-     * @returns {string} Texto traduzido
-     */
-    translateUnicode(text = "") {
-        let replacements = [
-            ["alfa", "alpha"],
-            ["para todo", "for all"],
-            ["existe um único", "there exists exactly one"],
-            ["não existe um único", "there is no unique"],
-            ["existem infinitos", "infinitely many exist"],
-            ["não existe", "does not exist"],
-            ["não pertencente a", "not belonging to"],
-            ["pertencente a", "belonging to"],
-            ["proporcional a", "proportional to"],
-            ["semelhante a", "similar to"],
-            ["congruente a", "congruent to"],
-            ["aproximadamente igual a", "approximately equal to"],
-            ["idêntico a", "identical to"],
-            ["raiz quadrada de", "square root of"],
-            ["raiz cúbica de", "cube root of"],
-            ["raiz quarta de", "fourth root of"],
-            ["menos infinito", "negative infinity"],
-            ["ou exclusivo", "or exclusive"],
-            ["ou não exclusivo", "or not exclusive"],
-            ["integral dupla", "double integral"],
-            ["integral tripla", "triple integral"],
-            ["integral de linha", "line integral"],
-            ["integral de superfície", "surface integral"],
-            ["integral de volume", "volume integral"],
-            ["derivada parcial", "partial derivative"],
-            ["reais", "reals"],
-            ["inteiros", "integers"],
-            ["naturais", "naturals"],
-            ["racionais", "rationals"],
-            ["complexos", "complexes"],
-            ["vazio", "empty"],
-            ["união", "union"],
-            ["ângulo", "angle"],
-            ["soma", "sum"],
-            ["produto", "product"],
-        ]
-
-        text = Writing.replaceGroup(text, replacements)
-
-        return text
-    },
-
-    /**
      * [TEXTO] Formatação geral de mensagens
      * @param {string} message - Mensagem
      * @param explanation - Mensagem para a explicação
@@ -437,10 +381,7 @@ export const Writing = {
         }
 
         if (!Config.unicode) {
-            message = Writing.noUnicode(message)
-            if (Config.language != "pt") {
-                message = Writing.translateUnicode(message)
-            }
+            message = Writing.noUnicode(message) // já traduz para o idioma ativo internamente
         }
 
         if (!Config.accents) {
@@ -530,7 +471,7 @@ export const Writing = {
      */
     formatValue(value = true) {
         if (value == true || value == false) {
-            return value ? tr("Sim", "Yes") : tr("Não", "No")
+            return value ? tr("writing.yes") : tr("writing.no")
         }
 
         return String(value)
@@ -544,18 +485,7 @@ export const Writing = {
      * @since v6.1.0
      */
     configItem(message, name) {
-        return (
-            message +
-            " “" +
-            tr("Atual", "Current") +
-            "”: “" +
-            Writing.formatValue(Config[name]) +
-            "” “" +
-            tr("Padrão", "Default") +
-            "”: “" +
-            Writing.formatValue(DEFAULT_CONFIG[name]) +
-            "”"
-        )
+        return `${message} “${tr("writing.current")}”: “${Writing.formatValue(Config[name])}” — “${tr("writing.default")}”: “${Writing.formatValue(DEFAULT_CONFIG[name])}”`
     },
 
     /**

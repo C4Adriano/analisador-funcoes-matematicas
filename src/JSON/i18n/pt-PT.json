@@ -1,0 +1,13 @@
+{
+    "main": {
+        "settings": "Definições",
+        "noteErrors": "Obs.: Desativar pode fazer com que não te apercebas de algum erro que estás a cometer"
+    },
+    "commands": {
+        "shortConfig": "abre as definições",
+        "longConfig": "Abre o menu de definições do programa."
+    },
+    "ui": {
+        "inputConfirmNote": "Obs.₁: Se essa for uma variável e o que foi digitado não for um número, ela será transformada no nome da variável, não no que foi digitado\nObs.₂: Essas mensagens podem ser desativadas nas definições, em «Confirmações de entrada»."
+    }
+}

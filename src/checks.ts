@@ -38,7 +38,7 @@ export const Checks = {
     },
 
     isConfigKey(value: unknown): value is ConfigKey {
-        return Checks.isValidText(value) && Object.keys(Config).includes(value)
+        return Checks.isValidValue(value) && Object.keys(Config).includes(String(value))
     },
 
     numericPoint(points: ValueArray, index: Numeric): Numeric {

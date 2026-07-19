@@ -1,2 +1,2 @@
 // Arquivo gerado automaticamente pelo hook de commit. Não editar manualmente.
-export const VERSION = '6.3.1';
+export const VERSION = '6.4.0';

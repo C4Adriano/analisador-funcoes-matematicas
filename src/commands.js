@@ -34,19 +34,12 @@ export const Commands = {
 
             if (suggestion.type == "suggestion") {
                 let answer = Ui.confirm(
-                    tr("Você quis dizer: ", "Did you mean: ") + "“/" + suggestion.canonical + "”?",
-                    tr("Comando não reconhecido: ", "Unrecognized command: ") +
-                        "“/" +
-                        cmd +
-                        "”\n" +
-                        tr("Sugestão: ", "Suggestion: ") +
-                        "“/" +
-                        suggestion.canonical +
-                        "” " +
-                        tr("(distância ", "(distance ") +
-                        suggestion.distance +
-                        ")\n" +
-                        tr("Deseja executar?", "Run it?")
+                    tr("commands.commandSuggestion", { suggestion: suggestion.canonical }),
+                    tr("commands.commandSuggestionExp", {
+                        command: cmd,
+                        suggestion: suggestion.canonical,
+                        distance: suggestion.distance,
+                    })
                 )
                 if (answer) {
                     return Commands.process("/" + suggestion.canonical + " " + parts[1])
@@ -54,15 +47,7 @@ export const Commands = {
                 return null
             }
 
-            Ui.error(
-                tr("Comando inválido", "Invalid command"),
-                "“/" +
-                    cmd +
-                    "” " +
-                    tr("não é um comando válido", "is not a valid command") +
-                    "\n" +
-                    tr("Digite “/ajuda” para ver todos os comandos", "Type “/help” to see all commands")
-            )
+            Ui.error(tr("commands.invalidCommand"), tr("commands.invalidCommandExp"))
             return null
         }
 
@@ -196,52 +181,40 @@ export const Commands = {
     listCmd() {
         return {
             help: {
-                short: tr("mostra essa mensagem", "shows this message"),
-                long: tr(
-                    "Exibe a lista de todos os comandos disponíveis.\nUse: /ajuda [comando]",
-                    "Displays the list of all available commands.\nUsage: /help [command]"
-                ),
+                short: tr("commands.shortHelp"),
+                long: tr("commands.longHelp"),
                 variations: ["ajuda", "help", "a", "h", "cmd", "cmds", "c", "comandos", "?"],
                 action(arg, parts) {
                     return Commands.help(parts[1])
                 },
             },
             search: {
-                short: tr("pesquisa comandos", "searches commands"),
-                long: tr(
-                    "Pesquisa comandos por termo no nome, variações e descrições.\nUse: /pesquisa <termo>",
-                    "Searches commands by term in name, variations and descriptions.\nUsage: /search <term>"
-                ),
+                short: tr("commands.shortSearch"),
+                long: tr("commands.longSearch"),
                 variations: ["pesquisa", "pesquisar", "search", "buscar", "find", "procurar", "seek", "s"],
                 action(arg, parts) {
                     return Commands.searchHelp(parts[1])
                 },
             },
             shortcuts: {
-                short: tr("lista variações de um comando", "lists variations of a command"),
-                long: tr(
-                    "Exibe todas as variações aceitas de um comando.\nUse: /atalhos <comando>",
-                    "Displays all accepted variations of a command.\nUsage: /shortcuts <command>"
-                ),
+                short: tr("commands.shortShortcuts"),
+                long: tr("commands.longShortcuts"),
                 variations: ["atalhos", "shortcuts", "variacoes", "variacao", "aliases", "alias", "sc"],
                 action(arg, parts) {
                     return Commands.shortcuts(parts[1])
                 },
             },
             about: {
-                short: tr("sobre o programa", "about the program"),
-                long: tr(
-                    "Exibe informações sobre o Projeto, Autor e repositório.",
-                    "Displays information about the Project, Author and repository."
-                ),
+                short: tr("commands.shortAbout"),
+                long: tr("commands.longAbout"),
                 variations: ["sobre", "about", "info", "informacoes", "informacao", "projeto"],
                 action() {
                     return Commands.about()
                 },
             },
             config: {
-                short: tr("abre as configurações", "opens settings"),
-                long: tr("Abre o menu de configurações do programa.", "Opens the program settings menu."),
+                short: tr("commands.shortConfig"),
+                long: tr("commands.longConfig"),
                 variations: ["config", "configuracoes", "conf", "settings", "cfg"],
                 action(arg, parts) {
                     if (parts[1] != undefined) {
@@ -249,10 +222,7 @@ export const Commands = {
                         if (Checks.isConfigKey(configKey)) {
                             return Commands.change(configKey, arg)
                         }
-                        Ui.error(
-                            tr("Configuração inválida", "Invalid setting"),
-                            "“" + parts[1] + "” " + tr("não é uma configuração válida", "is not a valid setting")
-                        )
+                        Ui.error(tr("commands.invalidSetting"), tr("commands.invalidSettingExp", { setting: parts[1] }))
                         return null
                     }
                     State.type = "config"
@@ -260,26 +230,18 @@ export const Commands = {
                 },
             },
             reset: {
-                short: tr("restaura as configurações", "restores settings"),
-                long: tr(
-                    "Remove as configurações salvas e restaura os valores padrão.",
-                    "Removes saved settings and restores default values."
-                ),
+                short: tr("commands.shortReset"),
+                long: tr("commands.longReset"),
                 variations: ["resetar", "reset", "restaurar", "restore"],
                 action() {
                     resetConfig()
-                    Ui.warning(
-                        tr("Configurações restauradas para os valores padrão.", "Settings restored to default values.")
-                    )
+                    Ui.warning(tr("commands.resetConfirm"))
                     return null
                 },
             },
             start: {
-                short: tr("volta ao menu principal", "returns to main menu"),
-                long: tr(
-                    "Retorna ao menu inicial de seleção de função.",
-                    "Returns to the initial function selection menu."
-                ),
+                short: tr("commands.shortStart"),
+                long: tr("commands.longStart"),
                 variations: ["inicio", "start", "home", "menu", "voltar", "back"],
                 action() {
                     State.type = "start"
@@ -287,11 +249,8 @@ export const Commands = {
                 },
             },
             review: {
-                short: tr("mostra os coeficientes atuais", "shows current coefficients"),
-                long: tr(
-                    "Exibe os coeficientes inseridos na sessão atual.",
-                    "Displays the coefficients entered in the current session."
-                ),
+                short: tr("commands.shortReview"),
+                long: tr("commands.longReview"),
                 variations: ["rever", "review", "rev", "rver", "coefs", "coeficientes", "ver"],
                 action() {
                     State.type = "review"
@@ -299,11 +258,8 @@ export const Commands = {
                 },
             },
             change: {
-                short: tr("muda os coeficientes", "changes coefficients"),
-                long: tr(
-                    "Permite alterar os coeficientes sem reiniciar a análise.",
-                    "Allows changing coefficients without restarting the analysis."
-                ),
+                short: tr("commands.shortChange"),
+                long: tr("commands.longChange"),
                 variations: ["alterar", "change", "editar", "edit", "modificar", "modify"],
                 action() {
                     State.type = "change"
@@ -311,11 +267,8 @@ export const Commands = {
                 },
             },
             history: {
-                short: tr("abre o histórico", "opens history"),
-                long: tr(
-                    "Exibe o histórico de funções analisadas na sessão.",
-                    "Displays the history of functions analyzed in the session."
-                ),
+                short: tr("commands.shortHistory"),
+                long: tr("commands.exibeOHistoricoDe"),
                 variations: ["historico", "history", "hist"],
                 action() {
                     State.type = "history"
@@ -323,115 +276,96 @@ export const Commands = {
                 },
             },
             version: {
-                short: tr("mostra a versão", "shows version"),
-                long: tr(
-                    "Exibe a versão atual do programa e informações de autoria.",
-                    "Displays the current version of the program and authorship information."
-                ),
+                short: tr("commands.shortVersion"),
+                long: tr("commands.longVersion"),
                 variations: ["versao", "version", "vers", "v"],
                 action() {
                     return Commands.version()
                 },
             },
             unicode: {
-                short: tr("alterna Unicode", "toggles Unicode"),
-                long: tr(
-                    "Ativa ou desativa o uso de caracteres Unicode na saída.",
-                    "Enables or disables the use of Unicode characters in output."
-                ),
+                short: tr("commands.shortUnicode"),
+                long: tr("commands.longUnciode"),
                 variations: ["unicode", "uni"],
                 action(arg) {
                     return Commands.change("unicode", arg)
                 },
             },
             accents: {
-                short: tr("alterna acentos", "toggles accents"),
-                long: tr(
-                    "Ativa ou desativa acentos nas mensagens exibidas.",
-                    "Enables or disables accents in displayed messages."
-                ),
+                short: tr("commands.shortAccents"),
+                long: tr("commands.longAccents"),
                 variations: ["acentos", "accents", "acento", "accent"],
                 action(arg) {
                     return Commands.change("accents", arg)
                 },
             },
             explain: {
-                short: tr("alterna explicações", "toggles explanations"),
-                long: tr(
-                    "Ativa ou desativa as explicações detalhadas dos resultados.",
-                    "Enables or disables detailed explanations of results."
-                ),
+                short: tr("commands.shortExplain"),
+                long: tr("commands.longExplain"),
                 variations: ["explicar", "explicacoes", "explain", "explicacao", "exp"],
                 action(arg) {
                     return Commands.change("explanations", arg)
                 },
             },
             capitalize: {
-                short: tr("alterna capitalização", "toggles capitalization"),
-                long: tr(
-                    "Ativa ou desativa a capitalização das primeiras letras.",
-                    "Enables or disables capitalization of first letters."
-                ),
-                variations: ["capitalizar", "capitalizadas", "capitalize", "capitalized", "cap"],
+                short: tr("commands.shortCapitalize"),
+                long: tr("commands.longCapitalize"),
+                variations: [
+                    "capitalizar",
+                    "capitalizadas",
+                    "capitalize",
+                    "capitalized",
+                    "cap",
+                    "capitalise",
+                    "capitalised",
+                ],
                 action(arg) {
                     return Commands.change("capitalized", arg)
                 },
             },
             uppercase: {
-                short: tr("alterna maiúsculas", "toggles uppercase"),
-                long: tr("Ativa ou desativa a exibição em maiúsculas.", "Enables or disables uppercase display."),
+                short: tr("commands.shortUppercase"),
+                long: tr("commands.longUppercase"),
                 variations: ["maiuscula", "uppercase", "upper"],
                 action(arg) {
                     return Commands.change("uppercase", arg)
                 },
             },
             lowercase: {
-                short: tr("alterna minúsculas", "toggles lowercase"),
-                long: tr("Ativa ou desativa a exibição em minúsculas.", "Enables or disables lowercase display."),
+                short: tr("commands.shortLowercase"),
+                long: tr("commands.longLowercase"),
                 variations: ["minuscula", "lowercase", "lower"],
                 action(arg) {
                     return Commands.change("lowercase", arg)
                 },
             },
             separator: {
-                short: tr("alterna separador decimal", "toggles decimal separator"),
-                long: tr(
-                    "Alterna o separador decimal entre ponto e vírgula.",
-                    "Toggles the decimal separator between period and comma."
-                ),
+                short: tr("commands.shortSeparator"),
+                long: tr("commands.longSeparator"),
                 variations: ["decimal", "separador", "separator", "sep"],
                 action(arg) {
                     return Commands.change("decimalSeparator", arg)
                 },
             },
             multiples: {
-                short: tr("alterna múltiplos simples", "toggles simple multiples"),
-                long: tr(
-                    "Ativa ou desativa a simplificação de múltiplos.",
-                    "Enables or disables simplification of multiples."
-                ),
+                short: tr("commands.shortMultiples"),
+                long: tr("commands.longMultiples"),
                 variations: ["multiplos", "multiplo", "multiples", "multi"],
                 action(arg) {
                     return Commands.change("simpleMulti", arg)
                 },
             },
             confirm: {
-                short: tr("alterna confirmações de entrada", "toggles input confirmations"),
-                long: tr(
-                    "Ativa ou desativa as confirmações ao inserir dados.",
-                    "Enables or disables confirmations when entering data."
-                ),
+                short: tr("commands.shortConfirm"),
+                long: tr("commands.longConfirm"),
                 variations: ["confirmacoes", "confirm", "confirmations", "confent", "confinp"],
                 action(arg) {
                     return Commands.change("inputConfirm", arg)
                 },
             },
             confirmExit: {
-                short: tr("alterna confirmações de saída", "toggles exit confirmations"),
-                long: tr(
-                    "Ativa ou desativa a confirmação ao sair do programa.",
-                    "Enables or disables the confirmation when exiting the program."
-                ),
+                short: tr("commands.shortConfirmExit"),
+                long: tr("commands.longConfirmExit"),
                 variations: [
                     "confirmarSaida",
                     "confirmExit",
@@ -446,22 +380,16 @@ export const Commands = {
                 },
             },
             errors: {
-                short: tr("alterna exibição de erros", "toggles error display"),
-                long: tr(
-                    "Ativa ou desativa a exibição de mensagens de erro.",
-                    "Enables or disables the display of error messages."
-                ),
+                short: tr("commands.shortErrors"),
+                long: tr("commands.longErrors"),
                 variations: ["erros", "erro", "errors", "error", "err"],
                 action(arg) {
                     return Commands.change("errors", arg)
                 },
             },
             function: {
-                short: tr("alterna exibição da função", "toggles function display"),
-                long: tr(
-                    "Ativa ou desativa a exibição da função analisada.",
-                    "Enables or disables the display of the analyzed function."
-                ),
+                short: tr("commands.shortFunction"),
+                long: tr("commands.longFunction"),
                 variations: [
                     "funcao",
                     "mostrarfuncao",
@@ -477,22 +405,16 @@ export const Commands = {
                 },
             },
             degrees: {
-                short: tr("alterna modo graus", "toggles degrees mode"),
-                long: tr(
-                    "Alterna entre graus e radianos nos cálculos.",
-                    "Toggles between degrees and radians in calculations."
-                ),
+                short: tr("commands.shortDegrees"),
+                long: tr("commands.longDegrees"),
                 variations: ["graus", "grau", "degrees", "degree", "deg", "rad", "radianos", "radians"],
                 action(arg) {
                     return Commands.change("degrees", arg)
                 },
             },
             language: {
-                short: tr("alterna língua", "toggles language"),
-                long: tr(
-                    "Altera a língua do programa entre português e inglês.\nUse: /language [pt | en]",
-                    "Changes the program language between Portuguese and English.\nUsage: /language [pt | en]"
-                ),
+                short: tr("commands.shortLanguage"),
+                long: tr("commands.longLanguage"),
                 variations: [
                     "lingua",
                     "language",
@@ -520,89 +442,57 @@ export const Commands = {
                     "eua",
                     "usa",
                     "uk",
+
+                    // Espanhol
+                    "es",
+                    "es-es",
+                    "es-419",
+                    "espanol",
                 ],
                 action(arg, parts) {
                     let target = parts[1] != undefined ? parts[1] : parts[0]
                     target = Writing.noAccents(Writing.lowercase(target))
 
                     // Português
-                    if (
-                        [
-                            // Geral
-                            "lusitano",
-                            "lusitana",
+                    // BR
+                    if (["br", "pt-br", "ptbr", "brasileiro", "brazilian", "brasil", "brazil"].includes(target)) {
+                        changeLanguage("pt-br")
+                    }
 
-                            // BR
-                            "br",
-                            "pt-br",
-                            "ptbr",
-                            "brasileiro",
-                            "brazilian",
-                            "brasil",
-                            "brazil",
-
-                            // PT
-                            "pt",
-                            "pt-pt",
-                            "ptpt",
-                            "portugues",
-                            "portuguese",
-                            "portugal",
-                        ].includes(target)
-                    ) {
-                        if (Config.language == "pt") {
-                            Ui.warning(
-                                tr(
-                                    "A língua já está definida como português.",
-                                    "The language is already set to Portuguese."
-                                )
-                            )
-                        } else {
-                            changeLanguage("pt")
-                        }
+                    // PT
+                    else if (["pt", "pt-pt", "ptpt", "portugues", "portuguese", "portugal"].includes(target)) {
+                        changeLanguage("pt-pt")
                     }
 
                     // Inglês
+                    // US
+                    else if (["en", "en-us", "enus", "americano", "american", "eua", "usa"].includes(target)) {
+                        changeLanguage("en-us")
+                    }
+
+                    // GB
                     else if (
-                        [
-                            // Geral
-                            "en",
-                            "anglo",
-                            "anglo-saxon",
-                            "anglosaxon",
-
-                            // US
-                            "en-us",
-                            "enus",
-                            "americano",
-                            "american",
-                            "eua",
-                            "usa",
-
-                            // GB
-                            "en-gb",
-                            "engb",
-                            "ingles",
-                            "english",
-                            "britanico",
-                            "british",
-                            "uk",
-                        ].includes(target)
+                        ["gb", "en-gb", "engb", "ingles", "english", "britanico", "british", "uk"].includes(target)
                     ) {
-                        if (Config.language == "en") {
-                            Ui.warning(
-                                tr("A língua já está definida como inglês.", "The language is already set to English.")
-                            )
-                        } else {
-                            changeLanguage("en")
-                        }
+                        changeLanguage("en-gb")
+                    }
+
+                    // Espanhol
+                    // 419
+                    else if (["es", "es-419", "espanol"].includes(target)) {
+                        changeLanguage("es-419")
+                    }
+
+                    // ES
+                    else if (["es-es"].includes(target)) {
+                        changeLanguage("es-es")
                     }
 
                     // Erro — só mostra se o utilizador tentou passar um argumento explícito
                     else if (parts[1] != undefined) {
                         Ui.error(
-                            tr("Língua inválida", "Invalid language"),
-                            "“" + target + "” " + tr("não é uma língua válida", "is not a valid language")
+                            tr("commands.invalidLanguage"),
+                            "“" + target + "” " + tr("commands.noteInvalidLanguage")
                         )
                     }
 
@@ -610,19 +500,16 @@ export const Commands = {
                 },
             },
             debug: {
-                short: tr("alterna modo debug", "toggles debug mode"),
-                long: tr("Ativa ou desativa o modo de depuração.", "Enables or disables debug mode."),
+                short: tr("commands.shortDebug"),
+                long: tr("commands.longDebug"),
                 variations: ["debug", "dbg"],
                 action(arg) {
                     return Commands.change("debug", arg)
                 },
             },
             exit: {
-                short: tr("sai do programa", "exits the program"),
-                long: tr(
-                    "Encerra o programa. Confirmação pode ser solicitada.",
-                    "Exits the program. Confirmation may be requested."
-                ),
+                short: tr("commands.shortExit"),
+                long: tr("commands.longExit"),
                 variations: ["sair", "exit", "//", "ex", "out", "quit", "q", "fechar", "close"],
                 action() {
                     State.type = "exit"
@@ -691,17 +578,12 @@ export const Commands = {
                 const cmd = cmds[canonical]
                 if (cmd != undefined) {
                     const shortList = [canonical].concat(cmd.variations).join(", ")
-                    Ui.display(
-                        "“/" + canonical + "” — " + cmd.long + "\n" + tr("Variações: ", "Variations: ") + shortList
-                    )
+                    Ui.display("“/" + canonical + "” — " + cmd.long + "\n" + tr("commands.variations") + shortList)
                 }
                 return null
             }
 
-            Ui.error(
-                tr("Comando desconhecido", "Unknown command"),
-                "“/" + specific + "” " + tr("não é um comando válido", "is not a valid command")
-            )
+            Ui.error(tr("commands.unknownCommand"), "“/" + specific + "” " + tr("commands.noteInvalidCommand"))
             return null
         }
 
@@ -721,10 +603,10 @@ export const Commands = {
             const end = Math.min(start + 5, key.length)
             let menu =
                 "=== " +
-                tr("Ajuda", "Help") +
+                tr("commands.ajuda") +
                 " ===" +
                 "\n" +
-                tr("Página ", "Page ") +
+                tr("commands.pagina") +
                 String(page) +
                 "/" +
                 String(total) +
@@ -737,11 +619,11 @@ export const Commands = {
 
             menu +=
                 "\n----------------\n8 = " +
-                tr("Anterior", "Previous") +
+                tr("commands.previous") +
                 " | 9 = " +
-                tr("Próxima", "Next") +
+                tr("commands.next") +
                 " | 0 = " +
-                tr("Voltar", "Back")
+                tr("commands.back")
 
             answer = Ui.range(menu, "", 0, 9, 0, true)
 
@@ -763,13 +645,7 @@ export const Commands = {
      */
     searchHelp(term = "") {
         if (term == "") {
-            Ui.error(
-                tr("Pesquisa vazia", "Empty search"),
-                tr(
-                    "Use: /pesquisa <termo>\nExemplo: /pesquisa lingua",
-                    "Usage: /search <term>\nExample: /search language"
-                )
-            )
+            Ui.error(tr("commands.emptySearch"), tr("commands.usageSearch"))
             return null
         }
 
@@ -779,7 +655,7 @@ export const Commands = {
         const cmds = Commands.listCmd()
 
         if (results.length == 0) {
-            Ui.warning(tr("Nenhum comando encontrado para ", "No commands found for ") + "“" + term + "”")
+            Ui.warning(tr("commands.noCommand") + "“" + term + "”")
             return null
         }
 
@@ -798,13 +674,13 @@ export const Commands = {
             const end = Math.min(start + 5, results.length)
             let menu =
                 "=== " +
-                tr("Pesquisa: ", "Search: ") +
+                tr("commands.search") +
                 "“" +
                 term +
                 "” ===\n" +
                 String(results.length) +
                 " " +
-                tr("resultado(s) — Página ", "result(s) — Page ") +
+                tr("commands.resultsSearch") +
                 String(page) +
                 "/" +
                 String(total) +
@@ -817,11 +693,11 @@ export const Commands = {
             menu +=
                 "\n----------------\n" +
                 "8 = " +
-                tr("Anterior", "Previous") +
+                tr("commands.previous") +
                 " | 9 = " +
-                tr("Próxima", "Next") +
+                tr("commands.next") +
                 " | 0 = " +
-                tr("Voltar", "Back")
+                tr("commands.back")
 
             answer = Ui.range(menu, "", 0, 9, 0, true)
 
@@ -843,13 +719,7 @@ export const Commands = {
      */
     shortcuts(specific = "") {
         if (specific == "") {
-            Ui.error(
-                tr("Comando não informado", "Command not provided"),
-                tr(
-                    "Use: /atalhos <comando>\nExemplo: /atalhos language",
-                    "Usage: /shortcuts <command>\nExample: /shortcuts language"
-                )
-            )
+            Ui.error(tr("commands.commandNotProvided"), tr("commands.usageShortcuts"))
             return null
         }
 
@@ -857,21 +727,18 @@ export const Commands = {
         const canonical = Commands.resolveCmd(specific)
 
         if (canonical == null) {
-            Ui.error(
-                tr("Comando desconhecido", "Unknown command"),
-                "“/" + specific + "” " + tr("não é um comando válido", "is not a valid command")
-            )
+            Ui.error(tr("commands.unknownCommand"), "“/" + specific + "” " + tr("commands.noteInvalidCommand"))
             return null
         }
 
         const all = cmds[canonical].variations
         const list = all
-            .map(function (v) {
+            .map(v => {
                 return "“/" + v
             })
             .join("\n")
 
-        Ui.display(tr("Variações de ", "Variations of ") + "“/" + canonical + "”:\n" + list)
+        Ui.display(tr("commands.commandVariations") + "“/" + canonical + "”:\n" + list)
         return null
     },
 
@@ -884,17 +751,17 @@ export const Commands = {
         Ui.display(
             "====================================================" +
                 "\n" +
-                tr("Analisador de Funções Matemáticas", "Mathematical Function Analyzer") +
+                tr("commands.title") +
                 " — " +
                 VERSION +
                 "\n" +
-                tr("Autor: ", "Author: ") +
+                tr("commands.author") +
                 "Adriano Lima" +
                 "\n" +
-                tr("Repositório: ", "Repository: ") +
+                tr("commands.repository") +
                 "github.com/C4Adriano/analisador-funcoes-matematicas" +
                 "\n" +
-                tr("Todos os direitos reservados", "All rights reserved") +
+                tr("commands.copyright") +
                 " © Adriano Lima 2025 — 2026" +
                 "\n" +
                 "===================================================="
@@ -911,11 +778,11 @@ export const Commands = {
         Ui.display(
             "====================================================" +
                 "\n" +
-                tr("Analisador de Funções Matemáticas", "Mathematical Function Analyzer") +
+                tr("commands.title") +
                 " — " +
                 VERSION +
                 "\n" +
-                tr("Todos os direitos reservados", "All rights reserved") +
+                tr("commands.copyright") +
                 " © Adriano Lima 2025 — 2026" +
                 "\n" +
                 "===================================================="
@@ -952,7 +819,7 @@ export const Commands = {
         }
 
         saveConfig()
-        Ui.warning(Writing.configItem(tr("Alterado: ", "Changed: ") + "“" + name + "”", name))
+        Ui.warning(Writing.configItem(tr("commands.changed") + "“" + name + "”", name))
 
         return null
     },

@@ -13,7 +13,7 @@ beforeEach(() => {
     Config.accents = true
     Config.lowercase = false
     Config.uppercase = false
-    Config.language = "pt"
+    Config.language = "pt-br"
 })
 
 describe("Writing.replace / replaceGroup", () => {
@@ -27,7 +27,7 @@ describe("Writing.replace / replaceGroup", () => {
                 ["é", "e"],
                 ["ú", "u"],
             ])
-        ).toBe("cafe com açucar")
+        ).toBe("cafe com açúcar")
     })
 
     it("ignora pares incompletos na lista de substituição", () => {
@@ -113,7 +113,7 @@ describe("Writing.superscript / subscript", () => {
 
 describe("Writing.formatValue", () => {
     it("formata booleanos como Sim/Não (em português)", () => {
-        Config.language = "pt"
+        Config.language = "pt-br"
         expect(Writing.formatValue(true)).toBe("Sim")
         expect(Writing.formatValue(false)).toBe("Não")
     })

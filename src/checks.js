@@ -27,7 +27,7 @@ export const Checks = {
         return Checks.isText(value) && Commands.names().includes(value)
     },
     isConfigKey(value) {
-        return Checks.isValidText(value) && Object.keys(Config).includes(value)
+        return Checks.isValidValue(value) && Object.keys(Config).includes(String(value))
     },
     numericPoint(points, index) {
         return Number(Writing.decimal(points[index] ?? 0, true))

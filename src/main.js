@@ -13,11 +13,11 @@ import { Writing } from "./writing.js"
 Ui.display(
     "====================================================" +
         "\n" +
-        tr("Analisador de Funções Matemáticas", "Mathematical Function Analyzer") +
+        tr("commands.title") +
         " — " +
         VERSION +
         "\n" +
-        tr("Todos os direitos reservados", "All rights reserved") +
+        tr("commands.copyright") +
         " © Adriano Lima 2025 — 2026" +
         "\n" +
         "====================================================",
@@ -29,13 +29,7 @@ Ui.display(
 loadConfig()
 
 // Introdução
-Ui.display(
-    tr("Bem-vindo ao Analisador de Funções Matemáticas!", "Welcome to the Mathematical Function Analyzer!"),
-    tr(
-        "Este programa analisa funções dos tipos constante, afim, quadrática, exponencial, logarítmica, seno, cosseno, tangente, etc. — identificando suas propriedades e características. Para começar, informe os dados da função quando solicitado.",
-        "This program analyzes functions of the types constant, affine, quadratic, exponential, logarithmic, sine, cosine, tangent, etc. — identifying their properties and characteristics. To get started, enter the function data when prompted."
-    )
-)
+Ui.display(tr("main.welcomeTitle"), tr("main.welcomeDescription"))
 
 // === OBJETOS GLOBAIS ===
 // Para alterar o HTML também, conforme a língua
@@ -53,18 +47,17 @@ function setProperty(property, content) {
     }
 }
 
-const title = tr("Analisador de Funções Matemáticas", "Mathematical Function Analyzer")
+const title = tr("commands.title")
 
-const description = tr(
-    "Analisador de Funções Matemáticas desenvolvido em JavaScript e TypeScript.",
-    "Mathematical Function Analyzer developed in JavaScript and TypeScript."
-)
+const description = tr("main.documentDescription")
 
 const locales = {
-    pt: "pt_BR",
     "pt-br": "pt_BR",
-    en: "en_US",
+    "pt-pt": "pt_PT",
     "en-us": "en_US",
+    "en-gb": "en_GB",
+    "es-419": "es_419",
+    "es-es": "es_ES",
 }
 
 document.documentElement.lang = Config.language
@@ -117,30 +110,30 @@ do {
     if (!State.keepType || State.type == "start") {
         State.type = Ui.input(
             "=== " +
-                tr("Início", "Start") +
+                tr("main.start") +
                 " ===\n" +
-                tr("O que queres?", "What do you want?") +
+                tr("main.whatWant") +
                 "\n" +
                 "1 = " +
-                tr("Funções polinomiais", "Polynomial functions") +
+                tr("main.polynomialFunctions") +
                 "\n" +
                 "2 = " +
-                tr("Funções não polinomiais", "Non-polynomial functions") +
+                tr("main.nonPolynomialFunctions") +
                 "\n" +
                 "3 = " +
-                tr("Funções trigonométricas", "Trigonometric functions") +
+                tr("main.trigonometricFunctions") +
                 "\n" +
                 "----------------\n" +
                 "6 = " +
-                tr("Histórico", "History") +
+                tr("main.history") +
                 " | 7 = " +
-                tr("Configurações", "Settings") +
+                tr("main.settings") +
                 " | 8 = " +
-                tr("Rever", "Review") +
+                tr("main.review") +
                 " | 9 = " +
-                tr("Alterar", "Change") +
+                tr("main.change") +
                 " | 0 = " +
-                tr("Sair", "Exit"),
+                tr("main.exit"),
             "",
             true,
             0,
@@ -161,9 +154,9 @@ do {
         if (State.type == 1) {
             // Incógnitas
             if (
-                !Checks.isNumeric(State.globalA) ||
-                !Checks.isNumeric(State.globalB) ||
-                !Checks.isNumeric(State.globalC)
+                !Checks.isFiniteNumber(State.globalA) ||
+                !Checks.isFiniteNumber(State.globalB) ||
+                !Checks.isFiniteNumber(State.globalC)
             ) {
                 State.coefficients = Algebra.unknown(State.globalA, State.globalB, State.globalC)
                 State.globalA = Algebra.round(State.coefficients[0])
@@ -172,7 +165,11 @@ do {
             }
 
             // Números
-            if (Checks.isNumeric(State.globalA) && Checks.isNumeric(State.globalB) && Checks.isNumeric(State.globalC)) {
+            if (
+                Checks.isFiniteNumber(State.globalA) &&
+                Checks.isFiniteNumber(State.globalB) &&
+                Checks.isFiniteNumber(State.globalC)
+            ) {
                 if (State.globalA == 0 && State.globalB == 0) {
                     Analyze.constant(State.globalC)
                 } else if (State.globalA == 0 && State.globalB != 0) {
@@ -189,25 +186,25 @@ do {
             do {
                 subType = Ui.input(
                     "=== Menu ===\n" +
-                        tr("O que queres?", "What do you want?") +
+                        tr("main.whatWant") +
                         "\n" +
                         "1 = " +
-                        tr("Função exponencial", "Exponential function") +
+                        tr("main.exponentialFunction") +
                         "\n" +
                         "2 = " +
-                        tr("Função logarítmica", "Logarithmic function") +
+                        tr("main.logarithmicFunction") +
                         "\n" +
                         "----------------\n" +
                         "6 = " +
-                        tr("Antigas", "History") +
+                        tr("main.history") +
                         " | 7 = " +
-                        tr("Configurações", "Settings") +
+                        tr("main.settings") +
                         " | 8 = " +
-                        tr("Rever", "Review") +
+                        tr("main.review") +
                         " | 9 = " +
-                        tr("Alterar", "Change") +
+                        tr("main.change") +
                         " | 0 = " +
-                        tr("Voltar", "Back"),
+                        tr("commands.back"),
                     "",
                     true,
                     0,
@@ -234,8 +231,8 @@ do {
                         // Números
                         if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
                             if (
-                                Checks.isNumeric(State.globalA) &&
-                                Checks.isNumeric(State.globalB) &&
+                                Checks.isFiniteNumber(State.globalA) &&
+                                Checks.isFiniteNumber(State.globalB) &&
                                 State.globalA > 0 &&
                                 State.globalA != 1 &&
                                 State.globalB != 0
@@ -245,12 +242,12 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalA == 1 || State.globalB == 0) {
-                                Error.constantFunction(tr("exponencial", "exponential"))
+                                Error.constantFunction(tr("main.exponential"))
 
                                 if (
                                     State.globalA == 1 &&
-                                    Checks.isNumeric(State.globalB) &&
-                                    Checks.isNumeric(State.globalC)
+                                    Checks.isFiniteNumber(State.globalB) &&
+                                    Checks.isFiniteNumber(State.globalC)
                                 ) {
                                     State.globalC += State.globalB
                                 }
@@ -262,8 +259,8 @@ do {
                             }
 
                             // Error de base
-                            else if (Checks.isNumeric(State.globalA) && State.globalA < 0) {
-                                Error.invalidFunction(tr("exponencial", "exponential"))
+                            else if (Checks.isFiniteNumber(State.globalA) && State.globalA < 0) {
+                                Error.invalidFunction(tr("main.exponential"))
 
                                 State.askCoeffs = true
                                 State.loop = true
@@ -290,8 +287,8 @@ do {
                         // Números
                         if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
                             if (
-                                Checks.isNumeric(State.globalA) &&
-                                Checks.isNumeric(State.globalB) &&
+                                Checks.isFiniteNumber(State.globalA) &&
+                                Checks.isFiniteNumber(State.globalB) &&
                                 State.globalA > 0 &&
                                 State.globalA != 1 &&
                                 State.globalB != 0
@@ -301,11 +298,11 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalA == 1 || State.globalB == 0) {
-                                Error.constantFunction(tr("logarítmica", "logarithmic"))
+                                Error.constantFunction(tr("main.logarithmic"))
                                 if (
                                     State.globalA == 1 &&
-                                    Checks.isNumeric(State.globalB) &&
-                                    Checks.isNumeric(State.globalC)
+                                    Checks.isFiniteNumber(State.globalB) &&
+                                    Checks.isFiniteNumber(State.globalC)
                                 ) {
                                     State.globalC += State.globalB
                                 }
@@ -317,8 +314,8 @@ do {
                             }
 
                             // Error de base
-                            else if (Checks.isNumeric(State.globalA) && State.globalA < 0) {
-                                Error.invalidFunction(tr("logarítmica", "logarithmic"))
+                            else if (Checks.isFiniteNumber(State.globalA) && State.globalA < 0) {
+                                Error.invalidFunction(tr("main.logarithmic"))
                                 State.askCoeffs = true
                                 State.loop = true
                             }
@@ -330,7 +327,7 @@ do {
                         State.type = subType
                         State.loop = true
                         State.keepType = true
-                    } else if (Checks.isCommand(subType)) {
+                    } else if (Commands.names().includes(subType)) {
                         State.type = subType
                         State.loop = true
                         if (subType != "exit") {
@@ -357,28 +354,28 @@ do {
             do {
                 subType = Ui.input(
                     "=== Menu ===\n" +
-                        tr("O que queres?", "What do you want?") +
+                        tr("main.whatWant") +
                         "\n" +
                         "1 = " +
-                        tr("Função seno", "Sine function") +
+                        tr("main.sineFunction") +
                         "\n" +
                         "2 = " +
-                        tr("Função cosseno", "Cosine function") +
+                        tr("main.cosineFunction") +
                         "\n" +
                         "3 = " +
-                        tr("Função tangente", "Tangent function") +
+                        tr("main.tangentFunction") +
                         "\n" +
                         "----------------\n" +
                         "6 = " +
-                        tr("Antigas", "History") +
+                        tr("main.history") +
                         " | 7 = " +
-                        tr("Configurações", "Settings") +
+                        tr("main.settings") +
                         " | 8 = " +
-                        tr("Rever", "Review") +
+                        tr("main.review") +
                         " | 9 = " +
-                        tr("Alterar", "Change") +
+                        tr("main.change") +
                         " | 0 = " +
-                        tr("Voltar", "Back"),
+                        tr("commands.back"),
                     "",
                     true,
                     0,
@@ -417,7 +414,7 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalB == 0) {
-                                Error.constantFunction(tr("seno", "sine"))
+                                Error.constantFunction(tr("main.sine"))
 
                                 State.globalA = 0
                                 State.globalB = 0
@@ -453,12 +450,12 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalB == 0) {
-                                Error.constantFunction(tr("cosseno", "cosine"))
+                                Error.constantFunction(tr("main.cossine"))
 
                                 if (
                                     State.globalA == 0 &&
-                                    Checks.isNumeric(State.globalC) &&
-                                    Checks.isNumeric(State.globalB)
+                                    Checks.isFiniteNumber(State.globalC) &&
+                                    Checks.isFiniteNumber(State.globalB)
                                 ) {
                                     State.globalC += State.globalB
                                 }
@@ -496,7 +493,7 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalB == 0) {
-                                Error.constantFunction(tr("tangente", "tangent"))
+                                Error.constantFunction(tr("main.tangent"))
 
                                 State.globalA = 0
                                 State.globalB = 0
@@ -512,7 +509,7 @@ do {
                         State.type = subType
                         State.loop = true
                         State.keepType = true
-                    } else if (Checks.isCommand(subType)) {
+                    } else if (Commands.names().includes(subType)) {
                         State.type = subType
                         State.loop = true
                         if (subType != "exit") {
@@ -539,20 +536,9 @@ do {
 
             // Error de histórico
             if (State.history.length <= 1) {
-                Ui.display(
-                    tr("Não há histórico o suficiente para mudanças.", "There is no history yet for changes."),
-                    tr(
-                        "Escrevestes apenas uma função até agora. Use “alterar” para escrever outra função.",
-                        "You have written only one function so far. Use “changes” to write another function."
-                    )
-                )
+                Ui.display(tr("main.noHistory"), tr("main.noHistoryExp"))
             } else {
-                let message =
-                        "=== " +
-                        tr("Histórico", "History") +
-                        " ===\n" +
-                        tr("O que queres?", "What do you want?") +
-                        "\n",
+                let message = "=== " + tr("main.history") + " ===\n" + tr("main.whatWant") + "\n",
                     answer = 0,
                     option = 1
 
@@ -603,26 +589,26 @@ do {
 
                 // Menu de configurações
                 let configOptions = [
-                    Writing.configItem(tr("Caracteres Unicode", "Unicode characters"), "unicode"),
-                    Writing.configItem(tr("Explicações", "Explanations"), "explanations"),
-                    Writing.configItem(tr("Acentos", "Accents"), "accents"),
-                    Writing.configItem(tr("Capitalizadas", "Capitalized"), "capitalized"),
-                    Writing.configItem(tr("Maiúsculas", "Uppercase"), "uppercase"),
-                    Writing.configItem(tr("Minúsculas", "Lowercase"), "lowercase"),
+                    Writing.configItem(tr("main.unicode"), "unicode"),
+                    Writing.configItem(tr("main.explanations"), "explanations"),
+                    Writing.configItem(tr("main.accents"), "accents"),
+                    Writing.configItem(tr("main.capitalized"), "capitalized"),
+                    Writing.configItem(tr("main.uppercase"), "uppercase"),
+                    Writing.configItem(tr("main.lowercase"), "lowercase"),
 
-                    Writing.configItem(tr("Ponto decimal", "Decimal separator"), "decimalSeparator"),
-                    Writing.configItem(tr("Multiplicação simples", "Simple multiplication"), "simpleMulti"),
-                    Writing.configItem(tr("Confirmações de entrada", "Input confirmations"), "inputConfirm"),
-                    Writing.configItem(tr("Confirmações de saída", "Output confirmations"), "outputConfirm"),
-                    Writing.configItem(tr("Mensagens de erro", "Error messages"), "errors"),
-                    Writing.configItem(tr("Mostrar função", "Show function"), "showFunction"),
+                    Writing.configItem(tr("main.decimalSeparator"), "decimalSeparator"),
+                    Writing.configItem(tr("main.simpleMulti"), "simpleMulti"),
+                    Writing.configItem(tr("main.inputConfirm"), "inputConfirm"),
+                    Writing.configItem(tr("main.outputConfirm"), "outputConfirm"),
+                    Writing.configItem(tr("main.errors"), "errors"),
+                    Writing.configItem(tr("main.showFunction"), "showFunction"),
 
-                    Writing.configItem(tr("Casas decimais", "Decimal places"), "decimalPlaces"),
-                    Writing.configItem(tr("Precisão do log", "Log precision"), "logPrecision"),
-                    Writing.configItem(tr("Precisão da divisão", "Division precision"), "divPrecision"),
-                    Writing.configItem(tr("Limite de interações", "Interaction limit"), "interactionLimit"),
-                    Writing.configItem(tr("Linguagem", "Language"), "language"),
-                    Writing.configItem(tr("Graus", "Degrees"), "degrees"),
+                    Writing.configItem(tr("main.decimalPlaces"), "decimalPlaces"),
+                    Writing.configItem(tr("main.logPrecision"), "logPrecision"),
+                    Writing.configItem(tr("main.divisionPrecision"), "divPrecision"),
+                    Writing.configItem(tr("main.interactionLimit"), "interactionLimit"),
+                    Writing.configItem(tr("main.language"), "language"),
+                    Writing.configItem(tr("main.degrees"), "degrees"),
                 ]
 
                 // Preenche com separadores
@@ -642,14 +628,14 @@ do {
                 // Mostra opções
                 let text =
                     "=== " +
-                    tr("Configurações", "Settings") +
+                    tr("main.settings") +
                     " ===\n" +
-                    tr("Página ", "Page ") +
+                    tr("commands.page") +
                     String(page) +
                     "/" +
                     String(total) +
                     "\n" +
-                    tr("Obs.: Configurações não são salvas ao fechar", "Note: Settings are not saved when closing")
+                    tr("main.settingsNote")
                 while (option <= 6) {
                     text += "\n" + String(option) + " = " + String(configOptions[option - 1 + 6 * (page - 1)])
                     option++
@@ -658,31 +644,22 @@ do {
                 text +=
                     "\n----------------\n" +
                     "7 = " +
-                    tr("Restaurar padrão", "Restore default") +
+                    tr("main.restoreDefault") +
                     " | 8 = " +
-                    tr("Anterior", "Previous") +
+                    tr("commands.previous") +
                     " | 9 = " +
-                    tr("Próxima", "Next") +
+                    tr("commands.next") +
                     " | 0 = " +
-                    tr("Voltar", "Back")
+                    tr("commands.back")
 
                 // Escolha
                 choice = Ui.range(text, "", 0, 9, 0, true)
                 if (choice == 7) {
                     // Padrão
                     if (JSON.stringify(Config) == JSON.stringify(DEFAULT_CONFIG)) {
-                        Ui.warning(
-                            tr(
-                                "Todas as configurações já estão na forma padrão.",
-                                "All settings are already at their default values."
-                            ),
-                            tr("Não há necessidade de restaurar.", "There is no need to restore.")
-                        )
+                        Ui.warning(tr("main.allSettingsDefault"), tr("main.allSettingsDefaultExp"))
                     } else {
-                        let message = tr(
-                                "Voltar às configurações padrão?\nConfigurações afetadas:\n",
-                                "Do you want to restore the default settings?\nAffected settings:\n"
-                            ),
+                        let message = tr("main.wantRestoreDefault"),
                             keys = Object.keys(Config)
 
                         // Mostra configurações afetadas
@@ -694,16 +671,7 @@ do {
                         message = message.slice(0, -2)
 
                         // Confirmação
-                        if (
-                            Ui.warning(
-                                message,
-                                tr(
-                                    "Obs.₁: Isso irá afetar todas as configurações acima\nObs.₂: Essa alteração é permanente",
-                                    "Note₁: This will affect all the settings above\nNote₂: This change is permanent"
-                                ),
-                                true
-                            )
-                        ) {
+                        if (Ui.warning(message, tr("main.noteRestoreDefault"), true)) {
                             resetConfig()
                         }
                     }
@@ -727,50 +695,32 @@ do {
                     // Unicode
                     if (choice == 1) {
                         Config.unicode = Ui.confirm(
-                            Writing.configItem(
-                                tr("Ativar caracteres Unicode?", "Enable Unicode characters?"),
-                                "unicode"
-                            ),
-                            tr(
-                                "Obs.₁: Caracteres Unicode são os símbolos especiais, tais como: “ℝ”, “∀”, etc. Desativar fará com que eles sejam transformados em uma palavra correspondente, tais como: “Reais”, “para todo”, etc.\nObs.₂: Nem todos os caracteres Unicode serão desativados\nObs.₃: Essa configuração pode mudar algumas explicações",
-                                "Note₁: Unicode characters are special symbols, such as: “ℝ”, “∀”, etc. Disabling will replace them with a corresponding word, such as: “Reals”, “for all”, etc.\nNote₂: Not all Unicode characters will be disabled\nNote₃: This setting may change some explanations"
-                            )
+                            Writing.configItem(tr("main.enableUnicode"), "unicode"),
+                            tr("main.noteUnicode")
                         )
                     }
 
                     // Explicações
                     else if (choice == 2) {
                         Config.explanations = Ui.confirm(
-                            Writing.configItem(tr("Ativar explicações?", "Enable explanations?"), "explanations"),
-                            tr(
-                                "Obs.₁: Ativar fará com que certas mensagens sejam diferentes e tenham explicações, por exemplo: o cálculo do Delta, Δ = b² - 4 · a · c, sem ser só o resultado dele\nObs.₂: Nem todas as mensagens têm versão explicada\nObs.₃: Desativar o Unicode fará com que seja mostrado: Delta = b^2 - 4 * a * c",
-                                "Note₁: Enabling will make certain messages different and include explanations, e.g.: the Delta calculation, Δ = b² - 4 · a · c, not just the result\nNote₂: Not all messages have an explained version\nNote₃: Disabling Unicode will show: Delta = b^2 - 4 * a * c"
-                            )
+                            Writing.configItem(tr("main.enableExplanations"), "explanations"),
+                            tr("main.noteExplanations")
                         )
                     }
 
                     // Acentos
                     else if (choice == 3) {
                         Config.accents = Ui.confirm(
-                            Writing.configItem(tr("Ativar acentos?", "Enable accents?"), "accents"),
-                            tr(
-                                "Obs.: Essa configuração irá tirar todos os acentos gráficos das palavras, podendo haver má interpretação",
-                                "Note: This setting will remove all accents from words, which may cause misinterpretation"
-                            )
+                            Writing.configItem(tr("main.enableAccents"), "accents"),
+                            tr("main.noteAccents")
                         )
                     }
 
                     // Capitalizadas
                     else if (choice == 4) {
                         Config.capitalized = Ui.confirm(
-                            Writing.configItem(
-                                tr("Ativar letras capitalizadas?", "Enable capitalized letters?"),
-                                "capitalized"
-                            ),
-                            tr(
-                                "Obs.₁: Essa configuração irá transformar as palavras em “normais”, no caso, a primeira letra da frase em maiúscula e as outras todas em minúsculas\nObs.₂: Essa configuração irá desativar “maiúsculas” e “minúsculas”",
-                                "Note₁: This setting will make text “normal”, i.e., the first letter of each sentence capitalized and the rest lowercase\nNote₂: This setting will disable “uppercase” and “lowercase”"
-                            )
+                            Writing.configItem(tr("main.enableCapitalized"), "capitalized"),
+                            tr("main.noteCapitalized")
                         )
                         if (Config.capitalized) {
                             Config.lowercase = false
@@ -783,14 +733,8 @@ do {
                     // Maiúsculas
                     else if (choice == 5) {
                         Config.uppercase = Ui.confirm(
-                            Writing.configItem(
-                                tr("Ativar todas as letras maiúsculas?", "Enable all uppercase letters?"),
-                                "uppercase"
-                            ),
-                            tr(
-                                "Obs.₁: Essa configuração irá transformar todas as letras em maiúsculas\nObs.₂: Essa configuração irá desativar “capitalizadas” e “minúsculas”",
-                                "Note₁: This setting will transform all letters to uppercase\nNote₂: This setting will disable “capitalized” and “lowercase”"
-                            )
+                            Writing.configItem(tr("main.enableUppercase"), "uppercase"),
+                            tr("main.noteUppercase")
                         )
                         if (Config.uppercase) {
                             Config.capitalized = false
@@ -803,14 +747,8 @@ do {
                     // Minúsculas
                     else if (choice == 6) {
                         Config.lowercase = Ui.confirm(
-                            Writing.configItem(
-                                tr("Ativar todas as letras minúsculas?", "Enable all lowercase letters?"),
-                                "lowercase"
-                            ),
-                            tr(
-                                "Obs.₁: Essa configuração irá transformar todas as letras em minúsculas\nObs.₂: Essa configuração irá desativar “capitalizadas” e “maiúsculas”",
-                                "Note₁: This setting will transform all letters to lowercase\nNote₂: This setting will disable “capitalized” and “uppercase”"
-                            )
+                            Writing.configItem(tr("main.enableLowercase"), "lowercase"),
+                            tr("main.noteLowercase")
                         )
                         if (Config.lowercase) {
                             Config.capitalized = false
@@ -826,86 +764,50 @@ do {
                     // Ponto decimal
                     if (choice == 1) {
                         Config.decimalSeparator = Ui.confirm(
-                            Writing.configItem(
-                                tr("Alterar ponto decimal?", "Change decimal separator?"),
-                                "decimalSeparator"
-                            ),
-                            tr(
-                                "Obs.₁: Essa configuração irá transformar os números com “.” em números com “,”, por exemplo: ",
-                                "Note₁: This setting will transform numbers with “.” into numbers with “,”, e.g.: "
-                            ) +
+                            Writing.configItem(tr("main.changeDecimalSeparator"), "decimalSeparator"),
+                            tr("main.noteDecimalSeparator") +
                                 Writing.decimal(123.456) +
-                                tr(
-                                    "\nObs.₂: Isso é apenas estético e não irá afetar as contas\nObs.₃: Tu também poderás escrever os números com “,” em vez de “.”",
-                                    "\nNote₂: This is only aesthetic and will not affect calculations\nNote₃: You will also be able to type numbers with “,” instead of “.”"
-                                )
+                                tr("main.noteDecimalSeparator2")
                         )
                     }
 
                     // Multiplicação simples
                     else if (choice == 2) {
                         Config.simpleMulti = Ui.confirm(
-                            Writing.configItem(
-                                tr("Alterar para multiplicação simples?", "Enable simple multiplication?"),
-                                "simpleMulti"
-                            ),
-                            tr(
-                                "Obs.₁: Isso irá alterar esteticamente as contas polinomiais de: “a · x² + b · x + c” para: “ax² + bx + c”\nObs.₂: Desativar o Unicode irá transformar o “·” em *\nObs.₃: Isso não irá afetar o “×”, porém o Unicode irá transformá-lo em *",
-                                "Note₁: This will aesthetically change polynomial expressions from: “a · x² + b · x + c” to: “ax² + bx + c”\nNote₂: Disabling Unicode will transform “·” into *\nNote₃: This will not affect “×”, but Unicode will transform it into *"
-                            )
+                            Writing.configItem(tr("main.changeSimpleMulti"), "simpleMulti"),
+                            tr("main.noteSimpleMulti")
                         )
                     }
 
                     // Confirmações de entrada
                     else if (choice == 3) {
                         Config.inputConfirm = Ui.confirm(
-                            Writing.configItem(
-                                tr("Ativar confirmações de entrada?", "Enable input confirmations?"),
-                                "inputConfirm"
-                            ),
-                            tr(
-                                "Obs.: Toda e qualquer coisa digitada passará a ter que ser confirmada",
-                                "Note: Everything typed will need to be confirmed"
-                            )
+                            Writing.configItem(tr("main.enableInputConfirm"), "inputConfirm"),
+                            tr("main.noteInputConfirm")
                         )
                     }
 
                     // Confirmações de saída
                     else if (choice == 4) {
                         Config.outputConfirm = Ui.confirm(
-                            Writing.configItem(
-                                tr("Ativar confirmações de saída?", "Enable exit confirmations?"),
-                                "outputConfirm"
-                            ),
-                            tr(
-                                "Obs.: Isso irá ativar uma mensagem antes de sair / fechar o programa",
-                                "Note: This will show a confirmation message before exiting / closing the program"
-                            )
+                            Writing.configItem(tr("main.enableOutputConfirm"), "outputConfirm"),
+                            tr("main.noteOutputConfirm")
                         )
                     }
 
                     // Errors
                     else if (choice == 5) {
                         Config.errors = Ui.confirm(
-                            Writing.configItem(tr("Ativar mensagens de erro?", "Enable error messages?"), "errors"),
-                            tr(
-                                "Obs.: Desativar pode fazer com que tu não percebas algum erro que estás cometendo",
-                                "Note: Disabling may cause you not to notice errors you are making"
-                            )
+                            Writing.configItem(tr("main.enableErrors"), "errors"),
+                            tr("main.noteErrors")
                         )
                     }
 
                     // Função
                     else if (choice == 6) {
                         Config.showFunction = Ui.confirm(
-                            Writing.configItem(
-                                tr("Ativar exibição da função?", "Enable function display?"),
-                                "showFunction"
-                            ),
-                            tr(
-                                "Obs.₁: “Mostrar função” significa que será mostrada a função (por exemplo: ax² + bx + c) no começo dos menus, antes das opções\nObs.₂: A função ainda continuará sendo mostrada quando for escolhida a opção “6” (Rever / Mostrar função)",
-                                "Note₁: “Show function” means the function (e.g.: ax² + bx + c) will be shown at the start of menus, before the options\nNote₂: The function will still be shown when option “6” (Review / Show function) is selected"
-                            )
+                            Writing.configItem(tr("main.enableShowFunction"), "showFunction"),
+                            tr("main.noteShowFunction")
                         )
                     }
                 }
@@ -915,14 +817,8 @@ do {
                     // Casas decimais
                     if (choice == 1) {
                         Config.decimalPlaces = Ui.range(
-                            Writing.configItem(
-                                tr("Quantas casas decimais?", "How many decimal places?"),
-                                "decimalPlaces"
-                            ),
-                            tr(
-                                "Obs.₁: Um número muito pequeno de casas decimais pode fazer as contas ficarem erradas\nObs.₂: Os números já digitados serão arredondados para o novo número de casas decimais",
-                                "Note₁: Too few decimal places may cause calculation errors\nNote₂: Already entered numbers will be rounded to the new number of decimal places"
-                            ),
+                            Writing.configItem(tr("main.howManyDecimalPlaces"), "decimalPlaces"),
+                            tr("main.noteDecimalPlaces"),
                             3,
                             10
                         )
@@ -942,14 +838,8 @@ do {
                     // Precisão do log
                     else if (choice == 2) {
                         Config.logPrecision = Ui.range(
-                            Writing.configItem(
-                                tr("Qual a precisão do log?", "What is the log precision?"),
-                                "logPrecision"
-                            ),
-                            tr(
-                                "Obs.₁: Isso poderá afetar contas muito pequenas envolvendo logs\nObs.₂: Tu terás que escrever literalmente “1e-12”",
-                                "Note₁: This may affect very small calculations involving logarithms\nNote₂: You will have to literally type “1e-12”"
-                            ),
+                            Writing.configItem(tr("main.whatLogPrecision"), "logPrecision"),
+                            tr("main.noteLogPrecision"),
                             1e-12,
                             1e-6,
                             20
@@ -959,14 +849,8 @@ do {
                     // Precisão da divisão
                     else if (choice == 3) {
                         Config.divPrecision = Ui.range(
-                            Writing.configItem(
-                                tr("Qual a precisão da divisão?", "What is the division precision?"),
-                                "divPrecision"
-                            ),
-                            tr(
-                                "Obs.₁: Isso poderá afetar contas muito pequenas envolvendo divisões\nObs.₂: Tu terás que escrever literalmente “1e-12”",
-                                "Note₁: This may affect very small calculations involving divisions\nNote₂: You will have to literally type “1e-12”"
-                            ),
+                            Writing.configItem(tr("main.whatDivisionPrecision"), "divPrecision"),
+                            tr("main.noteDivisionPrecision"),
                             1e-12,
                             1e-6,
                             20
@@ -976,14 +860,8 @@ do {
                     // Limite de interações
                     else if (choice == 4) {
                         Config.interactionLimit = Ui.range(
-                            Writing.configItem(
-                                tr("Qual o limite de interações?", "What is the iteration limit?"),
-                                "interactionLimit"
-                            ),
-                            tr(
-                                "Obs.₁: Isso irá afetar todos os loops, tais como logs, menus, etc.\nObs.₂: Essa configuração é útil para evitar loops infinitos no código, caso algo dê errado",
-                                "Note₁: This will affect all loops, such as logarithms, menus, etc.\nNote₂: This setting is useful to avoid infinite loops in the code, in case something goes wrong"
-                            ),
+                            Writing.configItem(tr("main.whatInteractionLimit"), "interactionLimit"),
+                            tr("main.noteInteractionLimit"),
                             100,
                             10000
                         )
@@ -991,32 +869,38 @@ do {
 
                     // Linguagem
                     else if (choice == 5) {
+                        const LANGUAGES = ["pt-br", "pt-pt", "en-us", "en-gb", "es-419", "es-es"]
+                        const optionLines = [
+                            tr("main.brazilianPortuguese"),
+                            tr("main.europeanPortuguese"),
+                            tr("main.americanEnglish"),
+                            tr("main.britishEnglish"),
+                            tr("main.latinAmericanSpanish"),
+                            tr("main.spainSpanish"),
+                        ].map((label, index) => `${index + 1} = ${label}`)
                         let question = Ui.range(
-                                Writing.configItem(tr("Qual língua?", "Which language?"), "language") +
-                                    "\n1 = " +
-                                    tr("Português Brasileiro", "Brazilian Portuguese") +
-                                    "\n2 = " +
-                                    tr("Inglês", "English"),
-                                tr(
-                                    "Obs.: Isso irá alterar a língua do sistema inteiro.",
-                                    "Note: This will change the entire system language."
-                                ),
+                                `${Writing.configItem(tr("main.whatLanguage"), "language")}\n${optionLines.join("\n")}`,
+                                tr("main.noteLanguage"),
                                 1,
-                                2,
+                                6,
                                 0
                             ),
-                            language = question == 1 ? "pt" : "en"
+                            language = LANGUAGES[question - 1]
                         if (language != Config.language) {
                             changeLanguage(language)
 
                             // Para alterar o HTML também, conforme a língua
                             document.title =
-                                Config.language == "en"
+                                Config.language == "en-us"
                                     ? "Mathematical Function Analyzer"
-                                    : "Analisador de Funções Matemáticas"
+                                    : Config.language == "en-gb"
+                                      ? "Mathematical Function Analyser"
+                                      : Config.language == "es-419" || Config.language == "es-es"
+                                        ? "Analizador de Funciones Matemáticas"
+                                        : "Analisador de Funções Matemáticas"
                             let h1 = document.querySelector("h1")
                             if (h1) {
-                                h1.textContent = tr("Matemática", "Mathematics")
+                                h1.textContent = tr("main.h1")
                             } else {
                                 Ui.error("[main] Elemento 'h1' não encontrado no DOM.", "", true)
                             }
@@ -1027,21 +911,15 @@ do {
                     // Graus
                     else if (choice == 6) {
                         const useDegrees = Ui.confirm(
-                            Writing.configItem(
-                                tr("Usar graus em vez de radianos?", "Use degrees instead of radians?"),
-                                "degrees"
-                            ),
-                            tr(
-                                "Obs.₁: Isso irá afetar as funções trigonométricas, tais como seno, cosseno e tangente\nObs.₂: Ativar isso irá fazer com que os ângulos sejam interpretados como graus, e não π radianos",
-                                "Note₁: This will affect trigonometric functions, such as sine, cosine and tangent\nNote₂: Enabling this will make angles be interpreted as degrees, not π radians"
-                            )
+                            Writing.configItem(tr("main.changeDegrees"), "degrees"),
+                            tr("main.noteDegrees")
                         )
                         Config.degrees = useDegrees ? "deg" : "rad"
                     }
                 }
 
                 // Salvar as configurações
-                if (Checks.isNumeric(choice) && 1 <= choice && choice <= 6) {
+                if (Checks.isFiniteNumber(choice) && 1 <= choice && choice <= 6) {
                     saveConfig()
                 }
             } while (choice != 0)
@@ -1050,7 +928,7 @@ do {
         // Rever
         else if (State.type == 8 || State.type == "review") {
             Ui.display(
-                tr("Valores: ", "Values: ") +
+                tr("main.values") +
                     "\n“a” = " +
                     Writing.decimal(State.globalA) +
                     "\n“b” = " +
@@ -1070,13 +948,7 @@ do {
         // Sair
         else if (State.type == 0 || State.type == "exit") {
             if (Config.outputConfirm) {
-                State.loop = !Ui.confirm(
-                    tr("Tu queres sair?", "Do you want to exit?"),
-                    tr(
-                        "Obs.: As configurações poderão ser redefinidas ao sair.",
-                        "Note: Settings may be reset upon exit."
-                    )
-                )
+                State.loop = !Ui.confirm(tr("main.exitConfirm"), tr("main.noteSettingsExit"))
             } else {
                 State.loop = false
             }

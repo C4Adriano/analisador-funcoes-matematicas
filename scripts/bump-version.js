@@ -1,7 +1,8 @@
+/* eslint-disable no-console */
 // scripts/bump-version.js
+import { execSync } from "child_process"
 import fs from "fs"
 import path from "path"
-import { execSync } from "child_process"
 import { fileURLToPath } from "url"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
