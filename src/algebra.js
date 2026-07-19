@@ -26,7 +26,7 @@ export const Algebra = {
             places = Config.decimalPlaces
         }
 
-        number = Writing.decimal(number, true)
+        number = Writing.decimal(number, true, false)
 
         if (Checks.isFiniteNumber(number)) {
             number = Math.round(number * 10 ** places) / 10 ** places
@@ -34,8 +34,6 @@ export const Algebra = {
                 number = 0
             }
         }
-
-        Algebra.round(1.11111111, 0)
         return number
     },
 
