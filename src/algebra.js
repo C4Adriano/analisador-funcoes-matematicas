@@ -8,16 +8,35 @@ import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
 /**
- * [NUMÉRICO] Objeto base para as funções envolvendo algebra
- * - Use as funções daqui para fazer cálculos, arredondar números, pedir variáveis e pontos, etc.
+ * # Algebra
+ *
+ * ## Funcionalidades:
+ * Objeto base para as funções envolvendo álgebra.
+ *
+ * ## Métodos:
+ * - {@link Algebra.round round} - Arredonda números
+ * - {@link Algebra.variables variables} - Pede variáveis
+ * - {@link Algebra.point point} - Pede pontos
+ * - {@link Algebra.equations equations} - Equações entre funções
+ * - {@link Algebra.unknown unknown} - Descobre variáveis
+ * - {@link Algebra.log log} - Log de `x` de uma `base` qualquer
+ * - {@link Algebra.ln ln} - Log natural de `x`
+ * - {@link Algebra.division division} - Divide de forma segura
+ * - {@link Algebra.absolute absolute} - Valor absoluto de um número
+ *
+ * ### Tags:
+ * @author [C4Adriano](https://github.com/C4Adriano)
+ * @license [License](../LICENSE.md)
+ * @group Numérico
  * @since v6.1.0
  */
 export const Algebra = {
     /**
-     * [NUMÉRICO] Arredonda um número
+     * Arredonda um número
      * @param {string | number} number - Número
      * @param {number} places - Casas decimais
      * @returns {string | number} Número arredondado
+     * @group Numérico
      * @since v6.1.0
      */
     round(number = 0, places = Config.decimalPlaces) {
@@ -39,9 +58,10 @@ export const Algebra = {
     },
 
     /**
-     * [UI] Pede uma variável
+     * Pede uma variável
      * @param {string} name - Nome da variável
      * @returns {string | number} Se a variável tiver valor numérico, retorna o valor. Se não, retorna o nome
+     * @group UI
      * @since v6.1.0
      */
     variables(name = "x") {
@@ -50,13 +70,7 @@ export const Algebra = {
             name = "x"
         }
 
-        let value = Ui.input(
-            name + " = ",
-            tr(
-                `Digite “${name}” caso queira que “${name}” seja uma incógnita.`,
-                `Type “${name}” if you want “${name}” to be an unknown variable.`
-            )
-        )
+        let value = Ui.input(name + " = ", tr("algebra.variableAsk", { name: name }))
 
         value = Writing.decimal(value, true)
         if (Checks.isFiniteNumber(value)) {
@@ -592,7 +606,7 @@ export const Algebra = {
 
         // Loop
         let limit = 0
-        while (Algebra.absolute(delta) > precision && limit < Config.interactionLimit) {
+        while (Algebra.absolute(delta) > precision && limit < Config.iteractionLimit) {
             delta = Algebra.division(base ** y - x, base ** y * number, false)
             y -= delta
 
@@ -625,7 +639,7 @@ export const Algebra = {
 
         // Loop
         let limit = 0
-        while (Algebra.absolute(delta) > precision && limit < Config.interactionLimit) {
+        while (Algebra.absolute(delta) > precision && limit < Config.iteractionLimit) {
             delta = Algebra.division(base ** y - x, base ** y, false)
             y -= delta
 

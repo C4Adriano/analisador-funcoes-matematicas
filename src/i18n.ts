@@ -2,7 +2,7 @@
 import { Config, saveConfig } from "./config.js"
 import { Ui } from "./ui.js"
 
-import type { DeepPartial, Language, Text } from "./values.js"
+import type { Language, Text } from "./values.js"
 
 import enGB from "./JSON/i18n/en-GB.json" with { type: "json" }
 import enUS from "./JSON/i18n/en-US.json" with { type: "json" }
@@ -13,14 +13,22 @@ import ptPT from "./JSON/i18n/pt-PT.json" with { type: "json" }
 
 const dictionaries = {
     "en-us": enUS,
-    "en-gb": mergeDictionaries(enUS, enGB),
+    "en-gb": enGB,
     "pt-br": ptBR,
-    "pt-pt": mergeDictionaries(ptBR, ptPT),
+    "pt-pt": ptPT,
     "es-419": es419,
-    "es-es": mergeDictionaries(es419, esES),
+    "es-es": esES,
 }
 
 const FALLBACK_DICT = ptBR // PT-BR é a base de segurança — deve estar sempre 100% completo
+// Cadeia de fallback antes de cair no PT-BR: dialeto → idioma "pai" → PT-BR.
+// Existe pra cobrir o caso raro de en-GB.json/es-ES.json ficarem
+// dessincronizados do en-US.json/es-419.json (o sync_i18n.py deveria
+// impedir isso, mas não custa ter essa rede de segurança em runtime).
+const FALLBACK_CHAIN: Partial<Record<keyof typeof dictionaries, (keyof typeof dictionaries)[]>> = {
+    "en-gb": ["en-us"],
+    "es-es": ["es-419"],
+}
 
 /**
  * [I18N] Navega um objeto de dicionário por uma chave em dot-notation
@@ -43,9 +51,21 @@ function resolveKey(dict: Record<string, any>, key: string): string | undefined 
  * @since v6.2.0
  */
 export function tr(key: string, params?: Record<string, string | number>): Text {
-    const dict = dictionaries[Config.language] ?? dictionaries["pt"]
+    const dict = dictionaries[Config.language] ?? dictionaries["pt-br"]
 
     let raw = resolveKey(dict, key)
+
+    if (raw === undefined) {
+        for (const lang of FALLBACK_CHAIN[Config.language] ?? []) {
+            raw = resolveKey(dictionaries[lang], key)
+            if (raw !== undefined) {
+                if (Config.debug) {
+                    console.warn(`[i18n] Chave "${key}" ausente em "${Config.language}", usando fallback "${lang}".`)
+                }
+                break
+            }
+        }
+    }
 
     if (raw === undefined && dict !== FALLBACK_DICT) {
         raw = resolveKey(FALLBACK_DICT, key)
@@ -70,37 +90,6 @@ export function tr(key: string, params?: Record<string, string | number>): Text 
  */
 export function trArr(keys: string[] = []): Text[] {
     return keys.map(key => tr(key))
-}
-
-/**
- * [I18N] Combina um dicionário base com um conjunto de sobrescritas parciais,
- * mesclando recursivamente até o nível das strings (folhas do objeto)
- * @param base - Dicionário completo do idioma base (ex.: en.json)
- * @param overrides - Dicionário parcial só com as chaves que divergem (ex.: en-GB.json)
- * @returns Dicionário mesclado, com a mesma estrutura do base
- * @since v6.3.0
- */
-function mergeDictionaries<T extends Record<string, any>>(base: T, overrides: DeepPartial<T>): T {
-    const result: any = { ...base }
-
-    for (const key in overrides) {
-        const overrideValue = overrides[key]
-        const baseValue = base[key]
-
-        if (
-            overrideValue !== null &&
-            typeof overrideValue === "object" &&
-            !Array.isArray(overrideValue) &&
-            baseValue !== null &&
-            typeof baseValue === "object"
-        ) {
-            result[key] = mergeDictionaries(baseValue, overrideValue)
-        } else {
-            result[key] = overrideValue
-        }
-    }
-
-    return result
 }
 
 /**

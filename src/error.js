@@ -43,7 +43,7 @@ export const Error = {
     },
 
     /**
-     * [ERRO] Exibe um erro de limite de interações estourado
+     * [ERRO] Exibe um erro de limite de iterações estourado
      * @since v6.1.0
      */
     limitExceeded() {

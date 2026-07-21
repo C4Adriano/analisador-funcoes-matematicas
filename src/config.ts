@@ -27,7 +27,7 @@ export type ConfigType = {
     decimalPlaces: Places
     logPrecision: Precision
     divPrecision: Precision
-    interactionLimit: Numeric
+    iteractionLimit: Numeric
     degrees: Degrees
 }
 

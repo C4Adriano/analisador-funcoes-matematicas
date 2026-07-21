@@ -199,7 +199,7 @@ export const Writing = {
             ["∧", tr("symbols.and")],
             ["¬", tr("symbols.notWord")],
             ["⊕", tr("symbols.exclusiveOr")],
-            ["⊗", tr("symbols.notExclusiveOr")],
+            ["⊗", tr("symbols.inclusiveOr")],
         ]
 
         text = Writing.replaceGroup(text, [...localizedReplacements, ...staticReplacements])
@@ -485,7 +485,11 @@ export const Writing = {
      * @since v6.1.0
      */
     configItem(message, name) {
-        return `${message} “${tr("writing.current")}”: “${Writing.formatValue(Config[name])}” — “${tr("writing.default")}”: “${Writing.formatValue(DEFAULT_CONFIG[name])}”`
+        return tr("writing.currentDefault", {
+            message,
+            current: Writing.formatValue(Config[name]),
+            default: Writing.formatValue(DEFAULT_CONFIG[name]),
+        })
     },
 
     /**

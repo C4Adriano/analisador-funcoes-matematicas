@@ -9,7 +9,7 @@ import { Writing } from "./writing.js"
 
 /**
  * [UI] Objeto base para as funções envolvendo UI / UX e interação com o usuário
- * - Use as funções aqui para exibir mensagens, menus, prompts e outras interações.
+ * - Use as funções aqui para exibir mensagens, menus, prompts e outras iterações.
  * @since v6.1.0
  */
 export const Ui = {

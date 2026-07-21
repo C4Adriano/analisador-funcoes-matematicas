@@ -10,7 +10,7 @@ beforeEach(() => {
     Config.decimalSeparator = false
     Config.logPrecision = 1e-9
     Config.divPrecision = 1e-9
-    Config.interactionLimit = 1000
+    Config.iteractionLimit = 1000
 })
 
 describe("Algebra.round", () => {
@@ -121,8 +121,8 @@ describe("Algebra.variables — regressão do bug #1 (via Ui.input)", () => {
         expect(Algebra.variables("a")).toBe("a")
     })
 
-    it("trata entrada cancelada (null) como incógnita, respeitando o limite de interações", () => {
-        Config.interactionLimit = 3
+    it("trata entrada cancelada (null) como incógnita, respeitando o limite de iterações", () => {
+        Config.iteractionLimit = 3
         queuePrompt(null, null, null)
         expect(Algebra.variables("c")).toBe("c")
     })

@@ -8,7 +8,7 @@ beforeEach(() => {
     Config.decimalPlaces = 4
     Config.decimalSeparator = false
     Config.divPrecision = 1e-9
-    Config.interactionLimit = 1000
+    Config.iteractionLimit = 1000
     State.baseFunc = []
 })
 
@@ -86,12 +86,12 @@ describe("Helpers.calcPeriod", () => {
 
 describe("Helpers.exceededLimit", () => {
     it("retorna false abaixo do limite configurado", () => {
-        Config.interactionLimit = 100
+        Config.iteractionLimit = 100
         expect(Helpers.exceededLimit(10)).toBe(false)
     })
 
     it("retorna true quando o limite é atingido", () => {
-        Config.interactionLimit = 100
+        Config.iteractionLimit = 100
         expect(Helpers.exceededLimit(100)).toBe(true)
         expect(Helpers.exceededLimit(150)).toBe(true)
     })

@@ -47,7 +47,7 @@ export const Commands = {
                 return null
             }
 
-            Ui.error(tr("commands.invalidCommand"), tr("commands.invalidCommandExp"))
+            Ui.error(tr("commands.invalidCommand"), tr("commands.invalidCommandExp", { command: cmd }))
             return null
         }
 

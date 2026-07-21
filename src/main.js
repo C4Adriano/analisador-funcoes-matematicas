@@ -606,7 +606,7 @@ do {
                     Writing.configItem(tr("main.decimalPlaces"), "decimalPlaces"),
                     Writing.configItem(tr("main.logPrecision"), "logPrecision"),
                     Writing.configItem(tr("main.divisionPrecision"), "divPrecision"),
-                    Writing.configItem(tr("main.interactionLimit"), "interactionLimit"),
+                    Writing.configItem(tr("main.iterationLimit"), "iterationLimit"),
                     Writing.configItem(tr("main.language"), "language"),
                     Writing.configItem(tr("main.degrees"), "degrees"),
                 ]
@@ -857,11 +857,11 @@ do {
                         )
                     }
 
-                    // Limite de interações
+                    // Limite de iterações
                     else if (choice == 4) {
-                        Config.interactionLimit = Ui.range(
-                            Writing.configItem(tr("main.whatInteractionLimit"), "interactionLimit"),
-                            tr("main.noteInteractionLimit"),
+                        Config.iterationLimit = Ui.range(
+                            Writing.configItem(tr("main.whatIterationLimit"), "iterationLimit"),
+                            tr("main.noteIterationLimit"),
                             100,
                             10000
                         )

@@ -19,6 +19,6 @@
     "decimalPlaces": 6,
     "logPrecision": 1e-12,
     "divPrecision": 1e-12,
-    "interactionLimit": 1000,
+    "iteractionLimit": 1000,
     "degrees": "deg"
 }

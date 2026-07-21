@@ -599,8 +599,8 @@ export const Helpers = {
      * @returns Se estourou o limite
      * @since v6.1.0
      */
-    exceededLimit(limit = Config.interactionLimit) {
-        let exceeded = limit >= Config.interactionLimit
+    exceededLimit(limit = Config.iteractionLimit) {
+        let exceeded = limit >= Config.iteractionLimit
 
         // Exibe o erro se estourou o limite
         if (exceeded) {
