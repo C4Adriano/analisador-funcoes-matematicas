@@ -2,8 +2,23 @@ import { tr } from "./i18n.js"
 import { Ui } from "./ui.js"
 
 /**
- * [ERRO] Mensagens de erro padronizadas do programa
- * - Use as funções aqui para exibir erros ao usuário. Nunca chame Ui.error() diretamente
+ * # Error
+ *
+ * ## Funcionalidades:
+ * Objeto base para os métodos envolvendo erros.
+ *
+ * ## Métodos:
+ * - {@link Error.range range} - Erro de intervalo
+ * - {@link Error.divZero divZero} - Erro de divisão por zero (x/0)
+ * - {@link Error.limitExceeded limitExceeded} - Erro de limite excedido
+ * - {@link Error.constantFunction constantFunction} - Erro sobre Função ser Constante, não o que foi pensado para ser
+ * - {@link Error.invalidFunction invalidFunction} - Erro de Função inválida
+ * - {@link Error.invalidLog invalidLog} - Erro de log inválido
+ *
+ * ### Tags:
+ * @author [C4Adriano](https://github.com/C4Adriano)
+ * @license [License](../LICENSE.md)
+ * @group Erro
  * @since v6.1.0
  */
 export const Error = {

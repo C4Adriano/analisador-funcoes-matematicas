@@ -12,21 +12,21 @@
 
 # Geral
 
-> **Datado de:** _`2025-07-23 -> hoje`_
+> **Datado de:** _`2025-07-10 -> hoje`_
 
 ---
 
 # Versões **1.x**
 
 > **Linhas nestas versões:** _`185`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-04`_
+> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 ---
 
 ### Versão **1.0** - **Funções Quadráticas, Afins e Constantes**
 
-> **Linhas nesta versão:** _`185`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-04`_
+> **Linhas nesta versão:** _`165`_<br>
+> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 #### Adições
 
@@ -65,7 +65,7 @@
 ### Versão **1.1** - Melhorias nos `alerts`
 
 > **Linhas nesta versão:** _`185`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-04`_
+> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 #### Adições
 
@@ -80,12 +80,12 @@
 # Versões **2.x**
 
 > **Linhas nestas versões:** _`422`_<br>
-> **Datada de:** _`2025-07-23 -> 2026-03-04`_
+> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 ### Versão **2.0** - Melhorias
 
-> **Linhas nesta versão:** _`422`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-04`_
+> **Linhas nesta versão:** _`≈ 296`_<br>
+> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 #### Adições
 
@@ -115,8 +115,8 @@
 
 ### Versão **2.1** - **Função Exponencial**
 
-> **Linhas nesta versão:** _`422`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-04`_
+> **Linhas nesta versão:** _`≈ 402`_<br>
+> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 #### Adições
 
@@ -148,7 +148,7 @@
 ### Versão **2.2** - Melhorias
 
 > **Linhas nesta versão:** _`422`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-04`_
+> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 #### Adições
 
@@ -164,12 +164,12 @@
 # Versões **3.x**
 
 > **Linhas nestas versões:** _`1068`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-04`_
+> **Datada de:** _`2025-07-10 -> 2025-07-12`_
 
 ### Versão **3.0** - Variáveis `a`, `b`, `c` nas **Funções Quadráticas, Afins e Constantes**
 
-> **Linhas nesta versão:** _`785`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-04`_
+> **Linhas nesta versão:** _`≈ 692`_<br>
+> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 #### Adições
 
@@ -181,7 +181,7 @@
 ### Versão **3.1** - Correção de `bugs` e melhorias
 
 > **Linhas nesta versão:** _`786`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-03`_
+> **Datada de:** _`2025-07-10 -> 2025-07-12`_
 
 #### Adições
 
@@ -224,7 +224,7 @@
 ### Versão **3.2** - Variáveis nas **Funções Exponenciais**
 
 > **Linhas nesta versão:** _`1068`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-04`_
+> **Datada de:** _`2025-07-12 -> 2025-07-12`_
 
 #### Adições
 
@@ -275,7 +275,7 @@
 ### Versão **3.3** - Melhorias
 
 > **Linhas nesta versão:** _`1068`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-04`_
+> **Datada de:** _`2025-12-30 -> 2025-03-04`_
 
 #### Adições
 
@@ -741,3 +741,6 @@
 Próximas atualizações completo em [`ROADMAP`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP/ROADMAP_PT.md)
 
 ---
+
+[^1] Valores aproximados de datas, pois não tenho registro completo
+[^2] Valores aproximados de linhas, pois não tenho registro completo

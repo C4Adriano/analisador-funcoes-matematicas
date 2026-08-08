@@ -3,8 +3,34 @@ import { Config, DEFAULT_CONFIG } from "./config.js"
 import { tr } from "./i18n.js"
 
 /**
- * [TEXTO] Objeto base para as funções envolvendo escrita e conversão de texto
- * - Use as funções aqui para converter os textos para o formato desejado, como sem acentos ou sem Unicode.
+ * # Writing
+ *
+ * ## Funcionalidades:
+ * Objeto base para os métodos envolvendo escrita.
+ *
+ * ## Métodos:
+ * - {@link Writing.replace replace} - Muda uma sequência de letras dentro de uma frase
+ * - {@link Writing.replaceGroup replaceGroup} - Muda uma sequência de letras dentro de várias frases
+ * - {@link Writing.noUnicode noUnicode} - Remove os caracteres Unicode
+ * - {@link Writing.noAccents noAccents} - Remove os acentos
+ * - {@link Writing.lowercase lowercase} - Transforma para minúsculas
+ * - {@link Writing.uppercase uppercase} - Transforma para maiúsculas
+ * - {@link Writing.decimal decimal} - Transforma o ponto decimal de um número
+ * - {@link Writing.simplifyMultiplication simplifyMultiplication} - Transforma a multiplicação (graficamente)
+ * - {@link Writing.format format} - Formata uma mensagem
+ * - {@link Writing.superscript superscript} - Transforma em sobrescrito
+ * - {@link Writing.subscript subscript} - Transforma em subscrito
+ * - {@link Writing.formatValue formatValue} - Formata um valor
+ * - {@link Writing.configItem configItem} - Formata um valor de configuração
+ * - {@link Writing.parseDegree parseDegree} - Transforma para graus
+ * - {@link Writing.parseRadian parseRadian} - Transforma para radianos
+ * - {@link Writing.parseAngle parseAngle} - Altera o ângulo
+ * - {@link Writing.formatAngle formatAngle} - Formata o ângulo
+ *
+ * ### Tags:
+ * @author [C4Adriano](https://github.com/C4Adriano)
+ * @license [License](../LICENSE.md)
+ * @group Texto
  * @since v6.1.0
  */
 export const Writing = {

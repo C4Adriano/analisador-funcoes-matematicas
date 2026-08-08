@@ -7,8 +7,31 @@ import { VERSION } from "./version.js"
 import { Writing } from "./writing.js"
 
 /**
- * [JS] Processamento de comandos do usuário
- * - Use o comando "/help" para ver todos os comandos disponíveis
+ * # Commands
+ *
+ * ## Funcionalidades:
+ * Objeto base para os métodos envolvendo comandos.
+ *
+ * ## Métodos:
+ * - {@link Commands.process process} - Processa um comando
+ * - {@link Commands.levenshtein levenshtein} - Faz a verificação da distância de Levenshtein e acha a correspondente mais próxima
+ * - {@link Commands.suggestCmd suggestCmd} - Sugere um comando, com base na verificação da distância de Levenshtein
+ * - {@link Commands.searchCmd searchCmd} - Procura por comandos
+ * - {@link Commands.listCmd listCmd} - Lista todos os comandos
+ * - {@link Commands.resolveCmd resolveCmd} - Resolve um comando
+ * - {@link Commands.parseBool parseBool} - Transforma em boolean uma string (Ex.: "Não" -> false)
+ * - {@link Commands.help help} - Exibe o menu de ajuda
+ * - {@link Commands.searchHelp searchHelp} - Procura por uma ajuda específica
+ * - {@link Commands.shortcuts shortcuts} - Exibe todas as variações de um comando
+ * - {@link Commands.about about} - Exibe informações sobre o projeto
+ * - {@link Commands.version version} - Exibe a versão do programa
+ * - {@link Commands.change change} - Muda o valor de uma chave em Config
+ * - {@link Commands.names names} - Array dos nomes dos comandos
+ *
+ * ### Tags:
+ * @author [C4Adriano](https://github.com/C4Adriano)
+ * @license [License](../LICENSE.md)
+ * @group JS
  * @since v6.1.0
  */
 export const Commands = {

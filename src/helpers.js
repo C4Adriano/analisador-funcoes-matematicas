@@ -7,8 +7,36 @@ import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
 /**
- * [FUNÇÃO] Objeto base para as ajudas de código (repetições) e cálculos comuns
- * - Use as funções aqui para obter ajudas comuns, como o domínio, imagem, interseção com os eixos, estudo do sinal, etc.
+ * # Helpers
+ *
+ * ## Funcionalidades:
+ * Objeto base para os métodos envolvendo ajudas.
+ *
+ * ## Métodos:
+ * - {@link Helpers.domain domain} - Domínio de uma Função
+ * - {@link Helpers.range range} - Imagem de uma Função
+ * - {@link Helpers.xAxis xAxis} - Intercessões com o eixo x de uma Função
+ * - {@link Helpers.yAxis yAxis} - Intercessões com o eixo y de uma Função
+ * - {@link Helpers.xValues xValues} - Valores de x de uma Função
+ * - {@link Helpers.yValues yValues} - Valores de y de uma Função
+ * - {@link Helpers.sign sign} - Estudo do sinal de uma Função
+ * - {@link Helpers.equations equations} - Equações entre Funções
+ * - {@link Helpers.curve curve} - Curva de uma Função
+ * - {@link Helpers.calcRoot calcRoot} - Calcula as raízes de uma Função
+ * - {@link Helpers.showRoot showRoot} - Mostra as raízes de uma Função
+ * - {@link Helpers.calcDelta calcDelta} - Calcula o Delta de uma Função
+ * - {@link Helpers.showDelta showDelta} - Mostra o Delta de uma Função
+ * - {@link Helpers.vertex vertex} - Vértice de uma Função
+ * - {@link Helpers.exceededLimit exceededLimit} - Vê se excedeu o limite
+ * - {@link Helpers.calcPeriod calcPeriod} - Calcula o período de uma Função
+ * - {@link Helpers.showPeriod showPeriod} - Mostra o período de uma Função
+ * - {@link Helpers.amplitude amplitude} - Amplitude de uma Função
+ * - {@link Helpers.verticalAsymptote verticalAsymptotes} - Assíntotas verticais de uma Função
+ *
+ * ### Tags:
+ * @author [C4Adriano](https://github.com/C4Adriano)
+ * @license [License](../LICENSE.md)
+ * @group Função
  * @since v6.1.0
  */
 export const Helpers = {
@@ -599,8 +627,8 @@ export const Helpers = {
      * @returns Se estourou o limite
      * @since v6.1.0
      */
-    exceededLimit(limit = Config.iteractionLimit) {
-        let exceeded = limit >= Config.iteractionLimit
+    exceededLimit(limit = Config.interactionLimit) {
+        let exceeded = limit >= Config.interactionLimit
 
         // Exibe o erro se estourou o limite
         if (exceeded) {
@@ -652,12 +680,12 @@ export const Helpers = {
      * @param coefA - Coeficiente a (frequência angular)
      * @since v6.1.0
      */
-    verticalAsymptotes(coefA = 0) {
+    verticalAsymptote(coefA = 0) {
         if (coefA != 0) {
             Ui.display(
                 tr("helpers.verticalAsymptote") + "x = (π / 2 + n · π) /,  n ∈ ℤ",
                 "tan(a · x) " +
-                    tr("helpers.eIndefinidaQuando") +
+                    tr("helpers.undefined") +
                     "cos(a · x) = 0, " +
                     tr("helpers.ie") +
                     "a · x = π / 2 + n · π"

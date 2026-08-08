@@ -8,8 +8,25 @@ import { State } from "./state.js"
 import { Writing } from "./writing.js"
 
 /**
- * [UI] Objeto base para as funções envolvendo UI / UX e interação com o usuário
- * - Use as funções aqui para exibir mensagens, menus, prompts e outras iterações.
+ * # Ui
+ *
+ * ## Funcionalidades:
+ * Objeto base para os métodos envolvendo exibições na tela.
+ *
+ * ## Métodos:
+ * - {@link Ui.display display} - Mostra uma mensagem
+ * - {@link Ui.confirm confirm} - Pergunta “Sim” ou “Não”
+ * - {@link Ui.error error} - Mostra um erro
+ * - {@link Ui.warning warning} - Mostra um aviso
+ * - {@link Ui.menu menu} - Mostra um menu
+ * - {@link Ui.input input} - Pergunta algo para o usuário
+ * - {@link Ui.function function} - Mostra uma Função
+ * - {@link Ui.range range} - Mostra um intervalo
+ *
+ * ### Tags:
+ * @author [C4Adriano](https://github.com/C4Adriano)
+ * @license [License](../LICENSE.md)
+ * @group UI
  * @since v6.1.0
  */
 export const Ui = {

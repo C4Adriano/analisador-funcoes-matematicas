@@ -10,6 +10,7 @@
 
         "allowJs": false,
         "checkJs": false,
+        "declaration": false,
         "resolveJsonModule": true,
         "removeComments": true,
         "strict": true,

@@ -6,6 +6,9 @@ import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
+/**
+ * Opções Base
+ */
 const BASE_OPTIONS = [
     "analyze.options.domain",
     "analyze.options.range",
@@ -18,8 +21,25 @@ const BASE_OPTIONS = [
 ]
 
 /**
- * [FUNÇÃO] Objeto base para as funções envolvendo funções matemáticas, seus estudos e características
- * - Use as funções aqui para montar as funções constantes, afins, quadráticas, etc.
+ * # Analyze
+ *
+ * ## Funcionalidades:
+ * Objeto base para os métodos envolvendo análise de funções.
+ *
+ * ## Métodos:
+ * - {@link Analyze.constant constant} - Função Constante
+ * - {@link Analyze.affine affine} - Função Afim
+ * - {@link Analyze.quadratic quadratic} - Função Quadrática
+ * - {@link Analyze.exponential exponential} - Função Exponencial
+ * - {@link Analyze.logarithmic logarithmic} - Função Logarítmica
+ * - {@link Analyze.sine sine} - Função Seno
+ * - {@link Analyze.cosine cosine} - Função Cosseno
+ * - {@link Analyze.tangent tangent} - Função Tangente
+ *
+ * ### Tags:
+ * @author [C4Adriano](https://github.com/C4Adriano)
+ * @license [License](../LICENSE.md)
+ * @group Função
  * @since v6.1.0
  */
 export const Analyze = {

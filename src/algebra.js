@@ -11,7 +11,7 @@ import { Writing } from "./writing.js"
  * # Algebra
  *
  * ## Funcionalidades:
- * Objeto base para as funções envolvendo álgebra.
+ * Objeto base para os métodos envolvendo álgebra.
  *
  * ## Métodos:
  * - {@link Algebra.round round} - Arredonda números
@@ -81,9 +81,10 @@ export const Algebra = {
     },
 
     /**
-     * [UI] Pede um(ns) ponto(s)
+     * Pede um(ns) ponto(s)
      * @param {number} type - Quantos pontos vão ser pedidos (1, 2 ou 3)
      * @returns {number[]} Um array com os pontos, na ordem: [x₁, y₁, x₂, y₂, x₃, y₃]
+     * @group UI
      * @since v6.1.0
      */
     point(type = 1) {
@@ -118,6 +119,7 @@ export const Algebra = {
      * [UI] Vê se as funções têm pontos de encontro
      * @param {number[]} func1 - Primeira função [a, b, c]
      * @param {number[]} func2 - Segunda função [a, b, c]
+     * @group UI
      * @since v6.1.0
      */
     equations(func1 = [0, 0, 0], func2 = [0, 0, 0]) {
@@ -606,7 +608,7 @@ export const Algebra = {
 
         // Loop
         let limit = 0
-        while (Algebra.absolute(delta) > precision && limit < Config.iteractionLimit) {
+        while (Algebra.absolute(delta) > precision && limit < Config.interactionLimit) {
             delta = Algebra.division(base ** y - x, base ** y * number, false)
             y -= delta
 
@@ -639,7 +641,7 @@ export const Algebra = {
 
         // Loop
         let limit = 0
-        while (Algebra.absolute(delta) > precision && limit < Config.iteractionLimit) {
+        while (Algebra.absolute(delta) > precision && limit < Config.interactionLimit) {
             delta = Algebra.division(base ** y - x, base ** y, false)
             y -= delta
 
