@@ -33,7 +33,7 @@ const FALLBACK_CHAIN: Partial<Record<keyof typeof dictionaries, (keyof typeof di
 /**
  * [I18N] Navega um objeto de dicionário por uma chave em dot-notation
  * @param dict - Dicionário a navegar
- * @param key - Chave em dot-notation (ex.: "error.error001")
+ * @param key - Chave em dot-notation (ex.: "errors.error001")
  * @returns O texto encontrado, ou undefined se a chave não existir nesse dicionário
  * @since v6.3.0
  */

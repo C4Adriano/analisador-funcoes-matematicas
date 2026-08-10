@@ -6,41 +6,7 @@ import { Ui } from "./ui.js"
 import { VERSION } from "./version.js"
 import { Writing } from "./writing.js"
 
-/**
- * # Commands
- *
- * ## Funcionalidades:
- * Objeto base para os métodos envolvendo comandos.
- *
- * ## Métodos:
- * - {@link Commands.process process} - Processa um comando
- * - {@link Commands.levenshtein levenshtein} - Faz a verificação da distância de Levenshtein e acha a correspondente mais próxima
- * - {@link Commands.suggestCmd suggestCmd} - Sugere um comando, com base na verificação da distância de Levenshtein
- * - {@link Commands.searchCmd searchCmd} - Procura por comandos
- * - {@link Commands.listCmd listCmd} - Lista todos os comandos
- * - {@link Commands.resolveCmd resolveCmd} - Resolve um comando
- * - {@link Commands.parseBool parseBool} - Transforma em boolean uma string (Ex.: "Não" -> false)
- * - {@link Commands.help help} - Exibe o menu de ajuda
- * - {@link Commands.searchHelp searchHelp} - Procura por uma ajuda específica
- * - {@link Commands.shortcuts shortcuts} - Exibe todas as variações de um comando
- * - {@link Commands.about about} - Exibe informações sobre o projeto
- * - {@link Commands.version version} - Exibe a versão do programa
- * - {@link Commands.change change} - Muda o valor de uma chave em Config
- * - {@link Commands.names names} - Array dos nomes dos comandos
- *
- * ### Tags:
- * @author [C4Adriano](https://github.com/C4Adriano)
- * @license [License](../LICENSE.md)
- * @group JS
- * @since v6.1.0
- */
 export const Commands = {
-    /**
-     * [JS] Processa um comando slash
-     * @param {string} raw o digitado pelo usuário
-     * @returns Ação a executar, ou null se não for comando
-     * @since v6.1.0
-     */
     process(raw = "") {
         if (raw.length == 0 || raw[0] != "/") {
             return null
@@ -82,12 +48,6 @@ export const Commands = {
         return command.action(arg, parts)
     },
 
-    /**
-     * [JS] Calcula a distância de Levenshtein entre duas strings
-     * @param {string} wrong - String digitada pelo usuário
-     * @param {string} correct - String de um comando conhecido
-     * @since v6.1.0
-     */
     levenshtein(wrong = "", correct = "") {
         let rows = correct.length + 1,
             cols = wrong.length + 1,
@@ -131,12 +91,6 @@ export const Commands = {
         return matrix[rows - 1][cols - 1]
     },
 
-    /**
-     * [JS] Sugere um comando baseado no digitado pelo usuário usando distância de Levenshtein
-     * @param {string} typed - O digitado pelo usuário
-     * @returns A sugestão de comando
-     * @since v6.1.0
-     */
     suggestCmd(typed = "") {
         const LIMIT = 3
         const cmds = Commands.listCmd()
@@ -163,12 +117,6 @@ export const Commands = {
         return { type: "unknown", canonical: "", distance: -1 }
     },
 
-    /**
-     * [JS] Pesquisa comandos por termo — busca no canônico, variações, short e long
-     * @param {string} term - Termo de pesquisa
-     * @returns Lista de nomes canônicos dos comandos encontrados
-     * @since v6.2.0
-     */
     searchCmd(term = "") {
         if (term == "") {
             return []
@@ -196,11 +144,6 @@ export const Commands = {
         return results
     },
 
-    /**
-     * [JS] Retorna a lista de comandos disponíveis
-     * @returns {object} - Lista de comandos com suas descrições, variações e ações
-     * @since v6.1.0
-     */
     listCmd() {
         return {
             help: {
@@ -542,12 +485,6 @@ export const Commands = {
         }
     },
 
-    /**
-     * [JS] Resolve um comando específico para seu nome canônico
-     * @param  specific - Comando específico
-     * @returns Nome canônico do comando, ou null se não for encontrado
-     * @since v6.1.0
-     */
     resolveCmd(specific = "") {
         if (specific == "") {
             return null
@@ -567,12 +504,6 @@ export const Commands = {
         return cmds[canonical] != undefined ? canonical : null
     },
 
-    /**
-     * [JS] Converte um texto em um valor boolean
-     * @param  text o
-     * @returns} - Se é parecido com um valor boolean verdadeiro / falso ou se não é reconhecido
-     * @since v6.1.0
-     */
     parseBool(text = "") {
         if (["true", "1", "sim", "yes", "on", "ativo", "enable", "enabled", "ligar", "ativar"].includes(text)) {
             return true
@@ -585,12 +516,6 @@ export const Commands = {
         return undefined
     },
 
-    /**
-     * [JS] Exibe ajuda sobre um comando específico ou lista paginada de todos os comandos
-     * @param  specific - Nome ou variação de um comando específico (opcional)
-     * @returns {null}
-     * @since v6.1.0
-     */
     help(specific = "") {
         const cmds = Commands.listCmd()
 
@@ -660,12 +585,6 @@ export const Commands = {
         return null
     },
 
-    /**
-     * [JS] Exibe os resultados de uma pesquisa de comandos de forma paginada
-     * @param  term - Termo de pesquisa
-     * @returns {null}
-     * @since v6.2.0
-     */
     searchHelp(term = "") {
         if (term == "") {
             Ui.error(tr("commands.emptySearch"), tr("commands.usageSearch"))
@@ -734,12 +653,6 @@ export const Commands = {
         return null
     },
 
-    /**
-     * [JS] Exibe todas as variações aceitas de um comando
-     * @param  specific - Nome ou variação do comando
-     * @returns {null}
-     * @since v6.2.0
-     */
     shortcuts(specific = "") {
         if (specific == "") {
             Ui.error(tr("commands.commandNotProvided"), tr("commands.usageShortcuts"))
@@ -765,11 +678,6 @@ export const Commands = {
         return null
     },
 
-    /**
-     * [JS] Exibe informações sobre o Projeto
-     * @returns {null}
-     * @since v6.2.0
-     */
     about() {
         Ui.display(
             "====================================================" +
@@ -792,11 +700,6 @@ export const Commands = {
         return null
     },
 
-    /**
-     * [JS] Exibe a versão do programa
-     * @returns {null}
-     * @since v6.1.0
-     */
     version() {
         Ui.display(
             "====================================================" +
@@ -813,11 +716,11 @@ export const Commands = {
         return null
     },
 
-    change(name, value) {
+    change(name = "", value = false) {
         const currentValue = Config[name]
 
         if (currentValue === undefined) {
-            Ui.error("[Commands.change] Configuração inexistente.", "'" + name + "' não existe em Config.", true)
+            Ui.error("[Commands.change] Configuração inexistente.", `“${name}” não existe em Config.`, true)
             return null
         }
 
@@ -847,11 +750,6 @@ export const Commands = {
         return null
     },
 
-    /**
-     * [JS] Retorna uma lista com os nomes canônicos dos comandos que alteram o fluxo de estado
-     * @returns {string[]} Lista de nomes canônicos
-     * @since v6.1.0
-     */
     names() {
         return ["config", "exit", "start", "review", "history", "change"]
     },

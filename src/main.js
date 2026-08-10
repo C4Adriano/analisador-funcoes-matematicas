@@ -3,7 +3,7 @@ import { Analyze } from "./analyze.js"
 import { Checks } from "./checks.js"
 import { Commands } from "./commands.js"
 import { Config, DEFAULT_CONFIG, loadConfig, resetConfig, saveConfig } from "./config.js"
-import { Error } from "./error.js"
+import { Errors } from "./errors.js"
 import { changeLanguage, tr } from "./i18n.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
@@ -242,7 +242,7 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalA == 1 || State.globalB == 0) {
-                                Error.constantFunction(tr("main.exponential"))
+                                Errors.constantFunction(tr("main.exponential"))
 
                                 if (
                                     State.globalA == 1 &&
@@ -258,9 +258,9 @@ do {
                                 State.loop = true
                             }
 
-                            // Error de base
+                            // Erro de base
                             else if (Checks.isFiniteNumber(State.globalA) && State.globalA < 0) {
-                                Error.invalidFunction(tr("main.exponential"))
+                                Errors.invalidFunction(tr("main.exponential"))
 
                                 State.askCoeffs = true
                                 State.loop = true
@@ -298,7 +298,7 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalA == 1 || State.globalB == 0) {
-                                Error.constantFunction(tr("main.logarithmic"))
+                                Errors.constantFunction(tr("main.logarithmic"))
                                 if (
                                     State.globalA == 1 &&
                                     Checks.isFiniteNumber(State.globalB) &&
@@ -313,9 +313,9 @@ do {
                                 State.loop = true
                             }
 
-                            // Error de base
+                            // Erro de base
                             else if (Checks.isFiniteNumber(State.globalA) && State.globalA < 0) {
-                                Error.invalidFunction(tr("main.logarithmic"))
+                                Errors.invalidFunction(tr("main.logarithmic"))
                                 State.askCoeffs = true
                                 State.loop = true
                             }
@@ -341,7 +341,7 @@ do {
                     }
                 }
 
-                // Error
+                // Erro
                 else {
                     subLoop = true
                 }
@@ -414,7 +414,7 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalB == 0) {
-                                Error.constantFunction(tr("main.sine"))
+                                Errors.constantFunction(tr("main.sine"))
 
                                 State.globalA = 0
                                 State.globalB = 0
@@ -450,7 +450,7 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalB == 0) {
-                                Error.constantFunction(tr("main.cossine"))
+                                Errors.constantFunction(tr("main.cossine"))
 
                                 if (
                                     State.globalA == 0 &&
@@ -493,7 +493,7 @@ do {
 
                             // Constante
                             else if (State.globalA == 0 || State.globalB == 0) {
-                                Error.constantFunction(tr("main.tangent"))
+                                Errors.constantFunction(tr("main.tangent"))
 
                                 State.globalA = 0
                                 State.globalB = 0
@@ -523,7 +523,7 @@ do {
                     }
                 }
 
-                // Error
+                // Erro
                 else {
                     subLoop = true
                 }
@@ -534,7 +534,7 @@ do {
         else if (State.type == 6 || State.type == "history") {
             State.loop = true
 
-            // Error de histórico
+            // Erro de histórico
             if (State.history.length <= 1) {
                 Ui.display(tr("main.noHistory"), tr("main.noHistoryExp"))
             } else {
@@ -955,7 +955,7 @@ do {
         }
     }
 
-    // Error
+    // Erro
     else {
         State.loop = true
     }

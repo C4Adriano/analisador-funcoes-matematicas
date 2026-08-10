@@ -44,16 +44,16 @@ Or access directly: [![GitHub Pages](https://img.shields.io/badge/Access%20here-
 | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
 | [`algebra`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/algebra.js)   | **Mathematical** calculations (log, ln, safe division, etc.) |
 | [`analyze`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/analyze.js)   | Analysis of each **Function** type                           |
-| [`checks`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/checks.ts)     | Type-checking utilities for `.ts` files                      |
+| [`checks`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/checks.js)     | Type-checking utilities for `.ts` files                      |
 | [`commands`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/commands.js) | Commands of the **Program**                                  |
 | [`config`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/config.ts)     | Global **Program** settings                                  |
-| [`error`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/error.ts)       | Standardized error messages                                  |
+| [`error`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/errors.js)      | Standardized error messages                                  |
 | [`helpers`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/helpers.js)   | Common calculations and result assembly                      |
 | [`i18n`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/i18n.ts)         | Language functions _(internationalization)_                  |
 | [`main`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/main.js)         | Orchestrates the **Program**                                 |
 | [`state`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/state.ts)       | Management of the **Program**'s state                        |
 | [`ui`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/ui.js)             | User interaction (menus, inputs, errors)                     |
-| [`values`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/values.ts)     | Shared types for `.ts` files                                 |
+| [`values`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/values.d.ts)   | Shared types for `.ts` files                                 |
 | [`version`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/version.js)   | Current version (`VERSION`)                                  |
 | [`writing`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/src/writing.js)   | Formatting, translation, and text conversion                 |
 

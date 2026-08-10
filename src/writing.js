@@ -2,57 +2,11 @@ import { Algebra } from "./algebra.js"
 import { Config, DEFAULT_CONFIG } from "./config.js"
 import { tr } from "./i18n.js"
 
-/**
- * # Writing
- *
- * ## Funcionalidades:
- * Objeto base para os métodos envolvendo escrita.
- *
- * ## Métodos:
- * - {@link Writing.replace replace} - Muda uma sequência de letras dentro de uma frase
- * - {@link Writing.replaceGroup replaceGroup} - Muda uma sequência de letras dentro de várias frases
- * - {@link Writing.noUnicode noUnicode} - Remove os caracteres Unicode
- * - {@link Writing.noAccents noAccents} - Remove os acentos
- * - {@link Writing.lowercase lowercase} - Transforma para minúsculas
- * - {@link Writing.uppercase uppercase} - Transforma para maiúsculas
- * - {@link Writing.decimal decimal} - Transforma o ponto decimal de um número
- * - {@link Writing.simplifyMultiplication simplifyMultiplication} - Transforma a multiplicação (graficamente)
- * - {@link Writing.format format} - Formata uma mensagem
- * - {@link Writing.superscript superscript} - Transforma em sobrescrito
- * - {@link Writing.subscript subscript} - Transforma em subscrito
- * - {@link Writing.formatValue formatValue} - Formata um valor
- * - {@link Writing.configItem configItem} - Formata um valor de configuração
- * - {@link Writing.parseDegree parseDegree} - Transforma para graus
- * - {@link Writing.parseRadian parseRadian} - Transforma para radianos
- * - {@link Writing.parseAngle parseAngle} - Altera o ângulo
- * - {@link Writing.formatAngle formatAngle} - Formata o ângulo
- *
- * ### Tags:
- * @author [C4Adriano](https://github.com/C4Adriano)
- * @license [License](../LICENSE.md)
- * @group Texto
- * @since v6.1.0
- */
 export const Writing = {
-    /**
-     * [TEXTO] Substituição de strings
-     * @param {string} text - Texto
-     * @param from - O que será removido
-     * @param to - O que será colocado no lugar
-     * @returns {string} Texto convertido
-     * @since v6.1.0
-     */
     replace(text = "", from = "", to = "") {
         return String(text).split(from).join(to)
     },
 
-    /**
-     * [TEXTO] Substituição de várias strings
-     * @param {string} text - Texto
-     * @param {string[][]} list - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...]
-     * @returns {string} Texto convertido
-     * @since v6.1.0
-     */
     replaceGroup(text = "", list = [["", ""]]) {
         list.forEach(value => {
             if (value[0] != undefined && value[1] != undefined) {
@@ -62,12 +16,6 @@ export const Writing = {
         return text
     },
 
-    /**
-     * [TEXTO] Substituição da grafia de Unicode, traduzindo os termos textuais para o idioma configurado
-     * @param {string} text - Texto
-     * @returns {string} Texto convertido
-     * @since v6.1.0
-     */
     noUnicode(text = "") {
         // Símbolos universais — não dependem de idioma, mesma substituição em qualquer dicionário
         const staticReplacements = [
@@ -233,11 +181,6 @@ export const Writing = {
         return text
     },
 
-    /**
-     * [TEXTO] Substituição da grafia de acentos
-     * @param {string} text Texto
-     * @returns {string} Texto convertido
-     */
     noAccents(text = "") {
         let replacements = [
             // === AGUDOS (´) ===
@@ -322,12 +265,6 @@ export const Writing = {
         return text
     },
 
-    /**
-     * [TEXTO] Conversão para minúsculas
-     * @param {string} text - Texto
-     * @returns {string} Texto convertido
-     * @since v6.1.0
-     */
     lowercase(text = "") {
         text = text.toLowerCase()
         // Caso especial para a letra grega delta, que matematicamente tem uma forma diferente em maiúscula e minúscula
@@ -336,12 +273,6 @@ export const Writing = {
         return text
     },
 
-    /**
-     * [TEXTO] Conversão para maiúsculas
-     * @param {string} text - Texto
-     * @returns {string} Texto convertido
-     * @since v6.1.0
-     */
     uppercase(text = "") {
         text = text.toUpperCase()
         // Caso especial para a letra latina f, que matematicamente tem uma forma diferente em maiúscula e minúscula
@@ -350,15 +281,6 @@ export const Writing = {
         return text
     },
 
-    /**
-     * [TEXTO] Manipulação de separadores decimais
-     * @param {string | number} number - Número
-     * @param invert - Para inverter e não afetar nas contas
-     * @param round - Arredondar
-     * @param places - Casas decimais
-     * @returns Número convertido
-     * @since v6.1.0
-     */
     decimal(number = 0, invert = false, round = true, places = Config.decimalPlaces) {
         number = String(number)
 
@@ -380,23 +302,10 @@ export const Writing = {
         return number
     },
 
-    /**
-     * [TEXTO] Simplificação de símbolos de multiplicação
-     * @param {string} text - Texto
-     * @returns {string} Texto convertido
-     * @since v6.1.0
-     */
     simplifyMultiplication(text = "") {
         return Writing.replace(String(text), " · ", "")
     },
 
-    /**
-     * [TEXTO] Formatação geral de mensagens
-     * @param {string} message - Mensagem
-     * @param explanation - Mensagem para a explicação
-     * @returns {string} Mensagem formatada
-     * @since v6.1.0
-     */
     format(message = "", explanation = "") {
         if (Config.explanations && explanation != "") {
             message += "\n\n" + explanation
@@ -423,12 +332,6 @@ export const Writing = {
         return message
     },
 
-    /**
-     * [TEXTO] Conversão para sobrescrito
-     * @param {string} text - Número
-     * @returns Número convertido
-     * @since v6.1.0
-     */
     superscript(text = "") {
         // Se Unicode está desativado, retorna o texto com um símbolo de sobrescrito simples
         if (!Config.unicode) {
@@ -456,12 +359,6 @@ export const Writing = {
         return text
     },
 
-    /**
-     * [TEXTO] Conversão para subscrito
-     * @param {string} text - Número
-     * @returns {string} Número subscrito
-     * @since v6.1.0
-     */
     subscript(text = "") {
         // Se Unicode está desativado, retorna o texto com um símbolo de subscrito simples
         if (!Config.unicode) {
@@ -489,12 +386,6 @@ export const Writing = {
         return text
     },
 
-    /**
-     * [TEXTO] Formatação de valores booleans
-     * @param value - Valor
-     * @returns Valor formatado
-     * @since v6.1.0
-     */
     formatValue(value = true) {
         if (value == true || value == false) {
             return value ? tr("writing.yes") : tr("writing.no")
@@ -503,13 +394,6 @@ export const Writing = {
         return String(value)
     },
 
-    /**
-     * [TEXTO] Formatação de itens de configuração
-     * @param {string} message - Mensagem
-     * @param {string} name - Nome em "config"
-     * @returns {string} Mensagem formatada
-     * @since v6.1.0
-     */
     configItem(message, name) {
         return tr("writing.currentDefault", {
             message,
@@ -518,23 +402,11 @@ export const Writing = {
         })
     },
 
-    /**
-     * [TEXTO] Análise de texto para conversão de graus para radianos
-     * @param {string} text - Texto
-     * @returns Ângulo em radianos
-     * @since v6.1.0
-     */
     parseDegree(text = "") {
         let degrees = parseFloat(Writing.replace(text, "°", ""))
         return degrees * (Math.PI / 180)
     },
 
-    /**
-     * [TEXTO] Análise de texto para conversão de radianos para graus
-     * @param {string} text - Texto
-     * @returns Ângulo em graus
-     * @since v6.1.0
-     */
     parseRadian(text = "") {
         let parts = text.split("/"),
             denominator = parts[1] ? parseFloat(parts[1]) : 1,
@@ -543,12 +415,6 @@ export const Writing = {
         return (multiplier * Math.PI) / denominator
     },
 
-    /**
-     * [TEXTO] Análise de texto para conversão de ângulos
-     * @param {string} text - Texto
-     * @returns Ângulo em graus ou radianos
-     * @since v6.1.0
-     */
     parseAngle(text = "") {
         if (text.includes("°")) {
             return Writing.parseDegree(text)
@@ -557,12 +423,6 @@ export const Writing = {
         }
     },
 
-    /**
-     * [TEXTO] Formatação de ângulos para exibição
-     * @param value - Ângulo em radianos
-     * @returns Ângulo formatado
-     * @since v6.1.0
-     */
     formatAngle(value = 0) {
         let ratio = value / Math.PI // PI/6 → ratio = 1/6 ≈ 0.1666...
 

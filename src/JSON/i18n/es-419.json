@@ -137,7 +137,7 @@
         "copyright": "Todos los derechos reservados",
         "changed": "Cambiado: "
     },
-    "error": {
+    "errors": {
         "error001": "ERROR-001: Valor fuera del rango. Elige un valor entre {firstValue} y {max}.",
         "zeroToBack": "o 0 para volver o salir",
         "error001Exp": "El valor ingresado está fuera del rango permitido.",

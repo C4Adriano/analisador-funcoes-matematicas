@@ -1,42 +1,13 @@
 import { Algebra } from "./algebra.js"
 import { Commands } from "./commands.js"
 import { Config } from "./config.js"
-import { Error } from "./error.js"
+import { Errors } from "./errors.js"
 import { Helpers } from "./helpers.js"
 import { tr } from "./i18n.js"
 import { State } from "./state.js"
 import { Writing } from "./writing.js"
 
-/**
- * # Ui
- *
- * ## Funcionalidades:
- * Objeto base para os métodos envolvendo exibições na tela.
- *
- * ## Métodos:
- * - {@link Ui.display display} - Mostra uma mensagem
- * - {@link Ui.confirm confirm} - Pergunta “Sim” ou “Não”
- * - {@link Ui.error error} - Mostra um erro
- * - {@link Ui.warning warning} - Mostra um aviso
- * - {@link Ui.menu menu} - Mostra um menu
- * - {@link Ui.input input} - Pergunta algo para o usuário
- * - {@link Ui.function function} - Mostra uma Função
- * - {@link Ui.range range} - Mostra um intervalo
- *
- * ### Tags:
- * @author [C4Adriano](https://github.com/C4Adriano)
- * @license [License](../LICENSE.md)
- * @group UI
- * @since v6.1.0
- */
 export const Ui = {
-    /**
-     * [UI] Exibe um alert personalizado
-     * @param message - Mensagem
-     * @param explanation - Explicação
-     * @param debug - Se true, exibe no console, se false, exibe no alert
-     * @since v6.1.0
-     */
     display(message = "", explanation = "", debug = Config.debug) {
         if (debug) {
             console.warn(message)
@@ -48,14 +19,6 @@ export const Ui = {
         }
     },
 
-    /**
-     * [UI] Exibe um confirm personalizado
-     * @param message - Mensagem
-     * @param explanation - Explicação
-     * @param debug - Se true, exibe no console, se false, exibe no confirm
-     * @returns Sim / Não
-     * @since v6.1.0
-     */
     confirm(message = "", explanation = "", debug = Config.debug) {
         if (debug) {
             console.warn(message)
@@ -68,27 +31,12 @@ export const Ui = {
         }
     },
 
-    /**
-     * [UI] Exibe uma mensagem de erro
-     * @param message - Mensagem
-     * @param explanation - Explicação
-     * @param debug - Se true, exibe no console, se false, exibe no confirm
-     * @since v6.1.0
-     */
     error(message = "", explanation = "", debug = Config.debug) {
         if (Config.errors) {
             Ui.display(`=== ${tr("ui.error")} ===\n${message}`, explanation, debug)
         }
     },
 
-    /**
-     * [UI] Exibe uma mensagem de aviso
-     * @param message - Mensagem
-     * @param explanation - Explicação
-     * @param type - Tipo da mensagem
-     * @param debug - Se true, exibe no console, se false, exibe no confirm
-     * @since v6.1.0
-     */
     warning(message = "", explanation = "", type = false, debug = Config.debug) {
         if (!type) {
             // Se tipo for falso, é um aviso simples, como um alert
@@ -100,13 +48,6 @@ export const Ui = {
         return null
     },
 
-    /**
-     * [UI] Formata um menu paginado
-     * @param options Array com todas as opções possíveis
-     * @param page Página atual
-     * @returns Retorna a resposta, a página atual, as opções por página
-     * @since v6.1.0
-     */
     menu(options = ["---"], page = 1) {
         let answer,
             menu = "",
@@ -186,15 +127,6 @@ export const Ui = {
         return [answer, page]
     },
 
-    /**
-     * [UI] Exibe um prompt personalizado e verifica ele
-     * @param message - Mensagem
-     * @param explanation - Explicação
-     * @param number - true = Número, false = Texto
-     * @param places - Casas para arredondar (0 = sem casas)
-     * @returns Valor verificado
-     * @since v6.1.0
-     */
     input(
         message = "",
         explanation = "",
@@ -268,17 +200,6 @@ export const Ui = {
         return number ? 0 : ""
     },
 
-    /**
-     * [UI] Formata uma função
-     * @param coefA - Coeficiente a
-     * @param coefB - Coeficiente b
-     * @param coefC - Coeficiente c
-     * @param funcExp - Exponencial
-     * @param funcLog - Logarítmica
-     * @param funcTrig - Trigonométrica (sin, cos, tan)
-     * @param show - Mostrará a função ou não, baseado na configuração
-     * @since v6.1.0
-     */
     function(
         coefA = 0,
         coefB = 0,
@@ -563,16 +484,6 @@ export const Ui = {
         return ""
     },
 
-    /**
-     * [UI] Pede ao usuário um valor entre o intervalo
-     * @param message - Mensagem
-     * @param explanation - Explicação
-     * @param min - Mínimo
-     * @param max - Máximo
-     * @param places - Casas decimais
-     * @returns Um valor escolhido entre o intervalo
-     * @since v6.1.0
-     */
     range(message = "", explanation = "", min = 0, max = 1, places = 0, allowCommands = false) {
         let value = 0
 
@@ -593,7 +504,7 @@ export const Ui = {
 
             if (!(min <= value && value <= max)) {
                 // Se o valor não estiver entre o intervalo, mostra um erro
-                Error.range(min, max)
+                Errors.range(min, max)
             }
         } while (!(min <= value && value <= max))
 

@@ -137,7 +137,7 @@
         "copyright": "Todos os direitos reservados",
         "changed": "Alterado: "
     },
-    "error": {
+    "errors": {
         "error001": "ERRO-001: Valor fora do intervalo. Escolha entre {firstValue} e {max}",
         "zeroToBack": "ou 0 para voltar ou sair",
         "error001Exp": "Valor fora do intervalo permitido.",

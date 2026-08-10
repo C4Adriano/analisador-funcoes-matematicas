@@ -1,73 +1,20 @@
 import { Algebra } from "./algebra.js"
 import { Config } from "./config.js"
-import { Error } from "./error.js"
+import { Errors } from "./errors.js"
 import { tr } from "./i18n.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
-/**
- * # Helpers
- *
- * ## Funcionalidades:
- * Objeto base para os métodos envolvendo ajudas.
- *
- * ## Métodos:
- * - {@link Helpers.domain domain} - Domínio de uma Função
- * - {@link Helpers.range range} - Imagem de uma Função
- * - {@link Helpers.xAxis xAxis} - Intercessões com o eixo x de uma Função
- * - {@link Helpers.yAxis yAxis} - Intercessões com o eixo y de uma Função
- * - {@link Helpers.xValues xValues} - Valores de x de uma Função
- * - {@link Helpers.yValues yValues} - Valores de y de uma Função
- * - {@link Helpers.sign sign} - Estudo do sinal de uma Função
- * - {@link Helpers.equations equations} - Equações entre Funções
- * - {@link Helpers.curve curve} - Curva de uma Função
- * - {@link Helpers.calcRoot calcRoot} - Calcula as raízes de uma Função
- * - {@link Helpers.showRoot showRoot} - Mostra as raízes de uma Função
- * - {@link Helpers.calcDelta calcDelta} - Calcula o Delta de uma Função
- * - {@link Helpers.showDelta showDelta} - Mostra o Delta de uma Função
- * - {@link Helpers.vertex vertex} - Vértice de uma Função
- * - {@link Helpers.exceededLimit exceededLimit} - Vê se excedeu o limite
- * - {@link Helpers.calcPeriod calcPeriod} - Calcula o período de uma Função
- * - {@link Helpers.showPeriod showPeriod} - Mostra o período de uma Função
- * - {@link Helpers.amplitude amplitude} - Amplitude de uma Função
- * - {@link Helpers.verticalAsymptote verticalAsymptotes} - Assíntotas verticais de uma Função
- *
- * ### Tags:
- * @author [C4Adriano](https://github.com/C4Adriano)
- * @license [License](../LICENSE.md)
- * @group Função
- * @since v6.1.0
- */
 export const Helpers = {
-    /**
-     * [FUNÇÃO] Monta o domínio de uma função
-     * @param belongs - Intervalo de pertencimento
-     * @param explanation - Explicação
-     * @since v6.1.0
-     */
     domain(belongs = "∈ ℝ", explanation = tr("helpers.functionTakeX")) {
         Ui.display(tr("helpers.domain") + "x " + belongs, explanation)
     },
 
-    /**
-     * [FUNÇÃO] Monta a imagem de uma função
-     * @param belongs - Intervalo de pertencimento
-     * @param interval - Se a função deve assumir algum intervalo diferente
-     * @param explanation - Explicação
-     * @since v6.1.0
-     */
     range(belongs = "∈ ℝ", interval = "", explanation = tr("helpers.functionTakeY")) {
         Ui.display(tr("helpers.range") + "y " + belongs, `${explanation} ${interval}`)
     },
 
-    /**
-     * [FUNÇÃO] Monta a intercessão com o eixo x de uma função
-     * @param root - Raiz
-     * @param explanation - Explicação
-     * @param noHave - Mensagem quando não há interseção com o eixo x
-     * @since v6.1.0
-     */
     xAxis(root = 0, explanation = "c", noHave = tr("helpers.noRoots")) {
         let intersection = tr("helpers.intersectionXAxis")
 
@@ -95,13 +42,6 @@ export const Helpers = {
         }
     },
 
-    /**
-     * [FUNÇÃO] Monta a intercessão com o eixo y de uma função
-     * @param point - Ponto
-     * @param func - Função
-     * @param explanation - Explicação
-     * @since v6.1.0
-     */
     yAxis(point = 0, func = "c", explanation = "c") {
         Ui.display(
             tr("helpers.intersectionYAxis") + (point != "∄" ? "(0, " + Writing.decimal(point) + ")" : "∄"),
@@ -109,15 +49,6 @@ export const Helpers = {
         )
     },
 
-    /**
-     * [FUNÇÃO] Monta o valor de y para o x dado
-     * @param coefA - Coeficiente a
-     * @param coefB - Coeficiente b
-     * @param coefC - Coeficiente c
-     * @param funcExp - Exponencial
-     * @param funcLog - Logarítmica
-     * @since v6.1.0
-     */
     xValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
         let x = Ui.input("x = ", "", true),
             message = tr("helpers.sinceX") + Writing.decimal(x) + ", "
@@ -164,15 +95,6 @@ export const Helpers = {
         }
     },
 
-    /**
-     * [FUNÇÃO] Monta o valor de x para o y dado
-     * @param coefA - Coeficiente a
-     * @param coefB - Coeficiente b
-     * @param coefC - Coeficiente c
-     * @param funcExp - Exponencial
-     * @param funcLog - Logarítmica
-     * @since v6.1.0
-     */
     yValues(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
         let y = Ui.input("y = ", "", true),
             message = tr("helpers.sinceY2") + Writing.decimal(y) + ", "
@@ -227,16 +149,6 @@ export const Helpers = {
         }
     },
 
-    /**
-     * [FUNÇÃO] Monta o estudo do sinal de uma função
-     * @param coefA - Coeficiente a
-     * @param coefB - Coeficiente b
-     * @param coefC - Coeficiente c
-     * @param funcExp - Exponencial
-     * @param funcLog - Logarítmica
-     * @param funcTrig - Trigonométrica (sin, cos ou tan)
-     * @since v6.1.0
-     */
     sign(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false, funcTrig = "") {
         let operations = { positive: ">", negative: "<" }
 
@@ -458,15 +370,6 @@ export const Helpers = {
         }
     },
 
-    /**
-     * [FUNÇÃO] Monta a equação de duas funções
-     * @param polinomial - Polinomial
-     * @param coefA - Coeficiente a
-     * @param coefB - Coeficiente b
-     * @param coefC - Coeficiente c
-     * @returns Operação futura
-     * @since v6.1.0
-     */
     equations(polinomial = true, coefA = 0, coefB = 0, coefC = 0) {
         if (polinomial) {
             // Polinomial
@@ -490,13 +393,6 @@ export const Helpers = {
         }
     },
 
-    /**
-     * [FUNÇÃO] Monta a curva de uma função
-     * @param coefA - Coeficiente a
-     * @param coefB - Coeficiente b
-     * @param polynomial - Polinomial
-     * @since v6.1.0
-     */
     curve(coefA = 0, coefB = 0, polynomial = true) {
         if (!polynomial) {
             if ((coefA < 1 && coefB < 0) || (coefA > 1 && coefB > 0)) {
@@ -521,16 +417,6 @@ export const Helpers = {
         }
     },
 
-    /**
-     * [FUNÇÃO] Calcula a raiz de uma função
-     * @param coefA - Coeficiente a
-     * @param coefB - Coeficiente b
-     * @param coefC - Coeficiente c
-     * @param funcExp - Exponencial
-     * @param funcLog - Logarítmica
-     * @returns []} - Raiz
-     * @since v6.1.0
-     */
     calcRoot(coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) {
         if (!funcExp && !funcLog) {
             if (coefA == 0 && coefB == 0) {
@@ -555,13 +441,6 @@ export const Helpers = {
         return NaN
     },
 
-    /**
-     * [FUNÇÃO] Mostra a raiz de uma função
-     * @param root - Raiz
-     * @param explanation - Explicação
-     * @param noHave - Mensagem quando não há raiz
-     * @since v6.1.0
-     */
     showRoot(root = 0, explanation = "c", noHave = "") {
         let intersection = tr("helpers.realRoot")
         if (isNaN(root)) {
@@ -571,14 +450,6 @@ export const Helpers = {
         }
     },
 
-    /**
-     * [FUNÇÃO] Calcula o Delta de uma função
-     * @param coefA - Coeficiente a
-     * @param coefB - Coeficiente b
-     * @param coefC - Coeficiente c
-     * @returns Delta
-     * @since v6.1.0
-     */
     calcDelta(coefA = 0, coefB = 0, coefC = 0) {
         const delta = coefB ** 2 - 4 * coefA * coefC
         let x1 = delta >= 0 ? Algebra.division(-coefB + Math.sqrt(delta), 2 * coefA) : NaN
@@ -587,15 +458,6 @@ export const Helpers = {
         return [delta, x1, x2]
     },
 
-    /**
-     * [FUNÇÃO] Exibe o Delta de uma função
-     * @param delta - Delta
-     * @param lower - Mensagem para Delta < 0
-     * @param equal - Mensagem para Delta = 0
-     * @param higher - Mensagem para Delta > 0
-     * @param hasY - Se é (c − y)
-     * @since v6.1.0
-     */
     showDelta(delta = 0, lower = "", equal = "", higher = "", hasY = false) {
         if (delta < 0) {
             Ui.display(lower, "Δ = b² − 4 · a · " + (hasY ? "(c − y)" : "c") + " ⇒ Δ < 0 ⇒ x ∉ ℝ")
@@ -609,52 +471,25 @@ export const Helpers = {
         }
     },
 
-    /**
-     * [FUNÇÃO] Calcula o vértice de uma função
-     * @param coefA - Coeficiente a
-     * @param coefB - Coeficiente b
-     * @param delta - Delta
-     * @returns Vértice
-     * @since v6.1.0
-     */
     vertex(coefA = 0, coefB = 0, delta = 0) {
         return [Algebra.division(-coefB, 2 * coefA), Algebra.division(-delta, 4 * coefA)]
     },
 
-    /**
-     * [FUNÇÃO] Vê se estourou o limite
-     * @param limit - Limite
-     * @returns Se estourou o limite
-     * @since v6.1.0
-     */
     exceededLimit(limit = Config.interactionLimit) {
         let exceeded = limit >= Config.interactionLimit
 
         // Exibe o erro se estourou o limite
         if (exceeded) {
-            Error.limitExceeded()
+            Errors.limitExceeded()
         }
 
         return exceeded
     },
 
-    /**
-     * [FUNÇÃO] Calcula o período de uma função
-     * @param coefA - Coeficiente a (frequência angular)
-     * @param funcTan - Se é função tangente (tan tem período π / |a|)
-     * @returns Período
-     * @since v6.1.0
-     */
     calcPeriod(coefA = 0, funcTan = false) {
         return Writing.decimal((funcTan ? Math.PI : 2 * Math.PI) / Algebra.absolute(coefA))
     },
 
-    /**
-     * [FUNÇÃO] Exibe o período de uma função
-     * @param coefA - Coeficiente a (frequência angular)
-     * @param funcTan - Se é função tangente
-     * @since v6.1.0
-     */
     showPeriod(coefA = 0, funcTan = false) {
         if (coefA != 0) {
             Ui.display(
@@ -666,20 +501,10 @@ export const Helpers = {
         }
     },
 
-    /**
-     * [FUNÇÃO] Exibe a amplitude de uma função
-     * @param coefB - Coeficiente b (amplitude)
-     * @since v6.1.0
-     */
     amplitude(coefB = 0) {
         Ui.display("Amplitude: " + Writing.decimal(Algebra.absolute(coefB)), "Amplitude = |b|")
     },
 
-    /**
-     * [FUNÇÃO] Exibe as assíntotas verticais da tangente
-     * @param coefA - Coeficiente a (frequência angular)
-     * @since v6.1.0
-     */
     verticalAsymptote(coefA = 0) {
         if (coefA != 0) {
             Ui.display(

@@ -44,9 +44,39 @@ export type ValueArray = Value[]
 export type ValueMatrix = Value[][]
 
 /**
+ * Array de números.
+ */
+export type NumericArray = Numeric[]
+
+/**
  * Funções trigonométricas suportadas pelo programa.
  */
 export type TrigonometricFunction = "sin" | "cos" | "tan" | "csc" | "sec" | "cot" | ""
+
+/**
+ * Funções suportadas pelo programa
+ */
+export type FunctionType = "poly" | "exp" | "log" | Exclude<TrigonometricFunction, "">
+
+/**
+ * Coeficientes suportados pelo programa
+ */
+export type Coefficients = { a: Value; b: Value; c: Value }
+
+/**
+ * Um par ordenado de um ponto qualquer
+ */
+export type PointPair = {
+    x: number
+    y: number
+}
+
+/**
+ * Usado para montar a matriz de um sistema linear genérico em {@link Algebra.solveLinearCoefs}.
+ */
+export type LinearBasis = {
+    [coefficient: string]: (x: number) => number
+}
 
 /**
  * Unidades de ângulo suportadas pelo programa.
@@ -56,7 +86,7 @@ export type Degrees = "deg" | "rad"
 /**
  * Idiomas suportados pelo programa.
  */
-export type Language = "en-us" | "en-gb" | "pt-br" | "pt-pt" | "es-419" | "es-es"
+export type Language = "pt-br" | "pt-pt" | "en-us" | "en-gb" | "es-419" | "es-es"
 
 /**
  * Comandos suportados pelo programa.

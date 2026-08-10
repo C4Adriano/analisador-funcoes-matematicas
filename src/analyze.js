@@ -20,35 +20,7 @@ const BASE_OPTIONS = [
     "analyze.options.functionEquations",
 ]
 
-/**
- * # Analyze
- *
- * ## Funcionalidades:
- * Objeto base para os métodos envolvendo análise de funções.
- *
- * ## Métodos:
- * - {@link Analyze.constant constant} - Função Constante
- * - {@link Analyze.affine affine} - Função Afim
- * - {@link Analyze.quadratic quadratic} - Função Quadrática
- * - {@link Analyze.exponential exponential} - Função Exponencial
- * - {@link Analyze.logarithmic logarithmic} - Função Logarítmica
- * - {@link Analyze.sine sine} - Função Seno
- * - {@link Analyze.cosine cosine} - Função Cosseno
- * - {@link Analyze.tangent tangent} - Função Tangente
- *
- * ### Tags:
- * @author [C4Adriano](https://github.com/C4Adriano)
- * @license [License](../LICENSE.md)
- * @group Função
- * @since v6.1.0
- */
 export const Analyze = {
-    /**
-     * [FUNÇÃO] Monta uma função constante: ƒ(x) = c
-     * @param {string | number} coefC - Coeficiente c da função constante
-     * @returns {(string | number)[]} Retorna: [coefC]
-     * @since v6.1.0
-     */
     constant(coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -129,13 +101,6 @@ export const Analyze = {
         return [coefC]
     },
 
-    /**
-     * [FUNÇÃO] Monta uma função afim: ƒ(x) = bx + c
-     * @param {string | number} coefB - Coeficiente b da função afim
-     * @param {string | number} coefC - Coeficiente c da função afim
-     * @returns {(string | number)[]} Retorna: [coefB, coefC]
-     * @since v6.1.0
-     */
     affine(coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -229,14 +194,6 @@ export const Analyze = {
         return [coefB, coefC]
     },
 
-    /**
-     * [FUNÇÃO] Monta uma função quadrática: ƒ(x) = ax² + bx + c
-     * @param {string | number} coefA - Coeficiente a da função quadrática
-     * @param {string | number} coefB - Coeficiente b da função quadrática
-     * @param {string | number} coefC - Coeficiente c da função quadrática
-     * @returns {(string | number)[]} Retorna: [coefA, coefB, coefC]
-     * @since v6.1.0
-     */
     quadratic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -362,14 +319,6 @@ export const Analyze = {
         return [coefA, coefB, coefC]
     },
 
-    /**
-     * [FUNÇÃO] Monta uma função exponencial: ƒ(x) = b × aˣ + c
-     * @param {string | number} coefA - Coeficiente a da função exponencial
-     * @param {string | number} coefB - Coeficiente b da função exponencial
-     * @param {string | number} coefC - Coeficiente c da função exponencial
-     * @returns {(string | number)[]} Retorna: [coefA, coefB, coefC]
-     * @since v6.1.0
-     */
     exponential(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -483,14 +432,6 @@ export const Analyze = {
         return [coefA, coefB, coefC]
     },
 
-    /**
-     * [FUNÇÃO] Monta a função logarítmica: b × logₐ(x) + c
-     * @param {string | number} coefA - Coeficiente a da função logarítmica
-     * @param {string | number} coefB - Coeficiente b da função logarítmica
-     * @param {string | number} coefC - Coeficiente c da função logarítmica
-     * @returns {(string | number)[]} Retorna: [coefA, coefB, coefC]
-     * @since v6.1.0
-     */
     logarithmic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -584,14 +525,6 @@ export const Analyze = {
         return [coefA, coefB, coefC]
     },
 
-    /**
-     * [FUNÇÃO] Monta a função seno: b × sin(a · x) + c
-     * @param {string | number} coefA - Coeficiente a da função seno
-     * @param {string | number} coefB - Coeficiente b da função seno
-     * @param {string | number} coefC - Coeficiente c da função seno
-     * @returns {(string | number)[]} Retorna: [coefA, coefB, coefC]
-     * @since v6.1.0
-     */
     sine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -659,14 +592,6 @@ export const Analyze = {
         return [coefA, coefB, coefC]
     },
 
-    /**
-     * [FUNÇÃO] Monta a função cosseno: b × cos(a · x) + c
-     * @param {string | number} coefA - Coeficiente a da função cosseno
-     * @param {string | number} coefB - Coeficiente b da função cosseno
-     * @param {string | number} coefC - Coeficiente c da função cosseno
-     * @returns {(string | number)[]} Retorna: [coefA, coefB, coefC]
-     * @since v6.1.0
-     */
     cosine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -741,14 +666,6 @@ export const Analyze = {
         return [coefA, coefB, coefC]
     },
 
-    /**
-     * [FUNÇÃO] Monta a função tangente: b × tan(a · x) + c
-     * @param {string | number} coefA - Coeficiente a da função tangente
-     * @param {string | number} coefB - Coeficiente b da função tangente
-     * @param {string | number} coefC - Coeficiente c da função tangente
-     * @returns {(string | number)[]} Retorna: [coefA, coefB, coefC]
-     * @since v6.1.0
-     */
     tangent(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,

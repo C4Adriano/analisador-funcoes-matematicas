@@ -8,9 +8,10 @@
         "rootDir": "./src/",
         "outDir": "./src/",
 
-        "allowJs": false,
+        "allowJs": true,
         "checkJs": false,
         "declaration": false,
+        "noEmit": true,
         "resolveJsonModule": true,
         "removeComments": true,
         "strict": true,
@@ -23,6 +24,6 @@
         "exactOptionalPropertyTypes": true
     },
 
-    "include": ["src/*.ts"],
-    "exclude": ["src/*.js", "./pessoal/*", "./node_modules/*"]
+    "include": ["src/*.ts", "src/*.js"],
+    "exclude": ["./pessoal/*", "./node_modules/*"]
 }
