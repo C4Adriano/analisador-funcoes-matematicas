@@ -46,6 +46,7 @@ node_modules/
 pessoal/
 *.map
 *.txt
+.VSCodeCounter/
 
 # === CREDENCIAIS ===
 .env

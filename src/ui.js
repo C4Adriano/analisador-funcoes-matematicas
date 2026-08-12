@@ -8,27 +8,27 @@ import { State } from "./state.js"
 import { Writing } from "./writing.js"
 
 export const Ui = {
-    display(message = "", explanation = "", debug = Config.debug) {
+    notify(message = "", explanation = "", debug = Config.debug, asConfirm = false) {
         if (debug) {
             console.warn(message)
             if (explanation != "") {
                 console.warn(explanation)
             }
-        } else {
-            alert(Writing.format(message, explanation))
+            return asConfirm ? true : null
         }
+        if (asConfirm) {
+            return confirm(Writing.format(message, explanation + "\n\n" + tr("ui.confirm")))
+        }
+        alert(Writing.format(message, explanation))
+        return null
+    },
+
+    display(message = "", explanation = "", debug = Config.debug) {
+        Ui.notify(message, explanation, debug, false)
     },
 
     confirm(message = "", explanation = "", debug = Config.debug) {
-        if (debug) {
-            console.warn(message)
-            if (explanation != "") {
-                console.warn(explanation)
-            }
-            return true
-        } else {
-            return confirm(Writing.format(message, explanation + "\n\n" + tr("ui.confirm")))
-        }
+        return Ui.notify(message, explanation, debug, true)
     },
 
     error(message = "", explanation = "", debug = Config.debug) {
@@ -37,15 +37,9 @@ export const Ui = {
         }
     },
 
-    warning(message = "", explanation = "", type = false, debug = Config.debug) {
-        if (!type) {
-            // Se tipo for falso, é um aviso simples, como um alert
-            Ui.display(`=== ${tr("ui.warning")} ===\n${message}`, explanation, debug)
-        } else {
-            // Se tipo for verdadeiro, é um aviso de confirmação, como um confirm
-            return Ui.confirm(`=== ${tr("ui.warning")} ===\n${message}`, explanation, debug)
-        }
-        return null
+    warning(message = "", explanation = "", asConfirm = false, debug = Config.debug) {
+        const header = `=== ${tr("ui.warning")} ===\n${message}`
+        return asConfirm ? Ui.confirm(header, explanation, debug) : Ui.display(header, explanation, debug)
     },
 
     menu(options = ["---"], page = 1) {
@@ -482,6 +476,18 @@ export const Ui = {
 
         Ui.display("=== " + tr("ui.currentFunction") + " ===\n" + Writing.decimal(funcStr))
         return ""
+    },
+
+    resolveFunction(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }, funcType = "poly", show = true) {
+        return Ui.function(
+            coefs.a,
+            coefs.b,
+            coefs.c,
+            funcType == "exp",
+            funcType == "log",
+            funcType != "poly" ? funcType : "",
+            show
+        )
     },
 
     range(message = "", explanation = "", min = 0, max = 1, places = 0, allowCommands = false) {

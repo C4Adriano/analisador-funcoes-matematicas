@@ -276,7 +276,7 @@ export const Writing = {
     uppercase(text = "") {
         text = text.toUpperCase()
         // Caso especial para a letra latina f, que matematicamente tem uma forma diferente em maiúscula e minúscula
-        text = Writing.replace(String(text), "Ƒ", "ƒ")
+        text = Writing.replace(text, "Ƒ", "ƒ")
 
         return text
     },
@@ -300,6 +300,10 @@ export const Writing = {
         }
 
         return number
+    },
+
+    decimalOptions(number = 0, { invert = false, round = true, places = Config.decimalPlaces } = {}) {
+        return Writing.decimal(number, invert, round, places)
     },
 
     simplifyMultiplication(text = "") {
@@ -394,7 +398,7 @@ export const Writing = {
         return String(value)
     },
 
-    configItem(message, name) {
+    configItem(message = "", name = "") {
         return tr("writing.currentDefault", {
             message,
             current: Writing.formatValue(Config[name]),

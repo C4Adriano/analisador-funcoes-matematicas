@@ -101,6 +101,10 @@ export const Analyze = {
         return [coefC]
     },
 
+    resolveConstant(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+        return Analyze.constant(coefs.c)
+    },
+
     affine(coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -192,6 +196,10 @@ export const Analyze = {
         } while (option != 0)
 
         return [coefB, coefC]
+    },
+
+    resolveAffine(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+        return Analyze.affine(coefs.b, coefs.c)
     },
 
     quadratic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
@@ -319,6 +327,10 @@ export const Analyze = {
         return [coefA, coefB, coefC]
     },
 
+    resolveQuadratic(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+        return Analyze.quadratic(coefs.a, coefs.b, coefs.c)
+    },
+
     exponential(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -432,6 +444,10 @@ export const Analyze = {
         return [coefA, coefB, coefC]
     },
 
+    resolveExponential(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+        return Analyze.exponential(coefs.a, coefs.b, coefs.c)
+    },
+
     logarithmic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -525,6 +541,10 @@ export const Analyze = {
         return [coefA, coefB, coefC]
     },
 
+    resolveLogarithmic(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+        return Analyze.logarithmic(coefs.a, coefs.b, coefs.c)
+    },
+
     sine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -590,6 +610,10 @@ export const Analyze = {
         } while (option != 0)
 
         return [coefA, coefB, coefC]
+    },
+
+    resolveSine(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+        return Analyze.sine(coefs.a, coefs.b, coefs.c)
     },
 
     cosine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
@@ -666,6 +690,10 @@ export const Analyze = {
         return [coefA, coefB, coefC]
     },
 
+    resolveCosine(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+        return Analyze.cosine(coefs.a, coefs.b, coefs.c)
+    },
+
     tangent(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
         let option = 0,
             page = 1,
@@ -733,5 +761,9 @@ export const Analyze = {
         } while (option != 0)
 
         return [coefA, coefB, coefC]
+    },
+
+    resolveTangent(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+        return Analyze.tangent(coefs.a, coefs.b, coefs.c)
     },
 }

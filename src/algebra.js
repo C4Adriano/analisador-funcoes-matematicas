@@ -28,7 +28,7 @@ export const Algebra = {
 
     variables(name = "x") {
         if (name.trim() == "") {
-            Ui.error(`[Algebra.variables] “name” inválido: ${name}`, `Usando “x”`, true)
+            Ui.error(`[Algebra.variables] “name” inválido: ${name}`, "Usando “x”", true)
             name = "x"
         }
 
@@ -132,7 +132,7 @@ export const Algebra = {
             for (let row = col + 1; row < n; row++) {
                 if (Math.abs(m[row][col]) > Math.abs(m[pivotRow][col])) pivotRow = row
             }
-            if (m[pivotRow][col] === 0) return null // sistema singular
+            if (m[pivotRow][col] == 0) return null // sistema singular
 
             ;[m[col], m[pivotRow]] = [m[pivotRow], m[col]]
             ;[v[col], v[pivotRow]] = [v[pivotRow], v[col]]
@@ -180,32 +180,32 @@ export const Algebra = {
         return pairs
     },
 
-    solvePolynomial(coefs = null) {
+    solvePolynomial(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
         const basis = { a: x => x * x, b: x => x, c: () => 1 }
         const eligible = { constant: ["c"], affine: ["b", "c"], quadratic: ["a", "b", "c"] }
 
-        const degree = coefs.a === 0 && coefs.b === 0 ? "constant" : coefs.a === 0 ? "affine" : "quadratic"
+        const degree = coefs.a == 0 && coefs.b == 0 ? "constant" : coefs.a == 0 ? "affine" : "quadratic"
 
         // Mantendo o comportamento original: em "constante", c é sempre recalculado
-        const unknownKeys = degree === "constant" ? ["c"] : eligible[degree].filter(key => coefs[key] === key)
+        const unknownKeys = degree == "constant" ? ["c"] : eligible[degree].filter(key => coefs[key] == key)
 
-        if (unknownKeys.length === 0) return coefs
+        if (unknownKeys.length == 0) return coefs
 
         const points = Algebra.getPointPairs(unknownKeys.length)
         return Algebra.solveLinearCoefs(basis, coefs, unknownKeys, points)
     },
 
-    solveExponential(coefs = null) {
+    solveExponential(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
         const linearKeys = ["b", "c"]
-        const unknownKeys = ["a", "b", "c"].filter(key => coefs[key] === key)
-        if (unknownKeys.length === 0) return coefs
+        const unknownKeys = ["a", "b", "c"].filter(key => coefs[key] == key)
+        if (unknownKeys.length == 0) return coefs
 
         if (unknownKeys.every(key => linearKeys.includes(key))) {
             const basis = { b: x => coefs.a ** x, c: () => 1 }
             return Algebra.solveLinearCoefs(basis, coefs, unknownKeys, Algebra.getPointPairs(unknownKeys.length))
         }
 
-        if (unknownKeys.length === 1 && unknownKeys[0] === "a") {
+        if (unknownKeys.length == 1 && unknownKeys[0] == "a") {
             const [{ x, y }] = Algebra.getPointPairs(1)
             const a = Algebra.round(Algebra.division(y - coefs.c, coefs.b, false) ** Algebra.division(1, x, false))
             return { ...coefs, a }
@@ -224,17 +224,17 @@ export const Algebra = {
         return { ...coefs, a: -1, c: 0 }
     },
 
-    solveLogarithmic(coefs = null) {
+    solveLogarithmic(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
         const linearKeys = ["b", "c"]
-        const unknownKeys = ["a", "b", "c"].filter(key => coefs[key] === key)
-        if (unknownKeys.length === 0) return coefs
+        const unknownKeys = ["a", "b", "c"].filter(key => coefs[key] == key)
+        if (unknownKeys.length == 0) return coefs
 
         if (unknownKeys.every(key => linearKeys.includes(key))) {
             const basis = { b: x => Algebra.log(x, coefs.a), c: () => 1 }
             return Algebra.solveLinearCoefs(basis, coefs, unknownKeys, Algebra.getPointPairs(unknownKeys.length))
         }
 
-        if (unknownKeys.length === 1 && unknownKeys[0] === "a") {
+        if (unknownKeys.length == 1 && unknownKeys[0] == "a") {
             const [{ x, y }] = Algebra.getPointPairs(1)
             return { ...coefs, a: Algebra.round(x ** Algebra.division(coefs.b, y - coefs.c, false)) }
         }
@@ -252,12 +252,12 @@ export const Algebra = {
         return { ...coefs, a: -1, b: 1, c: 0 }
     },
 
-    resolveUnknown(coefs = { a: NaN, b: NaN, c: NaN }, funcType = "poly") {
+    resolveUnknown(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }, funcType = "poly") {
         const solvers = { poly: Algebra.solvePolynomial, exp: Algebra.solveExponential, log: Algebra.solveLogarithmic }
         const solver = solvers[funcType] ?? Algebra.solvePolynomial // TODO - trig cai em poly
 
-        if (funcType !== "poly") {
-            if (coefs.a === 0 || coefs.a === 1 || coefs.b === 0) {
+        if (funcType != "poly") {
+            if (coefs.a == 0 || coefs.a == 1 || coefs.b == 0) {
                 return {
                     a: Checks.isFiniteNumber(coefs.a) ? coefs.a : 0,
                     b: Checks.isFiniteNumber(coefs.b) ? coefs.b : 0,
@@ -266,7 +266,7 @@ export const Algebra = {
             }
         }
 
-        Ui.function(coefs.a, coefs.b, coefs.c, funcType === "exp", funcType === "log", funcType)
+        Ui.function(coefs.a, coefs.b, coefs.c, funcType == "exp", funcType == "log", funcType != "poly" ? funcType : "")
 
         let current = coefs
         let limit = 0
@@ -300,10 +300,14 @@ export const Algebra = {
         return invalid ? { a: NaN, b: NaN, c: NaN } : current
     },
 
-    /**
-     * @deprecated Use Algebra.resolveUnknown(coefs, funcType). Mantido para compatibilidade.
-     */
-    unknown(coefA, coefB, coefC, funcExp = false, funcLog = false, funcTrig = "") {
+    unknown(
+        coefA = State.globalA,
+        coefB = State.globalB,
+        coefC = State.globalC,
+        funcExp = false,
+        funcLog = false,
+        funcTrig = ""
+    ) {
         const funcType = funcExp ? "exp" : funcLog ? "log" : funcTrig || "poly"
         const result = Algebra.resolveUnknown({ a: coefA, b: coefB, c: coefC }, funcType)
         return [
@@ -313,72 +317,60 @@ export const Algebra = {
         ]
     },
 
-    log(x = 1, base = Math.E, precision = Config.logPrecision) {
-        let y = x > 1 ? 1 : -1,
-            number = 0,
-            delta = 0,
-            lnX = 0,
-            lnBase = 0
+    log(x = 1, base = Math.E, precision = Config.logPrecision, round = false, places = Config.decimalPlaces) {
+        const isNatural = base == Math.E
 
         // Valida
-        if (x <= 0 || base <= 0 || base == 1) {
-            Errors.invalidLog("log", "x > 0 ∧ base > 0, base ≠ 1")
+        if (x <= 0 || (!isNatural && (base <= 0 || base == 1))) {
+            if (isNatural) {
+                Errors.invalidLog("ln", "x > 0")
+            } else {
+                Errors.invalidLog("log", "x > 0 ∧ base > 0, base ≠ 1")
+            }
             return NaN
         }
-
-        number = Algebra.ln(base)
-        delta = Algebra.division(base ** y - x, base ** y * number, false)
 
         // Mudança de base
         if (base < 1) {
-            lnX = Algebra.ln(x)
-            lnBase = Algebra.ln(base)
+            const lnX = Algebra.log(x, Math.E, precision, round)
+            const lnBase = Algebra.log(base, Math.E, precision, round)
             if (!Checks.isFiniteNumber(lnX) || !Checks.isFiniteNumber(lnBase) || lnBase == 0) {
                 return NaN
             }
-
             return Algebra.division(lnX, lnBase)
         }
 
-        // Loop
+        const lnBase = isNatural ? 1 : Algebra.log(base, Math.E, precision, round)
+        let y = x > 1 ? 1 : -1
+        let delta = Algebra.division(base ** y - x, base ** y * lnBase, false)
+
         let limit = 0
         while (Algebra.absolute(delta) > precision && limit < Config.interactionLimit) {
-            delta = Algebra.division(base ** y - x, base ** y * number, false)
+            delta = Algebra.division(base ** y - x, base ** y * lnBase, false)
             y -= delta
 
-            // Limite
             if (Helpers.exceededLimit(++limit)) {
                 return NaN
             }
         }
 
-        return Algebra.round(y)
+        return round ? Algebra.round(y, places) : y
     },
 
-    ln(x = 1, precision = Config.logPrecision) {
-        let y = x > 1 ? 1 : -1,
-            base = Math.E,
-            delta = Algebra.division(base ** y - x, base ** y, false)
+    logOptions(
+        x = 1,
+        base = Math.E,
+        { round = false, places = Config.decimalPlaces, precision = Config.logPrecision } = {}
+    ) {
+        return Algebra.log(x, base, precision, round, places)
+    },
 
-        // Valida
-        if (x <= 0) {
-            Errors.invalidLog("ln", "x > 0")
-            return NaN
-        }
+    ln(x = 1, precision = Config.logPrecision, round = false, places = Config.decimalPlaces) {
+        return Algebra.log(x, Math.E, precision, round, places)
+    },
 
-        // Loop
-        let limit = 0
-        while (Algebra.absolute(delta) > precision && limit < Config.interactionLimit) {
-            delta = Algebra.division(base ** y - x, base ** y, false)
-            y -= delta
-
-            // Limite
-            if (Helpers.exceededLimit(++limit)) {
-                return NaN
-            }
-        }
-
-        return Algebra.round(y)
+    lnOptions(x = 1, { round = false, places = Config.decimalPlaces, precision = Config.logPrecision } = {}) {
+        return Algebra.ln(x, precision, round, places)
     },
 
     division(numerator = 0, denominator = 1, round = true, precision = Config.divPrecision) {
@@ -418,6 +410,10 @@ export const Algebra = {
         return result
     },
 
+    divisionOptions(numerator = 0, denominator = 1, { round = true, precision = Config.divPrecision } = {}) {
+        return Algebra.division(numerator, denominator, round, precision)
+    },
+
     absolute(number = 0, round = true, places = Config.decimalPlaces) {
         number = Writing.decimal(number, true)
 
@@ -432,5 +428,9 @@ export const Algebra = {
         }
 
         return Math.abs(number)
+    },
+
+    absoluteOptions(number = 0, { round = true, places = Config.decimalPlaces } = {}) {
+        return Algebra.absolute(number, round, places)
     },
 }

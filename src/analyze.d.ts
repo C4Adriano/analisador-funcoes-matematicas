@@ -1,20 +1,20 @@
-import type { Value, ValueArray } from "./values.js"
+import type { Coefficients, Value, ValueArray } from "./values.js"
 
 /**
  * # Analyze
  *
  * ## Funcionalidades:
- * Objeto base para os métodos envolvendo análise de funções.
+ * Objeto base para os métodos envolvendo análise de Funções.
  *
  * ## Métodos:
- * - {@link Analyze.constant constant} - Função Constante
- * - {@link Analyze.affine affine} - Função Afim
- * - {@link Analyze.quadratic quadratic} - Função Quadrática
- * - {@link Analyze.exponential exponential} - Função Exponencial
- * - {@link Analyze.logarithmic logarithmic} - Função Logarítmica
- * - {@link Analyze.sine sine} - Função Seno
- * - {@link Analyze.cosine cosine} - Função Cosseno
- * - {@link Analyze.tangent tangent} - Função Tangente
+ * - {@link Analyze.resolveConstant resolveConstant} - Função Constante.
+ * - {@link Analyze.resolveAffine resolveAffine} - Função Afim.
+ * - {@link Analyze.resolveQuadratic resolveQuadratic} - Função Quadrática.
+ * - {@link Analyze.resolveExponential resolveExponential} - Função Exponencial.
+ * - {@link Analyze.resolveLogarithmic resolveLogarithmic} - Função Logarítmica.
+ * - {@link Analyze.resolveSine resolveSine} - Função Seno.
+ * - {@link Analyze.resolveCosine resolveCosine} - Função Cosseno.
+ * - {@link Analyze.resolveTangent resolveTangent} - Função Tangente.
  *
  * ### Tags:
  * @author [C4Adriano](https://github.com/C4Adriano)
@@ -22,89 +22,209 @@ import type { Value, ValueArray } from "./values.js"
  * @group Função
  * @since v6.1.0
  */
-export declare const Algebra: {
+export declare const Analyze: {
     /**
-     * Monta uma função constante: ƒ(x) = c
-     * @param coefC - Coeficiente c da função constante
+     * Monta uma Função Constante: ƒ(x) = c
+     * @deprecated
+     * Desde v6.6.1. Use {@link Analyze.resolveConstant} com um objeto {@link Coefficients}.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
+     * @param coefC - Coeficiente c da Função Constante
+     * @default coefC = State.globalC
      * @returns Retorna: [coefC]
      * @group Função
      * @since v6.1.0
      */
-    constant(coefC: Value): ValueArray
+    constant(coefC?: Value): ValueArray
 
     /**
-     * Monta uma função afim: ƒ(x) = bx + c
-     * @param coefB - Coeficiente b da função afim
-     * @param coefC - Coeficiente c da função afim
+     * Resolve uma Função Constante: ƒ(x) = c
+     * @param coefs - Coeficientes.
+     * @default coefs = { c: State.globalC }
+     * @returns Retorna: [coefC] — **ALERTA: NÃO ESPERE QUE ELE RETORNE, POIS O RETORNO SERÁ REMOVIDO NAS PRÓXIMAS VERSÕES!**
+     * @group Função
+     * @since v6.6.1
+     */
+    resolveConstant(coefs?: Coefficients): ValueArray
+
+    /**
+     * Monta uma Função Afim: ƒ(x) = bx + c
+     * @deprecated
+     * Desde v6.6.1. Use {@link Analyze.resolveAffine} com um objeto {@link Coefficients}.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
+     * @param coefB - Coeficiente b da Função Afim
+     * @param coefC - Coeficiente c da Função Afim
+     * @default coefB = State.globalB; coefC = State.globalC
      * @returns Retorna: [coefB, coefC]
      * @group Função
      * @since v6.1.0
      */
-    affine(coefB: Value, coefC: Value): ValueArray
+    affine(coefB?: Value, coefC?: Value): ValueArray
 
     /**
-     * Monta uma função quadrática: ƒ(x) = ax² + bx + c
-     * @param coefA - Coeficiente a da função quadrática
-     * @param coefB - Coeficiente b da função quadrática
-     * @param coefC - Coeficiente c da função quadrática
+     * Resolve uma Função Afim: ƒ(x) = bx + c
+     * @param coefs - Coeficientes.
+     * @default coefs = { b: State.globalB, c: State.globalC }
+     * @returns Retorna: [coefB, coefC] — **ALERTA: NÃO ESPERE QUE ELE RETORNE, POIS O RETORNO SERÁ REMOVIDO NAS PRÓXIMAS VERSÕES!**
+     * @group Função
+     * @since v6.6.1
+     */
+    resolveAffine(coefs?: Coefficients): ValueArray
+
+    /**
+     * Monta uma Função Quadrática: ƒ(x) = ax² + bx + c
+     * @deprecated
+     * Desde v6.6.1. Use {@link Analyze.resolveQuadratic} com um objeto {@link Coefficients}.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
+     * @param coefA - Coeficiente a da Função Quadrática
+     * @param coefB - Coeficiente b da Função Quadrática
+     * @param coefC - Coeficiente c da Função Quadrática
+     * @default coefA = State.globalA; coefB = State.globalB; coefC = State.globalC
      * @returns Retorna: [coefA, coefB, coefC]
      * @group Função
      * @since v6.1.0
      */
-    quadratic(coefA: Value, coefB: Value, coefC: Value): ValueArray
+    quadratic(coefA?: Value, coefB?: Value, coefC?: Value): ValueArray
 
     /**
-     * Monta uma função exponencial: ƒ(x) = b × aˣ + c
-     * @param coefA - Coeficiente a da função exponencial
-     * @param coefB - Coeficiente b da função exponencial
-     * @param coefC - Coeficiente c da função exponencial
+     * Resolve uma Função Quadrática: ƒ(x) = ax² + bx + c
+     * @param coefs - Coeficientes.
+     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
+     * @returns Retorna: [coefA, coefB, coefC] — **ALERTA: NÃO ESPERE QUE ELE RETORNE, POIS O RETORNO SERÁ REMOVIDO NAS PRÓXIMAS VERSÕES!**
+     * @group Função
+     * @since v6.6.1
+     */
+    resolveQuadratic(coefs?: Coefficients): ValueArray
+
+    /**
+     * Monta uma Função Exponencial: ƒ(x) = b × aˣ + c
+     * @deprecated
+     * Desde v6.6.1. Use {@link Analyze.resolveExponential} com um objeto {@link Coefficients}.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
+     * @param coefA - Coeficiente a da Função Exponencial
+     * @param coefB - Coeficiente b da Função Exponencial
+     * @param coefC - Coeficiente c da Função Exponencial
+     * @default coefA = State.globalA; coefB = State.globalB; coefC = State.globalC
      * @returns Retorna: [coefA, coefB, coefC]
      * @group Função
      * @since v6.1.0
      */
-    exponential(coefA: Value, coefB: Value, coefC: Value): ValueArray
+    exponential(coefA?: Value, coefB?: Value, coefC?: Value): ValueArray
 
     /**
-     * Monta a função logarítmica: b × logₐ(x) + c
-     * @param coefA - Coeficiente a da função logarítmica
-     * @param coefB - Coeficiente b da função logarítmica
-     * @param coefC - Coeficiente c da função logarítmica
+     * Resolve uma Função Exponencial: ƒ(x) = b × aˣ + c
+     * @param coefs - Coeficientes.
+     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
+     * @returns Retorna: [coefA, coefB, coefC] — **ALERTA: NÃO ESPERE QUE ELE RETORNE, POIS O RETORNO SERÁ REMOVIDO NAS PRÓXIMAS VERSÕES!**
+     * @group Função
+     * @since v6.6.1
+     */
+    resolveExponential(coefs?: Coefficients): ValueArray
+
+    /**
+     * Monta a Função Logarítmica: ƒ(x) = b × logₐ(x) + c
+     * @deprecated
+     * Desde v6.6.1. Use {@link Analyze.resolveLogarithmic} com um objeto {@link Coefficients}.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
+     * @param coefA - Coeficiente a da Função Logarítmica
+     * @param coefB - Coeficiente b da Função Logarítmica
+     * @param coefC - Coeficiente c da Função Logarítmica
+     * @default coefA = State.globalA; coefB = State.globalB; coefC = State.globalC
      * @returns Retorna: [coefA, coefB, coefC]
      * @group Função
      * @since v6.1.0
      */
-    logarithmic(coefA: Value, coefB: Value, coefC: Value): ValueArray
+    logarithmic(coefA?: Value, coefB?: Value, coefC?: Value): ValueArray
 
     /**
-     * Monta a função seno: b × sin(a · x) + c
-     * @param coefA - Coeficiente a da função seno
-     * @param coefB - Coeficiente b da função seno
-     * @param coefC - Coeficiente c da função seno
+     * Resolve uma Função Logarítmica: ƒ(x) = b × logₐ(x) + c
+     * @param coefs - Coeficientes.
+     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
+     * @returns Retorna: [coefA, coefB, coefC] — **ALERTA: NÃO ESPERE QUE ELE RETORNE, POIS O RETORNO SERÁ REMOVIDO NAS PRÓXIMAS VERSÕES!**
+     * @group Função
+     * @since v6.6.1
+     */
+    resolveLogarithmic(coefs?: Coefficients): ValueArray
+
+    /**
+     * Monta a Função Seno: ƒ(x) = b × sin(a · x) + c
+     * @deprecated
+     * Desde v6.6.1. Use {@link Analyze.resolveSine} com um objeto {@link Coefficients}.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
+     * @param coefA - Coeficiente a da Função Seno
+     * @param coefB - Coeficiente b da Função Seno
+     * @param coefC - Coeficiente c da Função Seno
+     * @default coefA = State.globalA; coefB = State.globalB; coefC = State.globalC
      * @returns Retorna: [coefA, coefB, coefC]
      * @group Função
      * @since v6.1.0
      */
-    sine(coefA: Value, coefB: Value, coefC: Value): ValueArray
+    sine(coefA?: Value, coefB?: Value, coefC?: Value): ValueArray
 
     /**
-     * Monta a função cosseno: b × cos(a · x) + c
-     * @param coefA - Coeficiente a da função cosseno
-     * @param coefB - Coeficiente b da função cosseno
-     * @param coefC - Coeficiente c da função cosseno
+     * Resolve uma Função Seno: ƒ(x) = b × sin(a · x) + c
+     * @param coefs - Coeficientes.
+     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
+     * @returns Retorna: [coefA, coefB, coefC] — **ALERTA: NÃO ESPERE QUE ELE RETORNE, POIS O RETORNO SERÁ REMOVIDO NAS PRÓXIMAS VERSÕES!**
+     * @group Função
+     * @since v6.6.1
+     */
+    resolveSine(coefs?: Coefficients): ValueArray
+
+    /**
+     * Monta a Função Cosseno: ƒ(x) = b × cos(a · x) + c
+     * @deprecated
+     * Desde v6.6.1. Use {@link Analyze.resolveCosine} com um objeto {@link Coefficients}.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
+     * @param coefA - Coeficiente a da Função Cosseno
+     * @param coefB - Coeficiente b da Função Cosseno
+     * @param coefC - Coeficiente c da Função Cosseno
+     * @default coefA = State.globalA; coefB = State.globalB; coefC = State.globalC
      * @returns Retorna: [coefA, coefB, coefC]
      * @group Função
      * @since v6.1.0
      */
-    cosine(coefA: Value, coefB: Value, coefC: Value): ValueArray
+    cosine(coefA?: Value, coefB?: Value, coefC?: Value): ValueArray
 
     /**
-     * Monta a função tangente: b × tan(a · x) + c
-     * @param coefA - Coeficiente a da função tangente
-     * @param coefB - Coeficiente b da função tangente
-     * @param coefC - Coeficiente c da função tangente
+     * Resolve uma Função Cosseno: ƒ(x) = b × cos(a · x) + c
+     * @param coefs - Coeficientes.
+     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
+     * @returns Retorna: [coefA, coefB, coefC] — **ALERTA: NÃO ESPERE QUE ELE RETORNE, POIS O RETORNO SERÁ REMOVIDO NAS PRÓXIMAS VERSÕES!**
+     * @group Função
+     * @since v6.6.1
+     */
+    resolveCosine(coefs?: Coefficients): ValueArray
+
+    /**
+     * Monta a Função Tangente: ƒ(x) = b × tan(a · x) + c
+     * @deprecated
+     * Desde v6.6.1. Use {@link Analyze.resolveTangent} com um objeto {@link Coefficients}.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
+     * @param coefA - Coeficiente a da Função Tangente
+     * @param coefB - Coeficiente b da Função Tangente
+     * @param coefC - Coeficiente c da Função Tangente
+     * @default coefA = State.globalA; coefB = State.globalB; coefC = State.globalC
      * @returns Retorna: [coefA, coefB, coefC]
      * @group Função
      * @since v6.1.0
      */
-    tangent(coefA: Value, coefB: Value, coefC: Value): ValueArray
+    tangent(coefA?: Value, coefB?: Value, coefC?: Value): ValueArray
+
+    /**
+     * Resolve uma Função Tangente: ƒ(x) = b × tan(a · x) + c
+     * @param coefs - Coeficientes.
+     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
+     * @returns Retorna: [coefA, coefB, coefC] — **ALERTA: NÃO ESPERE QUE ELE RETORNE, POIS O RETORNO SERÁ REMOVIDO NAS PRÓXIMAS VERSÕES!**
+     * @group Função
+     * @since v6.6.1
+     */
+    resolveTangent(coefs?: Coefficients): ValueArray
 }
