@@ -6,6 +6,8 @@ import { Ui } from "./ui.js"
 import { VERSION } from "./version.js"
 import { Writing } from "./writing.js"
 
+const COMMAND_NAMES = ["config", "exit", "start", "review", "history", "change"]
+
 export const Commands = {
     process(raw = "") {
         if (raw.length == 0 || raw[0] != "/") {
@@ -16,7 +18,7 @@ export const Commands = {
         const cmd = parts[0] ?? ""
         const arg = Commands.parseBool(parts[1] ?? "")
         const canonical = Commands.resolveCmd(cmd)
-        const cmds = Commands.listCmd()
+        const cmds = Commands.listCmd
 
         if (canonical == null) {
             const suggestion = Commands.suggestCmd(cmd)
@@ -93,7 +95,7 @@ export const Commands = {
 
     suggestCmd(typed = "") {
         const LIMIT = 3
-        const cmds = Commands.listCmd()
+        const cmds = Commands.listCmd
         const keys = Object.keys(cmds)
         let best = "",
             lowerDist = Infinity,
@@ -122,7 +124,7 @@ export const Commands = {
             return []
         }
 
-        const cmds = Commands.listCmd()
+        const cmds = Commands.listCmd
         const keys = Object.keys(cmds)
         const results = []
         let candidates = []
@@ -144,7 +146,7 @@ export const Commands = {
         return results
     },
 
-    listCmd() {
+    get listCmd() {
         return {
             help: {
                 short: tr("commands.shortHelp"),
@@ -175,7 +177,7 @@ export const Commands = {
                 long: tr("commands.longAbout"),
                 variations: ["sobre", "about", "info", "informacoes", "informacao", "projeto"],
                 action() {
-                    return Commands.about()
+                    return Commands.about
                 },
             },
             config: {
@@ -234,7 +236,7 @@ export const Commands = {
             },
             history: {
                 short: tr("commands.shortHistory"),
-                long: tr("commands.exibeOHistoricoDe"),
+                long: tr("commands.longHistory"),
                 variations: ["historico", "history", "hist"],
                 action() {
                     State.type = "history"
@@ -246,12 +248,12 @@ export const Commands = {
                 long: tr("commands.longVersion"),
                 variations: ["versao", "version", "vers", "v"],
                 action() {
-                    return Commands.version()
+                    return Commands.version
                 },
             },
             unicode: {
                 short: tr("commands.shortUnicode"),
-                long: tr("commands.longUnciode"),
+                long: tr("commands.longUnicode"),
                 variations: ["unicode", "uni"],
                 action(arg) {
                     return Commands.change("unicode", arg)
@@ -490,7 +492,7 @@ export const Commands = {
             return null
         }
 
-        const cmds = Commands.listCmd()
+        const cmds = Commands.listCmd
         const cmdKeys = Object.keys(cmds)
         let canonical = specific
 
@@ -517,7 +519,7 @@ export const Commands = {
     },
 
     help(specific = "") {
-        const cmds = Commands.listCmd()
+        const cmds = Commands.listCmd
 
         if (specific != "") {
             const canonical = Commands.resolveCmd(specific)
@@ -531,7 +533,7 @@ export const Commands = {
                 return null
             }
 
-            Ui.error(tr("commands.unknownCommand"), "“/" + specific + "” " + tr("commands.noteInvalidCommand"))
+            Ui.error(tr("commands.unknownCommand"), "“/" + specific + "” " + tr("commands.invalidCommandExp"))
             return null
         }
 
@@ -549,16 +551,9 @@ export const Commands = {
 
             const start = (page - 1) * 5
             const end = Math.min(start + 5, key.length)
-            let menu =
-                "=== " +
-                tr("commands.ajuda") +
-                " ===" +
-                "\n" +
-                tr("commands.pagina") +
-                String(page) +
-                "/" +
-                String(total) +
-                "\n"
+            let menu = `=== ${tr("commands.help")} ===
+${tr("commands.page")} ${String(page)}/${String(total)}
+`
 
             for (let i = start; i < end; i++) {
                 let aliases = [key[i], ...cmds[key[i]].variations].join(", ")
@@ -594,7 +589,7 @@ export const Commands = {
         term = Writing.noAccents(term.toLowerCase())
 
         const results = Commands.searchCmd(term)
-        const cmds = Commands.listCmd()
+        const cmds = Commands.listCmd
 
         if (results.length == 0) {
             Ui.warning(tr("commands.noCommand") + "“" + term + "”")
@@ -659,11 +654,11 @@ export const Commands = {
             return null
         }
 
-        const cmds = Commands.listCmd()
+        const cmds = Commands.listCmd
         const canonical = Commands.resolveCmd(specific)
 
         if (canonical == null) {
-            Ui.error(tr("commands.unknownCommand"), "“/" + specific + "” " + tr("commands.noteInvalidCommand"))
+            Ui.error(tr("commands.unknownCommand"), "“/" + specific + "” " + tr("commands.invalidCommandExp"))
             return null
         }
 
@@ -678,7 +673,7 @@ export const Commands = {
         return null
     },
 
-    about() {
+    get about() {
         Ui.display(
             "====================================================" +
                 "\n" +
@@ -700,7 +695,7 @@ export const Commands = {
         return null
     },
 
-    version() {
+    get version() {
         Ui.display(
             "====================================================" +
                 "\n" +
@@ -719,7 +714,7 @@ export const Commands = {
     change(name = "", value = false) {
         const currentValue = Config[name]
 
-        if (currentValue === undefined) {
+        if (currentValue == undefined) {
             Ui.error("[Commands.change] Configuração inexistente.", `“${name}” não existe em Config.`, true)
             return null
         }
@@ -733,24 +728,24 @@ export const Commands = {
             return null
         }
 
-        if (name === "capitalized" && Config.capitalized) {
+        if (name == "capitalized" && Config.capitalized) {
             Config.uppercase = false
             Config.lowercase = false
-        } else if (name === "uppercase" && Config.uppercase) {
+        } else if (name == "uppercase" && Config.uppercase) {
             Config.capitalized = false
             Config.lowercase = false
-        } else if (name === "lowercase" && Config.lowercase) {
+        } else if (name == "lowercase" && Config.lowercase) {
             Config.capitalized = false
             Config.uppercase = false
         }
 
         saveConfig()
-        Ui.warning(Writing.configItem(tr("commands.changed") + "“" + name + "”", name))
+        Ui.warning(Writing.configItem(`${tr("commands.changed")} “${name}”`, name))
 
         return null
     },
 
-    names() {
-        return ["config", "exit", "start", "review", "history", "change"]
+    get names() {
+        return COMMAND_NAMES
     },
 }

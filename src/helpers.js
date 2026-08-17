@@ -510,7 +510,7 @@ export const Helpers = {
             Ui.display(
                 tr("helpers.verticalAsymptote") + "x = (π / 2 + n · π) /,  n ∈ ℤ",
                 "tan(a · x) " +
-                    tr("helpers.undefined") +
+                    tr("helpers.undefinedAsymptote") +
                     "cos(a · x) = 0, " +
                     tr("helpers.ie") +
                     "a · x = π / 2 + n · π"

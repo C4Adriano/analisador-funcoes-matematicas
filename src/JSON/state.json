@@ -1,6 +1,7 @@
 {
     "loop": false,
 
+    "type": 0,
     "keepType": false,
     "askCoeffs": false,
 
@@ -8,10 +9,8 @@
     "globalB": "b",
     "globalC": "c",
 
-    "type": 0,
-
-    "baseFunc": [],
-    "coefficients": [],
-    "currentFunc": ["a", "b", "c"],
+    "baseFunc": { "a": "a", "b": "b", "c": "c" },
+    "coefficients": { "a": "a", "b": "b", "c": "c" },
+    "currentFunc": { "a": "a", "b": "b", "c": "c" },
     "history": []
 }

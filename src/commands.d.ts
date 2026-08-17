@@ -145,5 +145,5 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    names(): CommandsNames
+    get names(): CommandsNames
 }

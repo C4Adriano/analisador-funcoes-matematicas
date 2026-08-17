@@ -4,7 +4,7 @@ import { Writing } from "./writing.js"
 
 export const Checks = {
     isText(value) {
-        return typeof value === "string"
+        return typeof value == "string"
     },
 
     isValidText(value) {
@@ -12,7 +12,7 @@ export const Checks = {
     },
 
     isNumeric(value) {
-        return typeof value === "number"
+        return typeof value == "number"
     },
 
     isFiniteNumber(value) {
@@ -31,7 +31,7 @@ export const Checks = {
     },
 
     isCommand(value) {
-        return Checks.isText(value) && Commands.names().includes(value)
+        return Checks.isText(value) && Commands.names.includes(value)
     },
 
     isConfigKey(value) {

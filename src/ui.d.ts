@@ -1,4 +1,14 @@
-import type { Coefficients, CommandsNames, FunctionType, Numeric, NumericArray, Places, Text, Value } from "./values.js"
+import type {
+    Coefficients,
+    CommandsNames,
+    FunctionType,
+    MessageOptions,
+    Numeric,
+    NumericArray,
+    Places,
+    Text,
+    Value,
+} from "./values.js"
 
 /**
  * # Ui
@@ -34,6 +44,13 @@ export declare const Ui: {
      * @since v6.6.1
      */
     notify(message: Text, explanation?: Text, asConfirm?: boolean, debug?: boolean)
+
+    /**
+     * Exibe uma mensagem qualquer.
+     * @param message - Mensagem
+     * @param option - Opções
+     */
+    notifyOptions(message: Text, option: MessageOptions)
 
     /**
      * Exibe um `alert` personalizado.
@@ -93,6 +110,9 @@ export declare const Ui: {
      * @param explanation - Explicação.
      * @param number - `true` = Número, `false` = Texto.
      * @param places - Casas para arredondar (0 = sem casas).
+     * @param allowCommands Se irá permitir comandos.
+     * @param angle Se é um ângulo ou não.
+     * @default number = false, places = Config.decimalPlaces, allowCommands = false, angle = false
      * @returns Valor verificado.
      * @group UI
      * @since v6.1.0
@@ -153,7 +173,8 @@ export declare const Ui: {
      * @param explanation - Explicação.
      * @param min - Mínimo.
      * @param max - Máximo.
-     * @param places - Casas decimais.
+     * @param places - Casas decimais do `input`. (Ex.: 1 ⇒ `0.1` → `max`)
+     * @default min = 0, max = 1, places = 0, allowCommands = false
      * @returns Um valor escolhido entre o intervalo.
      * @group UI
      * @since v6.1.0

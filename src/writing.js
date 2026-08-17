@@ -391,7 +391,7 @@ export const Writing = {
     },
 
     formatValue(value = true) {
-        if (value == true || value == false) {
+        if (typeof value == "boolean") {
             return value ? tr("writing.yes") : tr("writing.no")
         }
 

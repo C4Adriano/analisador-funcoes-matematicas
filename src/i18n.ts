@@ -12,70 +12,100 @@ import ptBR from "./JSON/i18n/pt-BR.json" with { type: "json" }
 import ptPT from "./JSON/i18n/pt-PT.json" with { type: "json" }
 
 const dictionaries = {
-    "en-us": enUS,
-    "en-gb": enGB,
+    /** Português (Brasil). */
     "pt-br": ptBR,
+    /** Português (Portugal). */
     "pt-pt": ptPT,
+    /** Inglês (Estados Unidos). */
+    "en-us": enUS,
+    /** Inglês (Reino Unido). */
+    "en-gb": enGB,
+    /** Espanhol (América Latina). */
     "es-419": es419,
+    /** Espanhol (Espanha). */
     "es-es": esES,
 }
 
-const FALLBACK_DICT = ptBR // PT-BR é a base de segurança — deve estar sempre 100% completo
-// Cadeia de fallback antes de cair no PT-BR: dialeto → idioma "pai" → PT-BR.
-// Existe pra cobrir o caso raro de en-GB.json/es-ES.json ficarem
-// dessincronizados do en-US.json/es-419.json (o sync_i18n.py deveria
-// impedir isso, mas não custa ter essa rede de segurança em runtime).
+const FALLBACK_DICT = ptBR
 const FALLBACK_CHAIN: Partial<Record<keyof typeof dictionaries, (keyof typeof dictionaries)[]>> = {
     "en-gb": ["en-us"],
     "es-es": ["es-419"],
 }
 
 /**
- * [I18N] Navega um objeto de dicionário por uma chave em dot-notation
- * @param dict - Dicionário a navegar
- * @param key - Chave em dot-notation (ex.: "errors.error001")
- * @returns O texto encontrado, ou undefined se a chave não existir nesse dicionário
+ * Gera, recursivamente, a união de todas as chaves em _dot-notation_ de um objeto de traduções.
+ * @remarks `Array` são excluídos da recursão (viram `never`), já que o dicionário de i18n não deve conter listas.
+ * @group i18n
+ * @since v6.6.2
+ */
+type PathsOf<T> = T extends string
+    ? never
+    : {
+          [K in keyof T & string]: T[K] extends string
+              ? K
+              : T[K] extends readonly unknown[]
+                ? never
+                : PathsOf<T[K]> extends never
+                  ? never
+                  : `${K}.${PathsOf<T[K]>}`
+      }[keyof T & string]
+
+/**
+ * União de todas as chaves de tradução válidas, derivada de `pt-BR.json` (dicionário master).
+ * @remarks Como {@link https://github.com/C4Adriano | `sync_i18n.py`} garante paridade de chaves entre todos os locales, basta gerar o tipo a partir do master.
+ * @group i18n
+ * @since v6.6.2
+ */
+export type TranslationKey = PathsOf<typeof ptBR>
+
+/**
+ * Navega um objeto de dicionário por uma chave em _dot-notation_.
+ * @param dict - Dicionário a navegar.
+ * @param key - Chave em _dot-notation_. (Ex.: `errors.error001`)
+ * @returns O texto encontrado, ou `undefined` se a chave não existir nesse dicionário.
+ * @group i18n
  * @since v6.3.0
  */
 function resolveKey(dict: Record<string, any>, key: string): string | undefined {
     const raw = key.split(".").reduce<any>((obj, part) => obj?.[part], dict)
-    return typeof raw === "string" ? raw : undefined
+    return typeof raw == "string" ? raw : undefined
 }
 
 /**
- * [I18N] Retorna o texto na língua configurada, a partir de uma chave em dot-notation
- * Se a chave não existir no idioma ativo, cai automaticamente para PT-BR antes de desistir
- * @param key - Chave do texto (ex.: "main.welcome.title")
- * @param params - Valores para interpolação de placeholders (ex.: { valor: 5 })
- * @returns Texto na língua configurada, no fallback PT-BR, ou a própria chave em último caso
+ * Retorna o texto na língua configurada, a partir de uma chave em _dot-notation_.
+ * @remarks Se a chave não existir no idioma ativo, cai automaticamente para `pt-BR` antes de desistir.
+ * @param key - Chave do texto. (Ex.: `main.welcome.title`)
+ * @param params - Valores para interpolação de _placeholders_. (Ex.: `{ value: 5 }`)
+ * @returns Texto na língua configurada, no _fallback_ `pt-BR`, ou a própria chave em último caso.
+ * @group i18n
  * @since v6.2.0
  */
-export function tr(key: string, params?: Record<string, string | number>): Text {
+export function tr(key: TranslationKey, params?: Record<string, string | number>): Text {
     const dict = dictionaries[Config.language] ?? dictionaries["pt-br"]
 
     let raw = resolveKey(dict, key)
 
-    if (raw === undefined) {
+    if (raw == undefined) {
         for (const lang of FALLBACK_CHAIN[Config.language] ?? []) {
             raw = resolveKey(dictionaries[lang], key)
-            if (raw !== undefined) {
+            if (raw != undefined) {
                 if (Config.debug) {
-                    console.warn(`[i18n] Chave "${key}" ausente em "${Config.language}", usando fallback "${lang}".`)
+                    console.warn(`[i18n] Chave “${key}” ausente em “${Config.language}”, usando fallback “${lang}”.`)
                 }
                 break
             }
         }
     }
 
-    if (raw === undefined && dict !== FALLBACK_DICT) {
+    if (raw == undefined && dict != FALLBACK_DICT) {
         raw = resolveKey(FALLBACK_DICT, key)
 
-        if (raw !== undefined && Config.debug) {
-            console.warn(`[i18n] Chave "${key}" ausente em "${Config.language}", usando fallback PT-BR.`)
+        if (raw != undefined && Config.debug) {
+            console.warn(`[i18n] Chave “${key}” ausente em “${Config.language}”, usando fallback “pt-BR”.`)
         }
     }
 
-    if (raw === undefined) {
+    if (raw == undefined) {
         return key
     }
 
@@ -83,27 +113,26 @@ export function tr(key: string, params?: Record<string, string | number>): Text 
 }
 
 /**
- * [I18N] Retorna o array de opções na língua configurada
- * @param keys - Array de chaves
- * @returns Array na língua configurada
+ * Retorna o `array` de opções na língua configurada.
+ * @param keys - `Array` de chaves.
+ * @returns `Array` na língua configurada.
+ * @group i18n
  * @since v6.2.0
  */
-export function trArr(keys: string[] = []): Text[] {
+export function trArr(keys: TranslationKey[] = []): Text[] {
     return keys.map(key => tr(key))
 }
 
 /**
- * [I18N] Altera a língua do programa, ajustando as configurações relacionadas (como acentos e separador decimal)
- * @param language Língua
+ * Altera a língua do programa, ajustando as configurações relacionadas (como {@link Config.accents} e {@link Config.decimalSeparator}).
+ * @param language Língua.
+ * @group i18n
  * @since v6.2.0
  */
-export function changeLanguage(language: Language) {
+export function changeLanguage(language: Language = "pt-br") {
     if (Config.language == language) {
         Ui.warning(tr("commands.languageAlready"))
-        return
-    }
-
-    if (confirm(tr("i18n.confirmChangeLanguage", { language: language }))) {
+    } else if (confirm(tr("i18n.confirmChangeLanguage", { language: language }))) {
         if (language == "pt-br" || language == "pt-pt" || language == "es-419" || language == "es-es") {
             Config.decimalSeparator = true
             Config.accents = true

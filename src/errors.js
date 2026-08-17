@@ -1,3 +1,4 @@
+//@ts-check
 import { tr } from "./i18n.js"
 import { Ui } from "./ui.js"
 
@@ -18,7 +19,7 @@ export const Errors = {
     },
 
     divZero(reason = "") {
-        if (typeof reason !== "string") {
+        if (typeof reason != "string") {
             Ui.error("[Errors.divZero] 'reason' inválido.", `Recebido: ${reason}`, true)
             reason = ""
         }

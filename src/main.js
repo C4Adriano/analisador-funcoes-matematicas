@@ -33,14 +33,14 @@ Ui.display(tr("main.welcomeTitle"), tr("main.welcomeDescription"))
 
 // === OBJETOS GLOBAIS ===
 // Para alterar o HTML também, conforme a língua
-function setMeta(name, content) {
+function setMeta(name = "", content = "") {
     const meta = document.querySelector(`meta[name="${name}"]`)
     if (meta) {
         meta.setAttribute("content", content)
     }
 }
 
-function setProperty(property, content) {
+function setProperty(property = "", content = "") {
     const meta = document.querySelector(`meta[property="${property}"]`)
     if (meta) {
         meta.setAttribute("content", content)
@@ -94,12 +94,12 @@ do {
 
     // Salva histórico
     if (
-        State.globalA != State.currentFunc[0] ||
-        State.globalB != State.currentFunc[1] ||
-        State.globalC != State.currentFunc[2]
+        State.globalA != State.currentFunc.a ||
+        State.globalB != State.currentFunc.b ||
+        State.globalC != State.currentFunc.c
     ) {
-        State.currentFunc = [State.globalA, State.globalB, State.globalC]
-        State.history.push(State.currentFunc.slice())
+        State.currentFunc = { a: State.globalA, b: State.globalB, c: State.globalC }
+        State.history.push(State.currentFunc)
 
         if (State.history.length > 9) {
             State.history.shift()
@@ -148,7 +148,7 @@ do {
     if (
         (0 <= State.type && State.type <= 3) ||
         (6 <= State.type && State.type <= 9) ||
-        Commands.names().includes(State.type)
+        Commands.names.includes(State.type)
     ) {
         // Polinomiais
         if (State.type == 1) {
@@ -158,10 +158,10 @@ do {
                 !Checks.isFiniteNumber(State.globalB) ||
                 !Checks.isFiniteNumber(State.globalC)
             ) {
-                State.coefficients = Algebra.unknown(State.globalA, State.globalB, State.globalC)
-                State.globalA = Algebra.round(State.coefficients[0])
-                State.globalB = Algebra.round(State.coefficients[1])
-                State.globalC = Algebra.round(State.coefficients[2])
+                State.coefficients = Algebra.resolveUnknown({ a: State.globalA, b: State.globalB, c: State.globalC })
+                State.globalA = Algebra.round(State.coefficients.a)
+                State.globalB = Algebra.round(State.coefficients.b)
+                State.globalC = Algebra.round(State.coefficients.c)
             }
 
             // Números
@@ -171,11 +171,11 @@ do {
                 Checks.isFiniteNumber(State.globalC)
             ) {
                 if (State.globalA == 0 && State.globalB == 0) {
-                    Analyze.constant(State.globalC)
+                    Analyze.resolveConstant({ c: State.globalC })
                 } else if (State.globalA == 0 && State.globalB != 0) {
-                    Analyze.affine(State.globalB, State.globalC)
+                    Analyze.resolveAffine({ b: State.globalB, c: State.globalC })
                 } else if (State.globalA != 0) {
-                    Analyze.quadratic(State.globalA, State.globalB, State.globalC)
+                    Analyze.resolveQuadratic({ a: State.globalA, b: State.globalB, c: State.globalC })
                 }
             }
         }
@@ -216,16 +216,23 @@ do {
                 if (
                     (0 <= subType && subType <= 2) ||
                     (6 <= subType && subType <= 9) ||
-                    Commands.names().includes(subType)
+                    Commands.names.includes(subType)
                 ) {
                     // Exponencial
                     if (subType == 1) {
                         // Incógnitas
                         if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
-                            State.coefficients = Algebra.unknown(State.globalA, State.globalB, State.globalC, true)
-                            State.globalA = Algebra.round(State.coefficients[0])
-                            State.globalB = Algebra.round(State.coefficients[1])
-                            State.globalC = Algebra.round(State.coefficients[2])
+                            State.coefficients = Algebra.resolveUnknown(
+                                {
+                                    a: State.globalA,
+                                    b: State.globalB,
+                                    c: State.globalC,
+                                },
+                                "exp"
+                            )
+                            State.globalA = Algebra.round(State.coefficients.a)
+                            State.globalB = Algebra.round(State.coefficients.b)
+                            State.globalC = Algebra.round(State.coefficients.c)
                         }
 
                         // Números
@@ -237,7 +244,7 @@ do {
                                 State.globalA != 1 &&
                                 State.globalB != 0
                             ) {
-                                Analyze.exponential(State.globalA, State.globalB, State.globalC)
+                                Analyze.resolveExponential({ a: State.globalA, b: State.globalB, c: State.globalC })
                             }
 
                             // Constante
@@ -272,16 +279,17 @@ do {
                     else if (subType == 2) {
                         // Incógnitas
                         if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
-                            State.coefficients = Algebra.unknown(
-                                State.globalA,
-                                State.globalB,
-                                State.globalC,
-                                false,
-                                true
+                            State.coefficients = Algebra.resolveUnknown(
+                                {
+                                    a: State.globalA,
+                                    b: State.globalB,
+                                    c: State.globalC,
+                                },
+                                "log"
                             )
-                            State.globalA = Algebra.round(State.coefficients[0])
-                            State.globalB = Algebra.round(State.coefficients[1])
-                            State.globalC = Algebra.round(State.coefficients[2])
+                            State.globalA = Algebra.round(State.coefficients.a)
+                            State.globalB = Algebra.round(State.coefficients.b)
+                            State.globalC = Algebra.round(State.coefficients.c)
                         }
 
                         // Números
@@ -293,7 +301,7 @@ do {
                                 State.globalA != 1 &&
                                 State.globalB != 0
                             ) {
-                                Analyze.logarithmic(State.globalA, State.globalB, State.globalC)
+                                Analyze.resolveLogarithmic({ a: State.globalA, b: State.globalB, c: State.globalC })
                             }
 
                             // Constante
@@ -327,7 +335,7 @@ do {
                         State.type = subType
                         State.loop = true
                         State.keepType = true
-                    } else if (Commands.names().includes(subType)) {
+                    } else if (Commands.names.includes(subType)) {
                         State.type = subType
                         State.loop = true
                         if (subType != "exit") {
@@ -387,29 +395,29 @@ do {
                 if (
                     (0 <= subType && subType <= 3) ||
                     (6 <= subType && subType <= 9) ||
-                    Commands.names().includes(subType)
+                    Commands.names.includes(subType)
                 ) {
                     // Seno
                     if (subType == 1) {
                         // Incógnitas
                         if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
-                            State.coefficients = Algebra.unknown(
-                                State.globalA,
-                                State.globalB,
-                                State.globalC,
-                                false,
-                                false,
+                            State.coefficients = Algebra.resolveUnknown(
+                                {
+                                    a: State.globalA,
+                                    b: State.globalB,
+                                    c: State.globalC,
+                                },
                                 "sin"
                             )
-                            State.globalA = Algebra.round(State.coefficients[0])
-                            State.globalB = Algebra.round(State.coefficients[1])
-                            State.globalC = Algebra.round(State.coefficients[2])
+                            State.globalA = Algebra.round(State.coefficients.a)
+                            State.globalB = Algebra.round(State.coefficients.b)
+                            State.globalC = Algebra.round(State.coefficients.c)
                         }
 
                         // Números
                         if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
                             if (State.globalA != 0 && State.globalB != 0) {
-                                Analyze.sine(State.globalA, State.globalB, State.globalC)
+                                Analyze.resolveSine({ a: State.globalA, b: State.globalB, c: State.globalC })
                             }
 
                             // Constante
@@ -429,28 +437,28 @@ do {
                     else if (subType == 2) {
                         // Incógnitas
                         if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
-                            State.coefficients = Algebra.unknown(
-                                State.globalA,
-                                State.globalB,
-                                State.globalC,
-                                false,
-                                false,
+                            State.coefficients = Algebra.resolveUnknown(
+                                {
+                                    a: State.globalA,
+                                    b: State.globalB,
+                                    c: State.globalC,
+                                },
                                 "cos"
                             )
-                            State.globalA = Algebra.round(State.coefficients[0])
-                            State.globalB = Algebra.round(State.coefficients[1])
-                            State.globalC = Algebra.round(State.coefficients[2])
+                            State.globalA = Algebra.round(State.coefficients.a)
+                            State.globalB = Algebra.round(State.coefficients.b)
+                            State.globalC = Algebra.round(State.coefficients.c)
                         }
 
                         // Números
                         if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
                             if (State.globalA != 0 && State.globalB != 0) {
-                                Analyze.cosine(State.globalA, State.globalB, State.globalC)
+                                Analyze.resolveCosine({ a: State.globalA, b: State.globalB, c: State.globalC })
                             }
 
                             // Constante
                             else if (State.globalA == 0 || State.globalB == 0) {
-                                Errors.constantFunction(tr("main.cossine"))
+                                Errors.constantFunction(tr("main.cosine"))
 
                                 if (
                                     State.globalA == 0 &&
@@ -472,23 +480,23 @@ do {
                     else if (subType == 3) {
                         // Incógnitas
                         if (State.globalA == "a" || State.globalB == "b" || State.globalC == "c") {
-                            State.coefficients = Algebra.unknown(
-                                State.globalA,
-                                State.globalB,
-                                State.globalC,
-                                false,
-                                false,
+                            State.coefficients = Algebra.resolveUnknown(
+                                {
+                                    a: State.globalA,
+                                    b: State.globalB,
+                                    c: State.globalC,
+                                },
                                 "tan"
                             )
-                            State.globalA = Algebra.round(State.coefficients[0])
-                            State.globalB = Algebra.round(State.coefficients[1])
-                            State.globalC = Algebra.round(State.coefficients[2])
+                            State.globalA = Algebra.round(State.coefficients.a)
+                            State.globalB = Algebra.round(State.coefficients.b)
+                            State.globalC = Algebra.round(State.coefficients.c)
                         }
 
                         // Números
                         if (State.globalA != "a" && State.globalB != "b" && State.globalC != "c") {
                             if (State.globalA != 0 && State.globalB != 0) {
-                                Analyze.tangent(State.globalA, State.globalB, State.globalC)
+                                Analyze.resolveTangent({ a: State.globalA, b: State.globalB, c: State.globalC })
                             }
 
                             // Constante
@@ -509,7 +517,7 @@ do {
                         State.type = subType
                         State.loop = true
                         State.keepType = true
-                    } else if (Commands.names().includes(subType)) {
+                    } else if (Commands.names.includes(subType)) {
                         State.type = subType
                         State.loop = true
                         if (subType != "exit") {
@@ -548,11 +556,11 @@ do {
                     message +=
                         String(option) +
                         " ⇒ “a” = " +
-                        Writing.decimal(stored[0]) +
+                        Writing.decimal(stored.a) +
                         "; “b” = " +
-                        Writing.decimal(stored[1]) +
+                        Writing.decimal(stored.b) +
                         "; “c” = " +
-                        Writing.decimal(stored[2]) +
+                        Writing.decimal(stored.c) +
                         "\n"
                     option++
                 }
@@ -562,18 +570,17 @@ do {
 
                 if (answer != 0) {
                     // Restaura função
-                    let index = State.history.length - answer
-                    const stored = State.history[index]
+                    const stored = State.history.at(State.history.length - answer)
 
-                    State.globalA = stored[0]
-                    State.globalB = stored[1]
-                    State.globalC = stored[2]
+                    State.globalA = stored.a
+                    State.globalB = stored.b
+                    State.globalC = stored.c
                     if (
-                        State.globalA != State.currentFunc[0] ||
-                        State.globalB != State.currentFunc[1] ||
-                        State.globalC != State.currentFunc[2]
+                        State.globalA != State.currentFunc.a ||
+                        State.globalB != State.currentFunc.b ||
+                        State.globalC != State.currentFunc.c
                     ) {
-                        State.currentFunc = [State.globalA, State.globalB, State.globalC]
+                        State.currentFunc = { a: State.globalA, b: State.globalB, c: State.globalC }
                     }
                 }
             }
@@ -859,8 +866,8 @@ do {
 
                     // Limite de iterações
                     else if (choice == 4) {
-                        Config.iterationLimit = Ui.range(
-                            Writing.configItem(tr("main.whatIterationLimit"), "iterationLimit"),
+                        Config.interactionLimit = Ui.range(
+                            Writing.configItem(tr("main.whatInteracionLimit"), "interactionLimit"),
                             tr("main.noteIterationLimit"),
                             100,
                             10000

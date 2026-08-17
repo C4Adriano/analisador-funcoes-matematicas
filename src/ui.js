@@ -23,6 +23,15 @@ export const Ui = {
         return null
     },
 
+    notifyOptions(message = "", { explanation = "", debug = Config.debug, asConfirm = false, type = "display" } = {}) {
+        if (type == "error") {
+            return Ui.error(message, explanation, debug)
+        } else if (type == "warning") {
+            return Ui.warning(message, explanation, asConfirm, debug)
+        }
+        return Ui.notify(message, explanation, debug, type == "confirm" || asConfirm)
+    },
+
     display(message = "", explanation = "", debug = Config.debug) {
         Ui.notify(message, explanation, debug, false)
     },
@@ -106,7 +115,7 @@ export const Ui = {
                 // +1
                 answer = -1
                 page += 1
-            } else if (Commands.names().includes(answer)) {
+            } else if (Commands.names.includes(answer)) {
                 State.loop = true
                 State.keepType = true
             }
@@ -116,7 +125,7 @@ export const Ui = {
                 answer = 0
                 State.loop = true
             }
-        } while (!(0 <= answer && answer <= 9) || Commands.names().includes(answer))
+        } while (!(0 <= answer && answer <= 9) || Commands.names.includes(answer))
 
         return [answer, page]
     },
@@ -203,6 +212,14 @@ export const Ui = {
         funcTrig = "",
         show = Config.showFunction
     ) {
+        return Ui.resolveFunction(
+            { a: coefA, b: coefB, c: coefC },
+            funcExp ? "exp" : funcLog ? "log" : funcTrig != "" ? funcTrig : "poly",
+            show
+        )
+    },
+
+    resolveFunction(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }, funcType = "poly", show = true) {
         if (!show) {
             // Não mostrar
             return ""
@@ -210,173 +227,173 @@ export const Ui = {
 
         let funcStr = tr("ui.theFunction")
 
-        if (!funcExp && !funcLog && funcTrig == "") {
+        if (funcType == "poly") {
             // Polinomial
-            if (coefA == 0 && coefB == 0) {
+            if (coefs.a == 0 && coefs.b == 0) {
                 // Constante
-                if (coefC == "c") {
+                if (coefs.c == "c") {
                     // Variável
                     funcStr += "c"
-                } else if (coefC != "c") {
+                } else if (coefs.c != "c") {
                     // Não variável
-                    funcStr += String(coefC)
+                    funcStr += String(coefs.c)
                 }
 
                 funcStr += tr("ui.constant")
 
                 // Especiais
-                if (coefC == 0) {
+                if (coefs.c == 0) {
                     // Se for zero, é a função nula
                     funcStr += tr("ui.constantNull")
                 }
-            } else if (coefA == 0 && coefB != 0) {
+            } else if (coefs.a == 0 && coefs.b != 0) {
                 // Afim
-                if (coefB == "b") {
+                if (coefs.b == "b") {
                     // Variável
                     funcStr += "b · x"
-                } else if (coefB != "b") {
+                } else if (coefs.b != "b") {
                     // Não variável
-                    if (Algebra.absolute(coefB) == 1) {
+                    if (Algebra.absolute(coefs.b) == 1) {
                         // Se for 1 ou -1, não mostra o número, só o sinal
-                        if (coefB == -1) {
+                        if (coefs.b == -1) {
                             // Se for -1, mostra o sinal de menos
                             funcStr += "−"
                         }
                         funcStr += "x"
-                    } else if (Algebra.absolute(coefB) != 1) {
+                    } else if (Algebra.absolute(coefs.b) != 1) {
                         // Se for diferente de 1 ou -1, mostra o número
-                        funcStr += String(coefB) + " · x"
+                        funcStr += String(coefs.b) + " · x"
                     }
                 }
 
-                if (coefC == "c") {
+                if (coefs.c == "c") {
                     // Variável
                     funcStr += " + c"
-                } else if (coefC != "c") {
+                } else if (coefs.c != "c") {
                     // Não variável
-                    if (coefC > 0) {
+                    if (coefs.c > 0) {
                         // Se for positivo, mostra o sinal de mais
-                        funcStr += " + " + String(coefC)
-                    } else if (coefC < 0) {
+                        funcStr += " + " + String(coefs.c)
+                    } else if (coefs.c < 0) {
                         // Se for negativo, mostra o sinal de menos e o número positivo
-                        funcStr += " − " + String(-coefC)
+                        funcStr += " − " + String(-coefs.c)
                     }
                 }
 
                 funcStr += tr("ui.affine")
 
                 // Especiais
-                if (coefB != 1 && coefC == 0) {
+                if (coefs.b != 1 && coefs.c == 0) {
                     // Se o coeficiente b for diferente de 1 e o coeficiente c for zero, é uma função linear
                     funcStr += tr("ui.affineLinear")
-                } else if (coefB == 1 && coefC == 0) {
+                } else if (coefs.b == 1 && coefs.c == 0) {
                     // Se o coeficiente b for 1 e o coeficiente c for zero, é a função identidade
                     funcStr += tr("ui.affineIdentity")
-                } else if (coefB == -1) {
+                } else if (coefs.b == -1) {
                     // Se o coeficiente b for -1, é a função oposta da identidade
                     funcStr += tr("ui.affineOpposite")
                 }
-            } else if (coefA != 0) {
+            } else if (coefs.a != 0) {
                 // Quadrática
-                if (coefA == "a") {
+                if (coefs.a == "a") {
                     // Variável
                     funcStr += "a · x²"
-                } else if (coefA != "a") {
+                } else if (coefs.a != "a") {
                     // Não variável
-                    if (Algebra.absolute(coefA) == 1) {
+                    if (Algebra.absolute(coefs.a) == 1) {
                         // Se for 1 ou -1, não mostra o número, só o sinal
-                        if (coefA == -1) {
+                        if (coefs.a == -1) {
                             // Se for -1, mostra o sinal de menos
                             funcStr += "−"
                         }
                         funcStr += "x²"
-                    } else if (Algebra.absolute(coefA) != 1) {
+                    } else if (Algebra.absolute(coefs.a) != 1) {
                         // Se for diferente de 1 ou -1, mostra o número
-                        funcStr += String(coefA) + " · x²"
+                        funcStr += String(coefs.a) + " · x²"
                     }
                 }
 
-                if (coefB == "b") {
+                if (coefs.b == "b") {
                     // Variável
                     funcStr += " + b · x"
-                } else if (coefB != "b" && coefB != 0) {
+                } else if (coefs.b != "b" && coefs.b != 0) {
                     // Não variável e diferente de zero
-                    if (coefB > 0) {
+                    if (coefs.b > 0) {
                         // Se for positivo, mostra o sinal de mais
                         funcStr += " + "
-                    } else if (coefB < 0) {
+                    } else if (coefs.b < 0) {
                         // Se for negativo, mostra o sinal de menos e o número positivo
                         funcStr += " − "
                     }
 
-                    if (Algebra.absolute(coefB) == 1) {
+                    if (Algebra.absolute(coefs.b) == 1) {
                         // Se for 1 ou -1, não mostra o número, só o sinal
                         funcStr += "x"
-                    } else if (Algebra.absolute(coefB) != 1) {
+                    } else if (Algebra.absolute(coefs.b) != 1) {
                         // Se for diferente de 1 ou -1, mostra o número
-                        funcStr += String(Algebra.absolute(coefB)) + " · x"
+                        funcStr += String(Algebra.absolute(coefs.b)) + " · x"
                     }
                 }
 
-                if (coefC == "c") {
+                if (coefs.c == "c") {
                     // Variável
                     funcStr += " + c"
-                } else if (coefC != "c" && coefC != 0) {
+                } else if (coefs.c != "c" && coefs.c != 0) {
                     // Não variável
-                    if (coefC > 0) {
+                    if (coefs.c > 0) {
                         // Se for positivo, mostra o sinal de mais
-                        funcStr += " + " + String(coefC)
-                    } else if (coefC < 0) {
+                        funcStr += " + " + String(coefs.c)
+                    } else if (coefs.c < 0) {
                         // Se for negativo, mostra o sinal de menos e o número positivo
-                        funcStr += " − " + String(-coefC)
+                        funcStr += " − " + String(-coefs.c)
                     }
                 }
 
                 funcStr += tr("ui.quadratic")
 
                 // Especiais
-                if (coefB == 0 && coefC == 0) {
+                if (coefs.b == 0 && coefs.c == 0) {
                     // Se os coeficientes b e c forem zero, é uma função quadrática pura
                     funcStr += tr("ui.pure")
-                } else if (coefB == 0) {
+                } else if (coefs.b == 0) {
                     // Se o coeficiente b for zero, é uma função incompleta sem termo linear
                     funcStr += tr("ui.quadraticIncompleteLinear")
-                } else if (coefC == 0) {
+                } else if (coefs.c == 0) {
                     // Se o coeficiente c for zero, é uma função incompleta sem termo constante
                     funcStr += tr("ui.quadraticIncompleteConstant")
                 }
             }
-        } else if (funcExp && funcTrig == "") {
+        } else if (funcType == "exp") {
             // Exponencial
-            if (coefB != "b" && coefB != 0) {
+            if (coefs.b != "b" && coefs.b != 0) {
                 // Não variável
-                if (coefB != 1) {
+                if (coefs.b != 1) {
                     // Se for diferente de 1, mostra o número
-                    funcStr += String(coefB) + " × "
+                    funcStr += String(coefs.b) + " × "
                 }
-            } else if (coefB == "b") {
+            } else if (coefs.b == "b") {
                 // Variável
                 funcStr += "b × "
             }
 
-            if (coefA != "a" && coefA != 0) {
+            if (coefs.a != "a" && coefs.a != 0) {
                 // Não variável
-                funcStr += String(coefA) + "ˣ"
-            } else if (coefA == "a") {
+                funcStr += String(coefs.a) + "ˣ"
+            } else if (coefs.a == "a") {
                 // Variável
                 funcStr += "aˣ"
             }
 
-            if (coefC != "c" && coefC != 0) {
+            if (coefs.c != "c" && coefs.c != 0) {
                 // Não variável
-                if (coefC > 0) {
+                if (coefs.c > 0) {
                     // Se for positivo, mostra o sinal de mais
-                    funcStr += " + " + String(coefC)
-                } else if (coefC < 0) {
+                    funcStr += " + " + String(coefs.c)
+                } else if (coefs.c < 0) {
                     // Se for negativo, mostra o sinal de menos e o número positivo
-                    funcStr += " − " + String(-coefC)
+                    funcStr += " − " + String(-coefs.c)
                 }
-            } else if (coefC == "c") {
+            } else if (coefs.c == "c") {
                 // Variável
                 funcStr += " + c"
             }
@@ -384,44 +401,44 @@ export const Ui = {
             funcStr += tr("ui.exponential")
 
             // Especiais
-            if (coefB == 1 && coefC == 0) {
+            if (coefs.b == 1 && coefs.c == 0) {
                 // Se o coeficiente b for 1 e o coeficiente c for zero, é uma função exponencial pura
-                funcStr += tr("ui.pura")
+                funcStr += tr("ui.pure")
             }
-            if (coefA == Algebra.round(Math.E)) {
+            if (coefs.a == Algebra.round(Math.E)) {
                 // Se o coeficiente a for igual a e, é uma função exponencial natural
                 funcStr += tr("ui.natural")
             }
-        } else if (funcLog && funcTrig == "") {
+        } else if (funcType == "log") {
             // Logarítmica
-            if (coefB != "b" && coefB != 0) {
+            if (coefs.b != "b" && coefs.b != 0) {
                 // Não variável
-                if (coefB != 1) {
-                    funcStr += String(coefB) + " × "
+                if (coefs.b != 1) {
+                    funcStr += String(coefs.b) + " × "
                 }
-            } else if (coefB == "b") {
+            } else if (coefs.b == "b") {
                 // Variável
                 funcStr += "b × "
             }
 
-            if (coefA != "a" && coefA != 0) {
+            if (coefs.a != "a" && coefs.a != 0) {
                 // Não variável
-                funcStr += "log" + Writing.subscript(coefA) + "(x)"
-            } else if (coefA == "a") {
+                funcStr += "log" + Writing.subscript(coefs.a) + "(x)"
+            } else if (coefs.a == "a") {
                 // Variável
                 funcStr += "logₐ(x)"
             }
 
-            if (coefC != "c" && coefC != 0) {
+            if (coefs.c != "c" && coefs.c != 0) {
                 // Não variável
-                if (coefC > 0) {
+                if (coefs.c > 0) {
                     // Se for positivo, mostra o sinal de mais
-                    funcStr += " + " + String(coefC)
-                } else if (coefC < 0) {
+                    funcStr += " + " + String(coefs.c)
+                } else if (coefs.c < 0) {
                     // Se for negativo, mostra o sinal de menos e o número positivo
-                    funcStr += " − " + String(-coefC)
+                    funcStr += " − " + String(-coefs.c)
                 }
-            } else if (coefC == "c") {
+            } else if (coefs.c == "c") {
                 // Variável
                 funcStr += " + c"
             }
@@ -429,46 +446,46 @@ export const Ui = {
             funcStr += tr("ui.logarithmic")
 
             // Especiais
-            if (coefB == 1 && coefC == 0) {
+            if (coefs.b == 1 && coefs.c == 0) {
                 // Se o coeficiente b for 1 e o coeficiente c for zero, é uma função logarítmica pura
                 funcStr += tr("ui.pure")
             }
-            if (coefA == Algebra.round(Math.E)) {
+            if (coefs.a == Algebra.round(Math.E)) {
                 // Se o coeficiente a for igual a e, é uma função logarítmica natural
                 funcStr += tr("ui.natural")
-            } else if (coefA == 10) {
+            } else if (coefs.a == 10) {
                 // Se o coeficiente a for igual a 10, é uma função logarítmica decimal
                 funcStr += tr("ui.decimal")
             }
-        } else if (funcTrig != "") {
+        } else if (funcType != "poly") {
             // Trigonométrica
-            if (coefB != "b" && coefB != 0) {
+            if (coefs.b != "b" && coefs.b != 0) {
                 // Não variável
-                if (coefB != 1) {
-                    funcStr += String(coefB) + " × "
+                if (coefs.b != 1) {
+                    funcStr += String(coefs.b) + " × "
                 }
-            } else if (coefB == "b") {
+            } else if (coefs.b == "b") {
                 // Variável
                 funcStr += "b × "
             }
 
-            if (coefA != "a" && coefA != 0) {
+            if (coefs.a != "a" && coefs.a != 0) {
                 // Não variável
-                funcStr += funcTrig + "(" + String(coefA) + " · x)"
-            } else if (coefA == "a") {
-                funcStr += funcTrig + "(a · x)"
+                funcStr += funcType + "(" + String(coefs.a) + " · x)"
+            } else if (coefs.a == "a") {
+                funcStr += funcType + "(a · x)"
             }
 
-            if (coefC != "c" && coefC != 0) {
+            if (coefs.c != "c" && coefs.c != 0) {
                 // Não variável
-                if (coefC > 0) {
+                if (coefs.c > 0) {
                     // Se for positivo, mostra o sinal de mais
-                    funcStr += " + " + String(coefC)
-                } else if (coefC < 0) {
+                    funcStr += " + " + String(coefs.c)
+                } else if (coefs.c < 0) {
                     // Se for negativo, mostra o sinal de menos e o número positivo
-                    funcStr += " − " + String(-coefC)
+                    funcStr += " − " + String(-coefs.c)
                 }
-            } else if (coefC == "c") {
+            } else if (coefs.c == "c") {
                 // Variável
                 funcStr += " + c"
             }
@@ -476,18 +493,6 @@ export const Ui = {
 
         Ui.display("=== " + tr("ui.currentFunction") + " ===\n" + Writing.decimal(funcStr))
         return ""
-    },
-
-    resolveFunction(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }, funcType = "poly", show = true) {
-        return Ui.function(
-            coefs.a,
-            coefs.b,
-            coefs.c,
-            funcType == "exp",
-            funcType == "log",
-            funcType != "poly" ? funcType : "",
-            show
-        )
     },
 
     range(message = "", explanation = "", min = 0, max = 1, places = 0, allowCommands = false) {
@@ -499,7 +504,7 @@ export const Ui = {
             value = Ui.input(message, explanation, true, places, allowCommands)
 
             // Comandos
-            if (Commands.names().includes(value)) {
+            if (Commands.names.includes(value)) {
                 return value
             }
 

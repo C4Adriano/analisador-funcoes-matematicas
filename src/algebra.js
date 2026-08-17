@@ -266,7 +266,7 @@ export const Algebra = {
             }
         }
 
-        Ui.function(coefs.a, coefs.b, coefs.c, funcType == "exp", funcType == "log", funcType != "poly" ? funcType : "")
+        Ui.resolveFunction(coefs, funcType)
 
         let current = coefs
         let limit = 0

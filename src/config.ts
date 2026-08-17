@@ -4,7 +4,8 @@ import { VERSION } from "./version.js"
 import type { Degrees, Language, Numeric, Places, Precision, Text } from "./values.js"
 
 /**
- * Tipo de configuração baseado no JSON
+ * Tipo de configuração baseado no `JSON`.
+ * @since ~v6.1.0
  */
 export type ConfigType = {
     language: Language
@@ -34,13 +35,20 @@ export type ConfigType = {
 export type ConfigKey = keyof ConfigType
 
 /**
- * Configurações ativas do programa
+ * Configurações ativas do programa.
+ * @since ~v6.1.0
  */
 export const Config: ConfigType = structuredClone(defaultConfigJson) as ConfigType
+
+/**
+ * Configurações padrões do programa.
+ * @since ~v6.1.0
+ */
 export const DEFAULT_CONFIG: ConfigType = structuredClone(defaultConfigJson) as ConfigType
 
 /**
- * Carrega configurações salvas no localStorage
+ * Carrega configurações salvas no `localStorage`.
+ * @since ~v6.1.0
  */
 export function loadConfig(): void {
     const saved: Text | null = localStorage.getItem("config")
@@ -48,7 +56,7 @@ export function loadConfig(): void {
 
     if (!saved) return
 
-    if (savedVersion !== VERSION) {
+    if (savedVersion != VERSION) {
         localStorage.removeItem("config")
         localStorage.removeItem("configVersion")
         return
@@ -73,7 +81,7 @@ export function loadConfig(): void {
         const currentType = typeof Config[key]
         const newValue = parsed[key]
 
-        if (typeof newValue === currentType) {
+        if (typeof newValue == currentType) {
             ;(Config as Record<string, unknown>)[key] = newValue
         } else {
             console.warn(
@@ -85,7 +93,8 @@ export function loadConfig(): void {
 }
 
 /**
- * Salva configurações atuais no localStorage
+ * Salva configurações atuais no `localStorage`.
+ * @since ~v6.1.0
  */
 export function saveConfig(): void {
     try {
@@ -97,7 +106,8 @@ export function saveConfig(): void {
 }
 
 /**
- * Reseta para os valores padrão do JSON
+ * Reseta para os valores padrão do `JSON`.
+ * @since ~v6.1.0
  */
 export function resetConfig(): void {
     localStorage.removeItem("config")
