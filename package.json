@@ -1,6 +1,6 @@
 {
   "name": "analisador",
-  "version": "6.6.2",
+  "version": "6.6.3",
   "description": "Mathematical Function Analyzer / Analisador de Funções Matemáticas",
   "repository": {
     "type": "git",
@@ -64,5 +64,9 @@
   "engines": {
     "node": ">=24.0.0"
   },
-  "packageManager": "npm@12.0.2"
+  "packageManager": "npm@12.0.2",
+  "dependencies": {
+    "@eslint/json": "^2.1.0",
+    "@eslint/markdown": "^8.0.3"
+  }
 }

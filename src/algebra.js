@@ -115,7 +115,7 @@ export const Algebra = {
             let delta = Helpers.calcDelta(coefA, coefB, coefC)
             Helpers.showDelta(
                 delta[0],
-                tr("algebra.quadraticDistinc"),
+                tr("algebra.quadraticDistinct"),
                 tr("algebra.oneRoot", { x: Writing.decimal(delta[1]) }),
                 tr("algebra.twoRoots", { x1: Writing.decimal(delta[1]), x2: Writing.decimal(delta[2]) })
             )

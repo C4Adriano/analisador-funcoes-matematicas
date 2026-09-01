@@ -11,8 +11,8 @@ import type { CommandsNames, Text } from "./values.js"
  * - {@link Commands.process process} - Processa um comando.
  * - {@link Commands.levenshtein levenshtein} - Faz a verificação da distância de _Levenshtein_ e acha a correspondente mais próxima.
  * - {@link Commands.suggestCmd suggestCmd} - Sugere um comando, com base na verificação da distância de _Levenshtein_.
- * - {@link Commands.searchCmd searchCmd} - Procura por comandos.
- * - {@link Commands.listCmd listCmd} - Lista todos os comandos.
+ * - {@link Commands.searchCmds searchCmds} - Procura por comandos.
+ * - {@link Commands.listCmds listCmds} - Lista todos os comandos.
  * - {@link Commands.resolveCmd resolveCmd} - Resolve um comando.
  * - {@link Commands.parseBool parseBool} - Transforma uma `string` em `boolean` (Ex.: "Não" -> `false`).
  * - {@link Commands.help help} - Exibe o menu de ajuda.
@@ -32,7 +32,7 @@ import type { CommandsNames, Text } from "./values.js"
 export declare const Commands: {
     /**
      * Processa um comando _slash_.
-     * @param raw o digitado pelo usuário.
+     * @param raw - O digitado pelo usuário.
      * @returns Ação a executar, ou null se não for comando.
      * @group JS
      * @since v6.1.0
@@ -41,12 +41,12 @@ export declare const Commands: {
 
     /**
      * Calcula a distância de _Levenshtein_ entre duas `strings`.
-     * @param wrong - `String` digitada pelo usuário.
-     * @param correct - `String` de um comando conhecido.
+     * @param source - `String` digitada pelo usuário.
+     * @param target - `String` de um comando conhecido.
      * @group JS
      * @since v6.1.0
      */
-    levenshtein(wrong: Text, correct: Text): void
+    levenshtein(source: Text, target: Text): void
 
     /**
      * Sugere um comando baseado no digitado pelo usuário usando distância de _Levenshtein_.
@@ -64,7 +64,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.2.0
      */
-    searchCmd(term: Text): void
+    searchCmds(term: Text): void
 
     /**
      * Retorna a lista de comandos disponíveis.
@@ -72,7 +72,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    listCmd(): object
+    listCmds(): object
 
     /**
      * Resolve um comando específico para seu nome canônico.
@@ -85,7 +85,7 @@ export declare const Commands: {
 
     /**
      * Converte um texto em um valor `boolean`.
-     * @param text Texto.
+     * @param text - Texto.
      * @returns Se é parecido com um valor `boolean` `(true | false)` ou se não é reconhecido.
      * @group JS
      * @since v6.1.0
@@ -132,8 +132,8 @@ export declare const Commands: {
 
     /**
      * Muda o valor de uma chave em `Config`.
-     * @param name Nome em `Config`.
-     * @param value Novo valor da chave.
+     * @param name - Nome em `Config`.
+     * @param value - Novo valor da chave.
      * @group JS
      * @since v6.1.0
      */
@@ -145,5 +145,5 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    get names(): CommandsNames
+    get names(): CommandsNames[]
 }

@@ -72,11 +72,11 @@ function resolveKey(dict: Record<string, any>, key: string): string | undefined 
 }
 
 /**
- * Retorna o texto na língua configurada, a partir de uma chave em _dot-notation_.
+ * Retorna o texto no idioma configurado, a partir de uma chave em _dot-notation_.
  * @remarks Se a chave não existir no idioma ativo, cai automaticamente para `pt-BR` antes de desistir.
  * @param key - Chave do texto. (Ex.: `main.welcome.title`)
  * @param params - Valores para interpolação de _placeholders_. (Ex.: `{ value: 5 }`)
- * @returns Texto na língua configurada, no _fallback_ `pt-BR`, ou a própria chave em último caso.
+ * @returns Texto no idioma configurado, no _fallback_ `pt-BR`, ou a própria chave em último caso.
  * @group i18n
  * @since v6.2.0
  */
@@ -113,9 +113,9 @@ export function tr(key: TranslationKey, params?: Record<string, string | number>
 }
 
 /**
- * Retorna o `array` de opções na língua configurada.
+ * Retorna o `array` de opções no idioma configurado.
  * @param keys - `Array` de chaves.
- * @returns `Array` na língua configurada.
+ * @returns `Array` no idioma configurado.
  * @group i18n
  * @since v6.2.0
  */
@@ -124,8 +124,8 @@ export function trArr(keys: TranslationKey[] = []): Text[] {
 }
 
 /**
- * Altera a língua do programa, ajustando as configurações relacionadas (como {@link Config.accents} e {@link Config.decimalSeparator}).
- * @param language Língua.
+ * Altera o idioma do programa, ajustando as configurações relacionadas (como {@link Config.accents} e {@link Config.decimalSeparator}).
+ * @param language Idioma.
  * @group i18n
  * @since v6.2.0
  */

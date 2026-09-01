@@ -6,7 +6,8 @@ import { Ui } from "./ui.js"
 import { VERSION } from "./version.js"
 import { Writing } from "./writing.js"
 
-const COMMAND_NAMES = ["config", "exit", "start", "review", "history", "change"]
+/** @type {import("./values.js").CommandsNames[]} */
+export const COMMANDS_NAMES = ["config", "exit", "start", "review", "history", "change"]
 
 export const Commands = {
     process(raw = "") {
@@ -18,7 +19,7 @@ export const Commands = {
         const cmd = parts[0] ?? ""
         const arg = Commands.parseBool(parts[1] ?? "")
         const canonical = Commands.resolveCmd(cmd)
-        const cmds = Commands.listCmd
+        const cmds = Commands.listCmds
 
         if (canonical == null) {
             const suggestion = Commands.suggestCmd(cmd)
@@ -33,7 +34,7 @@ export const Commands = {
                     })
                 )
                 if (answer) {
-                    return Commands.process("/" + suggestion.canonical + " " + parts[1])
+                    return Commands.process(`/${suggestion.canonical} ${parts[1]}`)
                 }
                 return null
             }
@@ -50,43 +51,39 @@ export const Commands = {
         return command.action(arg, parts)
     },
 
-    levenshtein(wrong = "", correct = "") {
-        let rows = correct.length + 1,
-            cols = wrong.length + 1,
-            matrix = [],
-            row = 0,
-            col = 0,
-            nowRow = [],
-            backRow = [],
-            diagonal,
-            up,
-            left
-
-        // Primeira coluna
-        for (row = 0; row < rows; row++) {
-            matrix[row] = [row]
+    levenshtein(source = "", target = "") {
+        if (source == target) {
+            return 0
         }
 
-        // Primeira linha
-        for (col = 0; col < cols; col++) {
+        if (source.length == 0) {
+            return target.length
+        }
+
+        if (target.length == 0) {
+            return source.length
+        }
+
+        const rows = target.length + 1
+        const cols = source.length + 1
+        const matrix = Array.from({ length: rows }, () => Array(cols).fill(0))
+
+        for (let row = 0; row < rows; row++) {
+            matrix[row][0] = row
+        }
+
+        for (let col = 0; col < cols; col++) {
             matrix[0][col] = col
         }
 
-        // Restante da matriz
-        for (row = 1; row < rows; row++) {
-            nowRow = matrix[row]
-            backRow = matrix[row - 1]
+        for (let row = 1; row < rows; row++) {
+            for (let col = 1; col < cols; col++) {
+                const cost = source[col - 1] == target[row - 1] ? 0 : 1
+                const deletion = matrix[row - 1][col] + 1
+                const insertion = matrix[row][col - 1] + 1
+                const substitution = matrix[row - 1][col - 1] + cost
 
-            for (col = 1; col < cols; col++) {
-                diagonal = backRow[col - 1]
-                up = backRow[col]
-                left = nowRow[col - 1]
-
-                if (correct[row - 1] === wrong[col - 1]) {
-                    nowRow[col] = diagonal
-                } else {
-                    nowRow[col] = 1 + Math.min(diagonal, up, left)
-                }
+                matrix[row][col] = Math.min(deletion, insertion, substitution)
             }
         }
 
@@ -95,7 +92,7 @@ export const Commands = {
 
     suggestCmd(typed = "") {
         const LIMIT = 3
-        const cmds = Commands.listCmd
+        const cmds = Commands.listCmds
         const keys = Object.keys(cmds)
         let best = "",
             lowerDist = Infinity,
@@ -119,12 +116,12 @@ export const Commands = {
         return { type: "unknown", canonical: "", distance: -1 }
     },
 
-    searchCmd(term = "") {
+    searchCmds(term = "") {
         if (term == "") {
             return []
         }
 
-        const cmds = Commands.listCmd
+        const cmds = Commands.listCmds
         const keys = Object.keys(cmds)
         const results = []
         let candidates = []
@@ -134,7 +131,7 @@ export const Commands = {
             if (cmd == undefined) {
                 return
             }
-            candidates = [key, cmd.short, cmd.long].concat(cmd.variations)
+            candidates = [key, cmd.short, cmd.long, ...cmd.variations]
 
             candidates.forEach(candidate => {
                 if (Writing.noAccents(candidate.toLowerCase()).includes(Writing.noAccents(term.toLowerCase()))) {
@@ -146,7 +143,7 @@ export const Commands = {
         return results
     },
 
-    get listCmd() {
+    get listCmds() {
         return {
             help: {
                 short: tr("commands.shortHelp"),
@@ -186,9 +183,8 @@ export const Commands = {
                 variations: ["config", "configuracoes", "conf", "settings", "cfg"],
                 action(arg, parts) {
                     if (parts[1] != undefined) {
-                        const configKey = parts[1]
-                        if (Checks.isConfigKey(configKey)) {
-                            return Commands.change(configKey, arg)
+                        if (Checks.isConfigKey(parts[1])) {
+                            return Commands.change(parts[1], arg)
                         }
                         Ui.error(tr("commands.invalidSetting"), tr("commands.invalidSettingExp", { setting: parts[1] }))
                         return null
@@ -492,7 +488,7 @@ export const Commands = {
             return null
         }
 
-        const cmds = Commands.listCmd
+        const cmds = Commands.listCmds
         const cmdKeys = Object.keys(cmds)
         let canonical = specific
 
@@ -519,7 +515,7 @@ export const Commands = {
     },
 
     help(specific = "") {
-        const cmds = Commands.listCmd
+        const cmds = Commands.listCmds
 
         if (specific != "") {
             const canonical = Commands.resolveCmd(specific)
@@ -527,7 +523,7 @@ export const Commands = {
             if (canonical != null) {
                 const cmd = cmds[canonical]
                 if (cmd != undefined) {
-                    const shortList = [canonical].concat(cmd.variations).join(", ")
+                    const shortList = [canonical, ...cmd.variations].join(", ")
                     Ui.display("“/" + canonical + "” — " + cmd.long + "\n" + tr("commands.variations") + shortList)
                 }
                 return null
@@ -551,22 +547,14 @@ export const Commands = {
 
             const start = (page - 1) * 5
             const end = Math.min(start + 5, key.length)
-            let menu = `=== ${tr("commands.help")} ===
-${tr("commands.page")} ${String(page)}/${String(total)}
-`
+            let menu = `=== ${tr("commands.help")} ===\n${tr("commands.page")} ${String(page)}/${String(total)}`
 
             for (let i = start; i < end; i++) {
                 let aliases = [key[i], ...cmds[key[i]].variations].join(", ")
                 menu += "\n/" + key[i] + " — " + cmds[key[i]].short + "\n  ↳ " + aliases
             }
 
-            menu +=
-                "\n----------------\n8 = " +
-                tr("commands.previous") +
-                " | 9 = " +
-                tr("commands.next") +
-                " | 0 = " +
-                tr("commands.back")
+            menu += `\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`
 
             answer = Ui.range(menu, "", 0, 9, 0, true)
 
@@ -588,8 +576,8 @@ ${tr("commands.page")} ${String(page)}/${String(total)}
 
         term = Writing.noAccents(term.toLowerCase())
 
-        const results = Commands.searchCmd(term)
-        const cmds = Commands.listCmd
+        const results = Commands.searchCmds(term)
+        const cmds = Commands.listCmds
 
         if (results.length == 0) {
             Ui.warning(tr("commands.noCommand") + "“" + term + "”")
@@ -654,7 +642,7 @@ ${tr("commands.page")} ${String(page)}/${String(total)}
             return null
         }
 
-        const cmds = Commands.listCmd
+        const cmds = Commands.listCmds
         const canonical = Commands.resolveCmd(specific)
 
         if (canonical == null) {
@@ -665,7 +653,7 @@ ${tr("commands.page")} ${String(page)}/${String(total)}
         const all = cmds[canonical].variations
         const list = all
             .map(v => {
-                return "“/" + v
+                return "/" + v
             })
             .join("\n")
 
@@ -711,6 +699,10 @@ ${tr("commands.page")} ${String(page)}/${String(total)}
         return null
     },
 
+    /**
+     * @param {import("./config.js").ConfigKey} name
+     * @param {import("./config.js").ConfigType} value
+     */
     change(name = "", value = false) {
         const currentValue = Config[name]
 
@@ -719,9 +711,9 @@ ${tr("commands.page")} ${String(page)}/${String(total)}
             return null
         }
 
-        if (typeof currentValue === "boolean" && value == undefined) {
+        if (typeof currentValue == "boolean" && value == undefined) {
             Config[name] = !currentValue
-        } else if (value != undefined && typeof currentValue === typeof value) {
+        } else if (value != undefined && typeof currentValue == typeof value) {
             Config[name] = value
         } else {
             Ui.error("[Commands.change] Valor inválido.", "Esta configuração não suporta alternância simples.", true)
@@ -746,6 +738,6 @@ ${tr("commands.page")} ${String(page)}/${String(total)}
     },
 
     get names() {
-        return COMMAND_NAMES
+        return COMMANDS_NAMES
     },
 }

@@ -1,4 +1,6 @@
 import js from "@eslint/js"
+import json from "@eslint/json"
+import markdown from "@eslint/markdown"
 import prettierConfig from "eslint-config-prettier"
 import { defineConfig } from "eslint/config"
 import globals from "globals"
@@ -12,7 +14,7 @@ export default defineConfig([
 
     // === JAVASCRIPT ===
     {
-        files: ["**/*.{js,mjs,cjs,jsx}"],
+        files: ["*.?(m|c)js"],
         plugins: {
             js,
         },
@@ -23,14 +25,10 @@ export default defineConfig([
             globals: {
                 ...globals.browser,
                 ...globals.node,
-                ...globals.es2021,
+                ...globals.es2027,
             },
         },
         rules: {
-            "no-param-reassign": "off",
-            "prefer-const": "off",
-            "no-useless-assignment": "off",
-            eqeqeq: "off",
             "no-console": ["warn", { allow: ["warn", "error"] }],
             "no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
             "no-use-before-define": ["error", { functions: false, classes: true, variables: true }],
@@ -44,19 +42,18 @@ export default defineConfig([
     // Requer: npm install typescript-eslint
     ...tseslint.configs.recommended.map(config => ({
         ...config,
-        files: ["**/*.{ts,tsx,mts,cts}"],
+        files: ["*.?(m|c)ts"],
     })),
     {
-        files: ["**/*.{ts,tsx,mts,cts}"],
+        files: ["*.?(m|c)ts"],
         languageOptions: {
             globals: {
                 ...globals.browser,
                 ...globals.node,
-                ...globals.es2021,
+                ...globals.es2027,
             },
         },
         rules: {
-            eqeqeq: "off",
             "no-console": ["warn", { allow: ["warn", "error"] }],
             "consistent-return": "warn",
             "no-throw-literal": "error",
@@ -65,9 +62,37 @@ export default defineConfig([
         },
     },
 
+    // === JSON ===
+    // Requer: npm install @eslint/json
+    {
+        files: ["**/*.json"],
+        plugins: { json },
+        language: "json/json",
+        extends: ["json/recommended"],
+    },
+    {
+        files: ["**/*.jsonc"],
+        plugins: { json },
+        language: "json/jsonc",
+        extends: ["json/recommended"],
+    },
+    {
+        files: ["**/*.json5"],
+        plugins: { json },
+        language: "json/json5",
+        extends: ["json/recommended"],
+    },
+
+    // === MARKDOWN ===
+    // Requer: npm install @eslint/markdown
+    {
+        files: ["**/*.md"],
+        plugins: { markdown },
+        language: "markdown/gfm",
+        extends: ["markdown/recommended"],
+    },
+
     // === PRETTIER ===
-    // Sempre por último: desativa qualquer regra de formatação que
-    // colidiria com o Prettier (js/recommended ou typescript-eslint.recommended
-    // podem trazer alguma no futuro). Requer: npm install eslint-config-prettier
+    // Requer: npm install eslint-config-prettier
     prettierConfig,
 ])

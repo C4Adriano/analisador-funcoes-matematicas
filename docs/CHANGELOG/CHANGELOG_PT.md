@@ -10,13 +10,13 @@
 
 ---
 
-# Geral
+## Geral
 
 > **Datado de:** _`2025-07-10 -> hoje`_
 
 ---
 
-# Versões **1.x**
+## Versões **1.x**
 
 > **Linhas nestas versões:** _`185`_<br>
 > **Datada de:** _`2025-07-10 -> 2025-07-10`_
@@ -77,7 +77,7 @@
 
 ---
 
-# Versões **2.x**
+## Versões **2.x**
 
 > **Linhas nestas versões:** _`422`_<br>
 > **Datada de:** _`2025-07-10 -> 2025-07-10`_
@@ -161,7 +161,7 @@
 
 ---
 
-# Versões **3.x**
+## Versões **3.x**
 
 > **Linhas nestas versões:** _`1068`_<br>
 > **Datada de:** _`2025-07-10 -> 2025-07-12`_
@@ -283,7 +283,7 @@
 
 ---
 
-# Versões **4.x**
+## Versões **4.x**
 
 > **Linhas nestas versões:** _`1568`_<br>
 > **Datada de:** _`2025-12-30 -> 2026-03-04`_
@@ -440,7 +440,7 @@
 
 ---
 
-# Versões **5.x**
+## Versões **5.x**
 
 > **Linhas nestas versões:** _`3255`_<br>
 > **Datada de:** _`2025-11-26 -> 2026-03-09`_
@@ -663,7 +663,7 @@
 
 ---
 
-# Versões **6.x**
+## Versões **6.x**
 
 > **Linhas nestas versões:** _`3296`_<br>
 > **Datada de:** _`2026-03-18 -> 2026-03-19`_
@@ -728,7 +728,7 @@
 
 ---
 
-# **Próximas atualizações:**
+## **Próximas atualizações:**
 
 - Adicionar opção de verificar quais **Funções** podem ser válidas para os pontos conhecidos
 - Adicionar comandos com `/` para acessar as **Funções _JS_** e as **Funções de Ajuda**
@@ -741,6 +741,3 @@
 Próximas atualizações completo em [`ROADMAP`](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP/ROADMAP_PT.md)
 
 ---
-
-[^1] Valores aproximados de datas, pois não tenho registro completo
-[^2] Valores aproximados de linhas, pois não tenho registro completo

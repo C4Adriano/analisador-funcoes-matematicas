@@ -1,0 +1,1579 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "i18n schema (gerado automaticamente a partir de pt-BR.json)",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "algebra",
+        "analyze",
+        "commands",
+        "errors",
+        "helpers",
+        "i18n",
+        "main",
+        "ui",
+        "writing",
+        "symbols"
+    ],
+    "properties": {
+        "algebra": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "variableAsk",
+                "constantCoincide",
+                "constantCoincideExp",
+                "constantDistinct",
+                "constantDistinctExp",
+                "oneRoot",
+                "quadraticDistinct",
+                "twoRoots",
+                "cannotDetermine",
+                "underConstruction",
+                "invalidValues",
+                "changeValues",
+                "changeValuesExp"
+            ],
+            "properties": {
+                "variableAsk": {
+                    "type": "string"
+                },
+                "constantCoincide": {
+                    "type": "string"
+                },
+                "constantCoincideExp": {
+                    "type": "string"
+                },
+                "constantDistinct": {
+                    "type": "string"
+                },
+                "constantDistinctExp": {
+                    "type": "string"
+                },
+                "oneRoot": {
+                    "type": "string"
+                },
+                "quadraticDistinct": {
+                    "type": "string"
+                },
+                "twoRoots": {
+                    "type": "string"
+                },
+                "cannotDetermine": {
+                    "type": "string"
+                },
+                "underConstruction": {
+                    "type": "string"
+                },
+                "invalidValues": {
+                    "type": "string"
+                },
+                "changeValues": {
+                    "type": "string"
+                },
+                "changeValuesExp": {
+                    "type": "string"
+                }
+            }
+        },
+        "analyze": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "options",
+                "constantValue",
+                "noRoots",
+                "oneRoot",
+                "twoRoots",
+                "vertexPoint",
+                "vertexExp",
+                "horizontalAsymptotePoint",
+                "betweenVertexInfinity",
+                "betweenInfinityVertex",
+                "noIntersectionXAxis",
+                "oneIntersectionXAxis",
+                "twoIntersectionsXAxis",
+                "betweenCInfinity",
+                "betweenInfinityC",
+                "withoutRoot"
+            ],
+            "properties": {
+                "options": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                        "domain",
+                        "range",
+                        "xIntersection",
+                        "yIntersection",
+                        "xValues",
+                        "yValues",
+                        "signAnalysis",
+                        "functionEquations",
+                        "slope",
+                        "root",
+                        "roots",
+                        "concavity",
+                        "vertex",
+                        "curve",
+                        "horizontalAsymptote",
+                        "verticalAsymptote",
+                        "amplitude",
+                        "period"
+                    ],
+                    "properties": {
+                        "domain": {
+                            "type": "string"
+                        },
+                        "range": {
+                            "type": "string"
+                        },
+                        "xIntersection": {
+                            "type": "string"
+                        },
+                        "yIntersection": {
+                            "type": "string"
+                        },
+                        "xValues": {
+                            "type": "string"
+                        },
+                        "yValues": {
+                            "type": "string"
+                        },
+                        "signAnalysis": {
+                            "type": "string"
+                        },
+                        "functionEquations": {
+                            "type": "string"
+                        },
+                        "slope": {
+                            "type": "string"
+                        },
+                        "root": {
+                            "type": "string"
+                        },
+                        "roots": {
+                            "type": "string"
+                        },
+                        "concavity": {
+                            "type": "string"
+                        },
+                        "vertex": {
+                            "type": "string"
+                        },
+                        "curve": {
+                            "type": "string"
+                        },
+                        "horizontalAsymptote": {
+                            "type": "string"
+                        },
+                        "verticalAsymptote": {
+                            "type": "string"
+                        },
+                        "amplitude": {
+                            "type": "string"
+                        },
+                        "period": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "constantValue": {
+                    "type": "string"
+                },
+                "noRoots": {
+                    "type": "string"
+                },
+                "oneRoot": {
+                    "type": "string"
+                },
+                "twoRoots": {
+                    "type": "string"
+                },
+                "vertexPoint": {
+                    "type": "string"
+                },
+                "vertexExp": {
+                    "type": "string"
+                },
+                "horizontalAsymptotePoint": {
+                    "type": "string"
+                },
+                "betweenVertexInfinity": {
+                    "type": "string"
+                },
+                "betweenInfinityVertex": {
+                    "type": "string"
+                },
+                "noIntersectionXAxis": {
+                    "type": "string"
+                },
+                "oneIntersectionXAxis": {
+                    "type": "string"
+                },
+                "twoIntersectionsXAxis": {
+                    "type": "string"
+                },
+                "betweenCInfinity": {
+                    "type": "string"
+                },
+                "betweenInfinityC": {
+                    "type": "string"
+                },
+                "withoutRoot": {
+                    "type": "string"
+                }
+            }
+        },
+        "commands": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "commandSuggestion",
+                "commandSuggestionExp",
+                "invalidCommand",
+                "invalidCommandExp",
+                "shortHelp",
+                "longHelp",
+                "shortSearch",
+                "longSearch",
+                "shortShortcuts",
+                "longShortcuts",
+                "shortAbout",
+                "longAbout",
+                "shortConfig",
+                "longConfig",
+                "invalidSetting",
+                "invalidSettingExp",
+                "shortReset",
+                "longReset",
+                "resetConfirm",
+                "shortStart",
+                "longStart",
+                "shortReview",
+                "longReview",
+                "shortChange",
+                "longChange",
+                "shortHistory",
+                "longHistory",
+                "shortVersion",
+                "longVersion",
+                "shortUnicode",
+                "longUnicode",
+                "shortAccents",
+                "longAccents",
+                "shortExplain",
+                "longExplain",
+                "shortCapitalize",
+                "longCapitalize",
+                "shortUppercase",
+                "longUppercase",
+                "shortLowercase",
+                "longLowercase",
+                "shortSeparator",
+                "longSeparator",
+                "shortMultiples",
+                "longMultiples",
+                "shortConfirm",
+                "longConfirm",
+                "shortConfirmExit",
+                "longConfirmExit",
+                "shortErrors",
+                "longErrors",
+                "shortFunction",
+                "longFunction",
+                "shortDegrees",
+                "longDegrees",
+                "shortLanguage",
+                "longLanguage",
+                "languageAlready",
+                "invalidLanguage",
+                "noteInvalidLanguage",
+                "shortDebug",
+                "longDebug",
+                "shortExit",
+                "longExit",
+                "variations",
+                "unknownCommand",
+                "help",
+                "page",
+                "previous",
+                "next",
+                "back",
+                "emptySearch",
+                "usageSearch",
+                "noCommand",
+                "search",
+                "resultsSearch",
+                "commandNotProvided",
+                "usageShortcuts",
+                "commandVariations",
+                "title",
+                "author",
+                "repository",
+                "copyright",
+                "changed"
+            ],
+            "properties": {
+                "commandSuggestion": {
+                    "type": "string"
+                },
+                "commandSuggestionExp": {
+                    "type": "string"
+                },
+                "invalidCommand": {
+                    "type": "string"
+                },
+                "invalidCommandExp": {
+                    "type": "string"
+                },
+                "shortHelp": {
+                    "type": "string"
+                },
+                "longHelp": {
+                    "type": "string"
+                },
+                "shortSearch": {
+                    "type": "string"
+                },
+                "longSearch": {
+                    "type": "string"
+                },
+                "shortShortcuts": {
+                    "type": "string"
+                },
+                "longShortcuts": {
+                    "type": "string"
+                },
+                "shortAbout": {
+                    "type": "string"
+                },
+                "longAbout": {
+                    "type": "string"
+                },
+                "shortConfig": {
+                    "type": "string"
+                },
+                "longConfig": {
+                    "type": "string"
+                },
+                "invalidSetting": {
+                    "type": "string"
+                },
+                "invalidSettingExp": {
+                    "type": "string"
+                },
+                "shortReset": {
+                    "type": "string"
+                },
+                "longReset": {
+                    "type": "string"
+                },
+                "resetConfirm": {
+                    "type": "string"
+                },
+                "shortStart": {
+                    "type": "string"
+                },
+                "longStart": {
+                    "type": "string"
+                },
+                "shortReview": {
+                    "type": "string"
+                },
+                "longReview": {
+                    "type": "string"
+                },
+                "shortChange": {
+                    "type": "string"
+                },
+                "longChange": {
+                    "type": "string"
+                },
+                "shortHistory": {
+                    "type": "string"
+                },
+                "longHistory": {
+                    "type": "string"
+                },
+                "shortVersion": {
+                    "type": "string"
+                },
+                "longVersion": {
+                    "type": "string"
+                },
+                "shortUnicode": {
+                    "type": "string"
+                },
+                "longUnicode": {
+                    "type": "string"
+                },
+                "shortAccents": {
+                    "type": "string"
+                },
+                "longAccents": {
+                    "type": "string"
+                },
+                "shortExplain": {
+                    "type": "string"
+                },
+                "longExplain": {
+                    "type": "string"
+                },
+                "shortCapitalize": {
+                    "type": "string"
+                },
+                "longCapitalize": {
+                    "type": "string"
+                },
+                "shortUppercase": {
+                    "type": "string"
+                },
+                "longUppercase": {
+                    "type": "string"
+                },
+                "shortLowercase": {
+                    "type": "string"
+                },
+                "longLowercase": {
+                    "type": "string"
+                },
+                "shortSeparator": {
+                    "type": "string"
+                },
+                "longSeparator": {
+                    "type": "string"
+                },
+                "shortMultiples": {
+                    "type": "string"
+                },
+                "longMultiples": {
+                    "type": "string"
+                },
+                "shortConfirm": {
+                    "type": "string"
+                },
+                "longConfirm": {
+                    "type": "string"
+                },
+                "shortConfirmExit": {
+                    "type": "string"
+                },
+                "longConfirmExit": {
+                    "type": "string"
+                },
+                "shortErrors": {
+                    "type": "string"
+                },
+                "longErrors": {
+                    "type": "string"
+                },
+                "shortFunction": {
+                    "type": "string"
+                },
+                "longFunction": {
+                    "type": "string"
+                },
+                "shortDegrees": {
+                    "type": "string"
+                },
+                "longDegrees": {
+                    "type": "string"
+                },
+                "shortLanguage": {
+                    "type": "string"
+                },
+                "longLanguage": {
+                    "type": "string"
+                },
+                "languageAlready": {
+                    "type": "string"
+                },
+                "invalidLanguage": {
+                    "type": "string"
+                },
+                "noteInvalidLanguage": {
+                    "type": "string"
+                },
+                "shortDebug": {
+                    "type": "string"
+                },
+                "longDebug": {
+                    "type": "string"
+                },
+                "shortExit": {
+                    "type": "string"
+                },
+                "longExit": {
+                    "type": "string"
+                },
+                "variations": {
+                    "type": "string"
+                },
+                "unknownCommand": {
+                    "type": "string"
+                },
+                "help": {
+                    "type": "string"
+                },
+                "page": {
+                    "type": "string"
+                },
+                "previous": {
+                    "type": "string"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "back": {
+                    "type": "string"
+                },
+                "emptySearch": {
+                    "type": "string"
+                },
+                "usageSearch": {
+                    "type": "string"
+                },
+                "noCommand": {
+                    "type": "string"
+                },
+                "search": {
+                    "type": "string"
+                },
+                "resultsSearch": {
+                    "type": "string"
+                },
+                "commandNotProvided": {
+                    "type": "string"
+                },
+                "usageShortcuts": {
+                    "type": "string"
+                },
+                "commandVariations": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "author": {
+                    "type": "string"
+                },
+                "repository": {
+                    "type": "string"
+                },
+                "copyright": {
+                    "type": "string"
+                },
+                "changed": {
+                    "type": "string"
+                }
+            }
+        },
+        "errors": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "error001",
+                "zeroToBack",
+                "error001Exp",
+                "error002",
+                "reason",
+                "zeroDivision",
+                "error003",
+                "iterationsExceeded",
+                "error004",
+                "error005",
+                "error006",
+                "error006Exp"
+            ],
+            "properties": {
+                "error001": {
+                    "type": "string"
+                },
+                "zeroToBack": {
+                    "type": "string"
+                },
+                "error001Exp": {
+                    "type": "string"
+                },
+                "error002": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "zeroDivision": {
+                    "type": "string"
+                },
+                "error003": {
+                    "type": "string"
+                },
+                "iterationsExceeded": {
+                    "type": "string"
+                },
+                "error004": {
+                    "type": "string"
+                },
+                "error005": {
+                    "type": "string"
+                },
+                "error006": {
+                    "type": "string"
+                },
+                "error006Exp": {
+                    "type": "string"
+                }
+            }
+        },
+        "helpers": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "functionTakeX",
+                "domain",
+                "functionTakeY",
+                "range",
+                "noRoots",
+                "intersectionXAxis",
+                "rootPoint",
+                "intersectionYAxis",
+                "sinceY",
+                "sinceX",
+                "sinceY2",
+                "notTrigonometric",
+                "if",
+                "in",
+                "increasing",
+                "exceptIn",
+                "accordingTo",
+                "singNotTrigonometric",
+                "saved",
+                "typeSecondFunction",
+                "equationsNonPolynomial",
+                "increasingUpper",
+                "decreasing",
+                "pointsUpward",
+                "pointsDownward",
+                "upwardConcavity",
+                "downwardConcavity",
+                "realRoot",
+                "theRootIs",
+                "period",
+                "periodEquals",
+                "periodInfinity",
+                "constantPeriod",
+                "verticalAsymptote",
+                "undefinedAsymptote",
+                "ie",
+                "noAsymptote"
+            ],
+            "properties": {
+                "functionTakeX": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "functionTakeY": {
+                    "type": "string"
+                },
+                "range": {
+                    "type": "string"
+                },
+                "noRoots": {
+                    "type": "string"
+                },
+                "intersectionXAxis": {
+                    "type": "string"
+                },
+                "rootPoint": {
+                    "type": "string"
+                },
+                "intersectionYAxis": {
+                    "type": "string"
+                },
+                "sinceY": {
+                    "type": "string"
+                },
+                "sinceX": {
+                    "type": "string"
+                },
+                "sinceY2": {
+                    "type": "string"
+                },
+                "notTrigonometric": {
+                    "type": "string"
+                },
+                "if": {
+                    "type": "string"
+                },
+                "in": {
+                    "type": "string"
+                },
+                "increasing": {
+                    "type": "string"
+                },
+                "exceptIn": {
+                    "type": "string"
+                },
+                "accordingTo": {
+                    "type": "string"
+                },
+                "singNotTrigonometric": {
+                    "type": "string"
+                },
+                "saved": {
+                    "type": "string"
+                },
+                "typeSecondFunction": {
+                    "type": "string"
+                },
+                "equationsNonPolynomial": {
+                    "type": "string"
+                },
+                "increasingUpper": {
+                    "type": "string"
+                },
+                "decreasing": {
+                    "type": "string"
+                },
+                "pointsUpward": {
+                    "type": "string"
+                },
+                "pointsDownward": {
+                    "type": "string"
+                },
+                "upwardConcavity": {
+                    "type": "string"
+                },
+                "downwardConcavity": {
+                    "type": "string"
+                },
+                "realRoot": {
+                    "type": "string"
+                },
+                "theRootIs": {
+                    "type": "string"
+                },
+                "period": {
+                    "type": "string"
+                },
+                "periodEquals": {
+                    "type": "string"
+                },
+                "periodInfinity": {
+                    "type": "string"
+                },
+                "constantPeriod": {
+                    "type": "string"
+                },
+                "verticalAsymptote": {
+                    "type": "string"
+                },
+                "undefinedAsymptote": {
+                    "type": "string"
+                },
+                "ie": {
+                    "type": "string"
+                },
+                "noAsymptote": {
+                    "type": "string"
+                }
+            }
+        },
+        "i18n": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["confirmChangeLanguage"],
+            "properties": {
+                "confirmChangeLanguage": {
+                    "type": "string"
+                }
+            }
+        },
+        "main": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "welcomeTitle",
+                "welcomeDescription",
+                "documentDescription",
+                "start",
+                "whatWant",
+                "polynomialFunctions",
+                "nonPolynomialFunctions",
+                "trigonometricFunctions",
+                "history",
+                "settings",
+                "review",
+                "change",
+                "exit",
+                "exponentialFunction",
+                "logarithmicFunction",
+                "exponential",
+                "logarithmic",
+                "sineFunction",
+                "cosineFunction",
+                "tangentFunction",
+                "sine",
+                "cosine",
+                "tangent",
+                "noHistory",
+                "noHistoryExp",
+                "unicode",
+                "explanations",
+                "accents",
+                "capitalized",
+                "uppercase",
+                "lowercase",
+                "decimalSeparator",
+                "simpleMulti",
+                "inputConfirm",
+                "outputConfirm",
+                "errors",
+                "showFunction",
+                "decimalPlaces",
+                "logPrecision",
+                "divisionPrecision",
+                "iterationLimit",
+                "language",
+                "degrees",
+                "settingsNote",
+                "restoreDefault",
+                "allSettingsDefault",
+                "allSettingsDefaultExp",
+                "wantRestoreDefault",
+                "noteRestoreDefault",
+                "enableUnicode",
+                "noteUnicode",
+                "enableExplanations",
+                "noteExplanations",
+                "enableAccents",
+                "noteAccents",
+                "enableCapitalized",
+                "noteCapitalized",
+                "enableUppercase",
+                "noteUppercase",
+                "enableLowercase",
+                "noteLowercase",
+                "changeDecimalSeparator",
+                "noteDecimalSeparator",
+                "noteDecimalSeparator2",
+                "changeSimpleMulti",
+                "noteSimpleMulti",
+                "enableInputConfirm",
+                "noteInputConfirm",
+                "enableOutputConfirm",
+                "noteOutputConfirm",
+                "enableErrors",
+                "noteErrors",
+                "enableShowFunction",
+                "noteShowFunction",
+                "howManyDecimalPlaces",
+                "noteDecimalPlaces",
+                "whatLogPrecision",
+                "noteLogPrecision",
+                "whatDivisionPrecision",
+                "noteDivisionPrecision",
+                "whatIterationLimit",
+                "noteIterationLimit",
+                "whatLanguage",
+                "noteLanguage",
+                "h1",
+                "changeDegrees",
+                "noteDegrees",
+                "values",
+                "exitConfirm",
+                "noteSettingsExit"
+            ],
+            "properties": {
+                "welcomeTitle": {
+                    "type": "string"
+                },
+                "welcomeDescription": {
+                    "type": "string"
+                },
+                "documentDescription": {
+                    "type": "string"
+                },
+                "start": {
+                    "type": "string"
+                },
+                "whatWant": {
+                    "type": "string"
+                },
+                "polynomialFunctions": {
+                    "type": "string"
+                },
+                "nonPolynomialFunctions": {
+                    "type": "string"
+                },
+                "trigonometricFunctions": {
+                    "type": "string"
+                },
+                "history": {
+                    "type": "string"
+                },
+                "settings": {
+                    "type": "string"
+                },
+                "review": {
+                    "type": "string"
+                },
+                "change": {
+                    "type": "string"
+                },
+                "exit": {
+                    "type": "string"
+                },
+                "exponentialFunction": {
+                    "type": "string"
+                },
+                "logarithmicFunction": {
+                    "type": "string"
+                },
+                "exponential": {
+                    "type": "string"
+                },
+                "logarithmic": {
+                    "type": "string"
+                },
+                "sineFunction": {
+                    "type": "string"
+                },
+                "cosineFunction": {
+                    "type": "string"
+                },
+                "tangentFunction": {
+                    "type": "string"
+                },
+                "sine": {
+                    "type": "string"
+                },
+                "cosine": {
+                    "type": "string"
+                },
+                "tangent": {
+                    "type": "string"
+                },
+                "noHistory": {
+                    "type": "string"
+                },
+                "noHistoryExp": {
+                    "type": "string"
+                },
+                "unicode": {
+                    "type": "string"
+                },
+                "explanations": {
+                    "type": "string"
+                },
+                "accents": {
+                    "type": "string"
+                },
+                "capitalized": {
+                    "type": "string"
+                },
+                "uppercase": {
+                    "type": "string"
+                },
+                "lowercase": {
+                    "type": "string"
+                },
+                "decimalSeparator": {
+                    "type": "string"
+                },
+                "simpleMulti": {
+                    "type": "string"
+                },
+                "inputConfirm": {
+                    "type": "string"
+                },
+                "outputConfirm": {
+                    "type": "string"
+                },
+                "errors": {
+                    "type": "string"
+                },
+                "showFunction": {
+                    "type": "string"
+                },
+                "decimalPlaces": {
+                    "type": "string"
+                },
+                "logPrecision": {
+                    "type": "string"
+                },
+                "divisionPrecision": {
+                    "type": "string"
+                },
+                "iterationLimit": {
+                    "type": "string"
+                },
+                "language": {
+                    "type": "string"
+                },
+                "degrees": {
+                    "type": "string"
+                },
+                "settingsNote": {
+                    "type": "string"
+                },
+                "restoreDefault": {
+                    "type": "string"
+                },
+                "allSettingsDefault": {
+                    "type": "string"
+                },
+                "allSettingsDefaultExp": {
+                    "type": "string"
+                },
+                "wantRestoreDefault": {
+                    "type": "string"
+                },
+                "noteRestoreDefault": {
+                    "type": "string"
+                },
+                "enableUnicode": {
+                    "type": "string"
+                },
+                "noteUnicode": {
+                    "type": "string"
+                },
+                "enableExplanations": {
+                    "type": "string"
+                },
+                "noteExplanations": {
+                    "type": "string"
+                },
+                "enableAccents": {
+                    "type": "string"
+                },
+                "noteAccents": {
+                    "type": "string"
+                },
+                "enableCapitalized": {
+                    "type": "string"
+                },
+                "noteCapitalized": {
+                    "type": "string"
+                },
+                "enableUppercase": {
+                    "type": "string"
+                },
+                "noteUppercase": {
+                    "type": "string"
+                },
+                "enableLowercase": {
+                    "type": "string"
+                },
+                "noteLowercase": {
+                    "type": "string"
+                },
+                "changeDecimalSeparator": {
+                    "type": "string"
+                },
+                "noteDecimalSeparator": {
+                    "type": "string"
+                },
+                "noteDecimalSeparator2": {
+                    "type": "string"
+                },
+                "changeSimpleMulti": {
+                    "type": "string"
+                },
+                "noteSimpleMulti": {
+                    "type": "string"
+                },
+                "enableInputConfirm": {
+                    "type": "string"
+                },
+                "noteInputConfirm": {
+                    "type": "string"
+                },
+                "enableOutputConfirm": {
+                    "type": "string"
+                },
+                "noteOutputConfirm": {
+                    "type": "string"
+                },
+                "enableErrors": {
+                    "type": "string"
+                },
+                "noteErrors": {
+                    "type": "string"
+                },
+                "enableShowFunction": {
+                    "type": "string"
+                },
+                "noteShowFunction": {
+                    "type": "string"
+                },
+                "howManyDecimalPlaces": {
+                    "type": "string"
+                },
+                "noteDecimalPlaces": {
+                    "type": "string"
+                },
+                "whatLogPrecision": {
+                    "type": "string"
+                },
+                "noteLogPrecision": {
+                    "type": "string"
+                },
+                "whatDivisionPrecision": {
+                    "type": "string"
+                },
+                "noteDivisionPrecision": {
+                    "type": "string"
+                },
+                "whatIterationLimit": {
+                    "type": "string"
+                },
+                "noteIterationLimit": {
+                    "type": "string"
+                },
+                "whatLanguage": {
+                    "type": "string"
+                },
+                "noteLanguage": {
+                    "type": "string"
+                },
+                "h1": {
+                    "type": "string"
+                },
+                "changeDegrees": {
+                    "type": "string"
+                },
+                "noteDegrees": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "string"
+                },
+                "exitConfirm": {
+                    "type": "string"
+                },
+                "noteSettingsExit": {
+                    "type": "string"
+                }
+            }
+        },
+        "ui": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "confirm",
+                "error",
+                "warning",
+                "menu",
+                "page",
+                "inputConfirm",
+                "inputConfirmNote",
+                "theFunction",
+                "constant",
+                "constantNull",
+                "affine",
+                "affineLinear",
+                "affineIdentity",
+                "affineOpposite",
+                "quadratic",
+                "pure",
+                "quadraticIncompleteLinear",
+                "quadraticIncompleteConstant",
+                "exponential",
+                "logarithmic",
+                "natural",
+                "decimal",
+                "currentFunction"
+            ],
+            "properties": {
+                "confirm": {
+                    "type": "string"
+                },
+                "error": {
+                    "type": "string"
+                },
+                "warning": {
+                    "type": "string"
+                },
+                "menu": {
+                    "type": "string"
+                },
+                "page": {
+                    "type": "string"
+                },
+                "inputConfirm": {
+                    "type": "string"
+                },
+                "inputConfirmNote": {
+                    "type": "string"
+                },
+                "theFunction": {
+                    "type": "string"
+                },
+                "constant": {
+                    "type": "string"
+                },
+                "constantNull": {
+                    "type": "string"
+                },
+                "affine": {
+                    "type": "string"
+                },
+                "affineLinear": {
+                    "type": "string"
+                },
+                "affineIdentity": {
+                    "type": "string"
+                },
+                "affineOpposite": {
+                    "type": "string"
+                },
+                "quadratic": {
+                    "type": "string"
+                },
+                "pure": {
+                    "type": "string"
+                },
+                "quadraticIncompleteLinear": {
+                    "type": "string"
+                },
+                "quadraticIncompleteConstant": {
+                    "type": "string"
+                },
+                "exponential": {
+                    "type": "string"
+                },
+                "logarithmic": {
+                    "type": "string"
+                },
+                "natural": {
+                    "type": "string"
+                },
+                "decimal": {
+                    "type": "string"
+                },
+                "currentFunction": {
+                    "type": "string"
+                }
+            }
+        },
+        "writing": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["yes", "no", "currentDefault"],
+            "properties": {
+                "yes": {
+                    "type": "string"
+                },
+                "no": {
+                    "type": "string"
+                },
+                "currentDefault": {
+                    "type": "string"
+                }
+            }
+        },
+        "symbols": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "delta",
+                "pi",
+                "eNumber",
+                "phi",
+                "theta",
+                "lambda",
+                "mu",
+                "sigma",
+                "rho",
+                "tau",
+                "epsilon",
+                "gamma",
+                "eta",
+                "zeta",
+                "kappa",
+                "nu",
+                "xi",
+                "omega",
+                "alpha",
+                "beta",
+                "chi",
+                "psi",
+                "sum",
+                "product",
+                "integral",
+                "doubleIntegral",
+                "tripleIntegral",
+                "lineIntegral",
+                "surfaceIntegral",
+                "volumeIntegral",
+                "partialDerivative",
+                "nabla",
+                "reals",
+                "integers",
+                "naturals",
+                "rationals",
+                "complexes",
+                "emptySet",
+                "union",
+                "intersection",
+                "subsetOf",
+                "supersetOf",
+                "notSubsetOf",
+                "notSupersetOf",
+                "forAll",
+                "exists",
+                "notExists",
+                "existsUniqueOne",
+                "notExistsUniqueOne",
+                "existsInfinite",
+                "notExistsInfinite",
+                "belongsTo",
+                "notBelongsTo",
+                "containsAsElement",
+                "notContainsAsElement",
+                "proportionalTo",
+                "angle",
+                "similarTo",
+                "congruentTo",
+                "approximatelyEqualTo",
+                "identicalTo",
+                "squareRootOf",
+                "cubeRootOf",
+                "fourthRootOf",
+                "negativeInfinity",
+                "infinity",
+                "therefore",
+                "because",
+                "or",
+                "and",
+                "notWord",
+                "exclusiveOr",
+                "inclusiveOr"
+            ],
+            "properties": {
+                "delta": {
+                    "type": "string"
+                },
+                "pi": {
+                    "type": "string"
+                },
+                "eNumber": {
+                    "type": "string"
+                },
+                "phi": {
+                    "type": "string"
+                },
+                "theta": {
+                    "type": "string"
+                },
+                "lambda": {
+                    "type": "string"
+                },
+                "mu": {
+                    "type": "string"
+                },
+                "sigma": {
+                    "type": "string"
+                },
+                "rho": {
+                    "type": "string"
+                },
+                "tau": {
+                    "type": "string"
+                },
+                "epsilon": {
+                    "type": "string"
+                },
+                "gamma": {
+                    "type": "string"
+                },
+                "eta": {
+                    "type": "string"
+                },
+                "zeta": {
+                    "type": "string"
+                },
+                "kappa": {
+                    "type": "string"
+                },
+                "nu": {
+                    "type": "string"
+                },
+                "xi": {
+                    "type": "string"
+                },
+                "omega": {
+                    "type": "string"
+                },
+                "alpha": {
+                    "type": "string"
+                },
+                "beta": {
+                    "type": "string"
+                },
+                "chi": {
+                    "type": "string"
+                },
+                "psi": {
+                    "type": "string"
+                },
+                "sum": {
+                    "type": "string"
+                },
+                "product": {
+                    "type": "string"
+                },
+                "integral": {
+                    "type": "string"
+                },
+                "doubleIntegral": {
+                    "type": "string"
+                },
+                "tripleIntegral": {
+                    "type": "string"
+                },
+                "lineIntegral": {
+                    "type": "string"
+                },
+                "surfaceIntegral": {
+                    "type": "string"
+                },
+                "volumeIntegral": {
+                    "type": "string"
+                },
+                "partialDerivative": {
+                    "type": "string"
+                },
+                "nabla": {
+                    "type": "string"
+                },
+                "reals": {
+                    "type": "string"
+                },
+                "integers": {
+                    "type": "string"
+                },
+                "naturals": {
+                    "type": "string"
+                },
+                "rationals": {
+                    "type": "string"
+                },
+                "complexes": {
+                    "type": "string"
+                },
+                "emptySet": {
+                    "type": "string"
+                },
+                "union": {
+                    "type": "string"
+                },
+                "intersection": {
+                    "type": "string"
+                },
+                "subsetOf": {
+                    "type": "string"
+                },
+                "supersetOf": {
+                    "type": "string"
+                },
+                "notSubsetOf": {
+                    "type": "string"
+                },
+                "notSupersetOf": {
+                    "type": "string"
+                },
+                "forAll": {
+                    "type": "string"
+                },
+                "exists": {
+                    "type": "string"
+                },
+                "notExists": {
+                    "type": "string"
+                },
+                "existsUniqueOne": {
+                    "type": "string"
+                },
+                "notExistsUniqueOne": {
+                    "type": "string"
+                },
+                "existsInfinite": {
+                    "type": "string"
+                },
+                "notExistsInfinite": {
+                    "type": "string"
+                },
+                "belongsTo": {
+                    "type": "string"
+                },
+                "notBelongsTo": {
+                    "type": "string"
+                },
+                "containsAsElement": {
+                    "type": "string"
+                },
+                "notContainsAsElement": {
+                    "type": "string"
+                },
+                "proportionalTo": {
+                    "type": "string"
+                },
+                "angle": {
+                    "type": "string"
+                },
+                "similarTo": {
+                    "type": "string"
+                },
+                "congruentTo": {
+                    "type": "string"
+                },
+                "approximatelyEqualTo": {
+                    "type": "string"
+                },
+                "identicalTo": {
+                    "type": "string"
+                },
+                "squareRootOf": {
+                    "type": "string"
+                },
+                "cubeRootOf": {
+                    "type": "string"
+                },
+                "fourthRootOf": {
+                    "type": "string"
+                },
+                "negativeInfinity": {
+                    "type": "string"
+                },
+                "infinity": {
+                    "type": "string"
+                },
+                "therefore": {
+                    "type": "string"
+                },
+                "because": {
+                    "type": "string"
+                },
+                "or": {
+                    "type": "string"
+                },
+                "and": {
+                    "type": "string"
+                },
+                "notWord": {
+                    "type": "string"
+                },
+                "exclusiveOr": {
+                    "type": "string"
+                },
+                "inclusiveOr": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -10,13 +10,13 @@
 
 ---
 
-# General
+## General
 
 > **Dated:** _`2025-07-23 -> today`_
 
 ---
 
-# Versions **1.x**
+## Versions **1.x**
 
 > **Lines in these versions:** _`185`_<br>
 > **Dated:** _`2025-12-30 -> 2026-03-04`_
@@ -77,7 +77,7 @@
 
 ---
 
-# Versions **2.x**
+## Versions **2.x**
 
 > **Lines in these versions:** _`422`_<br>
 > **Dated:** _`2025-07-23 -> 2026-03-04`_
@@ -161,7 +161,7 @@
 
 ---
 
-# Versions **3.x**
+## Versions **3.x**
 
 > **Lines in these versions:** _`1068`_<br>
 > **Dated:** _`2025-12-30 -> 2026-03-04`_
@@ -283,7 +283,7 @@
 
 ---
 
-# Versions **4.x**
+## Versions **4.x**
 
 > **Lines in these versions:** _`1568`_<br>
 > **Dated:** _`2025-12-30 -> 2026-03-04`_
@@ -440,7 +440,7 @@
 
 ---
 
-# Versions **5.x**
+## Versions **5.x**
 
 > **Lines in these versions:** _`3255`_<br>
 > **Dated:** _`2025-11-26 -> 2026-03-09`_
@@ -663,7 +663,7 @@
 
 ---
 
-# Versions **6.x**
+## Versions **6.x**
 
 > **Lines in these versions:** _`3296`_<br>
 > **Dated:** _`2026-03-18 -> 2026-03-19`_
@@ -695,7 +695,7 @@
 
 ---
 
-# **Upcoming updates:**
+## **Upcoming updates:**
 
 - Add option to verify which **Functions** can be valid for the known points
 - Add `/` commands to access **JS Functions** and **Help Functions**

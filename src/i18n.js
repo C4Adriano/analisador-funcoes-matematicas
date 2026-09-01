@@ -1,16 +1,16 @@
 import { Config, saveConfig } from "./config.js"
+import { Ui } from "./ui.js"
 import enGB from "./JSON/i18n/en-GB.json" with { type: "json" }
 import enUS from "./JSON/i18n/en-US.json" with { type: "json" }
 import es419 from "./JSON/i18n/es-419.json" with { type: "json" }
 import esES from "./JSON/i18n/es-ES.json" with { type: "json" }
 import ptBR from "./JSON/i18n/pt-BR.json" with { type: "json" }
 import ptPT from "./JSON/i18n/pt-PT.json" with { type: "json" }
-import { Ui } from "./ui.js"
 const dictionaries = {
-    "en-us": enUS,
-    "en-gb": enGB,
     "pt-br": ptBR,
     "pt-pt": ptPT,
+    "en-us": enUS,
+    "en-gb": enGB,
     "es-419": es419,
     "es-es": esES,
 }
@@ -31,7 +31,7 @@ export function tr(key, params) {
             raw = resolveKey(dictionaries[lang], key)
             if (raw != undefined) {
                 if (Config.debug) {
-                    console.warn(`[i18n] Chave "${key}" ausente em "${Config.language}", usando fallback "${lang}".`)
+                    console.warn(`[i18n] Chave “${key}” ausente em “${Config.language}”, usando fallback “${lang}”.`)
                 }
                 break
             }
@@ -40,7 +40,7 @@ export function tr(key, params) {
     if (raw == undefined && dict != FALLBACK_DICT) {
         raw = resolveKey(FALLBACK_DICT, key)
         if (raw != undefined && Config.debug) {
-            console.warn(`[i18n] Chave "${key}" ausente em "${Config.language}", usando fallback PT-BR.`)
+            console.warn(`[i18n] Chave “${key}” ausente em “${Config.language}”, usando fallback “pt-BR”.`)
         }
     }
     if (raw == undefined) {
@@ -51,12 +51,10 @@ export function tr(key, params) {
 export function trArr(keys = []) {
     return keys.map(key => tr(key))
 }
-export function changeLanguage(language) {
+export function changeLanguage(language = "pt-br") {
     if (Config.language == language) {
         Ui.warning(tr("commands.languageAlready"))
-        return
-    }
-    if (confirm(tr("i18n.confirmChangeLanguage", { language: language }))) {
+    } else if (confirm(tr("i18n.confirmChangeLanguage", { language: language }))) {
         if (language == "pt-br" || language == "pt-pt" || language == "es-419" || language == "es-es") {
             Config.decimalSeparator = true
             Config.accents = true

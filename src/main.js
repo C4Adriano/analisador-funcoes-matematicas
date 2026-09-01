@@ -32,7 +32,7 @@ loadConfig()
 Ui.display(tr("main.welcomeTitle"), tr("main.welcomeDescription"))
 
 // === OBJETOS GLOBAIS ===
-// Para alterar o HTML também, conforme a língua
+// Para alterar o HTML também, conforme o idioma
 function setMeta(name = "", content = "") {
     const meta = document.querySelector(`meta[name="${name}"]`)
     if (meta) {
@@ -47,10 +47,6 @@ function setProperty(property = "", content = "") {
     }
 }
 
-const title = tr("commands.title")
-
-const description = tr("main.documentDescription")
-
 const locales = {
     "pt-br": "pt_BR",
     "pt-pt": "pt_PT",
@@ -60,19 +56,34 @@ const locales = {
     "es-es": "es_ES",
 }
 
-document.documentElement.lang = Config.language
-setProperty("og:locale", locales[Config.language])
+function changeHTML() {
+    const title = tr("commands.title")
 
-document.title = title
+    const description = tr("main.documentDescription")
 
-setMeta("title", title)
-setMeta("description", description)
+    document.documentElement.lang = Config.language
+    setProperty("og:locale", locales[Config.language])
 
-setProperty("og:title", title)
-setProperty("og:description", description)
+    document.title = title
 
-setMeta("twitter:title", title)
-setMeta("twitter:description", description)
+    let h1 = document.querySelector("h1")
+    if (h1) {
+        h1.textContent = tr("main.h1")
+    } else {
+        Ui.error("[main] Elemento “h1” não encontrado no DOM.", "", true)
+    }
+
+    setMeta("title", title)
+    setMeta("description", description)
+
+    setProperty("og:title", title)
+    setProperty("og:description", description)
+
+    setMeta("twitter:title", title)
+    setMeta("twitter:description", description)
+}
+
+changeHTML()
 
 let subType = 0,
     subLoop = false,
@@ -867,23 +878,23 @@ do {
                     // Limite de iterações
                     else if (choice == 4) {
                         Config.interactionLimit = Ui.range(
-                            Writing.configItem(tr("main.whatInteracionLimit"), "interactionLimit"),
+                            Writing.configItem(tr("main.whatIterationLimit"), "interactionLimit"),
                             tr("main.noteIterationLimit"),
                             100,
                             10000
                         )
                     }
 
-                    // Linguagem
+                    // Idioma
                     else if (choice == 5) {
                         const LANGUAGES = ["pt-br", "pt-pt", "en-us", "en-gb", "es-419", "es-es"]
                         const optionLines = [
-                            tr("main.brazilianPortuguese"),
-                            tr("main.europeanPortuguese"),
-                            tr("main.americanEnglish"),
-                            tr("main.britishEnglish"),
-                            tr("main.latinAmericanSpanish"),
-                            tr("main.spainSpanish"),
+                            "Português (Brasil)",
+                            "Português (Portugal)",
+                            "English (United States)",
+                            "English (United Kingdom)",
+                            "Español (Latinoamérica)",
+                            "Español (España)",
                         ].map((label, index) => `${index + 1} = ${label}`)
                         let question = Ui.range(
                                 `${Writing.configItem(tr("main.whatLanguage"), "language")}\n${optionLines.join("\n")}`,
@@ -896,22 +907,8 @@ do {
                         if (language != Config.language) {
                             changeLanguage(language)
 
-                            // Para alterar o HTML também, conforme a língua
-                            document.title =
-                                Config.language == "en-us"
-                                    ? "Mathematical Function Analyzer"
-                                    : Config.language == "en-gb"
-                                      ? "Mathematical Function Analyser"
-                                      : Config.language == "es-419" || Config.language == "es-es"
-                                        ? "Analizador de Funciones Matemáticas"
-                                        : "Analisador de Funções Matemáticas"
-                            let h1 = document.querySelector("h1")
-                            if (h1) {
-                                h1.textContent = tr("main.h1")
-                            } else {
-                                Ui.error("[main] Elemento 'h1' não encontrado no DOM.", "", true)
-                            }
-                            document.documentElement.lang = Config.language
+                            // Para alterar o HTML também, conforme o idioma
+                            changeHTML()
                         }
                     }
 
@@ -935,13 +932,12 @@ do {
         // Rever
         else if (State.type == 8 || State.type == "review") {
             Ui.display(
-                tr("main.values") +
-                    "\n“a” = " +
-                    Writing.decimal(State.globalA) +
-                    "\n“b” = " +
-                    Writing.decimal(State.globalB) +
-                    "\n“c” = " +
-                    Writing.decimal(State.globalC)
+                [
+                    tr("main.values"),
+                    `“a” = ${Writing.decimal(State.globalA)}`,
+                    `“b” = ${Writing.decimal(State.globalB)}`,
+                    `“c” = ${Writing.decimal(State.globalC)}`,
+                ].join("\n")
             )
             State.loop = true
         }

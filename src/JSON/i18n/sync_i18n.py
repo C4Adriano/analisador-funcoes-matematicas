@@ -1,58 +1,20 @@
-"""
-sync_i18n.py
-
-Mantém as chaves dos arquivos de idioma sincronizadas, usando pt-BR como
-arquivo mestre. Fluxo de trabalho pretendido:
-
-    1. Você escreve/edita chaves apenas em pt-BR.json.
-    2. Roda este script.
-    3. Ele adiciona, nos outros arquivos, as chaves que faltam — marcando as
-       que precisam de tradução com "[langauge] " (typo proposital de
-       "language", reconhecido pelo CodeSpell) na frente do valor, para o
-       CodeSpell acusar sozinho no lint/CI. Nunca sobrescreve o que já
-       existe (traduções e ajustes regionais feitos manualmente ficam
-       intocados).
-    4. Ele avisa quais chaves foram adicionadas (para você traduzir) e quais
-       chaves "sobram" em algum arquivo mas não existem mais em pt-BR
-       (possível chave removida/renomeada em pt-BR).
-
-Cadeia de propagação:
-
-    pt-BR  --> en-US, es-419, pt-PT   (pt-PT é a mesma língua: copia direto)
-    en-US  --> en-GB
-    es-419 --> es-ES
-
-Uso:
-    python sync_i18n.py                # usa o diretório atual
-    python sync_i18n.py /caminho/dir    # usa outro diretório
-
-    Espera encontrar, no diretório informado:
-    pt-BR.json, en-US.json, es-419.json, pt-PT.json, en-GB.json, es-ES.json
-"""
-
 import json
 import sys
 from pathlib import Path
 
 MASTER = "pt-BR"
+LOCALES = ["pt-BR", "en-US", "es-419", "pt-PT", "en-GB", "es-ES"]
 
-# (arquivo de origem, arquivo de destino, marca como "a traduzir"?)
-PROPAGATION = [
+PROPAGATION: list[tuple[str, str, bool]] = [
     ("pt-BR", "en-US", True),
     ("pt-BR", "es-419", True),
-    ("pt-BR", "pt-PT", False),  # mesma língua, não precisa marcar
-    ("en-US", "en-GB", False),  # já traduzido em en-US, só herda para o dialeto
-    ("es-419", "es-ES", False),  # já traduzido em es-419, só herda para o dialeto
+    ("pt-BR", "pt-PT", False),
+    ("en-US", "en-GB", False),
+    ("es-419", "es-ES", False),
 ]
 
-# Marcador de "pendente de tradução". Usamos "langauge" (typo proposital de
-# "language") em vez de um texto como "[TRADUZIR]" porque essa palavra já
-# existe no dicionário padrão do CodeSpell (langauge ==> language), então o
-# CodeSpell (rodando no CI/hook) acusa erro sozinho nas chaves ainda não
-# traduzidas — sem precisar de configuração extra além da ignore-words-list
-# (veja codespell-ignore.txt) para as palavras legítimas de PT/ES que o
-# CodeSpell confunde com erros de inglês.
-TODO_MARKER = "[langauge] "
+TODO_MARKER = "[//TODO] "
+SCHEMA_FILENAME = "i18n.schema.json"
 
 
 def load(path: Path) -> dict:
@@ -67,12 +29,6 @@ def save(path: Path, data: dict) -> None:
 
 
 def fill_missing(target: dict, source: dict, mark_todo: bool, prefix: str = ""):
-    """
-    Percorre `source` recursivamente. Para cada chave ausente em `target`,
-    adiciona (copiando o valor de `source`, opcionalmente marcado como
-    pendente de tradução). Nunca sobrescreve chaves já existentes em `target`.
-    Retorna a lista de caminhos de chave que foram adicionados.
-    """
     added = []
     for key, value in source.items():
         path = f"{prefix}.{key}" if prefix else key
@@ -92,11 +48,6 @@ def fill_missing(target: dict, source: dict, mark_todo: bool, prefix: str = ""):
 
 
 def find_orphans(target: dict, source: dict, prefix: str = ""):
-    """
-    Percorre `target` recursivamente e retorna os caminhos de chave que
-    existem em `target` mas não existem (mais) em `source` (pt-BR).
-    Não remove nada — só relata, para você decidir.
-    """
     orphans = []
     for key, value in target.items():
         path = f"{prefix}.{key}" if prefix else key
@@ -107,12 +58,48 @@ def find_orphans(target: dict, source: dict, prefix: str = ""):
     return orphans
 
 
-def main():
-    directory = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(".")
+def build_schema(node):
+    if isinstance(node, dict):
+        return {
+            "type": "object",
+            "additionalProperties": False,
+            "required": list(node.keys()),
+            "properties": {k: build_schema(v) for k, v in node.items()},
+        }
+    if isinstance(node, str):
+        return {"type": "string"}
+    if isinstance(node, bool):
+        return {"type": "boolean"}
+    if isinstance(node, int):
+        return {"type": "integer"}
+    if isinstance(node, float):
+        return {"type": "number"}
+    if isinstance(node, list):
+        return {"type": "array", "items": build_schema(node[0]) if node else {}}
+    if node is None:
+        return {"type": "null"}
+    raise TypeError(f"Tipo não suportado no i18n: {type(node)!r} (valor: {node!r})")
+
+
+def generate_schema(directory: Path, master_data: dict) -> Path:
+    schema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "i18n schema (gerado automaticamente a partir de pt-BR.json)",
+        **build_schema(master_data),
+    }
+    schema_path = directory / "schemas" / SCHEMA_FILENAME
+    schema_path.parent.mkdir(parents=True, exist_ok=True)
+    save(schema_path, schema)
+    return schema_path
+
+
+def main() -> None:
+    default_dir = Path(__file__).resolve().parent
+    directory: Path = Path(sys.argv[1]) if len(sys.argv) > 1 else default_dir
 
     files = {}
-    for name in ["pt-BR", "en-US", "es-419", "pt-PT", "en-GB", "es-ES"]:
-        path = directory / f"{name}.json"
+    for name in LOCALES:
+        path: Path = directory / f"{name}.json"
         if not path.exists():
             print(f"AVISO: {path} não encontrado, pulando.")
             continue
@@ -129,17 +116,15 @@ def main():
     for source_name, target_name, mark_todo in PROPAGATION:
         if source_name not in files or target_name not in files:
             continue
-        source_data = files[source_name]["data"]
-        target_data = files[target_name]["data"]
-        added = fill_missing(target_data, source_data, mark_todo)
+        added = fill_missing(
+            files[target_name]["data"], files[source_name]["data"], mark_todo
+        )
         if added:
             report[target_name] = added
 
-    # Salva apenas os arquivos que realmente mudaram
     for name in report:
         save(files[name]["path"], files[name]["data"])
 
-    # Relatório
     print("=" * 60)
     if report:
         print("Chaves adicionadas:")
@@ -148,13 +133,11 @@ def main():
             for k in keys:
                 print(f"    + {k}")
         print(
-            f'\nDica: procure por "{TODO_MARKER.strip()}" nos arquivos (ou '
-            f"rode o codespell) para achar tudo que ainda falta traduzir."
+            f"\nDica: procure por “{TODO_MARKER.strip()}” nos arquivos para achar tudo que ainda falta traduzir."
         )
     else:
         print("Nenhuma chave nova para propagar. Tudo já está sincronizado.")
 
-    # Órfãos: chaves que existem em algum arquivo mas sumiram do pt-BR
     print("\n" + "=" * 60)
     orphans_found = False
     pt_br = files[MASTER]["data"]
@@ -164,15 +147,15 @@ def main():
         orphans = find_orphans(info["data"], pt_br)
         if orphans:
             orphans_found = True
-            print(
-                f"\nAVISO — chaves em {name}.json sem correspondente em pt-BR.json"
-                f" (podem ter sido removidas/renomeadas na base):"
-            )
+            print(f"\nAVISO — chaves em {name}.json sem correspondente em pt-BR.json:")
             for k in orphans:
                 print(f"    ? {k}")
     if not orphans_found:
         print("Nenhuma chave órfã encontrada.")
     print("=" * 60)
+
+    schema_path = generate_schema(directory, pt_br)
+    print(f"\nSchema atualizado em: {schema_path}")
 
 
 if __name__ == "__main__":

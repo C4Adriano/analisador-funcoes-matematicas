@@ -25,7 +25,10 @@ export declare const Checks: {
     /**
      * Verifica se o valor é um texto.
      * @param value Valor qualquer.
-     * @remarks Não valida o conteúdo, apenas o tipo. Use apenas quando a validade do texto já for garantida por outro meio; para o caso geral, prefira {@link Checks.isValidText isValidText}.
+     * @remarks
+     * Não valida o conteúdo, apenas o tipo.
+     *
+     * Use apenas quando a validade do texto já for garantida por outro meio; para o caso geral, prefira {@link Checks.isValidText isValidText}.
      * @see {@link Checks.isValidText isValidText}
      * @group JS
      * @since v6.1.0
@@ -43,7 +46,10 @@ export declare const Checks: {
     /**
      * Verifica se o valor é um número.
      * @param value Valor qualquer.
-     * @remarks Não garante que o número seja finito (aceita `NaN`, `Infinity` e `-Infinity`). Use apenas quando isso já for garantido por outro meio; para o caso geral, prefira {@link Checks.isFiniteNumber isFiniteNumber}.
+     * @remarks
+     * Não garante que o número seja finito (aceita `NaN`, `Infinity` e `-Infinity`).
+     *
+     * Use apenas quando isso já for garantido por outro meio; para o caso geral, prefira {@link Checks.isFiniteNumber isFiniteNumber}.
      * @see {@link Checks.isFiniteNumber isFiniteNumber}
      * @group JS
      * @since v6.1.0
@@ -61,7 +67,10 @@ export declare const Checks: {
     /**
      * Verifica se o valor é um valor `(string | number)`.
      * @param value Valor qualquer.
-     * @remarks Não valida o conteúdo do texto nem garante que o número seja finito. Use apenas quando isso já for garantido por outro meio; para o caso geral, prefira {@link Checks.isValidValue isValidValue}.
+     * @remarks
+     * Não valida o conteúdo do texto nem garante que o número seja finito.
+     *
+     * Use apenas quando isso já for garantido por outro meio; para o caso geral, prefira {@link Checks.isValidValue isValidValue}.
      * @see {@link Checks.isValidValue isValidValue}
      * @group JS
      * @since v6.1.0
@@ -93,9 +102,9 @@ export declare const Checks: {
     isConfigKey(value: unknown): value is ConfigKey
 
     /**
-     * Verifica se um ponto do array é válido.
+     * Verifica se um ponto do `array` é válido.
      * @param points Array de pontos.
-     * @param index Número no array desse ponto.
+     * @param index Número no `array` desse ponto.
      * @group JS
      * @since v6.1.0
      */
