@@ -36,6 +36,6 @@ The status of each item is updated as development progresses.
 
 ---
 
-[Docs]: ../../README.md
+[Docs]: /README.md
 [Main]: ../ROADMAP.md
-[PT]: ../ROADMAP/ROADMAP_PT.md
+[PT]: ROADMAP_PT.md

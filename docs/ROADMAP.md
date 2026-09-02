@@ -10,6 +10,6 @@
 
 ---
 
-[Docs]: ../../README.md
-[PT]: ../ROADMAP/ROADMAP_PT.md
-[EN]: ../ROADMAP/ROADMAP_EN.md
+[Docs]: /README.md
+[PT]: ROADMAP/ROADMAP_PT.md
+[EN]: ROADMAP/ROADMAP_EN.md

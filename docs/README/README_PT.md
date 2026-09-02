@@ -6,7 +6,7 @@
 
 ---
 
-🌐 [Voltar à Documentação][Docs] | 🌐 [Voltar ao Geral][Main] | 🇺🇸 [English][EN]
+🌐 [Voltar à Documentação][Docs] | 🌐 [Voltar ao Geral][Docs] | 🇺🇸 [English][EN]
 
 ---
 
@@ -31,43 +31,38 @@ Desenvolvida principalmente em **_JavaScript_** puro, com módulos curtos e simp
 
 ### Como usar
 
-1. Abra [`index.html`](../../index.html) no navegador
-2. Siga os menus nos `prompts` e `alerts`
-
-Obs.: Não é necessário instalar nada.
-
-Ou acesse diretamente: [![GitHub Pages](https://img.shields.io/badge/Access%20here-GitHub%20Pages-blue)](https://c4adriano.github.io/analisador-funcoes-matematicas/)
+Acesse: [![GitHub Pages](https://img.shields.io/badge/Access%20here-GitHub%20Pages-blue)](https://c4adriano.github.io/analisador-funcoes-matematicas/)
 
 ### [Estrutura do código](https://github.com/C4Adriano/analisador-funcoes-matematicas/tree/main/src)
 
-| Objeto         | Responsabilidade                                         |
-| -------------- | -------------------------------------------------------- |
-| [algebra]      | Cálculos **Matemáticos** (log, ln, divisão segura, etc.) |
-| [analyze]      | Análise de cada tipo de função                           |
-| [checks]       | Verificações de tipo para os arquivos `.ts`              |
-| [commands]     | Comandos do **Programa**                                 |
-| [config]       | Configurações globais do **Programa**                    |
-| [error]        | Mensagens de erro padronizadas                           |
-| [helpers]      | Cálculos e montagem de resultados comuns                 |
-| [i18n]         | Funções de idioma _(internacionalização)_                |
-| [main][mainJS] | Orquestra o **Programa**                                 |
-| [state]        | Gerenciamento do estado do **Programa**                  |
-| [ui]           | Interação com o usuário (menus, entradas, erros)         |
-| [values]       | Tipos compartilhados para os arquivos `.ts`              |
-| [version]      | Versão atual                                             |
-| [writing]      | Formatação, tradução e conversão de texto                |
+| Objeto     | Responsabilidade                                         |
+| ---------- | -------------------------------------------------------- |
+| [algebra]  | Cálculos **Matemáticos** (log, ln, divisão segura, etc.) |
+| [analyze]  | Análise de cada tipo de função                           |
+| [checks]   | Verificações de tipo para os arquivos `.ts`              |
+| [commands] | Comandos do **Programa**                                 |
+| [config]   | Configurações globais do **Programa**                    |
+| [error]    | Mensagens de erro padronizadas                           |
+| [helpers]  | Cálculos e montagem de resultados comuns                 |
+| [i18n]     | Funções de idioma _(internacionalização)_                |
+| [main]     | Orquestra o **Programa**                                 |
+| [state]    | Gerenciamento do estado do **Programa**                  |
+| [ui]       | Interação com o usuário (menus, entradas, erros)         |
+| [values]   | Tipos compartilhados para os arquivos `.ts`              |
+| [version]  | Versão atual                                             |
+| [writing]  | Formatação, tradução e conversão de texto                |
 
 ### Registro de Alterações resumido
 
-| Versão          | Destaque                                           |
-| --------------- | -------------------------------------------------- |
-| [1.0][V1-0]     | **Funções Constantes, Afins e Quadráticas**        |
-| [2.x][V2-X]     | Funções Exponenciais                               |
-| [3.x][V3-X]     | Resolução de variáveis por pontos, páginas de menu |
-| [4.x][V4-X]     | **Funções JS**, equações entre **Funções**         |
-| [5.x][V5-X]     | **Funções Logarítmicas**, histórico, tradução _EN_ |
-| [6.0.0][V6-0-0] | Lançamento no **GitHub**                           |
-| [6.1.0][V6-1-0] | **Funções Trigonométricas**                        |
+| Versão  | Destaque                                           |
+| ------- | -------------------------------------------------- |
+| [1.0]   | **Funções Constantes, Afins e Quadráticas**        |
+| [2.x]   | **Funções Exponenciais**                           |
+| [3.x]   | Resolução de variáveis por pontos, páginas de menu |
+| [4.x]   | **Funções JS**, equações entre **Funções**         |
+| [5.x]   | **Funções Logarítmicas**, histórico, tradução _EN_ |
+| [6.0.0] | Lançamento no **GitHub**                           |
+| [6.1.0] | **Funções Trigonométricas**                        |
 
 **Registro de Alterações** completo **[`aqui`][CHANGELOG]**.
 
@@ -95,32 +90,31 @@ Ou acesse diretamente: [![GitHub Pages](https://img.shields.io/badge/Access%20he
 
 ---
 
-[Docs]: ../../README.md
-[Main]: ../README.md
-[EN]: ../README/README_EN.md
-[algebra]: ../../src/algebra.js
-[analyze]: ../../src/analyze.js
-[checks]: ../../src/checks.js
-[commands]: ../../src/commands.js
-[config]: ../../src/config.ts
-[error]: ../../src/errors.js
-[helpers]: ../../src/helpers.js
-[i18n]: ../../src/i18n.ts
-[mainJS]: ../../src/main.js
-[state]: ../../src/state.ts
-[ui]: ../../src/ui.js
-[values]: ../../src/values.d.ts
-[version]: ../../src/version.js
-[writing]: ../../src/writing.js
+[Docs]: /README.md
+[EN]: README_EN.md
+[algebra]: /src/algebra.js
+[analyze]: /src/analyze.js
+[checks]: /src/checks.js
+[commands]: /src/commands.js
+[config]: /src/config.ts
+[error]: /src/errors.js
+[helpers]: /src/helpers.js
+[i18n]: /src/i18n.ts
+[main]: /src/main.js
+[state]: /src/state.ts
+[ui]: /src/ui.js
+[values]: /src/values.d.ts
+[version]: /src/version.js
+[writing]: /src/writing.js
 [CHANGELOG]: ../CHANGELOG/CHANGELOG_PT.md
-[V1-0]: ../CHANGELOG/CHANGELOG_PT.md#10
-[V2-X]: ../CHANGELOG/CHANGELOG_PT.md#2x
-[V3-X]: ../CHANGELOG/CHANGELOG_PT.md#3x
-[V4-X]: ../CHANGELOG/CHANGELOG_PT.md#4x---2025-11-27
-[V5-X]: ../CHANGELOG/CHANGELOG_PT.md#5x
-[V6-0-0]: ../CHANGELOG/CHANGELOG_PT.md#600---2026-03-19
-[V6-1-0]: ../CHANGELOG/CHANGELOG_PT.md#610
+[1.0]: ../CHANGELOG/CHANGELOG_PT.md#10
+[2.x]: ../CHANGELOG/CHANGELOG_PT.md#2x
+[3.x]: ../CHANGELOG/CHANGELOG_PT.md#3x
+[4.x]: ../CHANGELOG/CHANGELOG_PT.md#4x---2025-11-27
+[5.x]: ../CHANGELOG/CHANGELOG_PT.md#5x
+[6.0.0]: ../CHANGELOG/CHANGELOG_PT.md#600---2026-03-19
+[6.1.0]: ../CHANGELOG/CHANGELOG_PT.md#610
 [ROADMAP]: ../ROADMAP/ROADMAP_PT.md
-[LICENSE]: (../../LICENSE.md)
-[SECURITY]: (../SECURITY.md)
-[Contributors]: (../CONTRIBUTORS/CONTRIBUTORS_PT.md)
+[LICENSE]: /LICENSE.md
+[SECURITY]: ../SECURITY.md
+[Contributors]: ../CONTRIBUTORS/CONTRIBUTORS_PT.md

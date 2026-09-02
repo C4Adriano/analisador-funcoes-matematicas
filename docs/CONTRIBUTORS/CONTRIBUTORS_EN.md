@@ -26,7 +26,7 @@ Thanks to everyone who contributed to this project.
 
 ---
 
-[Docs]: ../../README.md
+[Docs]: /README.md
 [Main]: ../CONTRIBUTORS.md
-[PT]: ../CONTRIBUTORS/CONTRIBUTORS_PT.md
-[License]: ../../LICENSE.md
+[PT]: CONTRIBUTORS_PT.md
+[License]: /LICENSE.md
