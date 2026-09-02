@@ -2,7 +2,7 @@
 
 ## English (EN)
 
-**Copyright © 2025–present Adriano Lima (GitHub: [@C4Adriano](https://github.com/C4Adriano)). All rights reserved.**
+**Copyright © 2025–present Adriano Lima (GitHub: [@C4Adriano]). All rights reserved.**
 
 For the purposes of this **License, Software** includes, without limitation, its **Source Code, Documentation, Assets, Media, Examples, Tests, Configuration Files, Build Files, Scripts**, and any other **Files** or **Materials** distributed with, included in, or otherwise related to the **Software**.
 
@@ -48,7 +48,7 @@ Any person or entity wishing to use, reproduce, modify, adapt, translate, distri
 
 Requests for authorization, collaboration, translations, contributions, partnerships, or any other use of the **Software** may be submitted through the **Author's GitHub Profile** or any other official contact method made available by the **Author**:
 
-**GitHub**: [@C4Adriano](https://github.com/C4Adriano)
+**GitHub**: [@C4Adriano]
 
 The **Author** reserves the exclusive right to approve or deny any request, with or without justification. Any authorization granted by the **Author** shall apply only to the specific request for which it was granted and shall not be interpreted as a waiver of any rights or as authorization for any other use.
 
@@ -58,7 +58,7 @@ Any rights not expressly granted by the **Author** are reserved.
 
 ## Português (PT-BR)
 
-**Direitos Autorais © 2025–presente Adriano Lima (GitHub: [@C4Adriano](https://github.com/C4Adriano)). Todos os direitos reservados.**
+**Direitos Autorais © 2025–presente Adriano Lima (GitHub: [@C4Adriano]). Todos os direitos reservados.**
 
 Para os fins desta **Licença, _Software_** inclui, sem limitação, seu **Código-Fonte, Documentação, Recursos, Mídias, Exemplos, Testes, Arquivos de Configuração, Arquivos de Compilação, _Scripts_** e quaisquer outros **Arquivos** ou **Materiais** distribuídos com, incluídos em, ou de qualquer outra forma relacionados ao **_Software_**.
 
@@ -104,10 +104,12 @@ Qualquer pessoa física ou jurídica que deseje utilizar, reproduzir, modificar,
 
 Solicitações de autorização, colaboração, traduções, contribuições, parcerias ou qualquer outra forma de utilização do **_Software_** poderão ser encaminhadas por meio do **Perfil** do **Autor** no **GitHub** ou por qualquer outro meio oficial de contato disponibilizado pelo **Autor**:
 
-**GitHub**: [@C4Adriano](https://github.com/C4Adriano)
+**GitHub**: [@C4Adriano]
 
 O **Autor** reserva-se o direito exclusivo de aprovar ou negar qualquer solicitação, com ou sem justificativa. Qualquer autorização concedida pelo **Autor** será válida exclusivamente para a solicitação à qual se refere, não constituindo renúncia a quaisquer direitos nem autorização para qualquer outra utilização do **_Software_**.
 
 Todos os direitos não expressamente concedidos pelo **Autor** permanecem reservados.
 
 ---
+
+[@C4Adriano]: https://github.com/C4Adriano

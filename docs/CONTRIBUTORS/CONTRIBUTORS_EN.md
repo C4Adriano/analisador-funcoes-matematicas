@@ -6,13 +6,13 @@
 
 ---
 
-🌐 [Back to Documentation](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/README.md) | 🌐 [Back to main](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTORS.md) | 🇧🇷 [Português](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTORS/CONTRIBUTORS_PT.md)
+🌐 [Back to Documentation][Docs] | 🌐 [Back to Main][Main] | 🇧🇷 [Português][PT]
 
 ---
 
 Thanks to everyone who contributed to this project.
 
-> **Note: AI** assistants are listed below for transparency, as tools used during development. Their inclusion does not constitute a claim of authorship, ownership, or any other intellectual property right — all such rights remain exclusively with the **Author**, as set out in the **[License](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/LICENSE.md)**.
+> **Note: AI** assistants are listed below for transparency, as tools used during development. Their inclusion does not constitute a claim of authorship, ownership, or any other intellectual property right — all such rights remain exclusively with the **Author**, as set out in the **[License]**.
 
 ---
 
@@ -25,3 +25,8 @@ Thanks to everyone who contributed to this project.
 | GitHub Copilot | **AI** Assistant           | [copilot.github.com](https://copilot.github.com)     |
 
 ---
+
+[Docs]: ../../README.md
+[Main]: ../CONTRIBUTORS.md
+[PT]: ../CONTRIBUTORS/CONTRIBUTORS_PT.md
+[License]: ../../LICENSE.md

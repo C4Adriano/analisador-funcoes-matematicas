@@ -6,6 +6,10 @@
 
 ---
 
-🌐 [Back to Documentation / Voltar à Documentação](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/README.md) | 🇺🇸 [English](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP/ROADMAP_EN.md) | 🇧🇷 [Português](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP/ROADMAP_PT.md)
+🌐 [Back to Documentation / Voltar à Documentação][Docs] | 🇺🇸 [English][EN] | 🇧🇷 [Português][PT]
 
 ---
+
+[Docs]: ../../README.md
+[PT]: ../ROADMAP/ROADMAP_PT.md
+[EN]: ../ROADMAP/ROADMAP_EN.md

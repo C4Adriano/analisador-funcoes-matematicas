@@ -6,6 +6,10 @@
 
 ---
 
-🌐 [Back to Documentation / Voltar à Documentação](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/README.md) | 🇺🇸 [English](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTORS/CONTRIBUTORS_EN.md) | 🇧🇷 [Português](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTORS/CONTRIBUTORS_PT.md)
+🌐 [Back to Documentation / Voltar à Documentação][Docs] | 🇺🇸 [English][EN] | 🇧🇷 [Português][PT]
 
 ---
+
+[Docs]: ../../README.md
+[PT]: ../CONTRIBUTORS/CONTRIBUTORS_PT.md
+[EN]: ../CONTRIBUTORS/CONTRIBUTORS_EN.md

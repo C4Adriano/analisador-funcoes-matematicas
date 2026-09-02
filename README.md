@@ -13,17 +13,27 @@
 
 ---
 
-| Document / Documento                    | Main / Geral                                                                                        | EN                                                                                                                     | PT                                                                                                                     |
-| --------------------------------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| README / LEIA-ME                        | —                                                                                                   | [🇺🇸](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/README/README_EN.md)                   | [🇧🇷](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/README/README_PT.md)                   |
-| Changelog / Registro de Alterações      | [📄](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/CHANGELOG.md)            | [🇺🇸](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_EN.md)             | [🇧🇷](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CHANGELOG/CHANGELOG_PT.md)             |
-| FAQ / Perguntas Frequentes              | [📄](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/FAQ.md)             | [🇺🇸](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/FAQ/FAQ_EN.md)                         | [🇧🇷](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/FAQ/FAQ_PT.md)                         |
-| Glossary / Glossário                    | [📄](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/GLOSSARY.md)        | [🇺🇸](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/GLOSSARY/GLOSSARY_EN.md)               | [🇧🇷](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/GLOSSARY/GLOSSARY_PT.md)               |
-| Roadmap / Próximas Atualizações         | [📄](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP.md)         | [🇺🇸](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP/ROADMAP_EN.md)                 | [🇧🇷](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP/ROADMAP_PT.md)                 |
-| Contributing / Contribuindo             | [📄](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTING.md)    | [🇺🇸](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTING/CONTRIBUTING_EN.md)       | [🇧🇷](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTING/CONTRIBUTING_PT.md)       |
-| Contributors / Contribuidores           | [📄](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTORS.md)    | [🇺🇸](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTORS/CONTRIBUTORS_EN.md)       | [🇧🇷](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CONTRIBUTORS/CONTRIBUTORS_PT.md)       |
-| Code of Conduct / Código de Conduta     | [📄](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CODE_OF_CONDUCT.md) | [🇺🇸](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CODE_OF_CONDUCT/CODE_OF_CONDUCT_EN.md) | [🇧🇷](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/CODE_OF_CONDUCT/CODE_OF_CONDUCT_PT.md) |
-| Security Policy / Política de Segurança | [📄](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/SECURITY.md)        | —                                                                                                                      | —                                                                                                                      |
-| License / Licença                       | [📄](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/LICENSE.md)              | —                                                                                                                      | —                                                                                                                      |
+| Document / Documento                    | Main / Geral       | EN                    | PT                    |
+| --------------------------------------- | ------------------ | --------------------- | --------------------- |
+| README / LEIA-ME                        | —                  | [🇺🇸][README-EN]       | [🇧🇷][README-PT]       |
+| Changelog / Registro de Alterações      | [📄][CHANGELOG]    | [🇺🇸][CHANGELOG-EN]    | [🇧🇷][CHANGELOG-PT]    |
+| Roadmap / Próximas Atualizações         | [📄][ROADMAP]      | [🇺🇸][ROADMAP-EN]      | [🇧🇷][ROADMAP-PT]      |
+| Contributors / Contribuidores           | [📄][CONTRIBUTORS] | [🇺🇸][CONTRIBUTORS-EN] | [🇧🇷][CONTRIBUTORS-PT] |
+| Security Policy / Política de Segurança | [📄][SECURITY]     | —                     | —                     |
+| License / Licença                       | [📄][LICENSE]      | —                     | —                     |
 
 ---
+
+[README-EN]: docs/README/README_EN.md
+[README-PT]: docs/README/README_PT.md
+[CHANGELOG]: CHANGELOG.md
+[CHANGELOG-EN]: docs/CHANGELOG/CHANGELOG_EN.md
+[CHANGELOG-PT]: docs/CHANGELOG/CHANGELOG_PT.md
+[ROADMAP]: docs/ROADMAP.md
+[ROADMAP-EN]: docs/ROADMAP/ROADMAP_EN.md
+[ROADMAP-PT]: docs/ROADMAP/ROADMAP_PT.md
+[CONTRIBUTORS]: docs/CONTRIBUTORS.md
+[CONTRIBUTORS-EN]: docs/CONTRIBUTORS/CONTRIBUTORS_EN.md
+[CONTRIBUTORS-PT]: docs/CONTRIBUTORS/CONTRIBUTORS_PT.md
+[SECURITY]: docs/SECURITY.md
+[LICENSE]: LICENSE.md

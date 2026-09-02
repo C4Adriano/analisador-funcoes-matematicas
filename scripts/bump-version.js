@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // scripts/bump-version.js
 import { execSync } from "child_process"
 import fs from "fs"
@@ -45,7 +44,7 @@ fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n")
 
 const versionFileContent =
     `// Arquivo gerado automaticamente pelo hook de commit. Não editar manualmente.\n` +
-    `export const VERSION = '${newVersion}';\n`
+    `export const VERSION = "${newVersion}"\n`
 fs.writeFileSync(path.join(__dirname, "..", "src", "version.js"), versionFileContent)
 
 console.log(`[version-bump] ${pkg.version} <- "${firstLine}"`)

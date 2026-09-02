@@ -6,7 +6,7 @@
 
 ---
 
-🌐 [Back to Documentation](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/README.md) | 🌐 [Back to main](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP.md) | 🇧🇷 [Português](https://github.com/C4Adriano/analisador-funcoes-matematicas/blob/main/docs/ROADMAP/ROADMAP_PT.md)
+🌐 [Back to Documentation][Docs] | 🌐 [Back to Main][Main] | 🇧🇷 [Português][PT]
 
 ---
 
@@ -35,3 +35,7 @@ The status of each item is updated as development progresses.
 - [x] **Trigonometric Functions** _(Sine, Cosine, Tangent)_
 
 ---
+
+[Docs]: ../../README.md
+[Main]: ../ROADMAP.md
+[PT]: ../ROADMAP/ROADMAP_PT.md
