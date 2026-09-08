@@ -26,8 +26,8 @@ Desenvolvida principalmente em **_JavaScript_** puro, com módulos curtos e simp
 - **Análises disponíveis:** Domínio, Imagem, Raízes, Vértice, Interseções com os eixos, Estudo do Sinal, Assíntota, Curva, Valores de `x` e `y`, Equações entre **Funções**, etc.
 - **Coeficientes variáveis:** `a`, `b`, `c` podem ser deixados como incógnitas — o **Programa** calcula seus valores a partir de pontos conhecidos.
 - **Histórico:** Salva e recupera **Funções** anteriores durante a sessão.
-- **Configurações: _Unicode_**, acentos, casas decimais, formatação de texto, separador decimal, precisão de log e divisão, limite de iterações, idioma _(PT-BR / EN)_ e mais.
-- **Bilíngue: Português Brasileiro** _(PT-BR)_ e **Inglês** _(EN)_.
+- **Configurações: _Unicode_**, acentos, casas decimais, formatação de texto, separador decimal, precisão de log e divisão, limite de iterações, idioma e mais.
+- **Trilíngue**: Português (`pt-BR`, `pt-PT`), Inglês (`en-US`, `en-GB`) e Espanhol (`es-419`, `es-ES`).
 
 ### Como usar
 
@@ -54,15 +54,14 @@ Acesse: [![GitHub Pages](https://img.shields.io/badge/Access%20here-GitHub%20Pag
 
 ### Registro de Alterações resumido
 
-| Versão  | Destaque                                           |
-| ------- | -------------------------------------------------- |
-| [1.0]   | **Funções Constantes, Afins e Quadráticas**        |
-| [2.x]   | **Funções Exponenciais**                           |
-| [3.x]   | Resolução de variáveis por pontos, páginas de menu |
-| [4.x]   | **Funções JS**, equações entre **Funções**         |
-| [5.x]   | **Funções Logarítmicas**, histórico, tradução _EN_ |
-| [6.0.0] | Lançamento no **GitHub**                           |
-| [6.1.0] | **Funções Trigonométricas**                        |
+| Versão | Destaque                                                             |
+| ------ | -------------------------------------------------------------------- |
+| [1.x]  | **Funções Constantes, Afins e Quadráticas**                          |
+| [2.x]  | **Funções Exponenciais**                                             |
+| [3.x]  | Resolução de variáveis por pontos, páginas de menu                   |
+| [4.x]  | **Funções JS**, equações entre **Funções**                           |
+| [5.x]  | **Funções Logarítmicas**, histórico, tradução _EN_                   |
+| [6.x]  | Lançamento no **GitHub**, **Funções Trigonométricas**, tradução _ES_ |
 
 **Registro de Alterações** completo **[`aqui`][CHANGELOG]**.
 
@@ -79,7 +78,7 @@ Acesse: [![GitHub Pages](https://img.shields.io/badge/Access%20here-GitHub%20Pag
 - **[Próximas Atualizações][ROADMAP]**
 - **[Contribuidores][Contributors]**
 - **[Política de Segurança][SECURITY]**
-- **[Licença][LICENSE]**
+- **[Licença]**
 
 ### Tecnologias
 
@@ -107,14 +106,13 @@ Acesse: [![GitHub Pages](https://img.shields.io/badge/Access%20here-GitHub%20Pag
 [version]: /src/version.js
 [writing]: /src/writing.js
 [CHANGELOG]: ../CHANGELOG/CHANGELOG_PT.md
-[1.0]: ../CHANGELOG/CHANGELOG_PT.md#10
+[1.x]: ../CHANGELOG/CHANGELOG_PT.md#1x
 [2.x]: ../CHANGELOG/CHANGELOG_PT.md#2x
 [3.x]: ../CHANGELOG/CHANGELOG_PT.md#3x
-[4.x]: ../CHANGELOG/CHANGELOG_PT.md#4x---2025-11-27
+[4.x]: ../CHANGELOG/CHANGELOG_PT.md#4x
 [5.x]: ../CHANGELOG/CHANGELOG_PT.md#5x
-[6.0.0]: ../CHANGELOG/CHANGELOG_PT.md#600---2026-03-19
-[6.1.0]: ../CHANGELOG/CHANGELOG_PT.md#610
+[6.x]: ../CHANGELOG/CHANGELOG_PT.md#6x
 [ROADMAP]: ../ROADMAP/ROADMAP_PT.md
-[LICENSE]: /LICENSE.md
-[SECURITY]: ../SECURITY.md
+[Licença]: /LICENSE.md#português-pt-br
+[SECURITY]: ../SECURITY.md#português-pt-br
 [Contributors]: ../CONTRIBUTORS/CONTRIBUTORS_PT.md

@@ -1,3 +1,5 @@
+import { Commands as _Commands } from "./commands.js"
+
 /**
  * Texto genérico.
  * @since ~v6.2.0
@@ -79,7 +81,7 @@ export type FunctionType =
     | /** Polinomial. */ "poly"
     | /** Exponencial. */ "exp"
     | /** Logarítmica. */ "log"
-    | Exclude<TrigonometricFunction, "">
+    | /** Trigonométrica. */Exclude<TrigonometricFunction, "">
 
 /**
  * Coeficientes suportados pelo programa.
@@ -167,7 +169,7 @@ export type MessageOptions = {
     debug?: boolean
     /** É `confirm`? */
     asConfirm?: boolean
-    /** Permite `commands`? */
+    /** Permite {@link _Commands}? */
     allowCommands?: boolean
     /** Tipo de mensagem. */
     type?: TypeMessage

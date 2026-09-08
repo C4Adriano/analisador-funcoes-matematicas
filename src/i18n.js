@@ -55,7 +55,7 @@ export function changeLanguage(language = "pt-br") {
     if (Config.language == language) {
         Ui.warning(tr("commands.languageAlready"));
     }
-    else if (confirm(tr("i18n.confirmChangeLanguage", { language: language }))) {
+    else if (confirm(tr("i18n.confirmChangeLanguage", { language }))) {
         if (language == "pt-br" || language == "pt-pt" || language == "es-419" || language == "es-es") {
             Config.decimalSeparator = true;
             Config.accents = true;

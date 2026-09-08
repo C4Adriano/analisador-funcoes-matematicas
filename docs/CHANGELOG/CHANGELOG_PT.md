@@ -12,7 +12,7 @@
 
 Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 
-> **Obs.:** o Changelog anterior a este ponto continha informações incorretas ou desatualizadas e foi descontinuado. O histórico anterior pode ser consultado (por sua conta e risco) em [OLD_CHANGELOG](OLD/OLD_CHANGELOG_PT.md).
+> **Obs.:** o Changelog anterior a este ponto continha informações incorretas ou desatualizadas e foi descontinuado. O histórico anterior pode ser consultado (por sua conta e risco) em [OLD_CHANGELOG].
 
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
@@ -23,18 +23,24 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 -
 
-## \[6.1.0]
+## \[6.6.6] - 2026-09-07
 
 ### Adicionado
 
-- **Funções Trigonométricas**.
+- Keep a Changelog
 
-## \[6.0.0] - 2026-03-19
+### Corrigido
+
+- O _bug_ que deixava `ax² + bx + c` em **Funções Consates ou Afins** sendo exibido como `undefined x² - 0x`
+
+## \[6.x]
 
 ### Adicionado
 
-- Comandos `/` em PT/EN.
+- Comandos `/` em PT/EN/ES.
 - Lançamento oficial no **GitHub**.
+- **Funções Trigonométricas**.
+- Tradução para Espanhol (_ES_)
 
 ## \[5.x]
 
@@ -48,7 +54,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - Histórico de **Funções**.
 - Tradução para Inglês (_EN_).
 
-## \[4.x] - 2025-11-27
+## \[4.x]
 
 ### Adicionado
 
@@ -70,14 +76,15 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - Cálculos de x/y.
 - **Funções Exponencial**.
 
-## \[1.0]
+## \[1.x]
 
 ### Adicionado
 
-- **Funções Constantes, Afins e Quadráticas** isoladas.
+- **Funções Constantes, Afins e Quadráticas**.
 
 ---
 
 [Docs]: /README.md
 [Main]: /CHANGELOG.md
 [EN]: CHANGELOG_EN.md
+[OLD_CHANGELOG]: OLD/OLD_CHANGELOG_PT.md

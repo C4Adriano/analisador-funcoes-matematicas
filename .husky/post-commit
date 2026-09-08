@@ -6,7 +6,11 @@ if [ "$SKIP_VERSION_BUMP" = "1" ]; then
 fi
 
 node scripts/bump-version.js
-git status --short
 git add package.json src/version.js
-git status --short
+
+if git diff --cached --quiet; then
+  echo "[post-commit] sem bump — pulando amend"
+  exit 0
+fi
+
 SKIP_VERSION_BUMP=1 git commit --amend --no-edit --no-verify

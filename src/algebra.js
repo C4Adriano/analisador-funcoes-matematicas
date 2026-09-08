@@ -32,7 +32,7 @@ export const Algebra = {
             name = "x"
         }
 
-        let value = Ui.input(name + " = ", tr("algebra.variableAsk", { name: name }))
+        let value = Ui.input(`${name} = `, tr("algebra.variableAsk", { name }))
 
         value = Writing.decimal(value, true)
         if (Checks.isFiniteNumber(value)) {
@@ -48,21 +48,21 @@ export const Algebra = {
             type = 1
         }
 
-        let array = []
+        const array = []
 
         // Pergunta
-        let x1 = Ui.input("x₁ = ", "", true)
-        let y1 = Ui.input("y₁ = ", "", true)
+        const x1 = Ui.input("x₁ = ", "", true)
+        const y1 = Ui.input("y₁ = ", "", true)
         array.push(x1, y1)
 
         if (type == 2 || type == 3) {
-            let x2 = Ui.input("x₂ = ", "", true)
-            let y2 = Ui.input("y₂ = ", "", true)
+            const x2 = Ui.input("x₂ = ", "", true)
+            const y2 = Ui.input("y₂ = ", "", true)
             array.push(x2, y2)
 
             if (type == 3) {
-                let x3 = Ui.input("x₃ = ", "", true)
-                let y3 = Ui.input("y₃ = ", "", true)
+                const x3 = Ui.input("x₃ = ", "", true)
+                const y3 = Ui.input("y₃ = ", "", true)
                 array.push(x3, y3)
             }
         }
@@ -90,10 +90,9 @@ export const Algebra = {
 
         const [a1 = 0, b1 = 0, c1 = 0] = func1
         const [a2 = 0, b2 = 0, c2 = 0] = func2
-        let coefA = a1 - a2,
+        const coefA = a1 - a2,
             coefB = b1 - b2,
-            coefC = c1 - c2,
-            x = 0
+            coefC = c1 - c2
 
         // Constante
         if (coefA == 0 && coefB == 0) {
@@ -106,13 +105,13 @@ export const Algebra = {
 
         // Afim
         else if (coefA == 0 && coefB != 0) {
-            x = Algebra.division(-coefC, coefB)
+            const x = Algebra.division(-coefC, coefB)
             Ui.display(tr("algebra.oneRoot", { x: Writing.decimal(x) }), "x = −c / b")
         }
 
         // Quadrática
         else if (coefA != 0) {
-            let delta = Helpers.calcDelta(coefA, coefB, coefC)
+            const delta = Helpers.calcDelta(coefA, coefB, coefC)
             Helpers.showDelta(
                 delta[0],
                 tr("algebra.quadraticDistinct"),
@@ -180,7 +179,8 @@ export const Algebra = {
         return pairs
     },
 
-    solvePolynomial(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+    solvePolynomial({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+        const coefs = { a, b, c }
         const basis = { a: x => x * x, b: x => x, c: () => 1 }
         const eligible = { constant: ["c"], affine: ["b", "c"], quadratic: ["a", "b", "c"] }
 
@@ -195,7 +195,8 @@ export const Algebra = {
         return Algebra.solveLinearCoefs(basis, coefs, unknownKeys, points)
     },
 
-    solveExponential(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+    solveExponential({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+        const coefs = { a, b, c }
         const linearKeys = ["b", "c"]
         const unknownKeys = ["a", "b", "c"].filter(key => coefs[key] == key)
         if (unknownKeys.length == 0) return coefs
@@ -207,13 +208,13 @@ export const Algebra = {
 
         if (unknownKeys.length == 1 && unknownKeys[0] == "a") {
             const [{ x, y }] = Algebra.getPointPairs(1)
-            const a = Algebra.round(Algebra.division(y - coefs.c, coefs.b, false) ** Algebra.division(1, x, false))
+            a = Algebra.round(Algebra.division(y - coefs.c, coefs.b, false) ** Algebra.division(1, x, false))
             return { ...coefs, a }
         }
 
         if (unknownKeys.includes("a") && unknownKeys.includes("b")) {
             const [p0, p1] = Algebra.getPointPairs(2)
-            const a = Algebra.round(
+            a = Algebra.round(
                 Algebra.division(p0.y - coefs.c, p1.y - coefs.c, false) ** Algebra.division(1, p0.x - p1.x, false)
             )
             return { ...coefs, a, b: Algebra.division(p0.y - coefs.c, a ** p0.x) }
@@ -224,7 +225,8 @@ export const Algebra = {
         return { ...coefs, a: -1, c: 0 }
     },
 
-    solveLogarithmic(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+    solveLogarithmic({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+        const coefs = { a, b, c }
         const linearKeys = ["b", "c"]
         const unknownKeys = ["a", "b", "c"].filter(key => coefs[key] == key)
         if (unknownKeys.length == 0) return coefs
@@ -241,9 +243,7 @@ export const Algebra = {
 
         if (unknownKeys.includes("a") && unknownKeys.includes("c")) {
             const [p0, p1] = Algebra.getPointPairs(2)
-            const a = Algebra.round(
-                Algebra.division(p0.x, p1.x, false) ** Algebra.division(coefs.b, p0.y - p1.y, false)
-            )
+            a = Algebra.round(Algebra.division(p0.x, p1.x, false) ** Algebra.division(coefs.b, p0.y - p1.y, false))
             return { ...coefs, a, c: p0.y - coefs.b * Algebra.log(p0.x, a) }
         }
 
@@ -252,7 +252,8 @@ export const Algebra = {
         return { ...coefs, a: -1, b: 1, c: 0 }
     },
 
-    resolveUnknown(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }, funcType = "poly") {
+    resolveUnknown({ a = State.globalA, b = State.globalB, c = State.globalC } = {}, funcType = "poly") {
+        const coefs = { a, b, c }
         const solvers = { poly: Algebra.solvePolynomial, exp: Algebra.solveExponential, log: Algebra.solveLogarithmic }
         const solver = solvers[funcType] ?? Algebra.solvePolynomial // TODO - trig cai em poly
 
@@ -374,8 +375,6 @@ export const Algebra = {
     },
 
     division(numerator = 0, denominator = 1, round = true, precision = Config.divPrecision) {
-        let result = 0
-
         numerator = Writing.decimal(numerator, true)
         denominator = Writing.decimal(denominator, true)
 
@@ -395,7 +394,7 @@ export const Algebra = {
             return NaN
         }
 
-        result = numerator / denominator
+        const result = numerator / denominator
 
         // Infinito
         if (!Checks.isFiniteNumber(result)) {

@@ -29,4 +29,4 @@ Thanks to everyone who contributed to this project.
 [Docs]: /README.md
 [Main]: ../CONTRIBUTORS.md
 [PT]: CONTRIBUTORS_PT.md
-[License]: /LICENSE.md
+[License]: /LICENSE.md#english-en

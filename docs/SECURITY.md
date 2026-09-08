@@ -54,7 +54,7 @@ segurança são improváveis.
 
 Se encontrares algo na **Versão** atual, abre uma **_[Issue]_**. Por se tratar de um projeto mantido individualmente, aguarde até **14 dias** por uma resposta.
 
-> **Nota:** A inclusão de trechos de código em uma **_Issue_** deste repositório, estritamente para fins de relato ou discussão de uma vulnerabilidade, não é considerada uso, cópia ou distribuição nos termos da **[Licença]**. Essa exceção aplica-se apenas dentro deste repositório (ex: em **_Issues_**) e não autoriza usar, copiar ou reproduzir o **_Software_**, total ou parcialmente, em qualquer outro lugar.
+> **Obs.:** A inclusão de trechos de código em uma **_Issue_** deste repositório, estritamente para fins de relato ou discussão de uma vulnerabilidade, não é considerada uso, cópia ou distribuição nos termos da **[Licença]**. Essa exceção aplica-se apenas dentro deste repositório (ex: em **_Issues_**) e não autoriza usar, copiar ou reproduzir o **_Software_**, total ou parcialmente, em qualquer outro lugar.
 
 ### Versões Futuras
 
@@ -69,5 +69,5 @@ Até lá, em caso de dúvida, entre em contato diretamente com o **Autor** pelo
 
 [@C4Adriano]: https://github.com/C4Adriano
 [Issue]: https://github.com/C4Adriano/analisador-funcoes-matematicas/issues
-[License]: /LICENSE.md
+[License]: /LICENSE.md#english-en
 [Licença]: /LICENSE.md#português-pt-br

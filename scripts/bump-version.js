@@ -19,13 +19,19 @@ const message = msgFile
 
 const firstLine = message.split("\n")[0]
 
+const isMajor = /^feat: :fire:/.test(firstLine)
+const isMinor = !isMajor && /^feat:/.test(firstLine)
+const isPatch = !isMajor && !isMinor && /^fix:/.test(firstLine)
+
+if (!isMajor && !isMinor && !isPatch) {
+    console.warn(`[version-bump] ignorado (sem prefixo fix:/feat:) <- "${firstLine}"`)
+    process.exit(0)
+}
+
 const pkgPath = path.join(__dirname, "..", "package.json")
 const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"))
 
 let [major, minor, patch] = pkg.version.split(".").map(Number)
-
-const isMajor = /^feat:\s*:fire:/.test(firstLine)
-const isMinor = !isMajor && /^feat:/.test(firstLine)
 
 if (isMajor) {
     major += 1
@@ -40,11 +46,11 @@ if (isMajor) {
 
 const newVersion = `${major}.${minor}.${patch}`
 pkg.version = newVersion
-fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n")
+fs.writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`)
 
 const versionFileContent =
     `// Arquivo gerado automaticamente pelo hook de commit. Não editar manualmente.\n` +
     `export const VERSION = "${newVersion}"\n`
 fs.writeFileSync(path.join(__dirname, "..", "src", "version.js"), versionFileContent)
 
-console.log(`[version-bump] ${pkg.version} <- "${firstLine}"`)
+console.warn(`[version-bump] ${pkg.version} <- "${firstLine}"`)

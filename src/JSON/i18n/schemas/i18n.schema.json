@@ -784,7 +784,9 @@
         "i18n": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["confirmChangeLanguage"],
+            "required": [
+                "confirmChangeLanguage"
+            ],
             "properties": {
                 "confirmChangeLanguage": {
                     "type": "string"
@@ -1262,7 +1264,11 @@
         "writing": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["yes", "no", "currentDefault"],
+            "required": [
+                "yes",
+                "no",
+                "currentDefault"
+            ],
             "properties": {
                 "yes": {
                     "type": "string"

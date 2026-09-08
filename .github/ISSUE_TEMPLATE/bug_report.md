@@ -1,7 +1,7 @@
 ---
 name: Bug Report / Relato de Bug
 about: Report a bug / Reporte um bug
-title: "[BUG] "
+title: "\[BUG] "
 labels: bug
 assignees: C4Adriano
 ---

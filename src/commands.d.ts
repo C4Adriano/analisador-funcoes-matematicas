@@ -18,8 +18,8 @@ import type { CommandsNames, Text } from "./values.js"
  * - {@link Commands.help help} - Exibe o menu de ajuda.
  * - {@link Commands.searchHelp searchHelp} - Procura por uma ajuda específica.
  * - {@link Commands.shortcuts shortcuts} - Exibe todas as variações de um comando.
- * - {@link Commands.about about} - Exibe informações sobre o Projeto.
- * - {@link Commands.version version} - Exibe a versão do Projeto.
+ * - {@link Commands.about about} - Exibe informações sobre o projeto.
+ * - {@link Commands.version version} - Exibe a versão do projeto.
  * - {@link Commands.change change} - Muda o valor de uma chave em `Config`.
  * - {@link Commands.names names} - `Array` dos nomes dos comandos.
  *
@@ -117,14 +117,14 @@ export declare const Commands: {
     shortcuts(specific: Text): null
 
     /**
-     * Exibe informações sobre o Projeto.
+     * Exibe informações sobre o projeto.
      * @group JS
      * @since v6.2.0
      */
     about(): null
 
     /**
-     * Exibe a versão do Projeto.
+     * Exibe a versão do projeto.
      * @group JS
      * @since v6.1.0
      */

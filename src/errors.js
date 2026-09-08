@@ -11,7 +11,7 @@ export const Errors = {
         }
 
         Ui.error(
-            `${tr("errors.error001", { firstValue: min + (min == 0 ? 1 : 0), max: max })} ${
+            `${tr("errors.error001", { firstValue: min + (min == 0 ? 1 : 0), max })} ${
                 min == 0 ? tr("errors.zeroToBack") : ""
             }`,
             tr("errors.error001Exp")
@@ -24,10 +24,7 @@ export const Errors = {
             reason = ""
         }
 
-        Ui.error(
-            tr("errors.error002"),
-            reason != "" ? tr("errors.reason", { reason: reason }) : tr("errors.zeroDivision")
-        )
+        Ui.error(tr("errors.error002"), reason != "" ? tr("errors.reason", { reason }) : tr("errors.zeroDivision"))
     },
 
     limitExceeded() {
@@ -35,7 +32,7 @@ export const Errors = {
     },
 
     constantFunction(type = "") {
-        Ui.error(tr("errors.error004", { type: type }), "(a = 0) ∨ (a = 1) ∨ (b = 0)")
+        Ui.error(tr("errors.error004", { type }), "(a = 0) ∨ (a = 1) ∨ (b = 0)")
     },
 
     invalidFunction(type = "") {
@@ -44,7 +41,7 @@ export const Errors = {
             type = ""
         }
 
-        Ui.error(tr("errors.error005", { type: type }), "a < 0")
+        Ui.error(tr("errors.error005", { type }), "a < 0")
     },
 
     invalidLog(type = "log", reason = "") {
@@ -58,8 +55,8 @@ export const Errors = {
         }
 
         Ui.error(
-            tr("errors.error006", { type: type }),
-            reason != "" ? tr("errors.reason", { reason: reason }) : tr("errors.error006Exp")
+            tr("errors.error006", { type }),
+            reason != "" ? tr("errors.reason", { reason }) : tr("errors.error006Exp")
         )
     },
 }

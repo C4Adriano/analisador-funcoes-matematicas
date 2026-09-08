@@ -12,7 +12,7 @@
 
 Obrigado a todos que contribuíram com este projeto.
 
-> **Nota:** As **IA**s listadas abaixo aparecem por transparência, como ferramentas utilizadas durante o desenvolvimento. Sua inclusão não constitui reivindicação de autoria, titularidade ou qualquer outro direito de propriedade intelectual — todos esses direitos permanecem exclusivamente com o **Autor**, conforme estabelecido na **[Licença]**.
+> **Obs.:** As **IA**s listadas abaixo aparecem por transparência, como ferramentas utilizadas durante o desenvolvimento. Sua inclusão não constitui reivindicação de autoria, titularidade ou qualquer outro direito de propriedade intelectual — todos esses direitos permanecem exclusivamente com o **Autor**, conforme estabelecido na **[Licença]**.
 
 ---
 
@@ -29,4 +29,4 @@ Obrigado a todos que contribuíram com este projeto.
 [Docs]: /README.md
 [Main]: ../CONTRIBUTORS.md
 [EN]: CONTRIBUTORS_EN.md
-[Licença]: /LICENSE.md
+[Licença]: /LICENSE.md#português-pt-br

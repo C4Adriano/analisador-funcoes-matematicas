@@ -26,17 +26,18 @@ export const Analyze = {
         Analyze.resolveConstant({ c: coefC })
     },
 
-    resolveConstant(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+    resolveConstant({ c = State.globalC } = {}) {
+        const coefs = { c }
         Ui.resolveFunction(coefs)
 
-        let option = 0,
+        let option,
             page = 1,
             limit = 0
 
         const pageActions = {
             1: {
                 1: () => Helpers.domain(),
-                2: () => Helpers.range(`= ${Writing.decimal(coefs.c)}`, ".", tr("analyze.constantValue")),
+                2: () => Helpers.range(`= ${Writing.decimal(coefs.c)}`, "", tr("analyze.constantValue")),
                 3: () => Helpers.xAxis(0, String(coefs.c)),
                 4: () => Helpers.yAxis(coefs.c, "c", "c"),
                 5: () => Helpers.xValues(0, 0, coefs.c),
@@ -77,13 +78,14 @@ export const Analyze = {
         Analyze.resolveAffine({ b: coefB, c: coefC })
     },
 
-    resolveAffine(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+    resolveAffine({ b = State.globalB, c = State.globalC } = {}) {
+        const coefs = { b, c }
         Ui.resolveFunction(coefs)
 
         // Cálculo
-        let root = Helpers.calcRoot(0, coefs.b, coefs.c)
+        const root = Helpers.calcRoot(0, coefs.b, coefs.c)
 
-        let option = 0,
+        let option,
             page = 1,
             limit = 0
 
@@ -133,14 +135,15 @@ export const Analyze = {
         Analyze.resolveQuadratic({ a: coefA, b: coefB, c: coefC })
     },
 
-    resolveQuadratic(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+    resolveQuadratic({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+        const coefs = { a, b, c }
         Ui.resolveFunction(coefs)
 
         // Cálculo
-        let delta = Helpers.calcDelta(coefs.a, coefs.b, coefs.c),
+        const delta = Helpers.calcDelta(coefs.a, coefs.b, coefs.c),
             vertex = Helpers.vertex(coefs.a, coefs.b, delta[0])
 
-        let option = 0,
+        let option,
             page = 1,
             limit = 0
 
@@ -221,13 +224,14 @@ export const Analyze = {
         Analyze.resolveExponential({ a: coefA, b: coefB, c: coefC })
     },
 
-    resolveExponential(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+    resolveExponential({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+        const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "exp")
 
         // Cálculo
-        let root = Helpers.calcRoot(coefs.a, coefs.b, coefs.c, true)
+        const root = Helpers.calcRoot(coefs.a, coefs.b, coefs.c, true)
 
-        let option = 0,
+        let option,
             page = 1,
             limit = 0
 
@@ -293,13 +297,14 @@ export const Analyze = {
         Analyze.resolveLogarithmic({ a: coefA, b: coefB, c: coefC })
     },
 
-    resolveLogarithmic(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+    resolveLogarithmic({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+        const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "log")
 
         // Cálculo
-        let root = Algebra.round(coefs.a ** Algebra.division(-coefs.c, coefs.b, false))
+        const root = Algebra.round(coefs.a ** Algebra.division(-coefs.c, coefs.b, false))
 
-        let option = 0,
+        let option,
             page = 1,
             limit = 0
 
@@ -347,13 +352,14 @@ export const Analyze = {
         Analyze.resolveSine({ a: coefA, b: coefB, c: coefC })
     },
 
-    resolveSine(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+    resolveSine({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+        const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "sin")
 
         // Cálculo
-        let root = Algebra.round(Math.asin(Algebra.division(-coefs.c, coefs.b)) / coefs.a)
+        const root = Algebra.round(Math.asin(Algebra.division(-coefs.c, coefs.b)) / coefs.a)
 
-        let option = 0,
+        let option,
             page = 1,
             limit = 0
 
@@ -407,13 +413,14 @@ export const Analyze = {
         Analyze.resolveCosine({ a: coefA, b: coefB, c: coefC })
     },
 
-    resolveCosine(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+    resolveCosine({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+        const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "cos")
 
         // Cálculo
-        let root = Algebra.round(Math.acos(Algebra.division(-coefs.c, coefs.b)) / coefs.a)
+        const root = Algebra.round(Math.acos(Algebra.division(-coefs.c, coefs.b)) / coefs.a)
 
-        let option = 0,
+        let option,
             page = 1,
             limit = 0
 
@@ -424,15 +431,13 @@ export const Analyze = {
                 3: () => Helpers.domain(),
                 4: () =>
                     Helpers.range(
-                        "∈ [" +
-                            Writing.decimal(-Algebra.absolute(coefs.b) + coefs.c) +
-                            ", " +
-                            Writing.decimal(Algebra.absolute(coefs.b) + coefs.c) +
-                            "]",
+                        `∈ [${Writing.decimal(-Algebra.absolute(coefs.b) + coefs.c)}, ${Writing.decimal(
+                            Algebra.absolute(coefs.b) + coefs.c
+                        )}]`,
                         "",
                         "−|b| + c ≤ y ≤ |b| + c"
                     ),
-                5: () => Helpers.xAxis(root, "arccos(−c / b) / a", "|(−c / b)| > 1, " + tr("analyze.withoutRoot")),
+                5: () => Helpers.xAxis(root, "arccos(−c / b) / a", `|(−c / b)| > 1, ${tr("analyze.withoutRoot")}`),
             },
             2: {
                 1: () => Helpers.yAxis(coefs.b + coefs.c, "b × cos(a · x) + c", "b + c"),
@@ -473,13 +478,14 @@ export const Analyze = {
         Analyze.resolveTangent({ a: coefA, b: coefB, c: coefC })
     },
 
-    resolveTangent(coefs = { a: State.globalA, b: State.globalB, c: State.globalC }) {
+    resolveTangent({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+        const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "tan")
 
         // Cálculo
-        let root = Algebra.round(Math.atan(Algebra.division(-coefs.c, coefs.b)) / coefs.a)
+        const root = Algebra.round(Math.atan(Algebra.division(-coefs.c, coefs.b)) / coefs.a)
 
-        let option = 0,
+        let option,
             page = 1,
             limit = 0
 

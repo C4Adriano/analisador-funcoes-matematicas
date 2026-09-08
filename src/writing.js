@@ -182,7 +182,7 @@ export const Writing = {
     },
 
     noAccents(text = "") {
-        let replacements = [
+        const replacements = [
             // === AGUDOS (´) ===
             ["á", "a"], // A agudo (espanhol, português)
             ["Á", "A"],
@@ -312,7 +312,7 @@ export const Writing = {
 
     format(message = "", explanation = "") {
         if (Config.explanations && explanation != "") {
-            message += "\n\n" + explanation
+            message += `\n\n${explanation}`
         }
 
         if (Config.simpleMulti) {
@@ -339,10 +339,10 @@ export const Writing = {
     superscript(text = "") {
         // Se Unicode está desativado, retorna o texto com um símbolo de sobrescrito simples
         if (!Config.unicode) {
-            return "^" + text
+            return `^${text}`
         }
 
-        let replacements = [
+        const replacements = [
             ["0", "⁰"],
             ["1", "¹"],
             ["2", "²"],
@@ -366,10 +366,10 @@ export const Writing = {
     subscript(text = "") {
         // Se Unicode está desativado, retorna o texto com um símbolo de subscrito simples
         if (!Config.unicode) {
-            return "_" + text
+            return `_${text}`
         }
 
-        let replacements = [
+        const replacements = [
             ["0", "₀"],
             ["1", "₁"],
             ["2", "₂"],
@@ -407,12 +407,12 @@ export const Writing = {
     },
 
     parseDegree(text = "") {
-        let degrees = parseFloat(Writing.replace(text, "°", ""))
+        const degrees = parseFloat(Writing.replace(text, "°", ""))
         return degrees * (Math.PI / 180)
     },
 
     parseRadian(text = "") {
-        let parts = text.split("/"),
+        const parts = text.split("/"),
             denominator = parts[1] ? parseFloat(parts[1]) : 1,
             multiParts = String(parts[0]).split("*"),
             multiplier = multiParts.length > 1 ? parseFloat(String(multiParts[0])) : 1
@@ -422,26 +422,25 @@ export const Writing = {
     parseAngle(text = "") {
         if (text.includes("°")) {
             return Writing.parseDegree(text)
-        } else {
-            return Writing.parseRadian(text)
         }
+        return Writing.parseRadian(text)
     },
 
     formatAngle(value = 0) {
-        let ratio = value / Math.PI // PI/6 → ratio = 1/6 ≈ 0.1666...
+        const ratio = value / Math.PI // PI/6 → ratio = 1/6 ≈ 0.1666...
 
         // Testa denominadores comuns (1 a 12 cobre os casos típicos)
         for (let denominator = 1; denominator <= 12; denominator++) {
-            let numerator = Algebra.round(ratio * denominator, 0)
+            const numerator = Algebra.round(ratio * denominator, 0)
             if (Algebra.absolute(numerator / denominator - ratio) < 1e-9) {
                 // Achou uma fração exata
                 if (numerator == 0) {
                     return 0
-                } else if (denominator == 1) {
-                    return numerator == 1 ? "PI" : numerator + " * PI"
-                } else {
-                    return (numerator == 1 ? "" : numerator + " * ") + "PI / " + denominator
                 }
+                if (denominator == 1) {
+                    return numerator == 1 ? "PI" : `${numerator} * PI`
+                }
+                return `${numerator == 1 ? "" : `${numerator} * `}PI / ${denominator}`
             }
         }
 

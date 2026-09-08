@@ -63,7 +63,7 @@
         "shortShortcuts": "lista variações de um comando",
         "longShortcuts": "Exibe todas as variações aceitas de um comando.\nUse: /atalhos <comando>",
         "shortAbout": "sobre o programa",
-        "longAbout": "Exibe informações sobre o Projeto, Autor e repositório.",
+        "longAbout": "Exibe informações sobre o projeto, autor e repositório.",
         "shortConfig": "abre as configurações",
         "longConfig": "Abre o menu de configurações do programa.",
         "invalidSetting": "Configuração inválida",

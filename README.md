@@ -19,8 +19,8 @@
 | Changelog / Registro de Alterações      | [📄][CHANGELOG]    | [🇺🇸][CHANGELOG-EN]    | [🇧🇷][CHANGELOG-PT]    |
 | Roadmap / Próximas Atualizações         | [📄][ROADMAP]      | [🇺🇸][ROADMAP-EN]      | [🇧🇷][ROADMAP-PT]      |
 | Contributors / Contribuidores           | [📄][CONTRIBUTORS] | [🇺🇸][CONTRIBUTORS-EN] | [🇧🇷][CONTRIBUTORS-PT] |
-| Security Policy / Política de Segurança | [📄][SECURITY]     | —                     | —                     |
-| License / Licença                       | [📄][LICENSE]      | —                     | —                     |
+| Security Policy / Política de Segurança | [📄][SECURITY]     | [🇺🇸][SECURITY-EN]     | [🇧🇷][SECURITY-PT]     |
+| License / Licença                       | [📄][LICENSE]      | [🇺🇸][LICENSE-EN]      | [🇧🇷][LICENSE-PT]      |
 
 ---
 
@@ -36,4 +36,8 @@
 [CONTRIBUTORS-EN]: docs/CONTRIBUTORS/CONTRIBUTORS_EN.md
 [CONTRIBUTORS-PT]: docs/CONTRIBUTORS/CONTRIBUTORS_PT.md
 [SECURITY]: docs/SECURITY.md
+[SECURITY-EN]: docs/SECURITY.md#english-en
+[SECURITY-PT]: docs/SECURITY.md#português-pt-br
 [LICENSE]: LICENSE.md
+[LICENSE-EN]: LICENSE.md#english-en
+[LICENSE-PT]: LICENSE.md#português-pt-br

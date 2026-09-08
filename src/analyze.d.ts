@@ -57,7 +57,7 @@ export declare const Analyze: {
      * Mantido apenas para compatibilidade retroativa; **não remover**.
      * @param coefB - Coeficiente b da Função Afim
      * @param coefC - Coeficiente c da Função Afim
-     * @default coefB = State.globalB; coefC = State.globalC]
+     * @default coefB = State.globalB; coefC = State.globalC
      * @group Função
      * @since v6.1.0
      */

@@ -12,7 +12,7 @@
 
 All notable changes to this project will be documented in this file.
 
-> **Note:** the changelog prior to this point contained incorrect or outdated information and has been discontinued. The previous history can be consulted (at your own risk) in [OLD_CHANGELOG](OLD/OLD_CHANGELOG_EN.md).
+> **Note:** the Changelog prior to this point contained incorrect or outdated information and has been discontinued. The previous history can be consulted (at our own risk) in [OLD_CHANGELOG].
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
@@ -23,18 +23,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 -
 
-## \[6.1.0]
+## \[6.6.6] - 2026-09-07
 
 ### Added
 
-- **Trigonometric Functions**.
+- Keep a Changelog
 
-## \[6.0.0] - 2026-03-19
+### Fixed
+
+- The bug that caused `ax² + bx + c` in **Constant or Affine Functions** to be displayed as `undefined x² - 0x`
+
+## \[6.x]
 
 ### Added
 
-- `/` commands in PT/EN.
+- `/` commands in PT/EN/ES.
 - Official **GitHub** release.
+- **Trigonometric Functions**.
+- Spanish translation.
 
 ## \[5.x]
 
@@ -45,10 +51,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 - **Logarithmic Functions**.
-- Function history.
+- **Function** history.
 - English translation.
 
-## \[4.x] - 2025-11-27
+## \[4.x]
 
 ### Added
 
@@ -70,14 +76,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - x/y calculations.
 - **Exponential Functions**.
 
-## \[1.0]
+## \[1.x]
 
 ### Added
 
-- Isolated **Constant, Affine, and Quadratic Functions**.
+- **Constant, Affine, and Quadratic Functions**.
 
 ---
 
 [Docs]: /README.md
 [Main]: /CHANGELOG.md
 [PT]: CHANGELOG_PT.md
+[OLD_CHANGELOG]: OLD/OLD_CHANGELOG_EN.md

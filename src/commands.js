@@ -25,7 +25,7 @@ export const Commands = {
             const suggestion = Commands.suggestCmd(cmd)
 
             if (suggestion.type == "suggestion") {
-                let answer = Ui.confirm(
+                const answer = Ui.confirm(
                     tr("commands.commandSuggestion", { suggestion: suggestion.canonical }),
                     tr("commands.commandSuggestionExp", {
                         command: cmd,
@@ -102,7 +102,7 @@ export const Commands = {
             candidates = [key, ...cmds[key].variations]
 
             candidates.forEach(candidate => {
-                let dist = Commands.levenshtein(typed, candidate)
+                const dist = Commands.levenshtein(typed, candidate)
                 if (dist < lowerDist) {
                     lowerDist = dist
                     best = key
@@ -454,10 +454,7 @@ export const Commands = {
 
                     // Erro — só mostra se o utilizador tentou passar um argumento explícito
                     else if (parts[1] != undefined) {
-                        Ui.error(
-                            tr("commands.invalidLanguage"),
-                            "“" + target + "” " + tr("commands.noteInvalidLanguage")
-                        )
+                        Ui.error(tr("commands.invalidLanguage"), `“${target}” ${tr("commands.noteInvalidLanguage")}`)
                     }
 
                     return null
@@ -524,19 +521,19 @@ export const Commands = {
                 const cmd = cmds[canonical]
                 if (cmd != undefined) {
                     const shortList = [canonical, ...cmd.variations].join(", ")
-                    Ui.display("“/" + canonical + "” — " + cmd.long + "\n" + tr("commands.variations") + shortList)
+                    Ui.display(`“/${canonical}” — ${cmd.long}\n${tr("commands.variations")}${shortList}`)
                 }
                 return null
             }
 
-            Ui.error(tr("commands.unknownCommand"), "“/" + specific + "” " + tr("commands.invalidCommandExp"))
+            Ui.error(tr("commands.unknownCommand"), `“/${specific}” ${tr("commands.invalidCommandExp")}`)
             return null
         }
 
         const key = Object.keys(cmds)
         const total = Math.ceil(key.length / 5)
         let page = 1,
-            answer = 0
+            answer
 
         do {
             if (page < 1) {
@@ -550,8 +547,8 @@ export const Commands = {
             let menu = `=== ${tr("commands.help")} ===\n${tr("commands.page")} ${String(page)}/${String(total)}`
 
             for (let i = start; i < end; i++) {
-                let aliases = [key[i], ...cmds[key[i]].variations].join(", ")
-                menu += "\n/" + key[i] + " — " + cmds[key[i]].short + "\n  ↳ " + aliases
+                const aliases = [key[i], ...cmds[key[i]].variations].join(", ")
+                menu += `\n/${key[i]} — ${cmds[key[i]].short}\n  ↳ ${aliases}`
             }
 
             menu += `\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`
@@ -580,13 +577,13 @@ export const Commands = {
         const cmds = Commands.listCmds
 
         if (results.length == 0) {
-            Ui.warning(tr("commands.noCommand") + "“" + term + "”")
+            Ui.warning(`${tr("commands.noCommand")}“${term}”`)
             return null
         }
 
         const total = Math.ceil(results.length / 5)
         let page = 1,
-            answer = 0
+            answer
 
         do {
             if (page < 1) {
@@ -597,32 +594,17 @@ export const Commands = {
 
             const start = (page - 1) * 5
             const end = Math.min(start + 5, results.length)
-            let menu =
-                "=== " +
-                tr("commands.search") +
-                "“" +
-                term +
-                "” ===\n" +
-                String(results.length) +
-                " " +
-                tr("commands.resultsSearch") +
-                String(page) +
-                "/" +
-                String(total) +
-                "\n"
+            let menu = `=== ${tr("commands.search")}“${term}” ===\n${String(results.length)} ${tr(
+                "commands.resultsSearch"
+            )}${String(page)}/${String(total)}\n`
 
             for (let i = start; i < end; i++) {
-                menu += "\n/" + results[i] + " — " + cmds[results[i]].short
+                menu += `\n/${results[i]} — ${cmds[results[i]].short}`
             }
 
             menu +=
-                "\n----------------\n" +
-                "8 = " +
-                tr("commands.previous") +
-                " | 9 = " +
-                tr("commands.next") +
-                " | 0 = " +
-                tr("commands.back")
+                `\n----------------\n` +
+                `8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`
 
             answer = Ui.range(menu, "", 0, 9, 0, true)
 
@@ -646,55 +628,35 @@ export const Commands = {
         const canonical = Commands.resolveCmd(specific)
 
         if (canonical == null) {
-            Ui.error(tr("commands.unknownCommand"), "“/" + specific + "” " + tr("commands.invalidCommandExp"))
+            Ui.error(tr("commands.unknownCommand"), `“/${specific}” ${tr("commands.invalidCommandExp")}`)
             return null
         }
 
         const all = cmds[canonical].variations
-        const list = all
-            .map(v => {
-                return "/" + v
-            })
-            .join("\n")
+        const list = all.map(v => `/${v}`).join("\n")
 
-        Ui.display(tr("commands.commandVariations") + "“/" + canonical + "”:\n" + list)
+        Ui.display(`${tr("commands.commandVariations")}“/${canonical}”:\n${list}`)
         return null
     },
 
     get about() {
         Ui.display(
-            "====================================================" +
-                "\n" +
-                tr("commands.title") +
-                " — " +
-                VERSION +
-                "\n" +
-                tr("commands.author") +
-                "Adriano Lima" +
-                "\n" +
-                tr("commands.repository") +
-                "github.com/C4Adriano/analisador-funcoes-matematicas" +
-                "\n" +
-                tr("commands.copyright") +
-                " © Adriano Lima 2025 — 2026" +
-                "\n" +
-                "===================================================="
+            `====================================================` +
+                `\n${tr("commands.title")} — ${VERSION}\n${tr("commands.author")}Adriano Lima` +
+                `\n${tr("commands.repository")}github.com/C4Adriano/analisador-funcoes-matematicas` +
+                `\n${tr("commands.copyright")} © Adriano Lima 2025 — 2026` +
+                `\n` +
+                `====================================================`
         )
         return null
     },
 
     get version() {
         Ui.display(
-            "====================================================" +
-                "\n" +
-                tr("commands.title") +
-                " — " +
-                VERSION +
-                "\n" +
-                tr("commands.copyright") +
-                " © Adriano Lima 2025 — 2026" +
-                "\n" +
-                "===================================================="
+            `====================================================` +
+                `\n${tr("commands.title")} — ${VERSION}\n${tr("commands.copyright")} © Adriano Lima 2025 — 2026` +
+                `\n` +
+                `====================================================`
         )
         return null
     },

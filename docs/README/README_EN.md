@@ -26,8 +26,8 @@ Built primarily in pure **JavaScript**, with short, simple modules written in **
 - **Available analyses:** Domain, Range, Roots, Vertex, Axis intercepts, Sign study, Asymptote, Curve, Values of `x` and `y`, Equations between **Functions**, etc.
 - **Variable coefficients:** `a`, `b`, `c` can be left as unknowns — the **Program** calculates their values from known points
 - **History:** Saves and retrieves previous **Functions** during the session
-- **Settings: Unicode**, accents, decimal places, capitalization, decimal separator, log and division precision, iteration limit, language _(PT-BR / EN)_, and more.
-- **Bilingual: Brazilian Portuguese** and **English**
+- **Settings: Unicode**, accents, decimal places, capitalization, decimal separator, log and division precision, iteration limit, language, and more.
+- **Trilingual**: Portuguese (`pt-BR`, `pt-PT`), English (`en-US`, `en-GB`) and Spanish (`es-419`, `es-ES`).
 
 ### How to use
 
@@ -54,15 +54,14 @@ Access: [![GitHub Pages](https://img.shields.io/badge/Access%20here-GitHub%20Pag
 
 ### Version history
 
-| Version | Highlight                                            |
-| ------- | ---------------------------------------------------- |
-| [1.0]   | **Constant, Affine, and Quadratic Functions**        |
-| [2.x]   | **Exponential Functions**                            |
-| [3.x]   | Resolution of variables by points, menu pages        |
-| [4.x]   | **JS Functions**, equations between **Functions**    |
-| [5.x]   | **Logarithmic Functions**, history, _EN_ translation |
-| [6.0.0] | Release on **GitHub**                                |
-| [6.1.0] | **Trigonometric Functions**                          |
+| Version | Highlight                                                        |
+| ------- | ---------------------------------------------------------------- |
+| [1.x]   | **Constant, Affine, and Quadratic Functions**                    |
+| [2.x]   | **Exponential Functions**                                        |
+| [3.x]   | Resolution of variables by points, menu pages                    |
+| [4.x]   | **JS Functions**, equations between **Functions**                |
+| [5.x]   | **Logarithmic Functions**, history, _EN_ translation             |
+| [6.x]   | Release on **GitHub, Trigonometric Functions**, _ES_ transaltion |
 
 Full **Changelog [`here`][CHANGELOG]**.
 
@@ -107,14 +106,13 @@ Full **Roadmap [`here`][ROADMAP]**
 [version]: /src/version.js
 [writing]: /src/writing.js
 [CHANGELOG]: ../CHANGELOG/CHANGELOG_EN.md
-[1.0]: ../CHANGELOG/CHANGELOG_EN.md#10
+[1.x]: ../CHANGELOG/CHANGELOG_EN.md#1x
 [2.x]: ../CHANGELOG/CHANGELOG_EN.md#2x
 [3.x]: ../CHANGELOG/CHANGELOG_EN.md#3x
-[4.x]: ../CHANGELOG/CHANGELOG_EN.md#4x---2025-11-27
+[4.x]: ../CHANGELOG/CHANGELOG_EN.md#4x
 [5.x]: ../CHANGELOG/CHANGELOG_EN.md#5x
-[6.0.0]: ../CHANGELOG/CHANGELOG_EN.md#600---2026-03-19
-[6.1.0]: ../CHANGELOG/CHANGELOG_EN.md#610
+[6.x]: ../CHANGELOG/CHANGELOG_EN.md#6x
 [ROADMAP]: ../ROADMAP/ROADMAP_EN.md
-[LICENSE]: /LICENSE.md
-[SECURITY]: ../SECURITY.md
+[LICENSE]: /LICENSE.md#english-en
+[SECURITY]: ../SECURITY.md#english-en
 [Contributors]: ../CONTRIBUTORS/CONTRIBUTORS_EN.md

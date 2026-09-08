@@ -5,8 +5,8 @@
         "module": "nodenext",
         "moduleResolution": "nodenext",
 
-        "rootDir": "./src/",
-        "outDir": "./src/",
+        "rootDir": "src",
+        "outDir": "src",
 
         "allowJs": true,
         "checkJs": false,
@@ -24,6 +24,6 @@
         "exactOptionalPropertyTypes": true
     },
 
-    "include": ["./src/**/*.ts"],
-    "exclude": ["./pessoal/**/*", "./node_modules/**/*", "./src/**/*.js"]
+    "include": ["src/**/*.ts"],
+    "exclude": ["pessoal/**", "src/**/*.js"]
 }

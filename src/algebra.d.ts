@@ -138,7 +138,7 @@ export declare const Algebra: {
     ): Coefficients | null
 
     /**
-     * Coleta `count` pares de pontos (x, y) do usuário, usando a mesma convenção de {@link Algebra.point} (valores intercalados x₀, y₀, x₁, y₁, ...).
+     * Coleta `count` pares de pontos (x, y) do usuário, usando a mesma convenção de {@link Algebra.point} (valores intercalados x₁, y₁, x₂, y₂, ...).
      * @param count - Quantidade de pares a coletar.
      * @default count = 1
      * @returns Lista de pares ordenados já convertidos para número.
@@ -159,7 +159,10 @@ export declare const Algebra: {
 
     /**
      * Resolve os Coeficientes desconhecidos de uma Função Exponencial (`y = b × aˣ + c`).
-     * @remarks Os casos que envolvem apenas `b` e/ou `c` são lineares e resolvidos via {@link Algebra.solveLinearCoefs}; os que envolvem `a` usam fórmula fechada. A combinação `a` e `c` juntos ainda não é suportada.
+     * @remarks
+     * Os casos que envolvem apenas `b` e/ou `c` são lineares e resolvidos via {@link Algebra.solveLinearCoefs}; os que envolvem `a` usam fórmula fechada.
+     *
+     * A combinação `a` e `c` juntos ainda não é suportada.
      * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
      * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
      * @returns Coeficientes resolvidos, ou `null` caso o sistema linear associado seja singular
@@ -171,7 +174,10 @@ export declare const Algebra: {
 
     /**
      * Resolve os Coeficientes desconhecidos de uma Função Logarítmica (`y = b × logₐ(x) + c`).
-     * @remarks Os casos que envolvem apenas `b` e/ou `c` são lineares e resolvidos via {@link Algebra.solveLinearCoefs}; os que envolvem `a` usam fórmula fechada. A combinação `a` e `b` juntos ainda não é suportada.
+     * @remarks
+     * Os casos que envolvem apenas `b` e/ou `c` são lineares e resolvidos via {@link Algebra.solveLinearCoefs}; os que envolvem `a` usam fórmula fechada.
+     *
+     * A combinação `a` e `b` juntos ainda não é suportada.
      * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
      * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
      * @returns Coeficientes resolvidos, ou `null` caso o sistema linear associado seja singular
@@ -238,7 +244,10 @@ export declare const Algebra: {
     /**
      * Calcula o logaritmo de x.
      * @see {@link Algebra.log}
-     * @remarks Alias de {@link Algebra.log} com `options` ao invés de parâmetros posicionais — equivalente a `Algebra.log(x, base, precision, round, places)`.
+     * @remarks
+     * Alias de {@link Algebra.log} com `options` ao invés de parâmetros posicionais
+     *
+     * Equivalente a `Algebra.log(x, base, precision, round, places)`.
      * @param x - Número.
      * @param base - Base.
      * @param options - Opções (round, precision, places).
@@ -252,7 +261,10 @@ export declare const Algebra: {
     /**
      * Calcula o logaritmo natural de x.
      * @see {@link Algebra.log}
-     * @remarks Alias de {@link Algebra.log} com `base` fixada em `Math.E` — equivalente a `Algebra.log(x, Math.E, precision, round, places)`, que é justamente o valor padrão de `base` nessa Função.
+     * @remarks
+     * Alias de {@link Algebra.log} com `base` fixada em `Math.E`
+     *
+     * Equivalente a `Algebra.log(x, Math.E, precision, round, places)`, que é justamente o valor padrão de `base` nessa Função.
      * @param x - Número.
      * @param precision - Casas decimais.
      * @param round - Se deve arredondar.
@@ -267,7 +279,10 @@ export declare const Algebra: {
     /**
      * Calcula o logaritmo natural de x.
      * @see {@link Algebra.ln}
-     * @remarks Alias de {@link Algebra.ln} com `options` ao invés de parâmetros posicionais — equivalente a `Algebra.log(x, base, precision, round, places)`.
+     * @remarks
+     * Alias de {@link Algebra.ln} com `options` ao invés de parâmetros posicionais
+     *
+     * Equivalente a `Algebra.log(x, base, precision, round, places)`.
      * @param x - Número.
      * @param options - Opções.
      * @default options = { round: false, precision: Config.logPrecision, places: Config.decimalPlaces }
@@ -293,7 +308,10 @@ export declare const Algebra: {
     /**
      * Divide o `numerator` pelo `denominator`.
      * @see {@link Algebra.division}
-     * @remarks Alias de {@link Algebra.division} com `options` ao invés de parâmetros posicionais.
+     * @remarks
+     * Alias de {@link Algebra.division} com `options` ao invés de parâmetros posicionais.
+     *
+     * Equivalente a `Algebra.division(numerator, denominator, round, precision)`.
      * @param numerator - Parte de cima da fração.
      * @param denominator - Parte de baixo da fração.
      * @param options - Opções.
@@ -319,7 +337,10 @@ export declare const Algebra: {
     /**
      * Calcula o valor absoluto de um número.
      * @see {@link Algebra.absolute}
-     * @remarks Alias de {@link Algebra.absolute} com `options` ao invés de parâmetros posicionais.
+     * @remarks
+     * Alias de {@link Algebra.absolute} com `options` ao invés de parâmetros posicionais.
+     *
+     * Equivalente a `Algebra.absolute(number, round, places)`.
      * @param number - Número.
      * @param options - Opções.
      * @default options = { round: true, places: Config.decimalPlaces }
