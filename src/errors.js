@@ -1,62 +1,34 @@
-//@ts-check
 import { tr } from "./i18n.js"
 import { Ui } from "./ui.js"
 
 export const Errors = {
-    range(min = 0, max = 1) {
-        if (!isFinite(min) || !isFinite(max)) {
-            Ui.error("[Errors.range] Parâmetros inválidos.", `Min: ${min} | Max: ${max}`, true)
-            min = 0
-            max = 1
-        }
+    range: (min = 0, max = 1) =>
+        Ui.notifyOptions(
+            `${tr("errors.error001", { firstValue: min + (min == 0 ? 1 : 0), max })} ${min == 0 ? tr("errors.zeroToBack") : ""}`,
+            { explanation: tr("errors.error001Exp"), type: "error" }
+        ),
 
-        Ui.error(
-            `${tr("errors.error001", { firstValue: min + (min == 0 ? 1 : 0), max })} ${
-                min == 0 ? tr("errors.zeroToBack") : ""
-            }`,
-            tr("errors.error001Exp")
-        )
-    },
+    divZero: (reason = "") =>
+        Ui.notifyOptions(tr("errors.error002"), {
+            explanation: reason != "" ? tr("errors.reason", { reason }) : tr("errors.zeroDivision"),
+            type: "error",
+        }),
 
-    divZero(reason = "") {
-        if (typeof reason != "string") {
-            Ui.error("[Errors.divZero] 'reason' inválido.", `Recebido: ${reason}`, true)
-            reason = ""
-        }
+    limitExceeded: () =>
+        Ui.notifyOptions(tr("errors.error003"), { explanation: tr("errors.iterationsExceeded"), type: "error" }),
 
-        Ui.error(tr("errors.error002"), reason != "" ? tr("errors.reason", { reason }) : tr("errors.zeroDivision"))
-    },
+    constantFunction: (type = "") =>
+        Ui.notifyOptions(tr("errors.error004", { type }), {
+            explanation: "(a = 0) ∨ (a = 1) ∨ (b = 0)",
+            type: "error",
+        }),
 
-    limitExceeded() {
-        Ui.error(tr("errors.error003"), tr("errors.iterationsExceeded"))
-    },
+    invalidFunction: (type = "") =>
+        Ui.notifyOptions(tr("errors.error005", { type }), { explanation: "a < 0", type: "error" }),
 
-    constantFunction(type = "") {
-        Ui.error(tr("errors.error004", { type }), "(a = 0) ∨ (a = 1) ∨ (b = 0)")
-    },
-
-    invalidFunction(type = "") {
-        if (typeof type != "string") {
-            Ui.error("[Errors.invalidFunction] 'type' inválido.", `Recebido: ${type}`, true)
-            type = ""
-        }
-
-        Ui.error(tr("errors.error005", { type }), "a < 0")
-    },
-
-    invalidLog(type = "log", reason = "") {
-        if (typeof type != "string") {
-            Ui.error("[Errors.invalidLog] 'type' inválido.", `Recebido: ${type}`, true)
-            type = "log"
-        }
-        if (typeof reason != "string") {
-            Ui.error("[Errors.invalidLog] 'reason' inválido.", `Recebido: ${reason}`, true)
-            reason = ""
-        }
-
-        Ui.error(
-            tr("errors.error006", { type }),
-            reason != "" ? tr("errors.reason", { reason }) : tr("errors.error006Exp")
-        )
-    },
+    invalidLog: (type = "log", reason = "") =>
+        Ui.notifyOptions(tr("errors.error006", { type }), {
+            explanation: reason != "" ? tr("errors.reason", { reason }) : tr("errors.error006Exp"),
+            type: "error",
+        }),
 }

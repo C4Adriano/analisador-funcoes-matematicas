@@ -22,22 +22,18 @@ const BASE_OPTIONS = [
 ]
 
 export const Analyze = {
-    constant(coefC = State.globalC) {
-        Analyze.resolveConstant({ c: coefC })
-    },
-
-    resolveConstant({ c = State.globalC } = {}) {
+    constant: (c = State.globalC) => Analyze.resolveConstant({ c }),
+    resolveConstant: ({ c = State.globalC } = {}) => {
         const coefs = { c }
         Ui.resolveFunction(coefs)
 
         let option,
-            page = 1,
-            limit = 0
+            [page, limit] = [1, 0]
 
         const pageActions = {
             1: {
                 1: () => Helpers.domain(),
-                2: () => Helpers.range(`= ${Writing.decimal(coefs.c)}`, "", tr("analyze.constantValue")),
+                2: () => Helpers.range(`= ${Writing.decimalOptions(coefs.c)}`, "", tr("analyze.constantValue")),
                 3: () => Helpers.xAxis(0, String(coefs.c)),
                 4: () => Helpers.yAxis(coefs.c, "c", "c"),
                 5: () => Helpers.xValues(0, 0, coefs.c),
@@ -52,42 +48,26 @@ export const Analyze = {
         }
 
         do {
-            // Menu
             ;[option, page] = Ui.menu(trArr(BASE_OPTIONS), page)
-            if (Commands.names.includes(String(option))) {
-                option = 0
-                page = 1
-            }
+            if (Commands.names.includes(option)) [option, page] = [0, 1]
 
-            // Executa a ação da opção selecionada
             pageActions[page]?.[option]?.()
 
-            // Rever
-            if (option == 6) {
-                Ui.resolveFunction(coefs, "poly", true)
-            }
+            if (option == 6) Ui.resolveFunction(coefs, "poly", true)
 
-            // Limite
-            if (Helpers.exceededLimit(++limit)) {
-                option = 0
-            }
+            if (Helpers.exceededLimit(++limit)) option = 0
         } while (option != 0)
     },
 
-    affine(coefB = State.globalB, coefC = State.globalC) {
-        Analyze.resolveAffine({ b: coefB, c: coefC })
-    },
-
-    resolveAffine({ b = State.globalB, c = State.globalC } = {}) {
+    affine: (b = State.globalB, c = State.globalC) => Analyze.resolveAffine({ b, c }),
+    resolveAffine: ({ b = State.globalB, c = State.globalC } = {}) => {
         const coefs = { b, c }
         Ui.resolveFunction(coefs)
 
-        // Cálculo
         const root = Helpers.calcRoot(0, coefs.b, coefs.c)
 
         let option,
-            page = 1,
-            limit = 0
+            [page, limit] = [1, 0]
 
         const pageActions = {
             1: {
@@ -109,43 +89,27 @@ export const Analyze = {
         }
 
         do {
-            // Menu
             ;[option, page] = Ui.menu(trArr(["analyze.options.slope", "analyze.options.root", ...BASE_OPTIONS]), page)
-            if (Commands.names.includes(String(option))) {
-                option = 0
-                page = 1
-            }
+            if (Commands.names.includes(option)) [option, page] = [0, 1]
 
-            // Executa a ação da opção selecionada
             pageActions[page]?.[option]?.()
 
-            // Rever
-            if (option == 6) {
-                Ui.resolveFunction(coefs, "poly", true)
-            }
+            if (option == 6) Ui.resolveFunction(coefs, "poly", true)
 
-            // Limite
-            if (Helpers.exceededLimit(++limit)) {
-                option = 0
-            }
+            if (Helpers.exceededLimit(++limit)) option = 0
         } while (option != 0)
     },
 
-    quadratic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
-        Analyze.resolveQuadratic({ a: coefA, b: coefB, c: coefC })
-    },
-
-    resolveQuadratic({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+    quadratic: (a = State.globalA, b = State.globalB, c = State.globalC) => Analyze.resolveQuadratic({ a, b, c }),
+    resolveQuadratic: ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs)
 
-        // Cálculo
         const delta = Helpers.calcDelta(coefs.a, coefs.b, coefs.c),
             vertex = Helpers.vertex(coefs.a, coefs.b, delta[0])
 
         let option,
-            page = 1,
-            limit = 0
+            [page, limit] = [1, 0]
 
         const pageActions = {
             1: {
@@ -154,32 +118,41 @@ export const Analyze = {
                     Helpers.showDelta(
                         delta[0],
                         tr("analyze.noRoots"),
-                        tr("analyze.oneRoot", { x: Writing.decimal(delta[1]) }),
-                        tr("analyze.twoRoots", { x1: Writing.decimal(delta[1]), x2: Writing.decimal(delta[2]) })
+                        tr("analyze.oneRoot", { x: Writing.decimalOptions(delta[1]) }),
+                        tr("analyze.twoRoots", {
+                            x1: Writing.decimalOptions(delta[1]),
+                            x2: Writing.decimalOptions(delta[2]),
+                        })
                     ),
                 3: () =>
-                    Ui.display(
-                        tr("analyze.vertexPoint", { p1: Writing.decimal(vertex[0]), p2: Writing.decimal(vertex[1]) }),
-                        tr("analyze.vertexExp")
+                    Ui.notifyOptions(
+                        tr("analyze.vertexPoint", {
+                            p1: Writing.decimalOptions(vertex[0]),
+                            p2: Writing.decimalOptions(vertex[1]),
+                        }),
+                        { explanation: tr("analyze.vertexExp") }
                     ),
                 4: () => Helpers.domain(),
-                5: () => {
-                    if (coefs.a > 0) {
-                        Helpers.range(`∈ [${Writing.decimal(vertex[1])}, ∞)`, tr("analyze.betweenVertexInfinity"))
-                    } else if (coefs.a < 0) {
-                        Helpers.range(`∈ (-∞, ${Writing.decimal(vertex[1])} ]`, tr("analyze.betweenInfinityVertex"))
-                    }
-                },
+                5: () =>
+                    coefs.a > 0
+                        ? Helpers.range(
+                              `∈ [${Writing.decimalOptions(vertex[1])}, ∞)`,
+                              tr("analyze.betweenVertexInfinity")
+                          )
+                        : Helpers.range(
+                              `∈ (-∞, ${Writing.decimalOptions(vertex[1])} ]`,
+                              tr("analyze.betweenInfinityVertex")
+                          ),
             },
             2: {
                 1: () =>
                     Helpers.showDelta(
                         delta[0],
                         tr("analyze.noIntersectionXAxis"),
-                        tr("analyze.oneIntersectionXAxis", { p: Writing.decimal(delta[1]) }),
+                        tr("analyze.oneIntersectionXAxis", { p: Writing.decimalOptions(delta[1]) }),
                         tr("analyze.twoIntersectionsXAxis", {
-                            p1: Writing.decimal(delta[1]),
-                            p2: Writing.decimal(delta[2]),
+                            p1: Writing.decimalOptions(delta[1]),
+                            p2: Writing.decimalOptions(delta[2]),
                         })
                     ),
                 2: () => Helpers.yAxis(coefs.c, "ax² + bx + c", "c"),
@@ -188,66 +161,51 @@ export const Analyze = {
                 5: () => Helpers.sign(coefs.a, coefs.b, coefs.c),
             },
             3: {
-                1: () => {
-                    option = Helpers.equations(true, coefs.a, coefs.b, coefs.c)
-                },
+                1: () => (option = Helpers.equations(true, coefs.a, coefs.b, coefs.c)),
             },
         }
 
         do {
-            // Menu
             ;[option, page] = Ui.menu(
                 trArr(["analyze.options.concavity", "analyze.options.root", "analyze.options.vertex", ...BASE_OPTIONS]),
                 page
             )
-            if (Commands.names.includes(String(option))) {
-                option = 0
-                page = 1
-            }
+            if (Commands.names.includes(option)) [option, page] = [0, 1]
 
-            // Executa a ação da opção selecionada
             pageActions[page]?.[option]?.()
 
-            // Rever
-            if (option == 6) {
-                Ui.resolveFunction(coefs, "poly", true)
-            }
+            if (option == 6) Ui.resolveFunction(coefs, "poly", true)
 
-            // Limite
-            if (Helpers.exceededLimit(++limit)) {
-                option = 0
-            }
+            if (Helpers.exceededLimit(++limit)) option = 0
         } while (option != 0)
     },
 
-    exponential(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
-        Analyze.resolveExponential({ a: coefA, b: coefB, c: coefC })
-    },
-
-    resolveExponential({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+    exponential: (a = State.globalA, b = State.globalB, c = State.globalC) => Analyze.resolveExponential({ a, b, c }),
+    resolveExponential: ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "exp")
 
-        // Cálculo
         const root = Helpers.calcRoot(coefs.a, coefs.b, coefs.c, true)
 
         let option,
-            page = 1,
-            limit = 0
+            [page, limit] = [1, 0]
 
         const pageActions = {
             1: {
                 1: () => Helpers.curve(coefs.a, coefs.b, false),
                 2: () => Helpers.showRoot(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"),
                 3: () =>
-                    Ui.display(tr("analyze.options.horizontalAsymptote", { y: Writing.decimal(coefs.c) }), "y = c"),
+                    Ui.notifyOptions(
+                        tr("analyze.options.horizontalAsymptote", { y: Writing.decimalOptions(coefs.c) }),
+                        {
+                            explanation: "y = c",
+                        }
+                    ),
                 4: () => Helpers.domain(),
                 5: () => {
-                    if (coefs.b > 0) {
-                        Helpers.range(`∈ (${Writing.decimal(coefs.c)}, ∞)`, tr("analyze.betweenCInfinity"))
-                    } else {
-                        Helpers.range(`∈ (-∞, ${Writing.decimal(coefs.c)})`, tr("analyze.betweenInfinityC"))
-                    }
+                    if (coefs.b > 0)
+                        Helpers.range(`∈ (${Writing.decimalOptions(coefs.c)}, ∞)`, tr("analyze.betweenCInfinity"))
+                    else Helpers.range(`∈ (-∞, ${Writing.decimalOptions(coefs.c)})`, tr("analyze.betweenInfinityC"))
                 },
             },
             2: {
@@ -263,7 +221,6 @@ export const Analyze = {
         }
 
         do {
-            // Menu
             ;[option, page] = Ui.menu(
                 trArr([
                     "analyze.options.curve",
@@ -273,40 +230,25 @@ export const Analyze = {
                 ]),
                 page
             )
-            if (Commands.names.includes(String(option))) {
-                option = 0
-                page = 1
-            }
+            if (Commands.names.includes(option)) [option, page] = [0, 1]
 
-            // Executa a ação da opção selecionada
             pageActions[page]?.[option]?.()
 
-            // Rever
-            if (option == 6) {
-                Ui.resolveFunction(coefs, "exp", true)
-            }
+            if (option == 6) Ui.resolveFunction(coefs, "exp", true)
 
-            // Limite
-            if (Helpers.exceededLimit(++limit)) {
-                option = 0
-            }
+            if (Helpers.exceededLimit(++limit)) option = 0
         } while (option != 0)
     },
 
-    logarithmic(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
-        Analyze.resolveLogarithmic({ a: coefA, b: coefB, c: coefC })
-    },
-
-    resolveLogarithmic({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+    logarithmic: (a = State.globalA, b = State.globalB, c = State.globalC) => Analyze.resolveLogarithmic({ a, b, c }),
+    resolveLogarithmic: ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "log")
 
-        // Cálculo
-        const root = Algebra.round(coefs.a ** Algebra.division(-coefs.c, coefs.b, false))
+        const root = Algebra.round(coefs.a ** Algebra.divisionOptions(-coefs.c, coefs.b, { round: false }))
 
         let option,
-            page = 1,
-            limit = 0
+            [page, limit] = [1, 0]
 
         const pageActions = {
             1: {
@@ -326,42 +268,26 @@ export const Analyze = {
         }
 
         do {
-            // Menu
             ;[option, page] = Ui.menu(trArr(["analyze.options.curve", "analyze.options.root", ...BASE_OPTIONS]), page)
-            if (Commands.names.includes(String(option))) {
-                option = 0
-                page = 1
-            }
+            if (Commands.names.includes(option)) [option, page] = [0, 1]
 
-            // Executa a ação da opção selecionada
             pageActions[page]?.[option]?.()
 
-            // Rever
-            if (option == 6) {
-                Ui.resolveFunction(coefs, "log", true)
-            }
+            if (option == 6) Ui.resolveFunction(coefs, "log", true)
 
-            // Limite
-            if (Helpers.exceededLimit(++limit)) {
-                option = 0
-            }
+            if (Helpers.exceededLimit(++limit)) option = 0
         } while (option != 0)
     },
 
-    sine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
-        Analyze.resolveSine({ a: coefA, b: coefB, c: coefC })
-    },
-
-    resolveSine({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+    sine: (a = State.globalA, b = State.globalB, c = State.globalC) => Analyze.resolveSine({ a, b, c }),
+    resolveSine: ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "sin")
 
-        // Cálculo
-        const root = Algebra.round(Math.asin(Algebra.division(-coefs.c, coefs.b)) / coefs.a)
+        const root = Algebra.round(Math.asin(Algebra.divisionOptions(-coefs.c, coefs.b)) / coefs.a)
 
         let option,
-            page = 1,
-            limit = 0
+            [page, limit] = [1, 0]
 
         const pageActions = {
             1: {
@@ -369,7 +295,7 @@ export const Analyze = {
                 2: () => Helpers.showPeriod(coefs.a),
                 3: () => Helpers.domain(),
                 4: () => {
-                    const modB = Writing.decimal(Algebra.absolute(coefs.b) + coefs.c)
+                    const modB = Writing.decimalOptions(Algebra.absoluteOptions(coefs.b) + coefs.c)
                     Helpers.range(`∈ [${-modB}, ${modB}]`, "", "−|b| + c ≤ y ≤ |b| + c")
                 },
                 5: () => Helpers.xAxis(root, "arcsin(−c / b) / a", `|(−c / b)| > 1, ${tr("analyze.withoutRoot")}`),
@@ -384,45 +310,29 @@ export const Analyze = {
         }
 
         do {
-            // Menu
             ;[option, page] = Ui.menu(
                 trArr(["analyze.options.amplitude", "analyze.options.period", ...BASE_OPTIONS]),
                 page
             )
-            if (Commands.names.includes(String(option))) {
-                option = 0
-                page = 1
-            }
+            if (Commands.names.includes(option)) [option, page] = [0, 1]
 
-            // Executa a ação da opção selecionada
             pageActions[page]?.[option]?.()
 
-            // Rever
-            if (option == 6) {
-                Ui.resolveFunction(coefs, "sin", true)
-            }
+            if (option == 6) Ui.resolveFunction(coefs, "sin", true)
 
-            // Limite
-            if (Helpers.exceededLimit(++limit)) {
-                option = 0
-            }
+            if (Helpers.exceededLimit(++limit)) option = 0
         } while (option != 0)
     },
 
-    cosine(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
-        Analyze.resolveCosine({ a: coefA, b: coefB, c: coefC })
-    },
-
-    resolveCosine({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+    cosine: (a = State.globalA, b = State.globalB, c = State.globalC) => Analyze.resolveCosine({ a, b, c }),
+    resolveCosine: ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "cos")
 
-        // Cálculo
-        const root = Algebra.round(Math.acos(Algebra.division(-coefs.c, coefs.b)) / coefs.a)
+        const root = Algebra.round(Math.acos(Algebra.divisionOptions(-coefs.c, coefs.b)) / coefs.a)
 
         let option,
-            page = 1,
-            limit = 0
+            [page, limit] = [1, 0]
 
         const pageActions = {
             1: {
@@ -431,9 +341,7 @@ export const Analyze = {
                 3: () => Helpers.domain(),
                 4: () =>
                     Helpers.range(
-                        `∈ [${Writing.decimal(-Algebra.absolute(coefs.b) + coefs.c)}, ${Writing.decimal(
-                            Algebra.absolute(coefs.b) + coefs.c
-                        )}]`,
+                        `∈ [${Writing.decimalOptions(-Algebra.absoluteOptions(coefs.b) + coefs.c)}, ${Writing.decimalOptions(Algebra.absoluteOptions(coefs.b) + coefs.c)}]`,
                         "",
                         "−|b| + c ≤ y ≤ |b| + c"
                     ),
@@ -449,45 +357,29 @@ export const Analyze = {
         }
 
         do {
-            // Menu
             ;[option, page] = Ui.menu(
                 trArr(["analyze.options.amplitude", "analyze.options.period", ...BASE_OPTIONS]),
                 page
             )
-            if (Commands.names.includes(String(option))) {
-                option = 0
-                page = 1
-            }
+            if (Commands.names.includes(option)) [option, page] = [0, 1]
 
-            // Executa a ação da opção selecionada
             pageActions[page]?.[option]?.()
 
-            // Rever
-            if (option == 6) {
-                Ui.resolveFunction(coefs, "cos", true)
-            }
+            if (option == 6) Ui.resolveFunction(coefs, "cos", true)
 
-            // Limite
-            if (Helpers.exceededLimit(++limit)) {
-                option = 0
-            }
+            if (Helpers.exceededLimit(++limit)) option = 0
         } while (option != 0)
     },
 
-    tangent(coefA = State.globalA, coefB = State.globalB, coefC = State.globalC) {
-        Analyze.resolveTangent({ a: coefA, b: coefB, c: coefC })
-    },
-
-    resolveTangent({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
+    tangent: (a = State.globalA, b = State.globalB, c = State.globalC) => Analyze.resolveTangent({ a, b, c }),
+    resolveTangent: ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "tan")
 
-        // Cálculo
-        const root = Algebra.round(Math.atan(Algebra.division(-coefs.c, coefs.b)) / coefs.a)
+        const root = Algebra.round(Math.atan(Algebra.divisionOptions(-coefs.c, coefs.b)) / coefs.a)
 
         let option,
-            page = 1,
-            limit = 0
+            [page, limit] = [1, 0]
 
         const pageActions = {
             1: {
@@ -507,28 +399,17 @@ export const Analyze = {
         }
 
         do {
-            // Menu
             ;[option, page] = Ui.menu(
                 trArr(["analyze.options.verticalAsymptote", "analyze.options.period", ...BASE_OPTIONS]),
                 page
             )
-            if (Commands.names.includes(String(option))) {
-                option = 0
-                page = 1
-            }
+            if (Commands.names.includes(option)) [option, page] = [0, 1]
 
-            // Executa a ação da opção selecionada
             pageActions[page]?.[option]?.()
 
-            // Rever
-            if (option == 6) {
-                Ui.resolveFunction(coefs, "tan", true)
-            }
+            if (option == 6) Ui.resolveFunction(coefs, "tan", true)
 
-            // Limite
-            if (Helpers.exceededLimit(++limit)) {
-                option = 0
-            }
+            if (Helpers.exceededLimit(++limit)) option = 0
         } while (option != 0)
     },
 }

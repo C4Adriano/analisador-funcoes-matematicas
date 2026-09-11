@@ -34,65 +34,104 @@ import type {
  * @since v6.1.0
  */
 export declare const Ui: {
+    /** Exibe uma mensagem qualquer, como {@link Ui.display display}. @deprecated */
+    notify(message: Text, explanation?: Text, asConfirm?: false): undefined
+    /** Exibe uma mensagem qualquer, como {@link Ui.confirm `confirm`}. @deprecated */
+    notify(message: Text, explanation?: Text, asConfirm: true): boolean
     /**
      * Exibe uma mensagem qualquer.
+     * @deprecated
+     * Desde v6.6.7. Use {@link Ui.notifyOptions} com um objeto {@link MessageOptions} ao invés dos parâmetros.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
+     *
      * @param message - Mensagem.
      * @param explanation - Explicação.
-     * @param asConfirm - Se é `confirm` ou não.
-     * @param debug - Se `true`, exibe no `console`, se `false`, exibe no `alert` ou `confirm` (dependendo de `asConfirm`).
+     * @param asConfirm - Se é {@link Ui.confirm `confirm`} ou não.
      * @group UI
      * @since v6.6.1
      */
-    notify(message: Text, explanation?: Text, asConfirm?: boolean, debug?: boolean)
+    notify(message: Text, explanation?: Text, asConfirm?: boolean): boolean | undefined
 
+    /** Exibe uma mensagem qualquer, como {@link Ui.confirm `confirm`}. */
+    notifyOptions(message: Text, option: MessageOptions & { type: "confirm" }): boolean
+    /** Exibe uma mensagem qualquer, como {@link Ui.confirm `confirm`}, via {@link Ui.warning aviso}. */
+    notifyOptions(message: Text, option: MessageOptions & { type: "warning"; asConfirm: true }): boolean
+    /** Exibe uma mensagem qualquer, como {@link Ui.confirm `confirm`}. */
+    notifyOptions(message: Text, option: MessageOptions & { asConfirm: true }): boolean
+    /** Exibe uma mensagem qualquer, sem retorno. */
+    notifyOptions(
+        message: Text,
+        option?: MessageOptions & { type?: "display" | "error" | "warning" | "console" }
+    ): undefined
     /**
-     * Exibe uma mensagem qualquer.
+     * Exibe uma mensagem qualquer, com base no `type` informado.
      * @param message - Mensagem
      * @param option - Opções
+     * @default options: { asConfirm: false, type: "display" }
+     * @group UI
+     * @since v6.6.1
      */
-    notifyOptions(message: Text, option: MessageOptions)
+    notifyOptions(message: Text, option?: MessageOptions): boolean | undefined
 
     /**
      * Exibe um `alert` personalizado.
+     * @deprecated
+     * Desde v6.6.7. Use {@link Ui.notifyOptions} com um objeto {@link MessageOptions} com `type: "display"`
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
      * @param message - Mensagem.
      * @param explanation - Explicação.
-     * @param debug - Se `true`, exibe no `console`, se `false`, exibe no `alert`.
      * @group UI
      * @since v6.1.0
      */
-    display(message: Text, explanation?: Text, debug?: boolean): void
+    display(message: Text, explanation?: Text): undefined
 
     /**
      * Exibe um `confirm` personalizado.
+     * @deprecated
+     * Desde v6.6.7. Use {@link Ui.notifyOptions} com um objeto {@link MessageOptions} com `type: "confirm"`
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
      * @param message - Mensagem.
      * @param explanation - Explicação.
-     * @param debug - Se `true`, exibe no `console`, se `false`, exibe no `confirm`.
      * @returns "Sim" ou "Não".
      * @group UI
      * @since v6.1.0
      */
-    confirm(message: Text, explanation?: Text, debug?: boolean): boolean
+    confirm(message: Text, explanation?: Text): boolean
 
     /**
      * Exibe uma mensagem de erro.
+     * @deprecated
+     * Desde v6.6.7. Use {@link Ui.notifyOptions} com um objeto {@link MessageOptions} com `type: "error"`
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
      * @param message - Mensagem.
      * @param explanation - Explicação.
-     * @param debug - Se `true`, exibe no `console`, se `false`, exibe no `confirm`.
      * @group UI
      * @since v6.1.0
      */
-    error(message: Text, explanation?: Text, debug?: boolean): void
+    error(message: Text, explanation?: Text): undefined
 
+    /** Exibe uma mensagem de aviso, como `alert`. @deprecated */
+    warning(message: Text, explanation?: Text, asConfirm?: false): undefined
+    /** Exibe uma mensagem de aviso, como {@link Ui.confirm `confirm`}. @deprecated */
+    warning(message: Text, explanation?: Text, asConfirm: true): boolean
     /**
      * Exibe uma mensagem de aviso.
+     * @deprecated
+     * Desde v6.6.7. Use {@link Ui.notifyOptions} com um objeto {@link MessageOptions} com `type: "warning"` e `asConfrim`
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
      * @param message - Mensagem.
      * @param explanation - Explicação.
      * @param asConfirm - Se é `confirm` ou não.
-     * @param debug - Se `true`, exibe no `console`, se `false`, exibe no `confirm`.
+     * @default asConfirm = false
      * @group UI
      * @since v6.1.0
      */
-    warning(message: Text, explanation?: Text, asConfirm?: boolean, debug?: boolean): void
+    warning(message: Text, explanation?: Text, asConfirm?: boolean): boolean | undefined
 
     /**
      * Formata um menu paginado.
@@ -128,9 +167,8 @@ export declare const Ui: {
 
     /**
      * Formata uma Função.
-     *
      * @deprecated
-     * Desde v6.6.1. Use {@link Algebra.resolveUnknown} com um objeto {@link Coefficients} e um {@link FunctionType} no lugar dos outros três parâmetros.
+     * Desde v6.6.1. Use {@link Ui.resolveFunction} com um objeto {@link Coefficients} e um {@link FunctionType} no lugar dos outros três parâmetros.
      *
      * Mantido apenas para compatibilidade retroativa; **não remover**.
      *

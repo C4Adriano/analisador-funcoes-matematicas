@@ -26,11 +26,11 @@ const dictionaries = {
     "es-es": esES,
 }
 
-const FALLBACK_DICT = ptBR
-const FALLBACK_CHAIN: Partial<Record<keyof typeof dictionaries, (keyof typeof dictionaries)[]>> = {
-    "en-gb": ["en-us"],
-    "es-es": ["es-419"],
-}
+const FALLBACK_DICT = ptBR,
+    FALLBACK_CHAIN: Partial<Record<keyof typeof dictionaries, (keyof typeof dictionaries)[]>> = {
+        "en-gb": ["en-us"],
+        "es-es": ["es-419"],
+    }
 
 /**
  * Gera, recursivamente, a união de todas as chaves em _dot-notation_ de um objeto de traduções.
@@ -66,7 +66,7 @@ export type TranslationKey = PathsOf<typeof ptBR>
  * @group i18n
  * @since v6.3.0
  */
-function resolveKey(dict: Record<string, any>, key: string): string | undefined {
+const resolveKey = (dict: Record<string, any>, key: string): Text | undefined => {
     const raw = key.split(".").reduce<any>((obj, part) => obj?.[part], dict)
     return typeof raw == "string" ? raw : undefined
 }
@@ -80,34 +80,18 @@ function resolveKey(dict: Record<string, any>, key: string): string | undefined 
  * @group i18n
  * @since v6.2.0
  */
-export function tr(key: TranslationKey, params?: Record<string, string | number>): Text {
+export const tr = (key: TranslationKey, params?: Record<string, string | number>): Text => {
     const dict = dictionaries[Config.language] ?? dictionaries["pt-br"]
 
     let raw = resolveKey(dict, key)
 
-    if (raw == undefined) {
+    if (raw == null)
         for (const lang of FALLBACK_CHAIN[Config.language] ?? []) {
             raw = resolveKey(dictionaries[lang], key)
-            if (raw != undefined) {
-                if (Config.debug) {
-                    console.warn(`[i18n] Chave “${key}” ausente em “${Config.language}”, usando fallback “${lang}”.`)
-                }
-                break
-            }
+            if (raw != null) break
         }
-    }
-
-    if (raw == undefined && dict != FALLBACK_DICT) {
-        raw = resolveKey(FALLBACK_DICT, key)
-
-        if (raw != undefined && Config.debug) {
-            console.warn(`[i18n] Chave “${key}” ausente em “${Config.language}”, usando fallback “pt-BR”.`)
-        }
-    }
-
-    if (raw == undefined) {
-        return key
-    }
+    if (raw == null && dict != FALLBACK_DICT) raw = resolveKey(FALLBACK_DICT, key)
+    if (raw == null) return key
 
     return params ? Object.entries(params).reduce((str, [k, v]) => str.replaceAll(`{${k}}`, String(v)), raw) : raw
 }
@@ -119,9 +103,7 @@ export function tr(key: TranslationKey, params?: Record<string, string | number>
  * @group i18n
  * @since v6.2.0
  */
-export function trArr(keys: TranslationKey[] = []): Text[] {
-    return keys.map(key => tr(key))
-}
+export const trArr = (keys: TranslationKey[] = []): Text[] => keys.map(key => tr(key))
 
 /**
  * Altera o idioma do programa, ajustando as configurações relacionadas (como {@link Config.accents} e {@link Config.decimalSeparator}).
@@ -129,10 +111,9 @@ export function trArr(keys: TranslationKey[] = []): Text[] {
  * @group i18n
  * @since v6.2.0
  */
-export function changeLanguage(language: Language = "pt-br") {
-    if (Config.language == language) {
-        Ui.warning(tr("commands.languageAlready"))
-    } else if (confirm(tr("i18n.confirmChangeLanguage", { language }))) {
+export const changeLanguage = (language: Language = "pt-br") => {
+    if (Config.language == language) Ui.notifyOptions(tr("commands.languageAlready"), { type: "warning" })
+    else if (confirm(tr("i18n.confirmChangeLanguage", { language }))) {
         if (language == "pt-br" || language == "pt-pt" || language == "es-419" || language == "es-es") {
             Config.decimalSeparator = true
             Config.accents = true

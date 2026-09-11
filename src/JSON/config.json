@@ -1,24 +1,21 @@
 {
     "language": "pt-br",
-    "debug": false,
 
     "unicode": true,
-    "explanations": true,
     "accents": true,
-    "capitalized": true,
-    "uppercase": false,
-    "lowercase": false,
-
+    "textCase": "normal",
     "decimalSeparator": true,
-    "simpleMulti": true,
-    "inputConfirm": false,
-    "outputConfirm": true,
+
+    "explanations": true,
     "errors": true,
     "showFunction": true,
+    "inputConfirm": false,
+    "outputConfirm": true,
+    "simpleMulti": true,
 
     "decimalPlaces": 6,
     "logPrecision": 1e-12,
     "divPrecision": 1e-12,
-    "interactionLimit": 1000,
+    "iterationLimit": 1000,
     "degrees": "deg"
 }

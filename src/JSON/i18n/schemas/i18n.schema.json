@@ -264,12 +264,8 @@
                 "longAccents",
                 "shortExplain",
                 "longExplain",
-                "shortCapitalize",
-                "longCapitalize",
-                "shortUppercase",
-                "longUppercase",
-                "shortLowercase",
-                "longLowercase",
+                "shortTextCase",
+                "longTextCase",
                 "shortSeparator",
                 "longSeparator",
                 "shortMultiples",
@@ -420,22 +416,10 @@
                 "longExplain": {
                     "type": "string"
                 },
-                "shortCapitalize": {
+                "shortTextCase": {
                     "type": "string"
                 },
-                "longCapitalize": {
-                    "type": "string"
-                },
-                "shortUppercase": {
-                    "type": "string"
-                },
-                "longUppercase": {
-                    "type": "string"
-                },
-                "shortLowercase": {
-                    "type": "string"
-                },
-                "longLowercase": {
+                "longTextCase": {
                     "type": "string"
                 },
                 "shortSeparator": {
@@ -784,9 +768,7 @@
         "i18n": {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-                "confirmChangeLanguage"
-            ],
+            "required": ["confirmChangeLanguage"],
             "properties": {
                 "confirmChangeLanguage": {
                     "type": "string"
@@ -825,9 +807,7 @@
                 "unicode",
                 "explanations",
                 "accents",
-                "capitalized",
-                "uppercase",
-                "lowercase",
+                "textCase",
                 "decimalSeparator",
                 "simpleMulti",
                 "inputConfirm",
@@ -852,12 +832,12 @@
                 "noteExplanations",
                 "enableAccents",
                 "noteAccents",
-                "enableCapitalized",
-                "noteCapitalized",
-                "enableUppercase",
-                "noteUppercase",
-                "enableLowercase",
-                "noteLowercase",
+                "changeTextCase",
+                "noteTextCase",
+                "textCaseCapitalized",
+                "textCaseUppercase",
+                "textCaseLowercase",
+                "textCaseNormal",
                 "changeDecimalSeparator",
                 "noteDecimalSeparator",
                 "noteDecimalSeparator2",
@@ -973,13 +953,7 @@
                 "accents": {
                     "type": "string"
                 },
-                "capitalized": {
-                    "type": "string"
-                },
-                "uppercase": {
-                    "type": "string"
-                },
-                "lowercase": {
+                "textCase": {
                     "type": "string"
                 },
                 "decimalSeparator": {
@@ -1054,22 +1028,22 @@
                 "noteAccents": {
                     "type": "string"
                 },
-                "enableCapitalized": {
+                "changeTextCase": {
                     "type": "string"
                 },
-                "noteCapitalized": {
+                "noteTextCase": {
                     "type": "string"
                 },
-                "enableUppercase": {
+                "textCaseCapitalized": {
                     "type": "string"
                 },
-                "noteUppercase": {
+                "textCaseUppercase": {
                     "type": "string"
                 },
-                "enableLowercase": {
+                "textCaseLowercase": {
                     "type": "string"
                 },
-                "noteLowercase": {
+                "textCaseNormal": {
                     "type": "string"
                 },
                 "changeDecimalSeparator": {
@@ -1264,11 +1238,7 @@
         "writing": {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-                "yes",
-                "no",
-                "currentDefault"
-            ],
+            "required": ["yes", "no", "currentDefault"],
             "properties": {
                 "yes": {
                     "type": "string"

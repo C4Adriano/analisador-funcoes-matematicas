@@ -3,42 +3,23 @@ import { Config } from "./config.js"
 import { Writing } from "./writing.js"
 
 export const Checks = {
-    isText(value) {
-        return typeof value == "string"
-    },
+    isText: value => typeof value == "string",
 
-    isValidText(value) {
-        return Checks.isText(value) && value.trim().length > 0
-    },
+    isValidText: value => Checks.isText(value) && value.trim().length > 0,
 
-    isNumeric(value) {
-        return typeof value == "number"
-    },
+    isNumeric: value => typeof value == "number",
 
-    isFiniteNumber(value) {
-        return (
-            (Checks.isNumeric(value) && Number.isFinite(value)) ||
-            (Checks.isValidText(value) && Number.isFinite(Number(value)))
-        )
-    },
+    isFiniteNumber: value =>
+        (Checks.isNumeric(value) && Number.isFinite(value)) ||
+        (Checks.isValidText(value) && Number.isFinite(Number(value))),
 
-    isValue(value) {
-        return Checks.isText(value) || Checks.isNumeric(value)
-    },
+    isValue: value => Checks.isText(value) || Checks.isNumeric(value),
 
-    isValidValue(value) {
-        return Checks.isValidText(value) || Checks.isFiniteNumber(value)
-    },
+    isValidValue: value => Checks.isValidText(value) || Checks.isFiniteNumber(value),
 
-    isCommand(value) {
-        return Checks.isText(value) && Commands.names.includes(value)
-    },
+    isCommand: value => Checks.isText(value) && Commands.names.includes(value),
 
-    isConfigKey(value) {
-        return Checks.isValidValue(value) && Object.keys(Config).includes(String(value))
-    },
+    isConfigKey: value => Checks.isValidValue(value) && value in Config,
 
-    numericPoint(points, index) {
-        return Number(Writing.decimal(points[index] ?? 0, true))
-    },
+    numericPoint: (points, index) => Number(Writing.decimalOptions(points[index] ?? 0, { invert: true })),
 }

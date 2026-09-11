@@ -1,4 +1,5 @@
 import { Algebra } from "./algebra.js"
+import { Checks } from "./checks.js"
 import { Commands } from "./commands.js"
 import { Config } from "./config.js"
 import { Errors } from "./errors.js"
@@ -7,74 +8,121 @@ import { tr } from "./i18n.js"
 import { State } from "./state.js"
 import { Writing } from "./writing.js"
 
+const formatLeadingTerm = (coef, symbol, term) =>
+    coef == symbol
+        ? `${symbol} · ${term}`
+        : Algebra.absoluteOptions(coef) == 1
+          ? (coef == -1 ? "−" : "") + term
+          : coef == 0
+            ? ""
+            : `${String(coef)} · ${term}`
+
+const formatMiddleTerm = (coef, symbol, term) =>
+    coef == symbol
+        ? ` + ${symbol} · ${term}`
+        : coef == 0
+          ? ""
+          : (coef > 0 ? " + " : " − ") +
+            (Algebra.absoluteOptions(coef) == 1 ? term : `${String(Algebra.absoluteOptions(coef))} · ${term}`)
+
+const formatConstantTerm = (coef, symbol) =>
+    coef == symbol ? ` + ${symbol}` : coef == 0 ? "" : coef > 0 ? ` + ${String(coef)}` : ` − ${String(-coef)}`
+
+const formatMultiplier = (coef, symbol) =>
+    coef == symbol ? `${symbol} × ` : coef != 0 && coef != 1 ? `${String(coef)} × ` : ""
+
+const buildConstantFunction = ({ c = State.globalC } = {}) =>
+    tr("ui.theFunction") + (c == "c" ? "c" : String(c)) + tr("ui.constant") + (c == 0 ? tr("ui.constantNull") : "")
+
+const buildAffineFunction = ({ b = State.globalB, c = State.globalC } = {}) =>
+    tr("ui.theFunction") +
+    formatLeadingTerm(b, "b", "x") +
+    formatConstantTerm(c, "c") +
+    tr("ui.affine") +
+    (b != 1 && c == 0
+        ? tr("ui.affineLinear")
+        : b == 1 && c == 0
+          ? tr("ui.affineIdentity")
+          : b == -1
+            ? tr("ui.affineOpposite")
+            : "")
+
+const buildQuadraticFunction = ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) =>
+    tr("ui.theFunction") +
+    formatLeadingTerm(a, "a", "x²") +
+    formatMiddleTerm(b, "b", "x") +
+    formatConstantTerm(c, "c") +
+    tr("ui.quadratic") +
+    (b == 0 && c == 0
+        ? tr("ui.pure")
+        : b == 0
+          ? tr("ui.quadraticIncompleteLinear")
+          : c == 0
+            ? tr("ui.quadraticIncompleteConstant")
+            : "")
+
+const buildExponentialFunction = ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) =>
+    tr("ui.theFunction") +
+    formatMultiplier(b, "b") +
+    (a == "a" ? "aˣ" : a != 0 ? `${String(a)}ˣ` : "") +
+    formatConstantTerm(c, "c") +
+    tr("ui.exponential") +
+    (b == 1 && c == 0 ? tr("ui.pure") : "") +
+    (a == Algebra.round(Math.E) ? tr("ui.natural") : "")
+
+const buildLogarithmicFunction = ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) =>
+    tr("ui.theFunction") +
+    formatMultiplier(b, "b") +
+    (a == "a" ? "logₐ(x)" : a != 0 ? `log${Writing.subscript(a)}(x)` : "") +
+    formatConstantTerm(c, "c") +
+    tr("ui.logarithmic") +
+    (b == 1 && c == 0 ? tr("ui.pure") : "") +
+    (a == Algebra.round(Math.E) ? tr("ui.natural") : a == 10 ? tr("ui.decimal") : "")
+
+const buildTrigFunction = ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}, funcType) =>
+    tr("ui.theFunction") +
+    formatMultiplier(b, "b") +
+    (a == "a" ? `${funcType}(a · x)` : a != 0 ? `${funcType}(${String(a)} · x)` : "") +
+    formatConstantTerm(c, "c")
+
 export const Ui = {
-    notify(message = "", explanation = "", debug = Config.debug, asConfirm = false) {
-        if (debug) {
-            console.warn(message)
-            if (explanation != "") {
-                console.warn(explanation)
-            }
-            return asConfirm ? true : null
-        }
-        if (asConfirm) {
-            return confirm(Writing.format(message, `${explanation}\n\n${tr("ui.confirm")}`))
-        }
-        alert(Writing.format(message, explanation))
-        return null
-    },
+    notify: (message = "", explanation = "", asConfirm = false) =>
+        asConfirm
+            ? confirm(Writing.format(message, `${explanation}\n\n${tr("ui.confirm")}`))
+            : alert(Writing.format(message, explanation)),
 
-    notifyOptions(message = "", { explanation = "", debug = Config.debug, asConfirm = false, type = "display" } = {}) {
-        if (type == "error") {
-            return Ui.error(message, explanation, debug)
-        }
-        if (type == "warning") {
-            return Ui.warning(message, explanation, asConfirm, debug)
-        }
-        return Ui.notify(message, explanation, debug, type == "confirm" || asConfirm)
-    },
+    notifyOptions: (message = "", { explanation = "", asConfirm = false, type = "display" } = {}) =>
+        type == "error"
+            ? Config.errors
+                ? Ui.notify(`=== ${tr("ui.error")} ===\n${message}`, explanation)
+                : undefined
+            : type == "warning"
+              ? Ui.notify(`=== ${tr("ui.warning")} ===\n${message}`, explanation, asConfirm)
+              : type == "console"
+                ? console.warn(message, explanation)
+                : Ui.notify(message, explanation, type == "confirm" || asConfirm),
 
-    display(message = "", explanation = "", debug = Config.debug) {
-        Ui.notify(message, explanation, debug, false)
-    },
+    display: (message = "", explanation = "") => Ui.notifyOptions(message, { explanation }),
+    confirm: (message = "", explanation = "") => Ui.notifyOptions(message, { explanation, type: "confirm" }),
+    error: (message = "", explanation = "") => Ui.notifyOptions(message, { explanation, type: "error" }),
+    warning: (message = "", explanation = "", asConfirm = false) =>
+        Ui.notifyOptions(message, { explanation, asConfirm, type: "warning" }),
 
-    confirm(message = "", explanation = "", debug = Config.debug) {
-        return Ui.notify(message, explanation, debug, true)
-    },
-
-    error(message = "", explanation = "", debug = Config.debug) {
-        if (Config.errors) {
-            Ui.display(`=== ${tr("ui.error")} ===\n${message}`, explanation, debug)
-        }
-    },
-
-    warning(message = "", explanation = "", asConfirm = false, debug = Config.debug) {
-        const header = `=== ${tr("ui.warning")} ===\n${message}`
-        return asConfirm ? Ui.confirm(header, explanation, debug) : Ui.display(header, explanation, debug)
-    },
-
-    menu(options = ["---"], page = 1) {
+    menu: (options = ["---"], page = 1) => {
         let answer,
             option = 1
 
         const list = options.slice()
 
-        // Organiza
-        while (list.length % 5 != 0 || list.length == 0) {
-            list.push("---")
-        }
+        while (list.length % 5 != 0 || list.length == 0) list.push("---")
+
         const total = Math.ceil(list.length / 5)
 
-        // Loop
         let limit = 0
         do {
-            // Arruma
-            if (page < 1) {
-                page = 1
-            } else if (page > total) {
-                page = total
-            }
+            if (page < 1) page = 1
+            if (page > total) page = total
 
-            // Pergunta
             let menu = `=== ${tr("ui.menu")} ===\n${tr("ui.page", { page, total })}\n${tr("main.whatWant")}`
 
             while (option <= 5) {
@@ -85,117 +133,81 @@ export const Ui = {
             option = 1
             menu +=
                 `\n----------------\n` +
-                `6 = ${tr("main.review")} | 7 = ${tr("main.change")} | 8 = ${tr("commands.previous")} | 9 = ${tr(
-                    "commands.next"
-                )} | 0 = ${tr("commands.back")}`
+                `6 = ${tr("main.review")} | 7 = ${tr("main.change")} | 8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`
 
-            // Responde
             answer = Ui.range(menu, "", 0, 9, 0, true)
             if (answer == 0) {
-                // Voltar
                 State.askCoeffs = false
                 State.loop = true
             } else if (answer == 7) {
-                // Alterar
                 State.askCoeffs = true
                 State.loop = true
                 answer = 0
-            } else if (answer == 8) {
-                // -1
-                answer = -1
-                page -= 1
-            } else if (answer == 9) {
-                // +1
-                answer = -1
-                page += 1
-            } else if (Commands.names.includes(answer)) {
+            } else if (answer == 8) page--
+            else if (answer == 9) page++
+            else if (Commands.names.includes(answer)) {
                 State.loop = true
                 State.keepType = true
             }
 
-            // Limite
             if (Helpers.exceededLimit(++limit)) {
-                answer = 0
                 State.loop = true
+                break
             }
-        } while (!(answer >= 0 && answer <= 9) || Commands.names.includes(answer))
+        } while (!(answer >= 0 && answer <= 7) || Commands.names.includes(answer))
 
         return [answer, page]
     },
 
-    input(
+    input: (
         message = "",
         explanation = "",
         number = false,
         places = Config.decimalPlaces,
         allowCommands = false,
         angle = false
-    ) {
-        let text = "",
-            value = 0,
-            valid
-
-        // Loop
+    ) => {
         let limit = 0
+
         do {
             const raw = prompt(Writing.format(message, explanation))
+            if (raw == null) break
 
-            // Cancelar
-            if (raw == null) {
-                valid = false
-            } else {
-                text = String(raw).trim()
-                valid = text != ""
-            }
+            const text = raw.trim()
+            if (text == "") continue
 
-            // Comandos
-            if (valid && raw[0] == "/" && allowCommands) {
+            if (raw[0] == "/" && allowCommands) {
                 const action = Commands.process(raw)
-                if (action != null) {
-                    return action
-                }
-                valid = false
+                if (action == null) continue
+                return action
             }
 
-            // Número
-            if (valid && number) {
-                if (angle == "rad") {
-                    value = Writing.parseAngle(String(text))
-                } else {
-                    value = Number(Writing.decimal(text, true))
-                }
-                valid = isFinite(value)
-            }
-
-            // Confirma
-            if (valid && Config.inputConfirm) {
-                valid = Ui.warning(
-                    tr("ui.inputConfirm", {
-                        input: number ? (angle ? Writing.formatAngle(value) : Writing.decimal(value)) : text,
-                    }),
-                    tr("ui.inputConfirmNote"),
-                    true
+            if (
+                number &&
+                !Checks.isFiniteNumber(
+                    angle == "rad" ? Writing.parseAngle(text) : Writing.decimalOptions(text, { invert: true })
                 )
-            }
+            )
+                continue
 
-            // Retorna
-            if (valid) {
-                if (number) {
-                    return Algebra.round(value, places)
-                }
-                return text
-            }
+            if (
+                Config.inputConfirm &&
+                !Ui.notifyOptions(
+                    tr("ui.inputConfirm", {
+                        input: number ? (angle ? Writing.formatAngle(raw) : Writing.decimalOptions(raw)) : text,
+                    }),
+                    { explanation: tr("ui.inputConfirmNote"), type: "warning", asConfirm: true }
+                )
+            )
+                continue
 
-            // Limite
-            if (Helpers.exceededLimit(++limit)) {
-                valid = true
-            }
-        } while (!valid)
+            return number ? Algebra.round(raw, places) : text
+        } while (!Helpers.exceededLimit(++limit))
 
         return number ? 0 : ""
     },
 
-    function(
+    function: (
         coefA = 0,
         coefB = 0,
         coefC = 0,
@@ -203,228 +215,48 @@ export const Ui = {
         funcLog = false,
         funcTrig = "",
         show = Config.showFunction
-    ) {
-        return Ui.resolveFunction(
+    ) =>
+        Ui.resolveFunction(
             { a: coefA, b: coefB, c: coefC },
             funcExp ? "exp" : funcLog ? "log" : funcTrig != "" ? funcTrig : "poly",
             show
-        )
-    },
+        ),
 
-    resolveFunction({ a = State.globalA, b = State.globalB, c = State.globalC } = {}, funcType = "poly", show = true) {
+    resolveFunction: (
+        { a = State.globalA, b = State.globalB, c = State.globalC } = {},
+        funcType = "poly",
+        show = true
+    ) => {
         const coefs = { a, b, c }
-        if (!show) {
-            return ""
-        }
+        if (!show) return
 
-        let funcStr
-        if (funcType == "poly") {
-            if (coefs.a == 0 && coefs.b == 0) {
-                funcStr = buildConstantFunction(coefs)
-            } else if (coefs.a == 0) {
-                funcStr = buildAffineFunction(coefs)
-            } else {
-                funcStr = buildQuadraticFunction(coefs)
-            }
-        } else if (funcType == "exp") {
-            funcStr = buildExponentialFunction(coefs)
-        } else if (funcType == "log") {
-            funcStr = buildLogarithmicFunction(coefs)
-        } else {
-            funcStr = buildTrigFunction(coefs, funcType)
-        }
+        const funcStr =
+            funcType == "poly"
+                ? coefs.a == 0 && coefs.b == 0
+                    ? buildConstantFunction(coefs)
+                    : coefs.a == 0
+                      ? buildAffineFunction(coefs)
+                      : buildQuadraticFunction(coefs)
+                : funcType == "exp"
+                  ? buildExponentialFunction(coefs)
+                  : funcType == "log"
+                    ? buildLogarithmicFunction(coefs)
+                    : buildTrigFunction(coefs, funcType)
 
-        Ui.display(`=== ${tr("ui.currentFunction")} ===\n${Writing.decimal(funcStr)}`)
-        return ""
+        Ui.notifyOptions(`=== ${tr("ui.currentFunction")} ===\n${Writing.decimalOptions(funcStr)}`)
     },
 
-    range(message = "", explanation = "", min = 0, max = 1, places = 0, allowCommands = false) {
+    range: (message = "", explanation = "", min = 0, max = 1, places = 0, allowCommands = false) => {
         let value
 
-        // Loop
         do {
-            // Pede um valor
             value = Ui.input(message, explanation, true, places, allowCommands)
 
-            // Comandos
-            if (Commands.names.includes(value)) {
-                return value
-            }
-
-            // Encerrar intervalo
-            if (value == "end") {
-                return 0
-            }
-
-            if (!(min <= value && value <= max)) {
-                // Se o valor não estiver entre o intervalo, mostra um erro
-                Errors.range(min, max)
-            }
+            if (Commands.names.includes(value)) return value
+            if (value == "end") return 0
+            if (!(min <= value && value <= max)) Errors.range(min, max)
         } while (!(min <= value && value <= max))
 
         return value
     },
-}
-
-// === HELPERS DE FORMATAÇÃO (padrões repetidos entre os tipos em Ui.resolveFunction) ===
-
-// Usado no termo líder com expoente: "a · x²" / "x²" / "−x²" / "3 · x²"
-function formatLeadingTerm(coef, symbol, term) {
-    if (coef == symbol) {
-        return `${symbol} · ${term}`
-    }
-    if (Algebra.absolute(coef) == 1) {
-        return (coef == -1 ? "−" : "") + term
-    }
-    if (coef == 0) {
-        return ""
-    }
-    return `${String(coef)} · ${term}`
-}
-
-// Usado no termo do meio da quadrática: " + b · x" / " + x" / " − 3 · x"
-function formatMiddleTerm(coef, symbol, term) {
-    if (coef == symbol) {
-        return ` + ${symbol} · ${term}`
-    }
-    if (coef == 0) {
-        return ""
-    }
-    const sign = coef > 0 ? " + " : " − "
-    const magnitude = Algebra.absolute(coef) == 1 ? term : `${String(Algebra.absolute(coef))} · ${term}`
-    return sign + magnitude
-}
-
-// Usado no termo constante final: " + c" / " + 5" / " − 5"
-function formatConstantTerm(coef, symbol) {
-    if (coef == symbol) {
-        return ` + ${symbol}`
-    }
-    if (coef == 0) {
-        return ""
-    }
-    return coef > 0 ? ` + ${String(coef)}` : ` − ${String(-coef)}`
-}
-
-// Usado no multiplicador líder de exp/log/trig: "b × " / "3 × " / ""
-function formatMultiplier(coef, symbol) {
-    if (coef == symbol) {
-        return `${symbol} × `
-    }
-    if (coef != 0 && coef != 1) {
-        return `${String(coef)} × `
-    }
-    return ""
-}
-
-// === MONTAGEM POR TIPO DE FUNÇÃO ===
-
-function buildConstantFunction({ c = State.globalC } = {}) {
-    const coefs = { c }
-    let funcStr = tr("ui.theFunction")
-    funcStr += coefs.c == "c" ? "c" : String(coefs.c)
-    funcStr += tr("ui.constant")
-
-    if (coefs.c == 0) {
-        funcStr += tr("ui.constantNull")
-    }
-    return funcStr
-}
-
-function buildAffineFunction({ b = State.globalB, c = State.globalC } = {}) {
-    const coefs = { b, c }
-    let funcStr = tr("ui.theFunction")
-    funcStr += formatLeadingTerm(coefs.b, "b", "x")
-    funcStr += formatConstantTerm(coefs.c, "c")
-    funcStr += tr("ui.affine")
-
-    if (coefs.b != 1 && coefs.c == 0) {
-        funcStr += tr("ui.affineLinear")
-    } else if (coefs.b == 1 && coefs.c == 0) {
-        funcStr += tr("ui.affineIdentity")
-    } else if (coefs.b == -1) {
-        funcStr += tr("ui.affineOpposite")
-    }
-    return funcStr
-}
-
-function buildQuadraticFunction({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
-    const coefs = { a, b, c }
-    let funcStr = tr("ui.theFunction")
-    funcStr += formatLeadingTerm(coefs.a, "a", "x²")
-    funcStr += formatMiddleTerm(coefs.b, "b", "x")
-    funcStr += formatConstantTerm(coefs.c, "c")
-    funcStr += tr("ui.quadratic")
-
-    if (coefs.b == 0 && coefs.c == 0) {
-        funcStr += tr("ui.pure")
-    } else if (coefs.b == 0) {
-        funcStr += tr("ui.quadraticIncompleteLinear")
-    } else if (coefs.c == 0) {
-        funcStr += tr("ui.quadraticIncompleteConstant")
-    }
-    return funcStr
-}
-
-function buildExponentialFunction({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
-    const coefs = { a, b, c }
-    let funcStr = tr("ui.theFunction")
-    funcStr += formatMultiplier(coefs.b, "b")
-
-    if (coefs.a == "a") {
-        funcStr += "aˣ"
-    } else if (coefs.a != 0) {
-        funcStr += `${String(coefs.a)}ˣ`
-    }
-
-    funcStr += formatConstantTerm(coefs.c, "c")
-    funcStr += tr("ui.exponential")
-
-    if (coefs.b == 1 && coefs.c == 0) {
-        funcStr += tr("ui.pure")
-    }
-    if (coefs.a == Algebra.round(Math.E)) {
-        funcStr += tr("ui.natural")
-    }
-    return funcStr
-}
-
-function buildLogarithmicFunction({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) {
-    const coefs = { a, b, c }
-    let funcStr = tr("ui.theFunction")
-    funcStr += formatMultiplier(coefs.b, "b")
-
-    if (coefs.a == "a") {
-        funcStr += "logₐ(x)"
-    } else if (coefs.a != 0) {
-        funcStr += `log${Writing.subscript(coefs.a)}(x)`
-    }
-
-    funcStr += formatConstantTerm(coefs.c, "c")
-    funcStr += tr("ui.logarithmic")
-
-    if (coefs.b == 1 && coefs.c == 0) {
-        funcStr += tr("ui.pure")
-    }
-    if (coefs.a == Algebra.round(Math.E)) {
-        funcStr += tr("ui.natural")
-    } else if (coefs.a == 10) {
-        funcStr += tr("ui.decimal")
-    }
-    return funcStr
-}
-
-function buildTrigFunction({ a = State.globalA, b = State.globalB, c = State.globalC } = {}, funcType) {
-    const coefs = { a, b, c }
-    let funcStr = tr("ui.theFunction")
-    funcStr += formatMultiplier(coefs.b, "b")
-
-    if (coefs.a == "a") {
-        funcStr += `${funcType}(a · x)`
-    } else if (coefs.a != 0) {
-        funcStr += `${funcType}(${String(coefs.a)} · x)`
-    }
-
-    funcStr += formatConstantTerm(coefs.c, "c")
-    return funcStr
 }

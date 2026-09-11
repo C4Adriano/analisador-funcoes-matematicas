@@ -1,7 +1,7 @@
 import defaultConfigJson from "../src/JSON/config.json" with { type: "json" }
 import { VERSION } from "./version.js"
 
-import type { Degrees, Language, Numeric, Places, Precision, Text } from "./values.js"
+import type { Degrees, Language, Numeric, Places, Precision, Text, TextCase } from "./values.js"
 
 /**
  * Tipo de configuração baseado no `JSON`.
@@ -9,26 +9,23 @@ import type { Degrees, Language, Numeric, Places, Precision, Text } from "./valu
  */
 export type ConfigType = {
     language: Language
-    debug: boolean
 
     unicode: boolean
-    explanations: boolean
     accents: boolean
-    capitalized: boolean
-    uppercase: boolean
-    lowercase: boolean
-
+    textCase: TextCase
     decimalSeparator: boolean
-    simpleMulti: boolean
-    inputConfirm: boolean
-    outputConfirm: boolean
+
+    explanations: boolean
     errors: boolean
     showFunction: boolean
+    inputConfirm: boolean
+    outputConfirm: boolean
+    simpleMulti: boolean
 
     decimalPlaces: Places
     logPrecision: Precision
     divPrecision: Precision
-    interactionLimit: Numeric
+    iterationLimit: Numeric
     degrees: Degrees
 }
 
@@ -50,9 +47,9 @@ export const DEFAULT_CONFIG: ConfigType = structuredClone(defaultConfigJson) as 
  * Carrega configurações salvas no `localStorage`.
  * @since ~v6.1.0
  */
-export function loadConfig(): void {
-    const saved: Text | null = localStorage.getItem("config")
-    const savedVersion: Text | null = localStorage.getItem("configVersion")
+export const loadConfig = () => {
+    const saved: Text | null = localStorage.getItem("config"),
+        savedVersion: Text | null = localStorage.getItem("configVersion")
 
     if (!saved) return
 
@@ -78,12 +75,11 @@ export function loadConfig(): void {
     for (const key of keys) {
         if (!(key in Config)) continue
 
-        const currentType = typeof Config[key]
-        const newValue = parsed[key]
+        const currentType = typeof Config[key],
+            newValue = parsed[key]
 
-        if (typeof newValue == currentType) {
-            ;(Config as Record<string, unknown>)[key] = newValue
-        } else {
+        if (typeof newValue == currentType) (Config as Record<string, unknown>)[key] = newValue
+        else {
             console.warn(
                 `[loadConfig] Tipo inválido para '${String(key)}'.`,
                 `Esperado: ${currentType} | Recebido: ${typeof newValue}`
@@ -96,7 +92,7 @@ export function loadConfig(): void {
  * Salva configurações atuais no `localStorage`.
  * @since ~v6.1.0
  */
-export function saveConfig(): void {
+export const saveConfig = () => {
     try {
         localStorage.setItem("config", JSON.stringify(Config))
         localStorage.setItem("configVersion", VERSION)
@@ -109,7 +105,7 @@ export function saveConfig(): void {
  * Reseta para os valores padrão do `JSON`.
  * @since ~v6.1.0
  */
-export function resetConfig(): void {
+export const resetConfig = () => {
     localStorage.removeItem("config")
     localStorage.removeItem("configVersion")
 

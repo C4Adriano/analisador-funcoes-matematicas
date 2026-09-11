@@ -1,5 +1,3 @@
-import { Commands as _Commands } from "./commands.js"
-
 /**
  * Texto genérico.
  * @since ~v6.2.0
@@ -81,7 +79,7 @@ export type FunctionType =
     | /** Polinomial. */ "poly"
     | /** Exponencial. */ "exp"
     | /** Logarítmica. */ "log"
-    | /** Trigonométrica. */Exclude<TrigonometricFunction, "">
+    | /** Trigonométrica. */ Exclude<TrigonometricFunction, "">
 
 /**
  * Coeficientes suportados pelo programa.
@@ -162,18 +160,17 @@ export type Options = {
  * Opções básicas para mensagens suportadas pelo programa.
  * @since v6.6.1
  */
-export type MessageOptions = {
-    /** Explicação. */
-    explanation?: Text
-    /** Depuração. */
-    debug?: boolean
-    /** É `confirm`? */
-    asConfirm?: boolean
-    /** Permite {@link _Commands}? */
-    allowCommands?: boolean
-    /** Tipo de mensagem. */
-    type?: TypeMessage
-}
+export type MessageOptions =
+    | {
+          explanation?: Text
+          type: "confirm" | "error" | "console"
+          asConfirm?: never
+      }
+    | {
+          explanation?: Text
+          type?: Exclude<TypeMessage, "confirm" | "error" | "console">
+          asConfirm?: boolean
+      }
 
 /**
  * Tipos de mensagens suportadas pelo programa.
@@ -184,3 +181,14 @@ export type TypeMessage =
     | /** Mensagem de erro. */ "error"
     | /** Mensagem que exige confirmação do usuário. */ "confirm"
     | /** Mensagem de aviso. */ "warning"
+    | /** Mensagem no `console` */ "console"
+
+/**
+ * Tipos de formatação de texto suportadas pelo programa.
+ * @since v6.6.7
+ */
+export type TextCase =
+    | /** Mensagens normais, escritas como vireram do `i18n`. */ "normal"
+    | /** MENSAGENS EM MAIÚSCULAS */ "uppercase"
+    | /** mensagens em minúsculas */ "lowercase"
+    | /** Mensagens Com A Primeira Letra Maiúscula E As Outras Minúsculas */ "capitalized"

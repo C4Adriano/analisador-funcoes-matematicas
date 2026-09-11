@@ -64,33 +64,12 @@ export declare const Algebra: {
      */
     variables(name?: Text): Value
 
-    /**
-     * Pede um ponto.
-     * @param type - Quantos pontos vão ser pedidos (nesse caso, 1).
-     * @returns Um array com os pontos, na ordem: [x₁, y₁].
-     * @group UI
-     * @since v6.1.0
-     */
-    point(type?: 1): NumericArray
-
-    /**
-     * Pede dois pontos.
-     * @param type - Quantos pontos vão ser pedidos (nesse caso, 2).
-     * @returns Um array com os pontos, na ordem: [x₁, y₁, x₂, y₂].
-     * @group UI
-     * @since v6.1.0
-     */
-    point(type: 2): NumericArray
-
-    /**
-     * Pede três pontos.
-     * @param type - Quantos pontos vão ser pedidos (nesse caso, 3).
-     * @returns Um array com os pontos, na ordem: [x₁, y₁, x₂, y₂, x₃, y₃].
-     * @group UI
-     * @since v6.1.0
-     */
-    point(type: 3): NumericArray
-
+    /** Pede um ponto. */
+    point(type?: 1): [Numeric, Numeric]
+    /** Pede dois pontos. */
+    point(type: 2): [Numeric, Numeric, Numeric, Numeric]
+    /** Pede três pontos. */
+    point(type: 3): [Numeric, Numeric, Numeric, Numeric, Numeric, Numeric]
     /**
      * Pede um ou mais pontos.
      * @param type - Quantos pontos vão ser pedidos (1, 2 ou 3).
@@ -139,7 +118,7 @@ export declare const Algebra: {
 
     /**
      * Coleta `count` pares de pontos (x, y) do usuário, usando a mesma convenção de {@link Algebra.point} (valores intercalados x₁, y₁, x₂, y₂, ...).
-     * @param count - Quantidade de pares a coletar.
+     * @param count - Quantidade de pares para coletar.
      * @default count = 1
      * @returns Lista de pares ordenados já convertidos para número.
      * @group Numérico
@@ -166,7 +145,6 @@ export declare const Algebra: {
      * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
      * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
      * @returns Coeficientes resolvidos, ou `null` caso o sistema linear associado seja singular
-     * @throws Emite um aviso via `Ui.warning` (não uma exceção) quando `a` e `c` são solicitados simultaneamente, retornando valores‑padrão
      * @group Numérico
      * @since v6.6.0
      */
@@ -181,7 +159,6 @@ export declare const Algebra: {
      * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
      * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
      * @returns Coeficientes resolvidos, ou `null` caso o sistema linear associado seja singular
-     * @throws Emite um aviso via `Ui.warning` (não uma exceção) quando `a` e `b` são solicitados simultaneamente, retornando valores‑padrão
      * @group Numérico
      * @since v6.6.0
      */
@@ -189,7 +166,6 @@ export declare const Algebra: {
 
     /**
      * Descobre quais são as incógnitas de uma Função e resolve seus Coeficientes, solicitando pontos ao usuário quando necessário.
-     * @remarks Substitui {@link Algebra.unknown} com uma assinatura mais enxuta, agrupando os Coeficientes em um único objeto e os antigos parâmetros (`funcExp`, `funcLog`, `funcTrig`) em um único tipo discriminado.
      * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
      * @param funcType - Tipo da Função sendo resolvida
      * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }; funcType = "poly"
@@ -201,20 +177,10 @@ export declare const Algebra: {
 
     /**
      * Descobre quais são as incógnitas.
-     *
      * @deprecated
      * Desde v6.6.0. Use {@link Algebra.resolveUnknown} com um objeto {@link Coefficients} e um {@link FunctionType} no lugar dos outros três parâmetros.
      *
      * Mantido apenas para compatibilidade retroativa; **não remover**.
-     *
-     * @param coefA - Coeficiente `a`.
-     * @param coefB - Coeficiente `b`.
-     * @param coefC - Coeficiente `c`.
-     * @param funcExp - Se é Exponencial.
-     * @param funcLog - Se é Logarítmica.
-     * @param funcTrig - Se é trigonométrica, e qual (sin, cos, tan).
-     * @default coefA = State.globalA; coefB = State.globalB; coefC = State.globalC; funcExp = false; funcLog = false; funcTrig = ""
-     * @returns Retorna os Coeficientes em formato de array [a, b, c].
      * @group Numérico
      * @since v6.1.0
      */
@@ -229,13 +195,10 @@ export declare const Algebra: {
 
     /**
      * Calcula o logaritmo de x.
-     * @param x - Número.
-     * @param base - Base.
-     * @param precision - Casas decimais.
-     * @param round - Se deve arredondar.
-     * @param places - Quantidade de casas decimais para arredondar.
-     * @default base = Math.E; precision = Config.logPrecision; round = false; places = Config.decimalPlaces
-     * @returns Resultado.
+     * @deprecated
+     * Desde v6.6.7. Use {@link Algebra.logOptions} com `options` ao invés dos parâmetros.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
      * @group Numérico
      * @since v6.1.0
      */
@@ -243,11 +206,7 @@ export declare const Algebra: {
 
     /**
      * Calcula o logaritmo de x.
-     * @see {@link Algebra.log}
-     * @remarks
-     * Alias de {@link Algebra.log} com `options` ao invés de parâmetros posicionais
-     *
-     * Equivalente a `Algebra.log(x, base, precision, round, places)`.
+     * @remarks Se `base` for {@link Math.E} (`undefined` também, pois é o valor padrão), prefira {@link Algebra.lnOptions}.
      * @param x - Número.
      * @param base - Base.
      * @param options - Opções (round, precision, places).
@@ -260,17 +219,10 @@ export declare const Algebra: {
 
     /**
      * Calcula o logaritmo natural de x.
-     * @see {@link Algebra.log}
-     * @remarks
-     * Alias de {@link Algebra.log} com `base` fixada em `Math.E`
+     * @deprecated
+     * Desde v6.6.7. Use {@link Algebra.lnOptions} com `options` ao invés dos parâmetros.
      *
-     * Equivalente a `Algebra.log(x, Math.E, precision, round, places)`, que é justamente o valor padrão de `base` nessa Função.
-     * @param x - Número.
-     * @param precision - Casas decimais.
-     * @param round - Se deve arredondar.
-     * @param places - Quantidade de casas decimais para arredondar.
-     * @default precision = Config.logPrecision; round = false; places = Config.decimalPlaces
-     * @returns Resultado.
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
      * @group Numérico
      * @since v6.1.0
      */
@@ -278,11 +230,11 @@ export declare const Algebra: {
 
     /**
      * Calcula o logaritmo natural de x.
-     * @see {@link Algebra.ln}
+     * @see {@link Algebra.logOptions}
      * @remarks
-     * Alias de {@link Algebra.ln} com `options` ao invés de parâmetros posicionais
+     * Alias de {@link Algebra.logOptions} com `base` fixa em `Math.E`.
      *
-     * Equivalente a `Algebra.log(x, base, precision, round, places)`.
+     * Equivalente a `Algebra.logOptions(x, Math.E, { precision, round, places })`.
      * @param x - Número.
      * @param options - Opções.
      * @default options = { round: false, precision: Config.logPrecision, places: Config.decimalPlaces }
@@ -294,12 +246,10 @@ export declare const Algebra: {
 
     /**
      * Divide o `numerator` pelo `denominator`.
-     * @param numerator - Parte de cima da fração.
-     * @param denominator - Parte de baixo da fração.
-     * @param round - Se deve arredondar.
-     * @param precision - Precisão do arredondamento.
-     * @default round = true; precision = Config.logPrecision
-     * @returns Resultado.
+     * @deprecated
+     * Desde v6.6.7. Use {@link Algebra.divisionOptions} com `options` ao invés dos parâmetros.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
      * @group Numérico
      * @since v6.1.0
      */
@@ -307,11 +257,6 @@ export declare const Algebra: {
 
     /**
      * Divide o `numerator` pelo `denominator`.
-     * @see {@link Algebra.division}
-     * @remarks
-     * Alias de {@link Algebra.division} com `options` ao invés de parâmetros posicionais.
-     *
-     * Equivalente a `Algebra.division(numerator, denominator, round, precision)`.
      * @param numerator - Parte de cima da fração.
      * @param denominator - Parte de baixo da fração.
      * @param options - Opções.
@@ -324,11 +269,10 @@ export declare const Algebra: {
 
     /**
      * Calcula o valor absoluto de um número.
-     * @param number - Número.
-     * @param round - Se deve arredondar.
-     * @param places - Casas decimais.
-     * @default round = true; places = Config.decimalPlaces
-     * @returns Número absoluto.
+     * @deprecated
+     * Desde v6.6.7. Use {@link Algebra.absoluteOptions} com `options` ao invés dos parâmetros.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
      * @group Numérico
      * @since v6.1.0
      */
@@ -336,11 +280,6 @@ export declare const Algebra: {
 
     /**
      * Calcula o valor absoluto de um número.
-     * @see {@link Algebra.absolute}
-     * @remarks
-     * Alias de {@link Algebra.absolute} com `options` ao invés de parâmetros posicionais.
-     *
-     * Equivalente a `Algebra.absolute(number, round, places)`.
      * @param number - Número.
      * @param options - Opções.
      * @default options = { round: true, places: Config.decimalPlaces }

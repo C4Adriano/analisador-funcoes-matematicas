@@ -3,21 +3,15 @@ import { Config, DEFAULT_CONFIG } from "./config.js"
 import { tr } from "./i18n.js"
 
 export const Writing = {
-    replace(text = "", from = "", to = "") {
-        return String(text).split(from).join(to)
-    },
+    replace: (text = "", from = "", to = "") => text.replaceAll(from, to),
 
-    replaceGroup(text = "", list = [["", ""]]) {
-        list.forEach(value => {
-            if (value[0] != undefined && value[1] != undefined) {
-                text = Writing.replace(text, value[0], value[1])
-            }
-        })
+    replaceGroup: (text = "", list = [["", ""]]) => {
+        for (const value of list)
+            if (value[0] != null && value[1] != null) text = Writing.replace(text, value[0], value[1])
         return text
     },
 
-    noUnicode(text = "") {
-        // Símbolos universais — não dependem de idioma, mesma substituição em qualquer dicionário
+    noUnicode: (text = "") => {
         const staticReplacements = [
             ["©", "(c)"],
             ["ƒ", "f"],
@@ -90,9 +84,6 @@ export const Writing = {
             ["•", "*"],
         ]
 
-        // Termos textuais — resolvidos via tr() no idioma ativo
-        // Ordem importa: formas compostas (∃!, ∄!, ∃∞, ∄∞) devem vir antes das formas simples (∃, ∄),
-        // senão o caractere simples já foi substituído quando a busca pela forma composta acontece
         const localizedReplacements = [
             ["Δ", tr("symbols.delta")],
             ["π", tr("symbols.pi")],
@@ -176,275 +167,114 @@ export const Writing = {
             ["⊗", tr("symbols.inclusiveOr")],
         ]
 
-        text = Writing.replaceGroup(text, [...localizedReplacements, ...staticReplacements])
-
-        return text
+        return Writing.replaceGroup(text, [...localizedReplacements, ...staticReplacements])
     },
 
-    noAccents(text = "") {
-        const replacements = [
-            // === AGUDOS (´) ===
-            ["á", "a"], // A agudo (espanhol, português)
-            ["Á", "A"],
-            ["é", "e"], // E agudo (espanhol, português)
-            ["É", "E"],
-            ["í", "i"], // I agudo (espanhol, português)
-            ["Í", "I"],
-            ["ó", "o"], // O agudo (espanhol, português)
-            ["Ó", "O"],
-            ["ú", "u"], // U agudo (espanhol, português)
-            ["Ú", "U"],
-            ["ý", "y"], // Y agudo (islandês, tcheco)
-            ["Ý", "Y"],
+    noAccents: (text = "") => text.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
 
-            // === GRAVES (`) ===
-            ["à", "a"], // A grave (italiano, francês, português)
-            ["À", "A"],
-            ["è", "e"], // E grave (italiano, francês)
-            ["È", "E"],
-            ["ì", "i"], // I grave (italiano, francês)
-            ["Ì", "I"],
-            ["ò", "o"], // O grave (italiano, francês)
-            ["Ò", "O"],
-            ["ù", "u"], // U grave (italiano, francês)
-            ["Ù", "U"],
-            ["ỳ", "y"], // Y grave (islandês, tcheco)
-            ["Ỳ", "Y"],
+    lowercase: (text = "") => Writing.replace(text.toLowerCase(), "δ", "Δ"),
+    uppercase: (text = "") => Writing.replace(text.toUpperCase(), "Ƒ", "ƒ"),
+    capitalize: (text = "") =>
+        Writing.lowercase(text).replace(/\p{L}+/gu, word => Writing.uppercase(word[0]) + word.slice(1)),
 
-            // === TIL (~) ===
-            ["ã", "a"], // A til (português)
-            ["Ã", "A"],
-            ["ẽ", "e"], // E til (islandês, tcheco)
-            ["Ẽ", "E"],
-            ["ĩ", "i"], // I til (islandês, tcheco)
-            ["Ĩ", "I"],
-            ["õ", "o"], // O til (português)
-            ["Õ", "O"],
-            ["ũ", "u"], // U til (islandês, tcheco)
-            ["Ũ", "U"],
-            ["ñ", "n"], // N til (espanhol, português)
-            ["Ñ", "N"],
-            ["ỹ", "y"], // Y til (islandês, tcheco)
-            ["Ỹ", "Y"],
+    decimal: (number = 0, invert = false, round = true, places = Config.decimalPlaces) =>
+        Writing.decimalOptions(number, { invert, round, places }),
 
-            // === CIRCUNFLEXOS (^) ===
-            ["â", "a"], // A circunflexo (francês, português)
-            ["Â", "A"],
-            ["ê", "e"], // E circunflexo (francês, português)
-            ["Ê", "E"],
-            ["î", "i"], // I circunflexo (francês)
-            ["Î", "I"],
-            ["ô", "o"], // O circunflexo (francês)
-            ["Ô", "O"],
-            ["û", "u"], // U circunflexo (francês)
-            ["Û", "U"],
-            ["ŷ", "y"], // Y circunflexo (islandês, tcheco)
-            ["Ŷ", "Y"],
-
-            // === TREMA (¨) ===
-            ["ä", "a"], // A trema (alemão, dinamarquês, norueguês)
-            ["Ä", "A"],
-            ["ë", "e"], // E trema (alemão, dinamarquês, norueguês)
-            ["Ë", "E"],
-            ["ï", "i"], // I trema (alemão, dinamarquês, norueguês)
-            ["Ï", "I"],
-            ["ö", "o"], // O trema (alemão, dinamarquês, norueguês)
-            ["Ö", "O"],
-            ["ü", "u"], // U trema (alemão, dinamarquês, norueguês)
-            ["Ü", "U"],
-            ["ÿ", "y"], // Y trema (francês)
-            ["Ÿ", "Y"],
-
-            // === GANCHOS ===
-            ["ç", "c"], // Cedilha / C com gancho (português, francês)
-            ["Ç", "C"],
-        ]
-
-        text = Writing.replaceGroup(text, replacements)
-
-        return text
-    },
-
-    lowercase(text = "") {
-        text = text.toLowerCase()
-        // Caso especial para a letra grega delta, que matematicamente tem uma forma diferente em maiúscula e minúscula
-        text = Writing.replace(text, "δ", "Δ")
-
-        return text
-    },
-
-    uppercase(text = "") {
-        text = text.toUpperCase()
-        // Caso especial para a letra latina f, que matematicamente tem uma forma diferente em maiúscula e minúscula
-        text = Writing.replace(text, "Ƒ", "ƒ")
-
-        return text
-    },
-
-    decimal(number = 0, invert = false, round = true, places = Config.decimalPlaces) {
+    decimalOptions: (number = 0, { invert = false, round = true, places = Config.decimalPlaces } = {}) => {
         number = String(number)
 
-        // Se inverter é verdadeiro, troca vírgulas por pontos para não afetar nas contas
-        if (invert) {
-            return Writing.replace(number, ",", ".")
-        }
-
-        // Se arredondar é verdadeiro, arredonda o número para o número de casas decimais configurado
-        if (round) {
-            number = Algebra.round(number, places)
-        }
-
-        // Se separadorDecimal é verdadeiro, troca pontos por vírgulas para exibição
-        if (Config.decimalSeparator) {
-            return Writing.replace(String(number), ".", ",")
-        }
+        if (invert) return Writing.replace(number, ",", ".")
+        if (round) number = Algebra.round(number, places)
+        if (Config.decimalSeparator) return Writing.replace(number, ".", ",")
 
         return number
     },
 
-    decimalOptions(number = 0, { invert = false, round = true, places = Config.decimalPlaces } = {}) {
-        return Writing.decimal(number, invert, round, places)
-    },
+    simplifyMultiplication: (text = "") => Writing.replace(text, " · ", ""),
 
-    simplifyMultiplication(text = "") {
-        return Writing.replace(String(text), " · ", "")
-    },
-
-    format(message = "", explanation = "") {
-        if (Config.explanations && explanation != "") {
-            message += `\n\n${explanation}`
-        }
-
-        if (Config.simpleMulti) {
-            message = Writing.simplifyMultiplication(message)
-        }
-
-        if (!Config.unicode) {
-            message = Writing.noUnicode(message) // já traduz para o idioma ativo internamente
-        }
-
-        if (!Config.accents) {
-            message = Writing.noAccents(message)
-        }
-
-        if (Config.lowercase) {
-            message = Writing.lowercase(message)
-        } else if (Config.uppercase) {
-            message = Writing.uppercase(message)
-        }
+    format: (message = "", explanation = "") => {
+        if (Config.explanations && explanation != "") message += `\n\n${explanation}`
+        if (Config.simpleMulti) message = Writing.simplifyMultiplication(message)
+        if (!Config.unicode) message = Writing.noUnicode(message)
+        if (!Config.accents) message = Writing.noAccents(message)
+        if (Config.textCase == "capitalized") message = Writing.capitalize(message)
+        else if (Config.textCase == "lowercase") message = Writing.lowercase(message)
+        else if (Config.textCase == "uppercase") message = Writing.uppercase(message)
 
         return message
     },
 
-    superscript(text = "") {
-        // Se Unicode está desativado, retorna o texto com um símbolo de sobrescrito simples
-        if (!Config.unicode) {
-            return `^${text}`
-        }
+    superscript: (text = "") =>
+        Config.unicode
+            ? Writing.replaceGroup(text, [
+                  ["0", "⁰"],
+                  ["1", "¹"],
+                  ["2", "²"],
+                  ["3", "³"],
+                  ["4", "⁴"],
+                  ["5", "⁵"],
+                  ["6", "⁶"],
+                  ["7", "⁷"],
+                  ["8", "⁸"],
+                  ["9", "⁹"],
+                  ["-", "⁻"],
+                  [".", "․"],
+              ])
+            : `^${text}`,
 
-        const replacements = [
-            ["0", "⁰"],
-            ["1", "¹"],
-            ["2", "²"],
-            ["3", "³"],
-            ["4", "⁴"],
-            ["5", "⁵"],
-            ["6", "⁶"],
-            ["7", "⁷"],
-            ["8", "⁸"],
-            ["9", "⁹"],
-            ["-", "⁻"],
-            [".", "․"],
-        ]
+    subscript: (text = "") =>
+        Config.unicode
+            ? Writing.replaceGroup(text, [
+                  ["0", "₀"],
+                  ["1", "₁"],
+                  ["2", "₂"],
+                  ["3", "₃"],
+                  ["4", "₄"],
+                  ["5", "₅"],
+                  ["6", "₆"],
+                  ["7", "₇"],
+                  ["8", "₈"],
+                  ["9", "₉"],
+                  ["-", "₋"],
+                  [".", "․"],
+              ])
+            : `_${text}`,
 
-        // Substitui os números por seus equivalentes em sobrescrito
-        text = Writing.replaceGroup(String(text), replacements)
+    formatValue: (value = true) =>
+        typeof value == "boolean" ? (value ? tr("writing.yes") : tr("writing.no")) : String(value),
 
-        return text
-    },
-
-    subscript(text = "") {
-        // Se Unicode está desativado, retorna o texto com um símbolo de subscrito simples
-        if (!Config.unicode) {
-            return `_${text}`
-        }
-
-        const replacements = [
-            ["0", "₀"],
-            ["1", "₁"],
-            ["2", "₂"],
-            ["3", "₃"],
-            ["4", "₄"],
-            ["5", "₅"],
-            ["6", "₆"],
-            ["7", "₇"],
-            ["8", "₈"],
-            ["9", "₉"],
-            ["-", "₋"],
-            [".", "․"],
-        ]
-
-        // Substitui os números por seus equivalentes em subscrito
-        text = Writing.replaceGroup(String(text), replacements)
-
-        return text
-    },
-
-    formatValue(value = true) {
-        if (typeof value == "boolean") {
-            return value ? tr("writing.yes") : tr("writing.no")
-        }
-
-        return String(value)
-    },
-
-    configItem(message = "", name = "") {
-        return tr("writing.currentDefault", {
+    configItem: (message = "", name = "") =>
+        tr("writing.currentDefault", {
             message,
             current: Writing.formatValue(Config[name]),
             default: Writing.formatValue(DEFAULT_CONFIG[name]),
-        })
-    },
+        }),
 
-    parseDegree(text = "") {
-        const degrees = parseFloat(Writing.replace(text, "°", ""))
-        return degrees * (Math.PI / 180)
-    },
+    parseDegree: (text = "") => parseFloat(Writing.replace(text, "°", "")) * (Math.PI / 180),
 
-    parseRadian(text = "") {
+    parseRadian: (text = "") => {
         const parts = text.split("/"),
             denominator = parts[1] ? parseFloat(parts[1]) : 1,
-            multiParts = String(parts[0]).split("*"),
-            multiplier = multiParts.length > 1 ? parseFloat(String(multiParts[0])) : 1
+            multiParts = parts[0].split("*"),
+            multiplier = multiParts.length > 1 ? parseFloat(multiParts[0]) : 1
         return (multiplier * Math.PI) / denominator
     },
 
-    parseAngle(text = "") {
-        if (text.includes("°")) {
-            return Writing.parseDegree(text)
-        }
-        return Writing.parseRadian(text)
-    },
+    parseAngle: (text = "") => (text.includes("°") ? Writing.parseDegree(text) : Writing.parseRadian(text)),
 
-    formatAngle(value = 0) {
-        const ratio = value / Math.PI // PI/6 → ratio = 1/6 ≈ 0.1666...
+    formatAngle: (value = 0) => {
+        const ratio = value / Math.PI
 
-        // Testa denominadores comuns (1 a 12 cobre os casos típicos)
         for (let denominator = 1; denominator <= 12; denominator++) {
             const numerator = Algebra.round(ratio * denominator, 0)
-            if (Algebra.absolute(numerator / denominator - ratio) < 1e-9) {
-                // Achou uma fração exata
-                if (numerator == 0) {
-                    return 0
-                }
-                if (denominator == 1) {
-                    return numerator == 1 ? "PI" : `${numerator} * PI`
-                }
+            if (Algebra.absoluteOptions(numerator / denominator - ratio) < 1e-9) {
+                if (numerator == 0) return 0
+                if (denominator == 1) return numerator == 1 ? "PI" : `${numerator} * PI`
+
                 return `${numerator == 1 ? "" : `${numerator} * `}PI / ${denominator}`
             }
         }
 
-        // Se não achou fração simples, retorna decimal normal
-        return Writing.decimal(value)
+        return Writing.decimalOptions(value)
     },
 }

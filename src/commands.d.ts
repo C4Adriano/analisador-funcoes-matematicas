@@ -72,7 +72,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    listCmds(): object
+    get listCmds(): object
 
     /**
      * Resolve um comando específico para seu nome canônico.
@@ -121,14 +121,14 @@ export declare const Commands: {
      * @group JS
      * @since v6.2.0
      */
-    about(): null
+    get about(): null
 
     /**
      * Exibe a versão do projeto.
      * @group JS
      * @since v6.1.0
      */
-    version(): null
+    get version(): null
 
     /**
      * Muda o valor de uma chave em `Config`.

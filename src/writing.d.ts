@@ -89,29 +89,18 @@ export declare const Writing: {
     uppercase(text: Text): Text
 
     /**
-     * Manipulação de separadores decimais (inversão para uso em contas).
-     * @param number - Número.
-     * @param invert - `true` sempre retorna número com separador convertido para cálculo (“.”).
-     * @param round - Arredondar.
-     * @param places - Casas decimais.
-     * @returns Número convertido.
+     * Conversão para capitalizadas.
+     * @param text - Texto.
+     * @returns Texto convertido.
      * @group Texto
-     * @since v6.1.0
+     * @since v6.6.7
      */
+    capitalize(text: Text): Text
+
+    /** Manipulação de separadores decimais (para exibição). */
+    decimal(number: Value, invert?: false, round?: boolean, places?: Places): Variable
+    /** Manipulação de separadores decimais (inversão para uso em contas). */
     decimal(number: Value, invert: true, round?: boolean, places?: Places): Numeric
-
-    /**
-     * Manipulação de separadores decimais (para exibição).
-     * @param number - Número.
-     * @param invert - `false` sempre retorna texto com separador convertido para exibição (“,”).
-     * @param round - Arredondar (ignorado quando `invert` é `false`).
-     * @param places - Casas decimais.
-     * @returns Número convertido como texto.
-     * @group Texto
-     * @since v6.1.0
-     */
-    decimal(number: Value, invert: false, round?: boolean, places?: Places): Variable
-
     /**
      * Manipulação de separadores decimais (para exibição).
      * @param number - Número.
@@ -124,6 +113,10 @@ export declare const Writing: {
      */
     decimal(number: Value, invert?: boolean, round?: boolean, places?: Places): Value
 
+    /** Manipulação de separadores decimais (para exibição). */
+    decimalOptions(number: Value, options?: Options & { invert?: false }): Variable
+    /** Manipulação de separadores decimais (inversão para uso em contas). */
+    decimalOptions(number: Value, options?: Options & { invert: true }): Numeric
     /**
      * Manipulação de separadores decimais. Alias para {@link Writing.decimal}.
      * @param number - Número.

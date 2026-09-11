@@ -28,11 +28,7 @@ export declare const Analyze: {
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveConstant} com um objeto {@link Coefficients}.
      *
-     * Por causa dessa mudança, não retorna mais nada. Então, não espere que ele retorne.
-     *
      * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @param coefC - Coeficiente c da Função Constante
-     * @default coefC = State.globalC
      * @group Função
      * @since v6.1.0
      */
@@ -45,19 +41,14 @@ export declare const Analyze: {
      * @group Função
      * @since v6.6.1
      */
-    resolveConstant(coefs?: Coefficients): void
+    resolveConstant(coefs?: Pick<Coefficients, "c">): void
 
     /**
      * Monta uma Função Afim: ƒ(x) = bx + c
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveAffine} com um objeto {@link Coefficients}.
      *
-     * Por causa dessa mudança, não retorna mais nada. Então, não espere que ele retorne.
-     *
      * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @param coefB - Coeficiente b da Função Afim
-     * @param coefC - Coeficiente c da Função Afim
-     * @default coefB = State.globalB; coefC = State.globalC
      * @group Função
      * @since v6.1.0
      */
@@ -70,20 +61,14 @@ export declare const Analyze: {
      * @group Função
      * @since v6.6.1
      */
-    resolveAffine(coefs?: Coefficients): void
+    resolveAffine(coefs?: Pick<Coefficients, "c" | "b">): void
 
     /**
      * Monta uma Função Quadrática: ƒ(x) = ax² + bx + c
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveQuadratic} com um objeto {@link Coefficients}.
      *
-     * Por causa dessa mudança, não retorna mais nada. Então, não espere que ele retorne.
-     *
      * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @param coefA - Coeficiente a da Função Quadrática
-     * @param coefB - Coeficiente b da Função Quadrática
-     * @param coefC - Coeficiente c da Função Quadrática
-     * @default coefA = State.globalA; coefB = State.globalB; coefC = State.globalC
      * @group Função
      * @since v6.1.0
      */
@@ -103,13 +88,7 @@ export declare const Analyze: {
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveExponential} com um objeto {@link Coefficients}.
      *
-     * Por causa dessa mudança, não retorna mais nada. Então, não espere que ele retorne.
-     *
      * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @param coefA - Coeficiente a da Função Exponencial
-     * @param coefB - Coeficiente b da Função Exponencial
-     * @param coefC - Coeficiente c da Função Exponencial
-     * @default coefA = State.globalA; coefB = State.globalB; coefC = State.globalC
      * @group Função
      * @since v6.1.0
      */
@@ -129,13 +108,7 @@ export declare const Analyze: {
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveLogarithmic} com um objeto {@link Coefficients}.
      *
-     * Por causa dessa mudança, não retorna mais nada. Então, não espere que ele retorne.
-     *
      * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @param coefA - Coeficiente a da Função Logarítmica
-     * @param coefB - Coeficiente b da Função Logarítmica
-     * @param coefC - Coeficiente c da Função Logarítmica
-     * @default coefA = State.globalA; coefB = State.globalB; coefC = State.globalC
      * @group Função
      * @since v6.1.0
      */
@@ -155,13 +128,7 @@ export declare const Analyze: {
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveSine} com um objeto {@link Coefficients}.
      *
-     * Por causa dessa mudança, não retorna mais nada. Então, não espere que ele retorne.
-     *
      * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @param coefA - Coeficiente a da Função Seno
-     * @param coefB - Coeficiente b da Função Seno
-     * @param coefC - Coeficiente c da Função Seno
-     * @default coefA = State.globalA; coefB = State.globalB; coefC = State.globalC
      * @group Função
      * @since v6.1.0
      */
@@ -181,13 +148,7 @@ export declare const Analyze: {
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveCosine} com um objeto {@link Coefficients}.
      *
-     * Por causa dessa mudança, não retorna mais nada. Então, não espere que ele retorne.
-     *
      * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @param coefA - Coeficiente a da Função Cosseno
-     * @param coefB - Coeficiente b da Função Cosseno
-     * @param coefC - Coeficiente c da Função Cosseno
-     * @default coefA = State.globalA; coefB = State.globalB; coefC = State.globalC
      * @group Função
      * @since v6.1.0
      */
@@ -207,13 +168,7 @@ export declare const Analyze: {
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveTangent} com um objeto {@link Coefficients}.
      *
-     * Por causa dessa mudança, não retorna mais nada. Então, não espere que ele retorne.
-     *
      * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @param coefA - Coeficiente a da Função Tangente
-     * @param coefB - Coeficiente b da Função Tangente
-     * @param coefC - Coeficiente c da Função Tangente
-     * @default coefA = State.globalA; coefB = State.globalB; coefC = State.globalC
      * @group Função
      * @since v6.1.0
      */
