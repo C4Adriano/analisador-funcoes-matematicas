@@ -8,26 +8,32 @@ import { tr } from "./i18n.js"
 import { State } from "./state.js"
 import { Writing } from "./writing.js"
 
+/** @param {Value} coef @param {Str} symbol @param {Str} term @returns {Str} */
 const formatLeadingTerm = (coef, symbol, term) =>
     coef == symbol
         ? `${symbol} · ${term}`
-        : Algebra.absoluteOptions(coef) == 1
+        : Algebra.absoluteOptions(Number(coef)) == 1
           ? (coef == -1 ? "−" : "") + term
           : coef == 0
             ? ""
             : `${String(coef)} · ${term}`
 
+/** @param {Value} coef @param {Str} symbol @param {Str} term @returns {Str} */
 const formatMiddleTerm = (coef, symbol, term) =>
     coef == symbol
         ? ` + ${symbol} · ${term}`
         : coef == 0
           ? ""
-          : (coef > 0 ? " + " : " − ") +
-            (Algebra.absoluteOptions(coef) == 1 ? term : `${String(Algebra.absoluteOptions(coef))} · ${term}`)
+          : (Number(coef) > 0 ? " + " : " − ") +
+            (Algebra.absoluteOptions(Number(coef)) == 1
+                ? term
+                : `${String(Algebra.absoluteOptions(Number(coef)))} · ${term}`)
 
+/** @param {Value} coef @param {Str} symbol @returns {Str} */
 const formatConstantTerm = (coef, symbol) =>
-    coef == symbol ? ` + ${symbol}` : coef == 0 ? "" : coef > 0 ? ` + ${String(coef)}` : ` − ${String(-coef)}`
+    coef == symbol ? ` + ${symbol}` : coef == 0 ? "" : Number(coef) > 0 ? ` + ${String(coef)}` : ` − ${String(-coef)}`
 
+/** @param {Value} coef @param {Str} symbol @returns {Str} */
 const formatMultiplier = (coef, symbol) =>
     coef == symbol ? `${symbol} × ` : coef != 0 && coef != 1 ? `${String(coef)} × ` : ""
 
@@ -79,7 +85,7 @@ const buildLogarithmicFunction = ({ a = State.globalA, b = State.globalB, c = St
     (b == 1 && c == 0 ? tr("ui.pure") : "") +
     (a == Algebra.round(Math.E) ? tr("ui.natural") : a == 10 ? tr("ui.decimal") : "")
 
-const buildTrigFunction = ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}, funcType) =>
+const buildTrigFunction = ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}, funcType = "") =>
     tr("ui.theFunction") +
     formatMultiplier(b, "b") +
     (a == "a" ? `${funcType}(a · x)` : a != 0 ? `${funcType}(${String(a)} · x)` : "") +
@@ -95,12 +101,14 @@ export const Ui = {
         type == "error"
             ? Config.errors
                 ? Ui.notify(`=== ${tr("ui.error")} ===\n${message}`, explanation)
-                : undefined
+                : null
             : type == "warning"
               ? Ui.notify(`=== ${tr("ui.warning")} ===\n${message}`, explanation, asConfirm)
               : type == "console"
                 ? console.warn(message, explanation)
-                : Ui.notify(message, explanation, type == "confirm" || asConfirm),
+                : type == "display"
+                  ? Ui.notify(message, explanation, false)
+                  : Ui.notify(message, explanation, true),
 
     display: (message = "", explanation = "") => Ui.notifyOptions(message, { explanation }),
     confirm: (message = "", explanation = "") => Ui.notifyOptions(message, { explanation, type: "confirm" }),
@@ -145,7 +153,7 @@ export const Ui = {
                 answer = 0
             } else if (answer == 8) page--
             else if (answer == 9) page++
-            else if (Commands.names.includes(answer)) {
+            else if (Checks.isValidCommand(answer)) {
                 State.loop = true
                 State.keepType = true
             }
@@ -154,7 +162,7 @@ export const Ui = {
                 State.loop = true
                 break
             }
-        } while (!(answer >= 0 && answer <= 7) || Commands.names.includes(answer))
+        } while ((Checks.isFiniteNumber(answer) && !(answer >= 0 && answer <= 7)) || Checks.isValidCommand(answer))
 
         return [answer, page]
     },
@@ -165,13 +173,13 @@ export const Ui = {
         number = false,
         places = Config.decimalPlaces,
         allowCommands = false,
-        angle = false
+        angle = "deg"
     ) => {
         let limit = 0
 
         do {
             const raw = prompt(Writing.format(message, explanation))
-            if (raw == null) break
+            if (raw == null) continue
 
             const text = raw.trim()
             if (text == "") continue
@@ -194,7 +202,7 @@ export const Ui = {
                 Config.inputConfirm &&
                 !Ui.notifyOptions(
                     tr("ui.inputConfirm", {
-                        input: number ? (angle ? Writing.formatAngle(raw) : Writing.decimalOptions(raw)) : text,
+                        input: number ? (angle ? Writing.formatAngle(Number(raw)) : Writing.decimalOptions(raw)) : text,
                     }),
                     { explanation: tr("ui.inputConfirmNote"), type: "warning", asConfirm: true }
                 )
@@ -252,10 +260,10 @@ export const Ui = {
         do {
             value = Ui.input(message, explanation, true, places, allowCommands)
 
-            if (Commands.names.includes(value)) return value
+            if (Checks.isValidCommand(value)) return value
             if (value == "end") return 0
-            if (!(min <= value && value <= max)) Errors.range(min, max)
-        } while (!(min <= value && value <= max))
+            if (Checks.isFiniteNumber(value) && !(min <= value && value <= max)) Errors.range(min, max)
+        } while (Checks.isFiniteNumber(value) && !(min <= value && value <= max))
 
         return value
     },

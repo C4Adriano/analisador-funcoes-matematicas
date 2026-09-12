@@ -1,5 +1,3 @@
-import type { Numeric, Text, TrigonometricFunction, Value } from "./values.js"
-
 /**
  * # Helpers
  *
@@ -41,7 +39,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    domain(belongs: Text, explanation: Text): void
+    domain(belongs?: Str, explanation?: Str): void
 
     /**
      * Monta a imagem de uma Função.
@@ -51,7 +49,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    range(belongs: Text, interval: Text, explanation: Text): void
+    range(belongs?: Str, interval?: Str, explanation?: Str): void
 
     /**
      * Monta a intercessão com o eixo x de uma Função.
@@ -61,7 +59,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    xAxis(root: Numeric, explanation: Text, noHave: Text): void
+    xAxis(root: Numeric, explanation?: Str, noHave?: Str): void
 
     /**
      * Monta a intercessão com o eixo y de uma Função.
@@ -71,10 +69,14 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    yAxis(point: Numeric, func: Text, explanation: Text): void
+    yAxis(point: Value, func: Str, explanation?: Str): void
 
     /**
      * Monta o valor de y para o x dado.
+     * @deprecated
+     * Desde v6.6.7. Use {@link Helpers.resolveXValues} com um objeto {@link Coefficients} e um {@link FunctionType} no lugar dos outros três parâmetros.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
      * @param coefA - Coeficiente `a`.
      * @param coefB - Coeficiente `b`.
      * @param coefC - Coeficiente `c`.
@@ -94,7 +96,21 @@ export declare const Helpers: {
     ): void
 
     /**
+     * Monta o valor de `y` para o `x` dado.
+     * @param coefs - Coeficientes.
+     * @param funcType - Tipo da Função.
+     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }; funcType = "poly"
+     * @group Função
+     * @since v6.6.7
+     */
+    resolveXValues(coefs?: Coefficients, funcType?: FunctionType): void
+
+    /**
      * Monta o valor de x para o y dado.
+     * @deprecated
+     * Desde v6.6.7. Use {@link Helpers.resolveYValues} com um objeto {@link Coefficients} e um {@link FunctionType} no lugar dos outros três parâmetros.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
      * @param coefA - Coeficiente `a`.
      * @param coefB - Coeficiente `b`.
      * @param coefC - Coeficiente `c`.
@@ -114,7 +130,21 @@ export declare const Helpers: {
     ): void
 
     /**
+     * Monta o valor de `x` para o `y` dado.
+     * @param coefs - Coeficientes.
+     * @param funcType - Tipo da Função.
+     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }; funcType = "poly"
+     * @group Função
+     * @since v6.6.7
+     */
+    resolveYValues(coefs?: Coefficients, funcType?: FunctionType): void
+
+    /**
      * Monta o estudo do sinal de uma Função.
+     * @deprecated
+     * Desde v6.6.7. Use {@link Helpers.resolveSign} com um objeto {@link Coefficients} e um {@link FunctionType} no lugar dos outros três parâmetros.
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**.
      * @param coefA - Coeficiente `a`.
      * @param coefB - Coeficiente `b`.
      * @param coefC - Coeficiente `c`.
@@ -134,8 +164,18 @@ export declare const Helpers: {
     ): void
 
     /**
-     * Monta a equação de duas Funções.
-     * @param polinomial - Polinomial.
+     * Monta o estudo do sinal de uma Função.
+     * @param coefs - Coeficientes.
+     * @param funcType - Tipo da Função.
+     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }; funcType = "poly"
+     * @group Função
+     * @since v6.6.7
+     */
+    resolveSign(coefs?: Coefficients, funcType?: FunctionType): void
+
+    /**
+     * Monta a equação entre duas Funções.
+     * @param polynomial - Polinomial.
      * @param coefA - Coeficiente `a`.
      * @param coefB - Coeficiente `b`.
      * @param coefC - Coeficiente `c`.
@@ -143,7 +183,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    equations(polinomial: boolean, coefA?: Value, coefB?: Value, coefC?: Value): void
+    equations(polynomial: boolean, coefA?: Value, coefB?: Value, coefC?: Value): 0 | 1
 
     /**
      * Monta a curva de uma Função.
@@ -153,8 +193,18 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    curve(coefA?: Value, coefB?: Value, polynomial: Text): void
+    curve(coefA?: Value, coefB?: Value, polynomial?: boolean): void
 
+    /** Função Constante */
+    calcRoot(coefA: 0, coefB: 0, coefC?: Value, funcExp?: false, funcLog?: false, funcTrig?: ""): typeof NaN
+    /** Função Afim */
+    calcRoot(coefA: 0, coefB?: Value, coefC?: Value, funcExp?: false, funcLog?: false, funcTrig?: ""): Numeric
+    /** Função Quadrática @deprecated Use {@link Helpers.calcDelta} */
+    calcRoot(coefA: Value, coefB?: Value, coefC?: Value, funcExp?: false, funcLog?: false, funcTrig?: ""): NumericArray
+    /** Função Exponencial */
+    calcRoot(coefA: Value, coefB: Value, coefC: Value, funcExp: true, funcLog?: boolean, funcTrig?: ""): Numeric
+    /** Função Logarítmica */
+    calcRoot(coefA: Value, coefB: Value, coefC: Value, funcExp: boolean, funcLog: true, funcTrig?: ""): Numeric
     /**
      * Calcula a raiz de uma Função.
      * @param coefA - Coeficiente `a`.
@@ -174,7 +224,7 @@ export declare const Helpers: {
         funcExp?: boolean,
         funcLog?: boolean,
         funcTrig?: TrigonometricFunction
-    ): void
+    ): Numeric | NumericArray
 
     /**
      * Mostra a raiz de uma Função.
@@ -184,7 +234,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    showRoot(root: Numeric, explanation: Text, noHave: Text): void
+    showRoot(root: Numeric, explanation?: Str, noHave?: Str): void
 
     /**
      * Calcula o Delta de uma Função.
@@ -195,7 +245,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    calcDelta(coefA?: Value, coefB?: Value, coefC?: Value): void
+    calcDelta(coefA?: Value, coefB?: Value, coefC?: Value): [Numeric, Numeric, Numeric]
 
     /**
      * Exibe o Delta de uma Função.
@@ -207,7 +257,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    showDelta(delta: Numeric, lower: Text, equal: Text, higher: Text, hasY: boolean): void
+    showDelta(delta: Numeric, lower: Str, equal: Str, higher: Str, hasY?: boolean): void
 
     /**
      * Calcula o vértice de uma Função.
@@ -218,7 +268,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    vertex(coefA?: Value, coefB?: Value, delta: Numeric): void
+    vertex(coefA?: Value, coefB?: Value, delta?: Numeric): [Numeric, Numeric]
 
     /**
      * Vê se estourou o limite.
@@ -227,7 +277,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    exceededLimit(limit: Numeric): void
+    exceededLimit(limit: Numeric): boolean
 
     /**
      * Calcula o período de uma Função.
@@ -237,7 +287,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    calcPeriod(coefA?: Value, funcTan: boolean): void
+    calcPeriod(coefA?: Value, funcTan?: boolean): void
 
     /**
      * Exibe o período de uma Função
@@ -246,7 +296,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    showPeriod(coefA?: Value, funcTan: boolean): void
+    showPeriod(coefA?: Value, funcTan?: boolean): void
 
     /**
      * Exibe a amplitude de uma Função.

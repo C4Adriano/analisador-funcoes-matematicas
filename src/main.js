@@ -1,7 +1,6 @@
 import { Algebra } from "./algebra.js"
 import { Analyze } from "./analyze.js"
 import { Checks } from "./checks.js"
-import { Commands } from "./commands.js"
 import { Config, DEFAULT_CONFIG, loadConfig, resetConfig, saveConfig } from "./config.js"
 import { Errors } from "./errors.js"
 import { changeLanguage, tr } from "./i18n.js"
@@ -11,10 +10,10 @@ import { VERSION } from "./version.js"
 import { Writing } from "./writing.js"
 
 Ui.notifyOptions(
-    `====================================================` +
+    `==================================================` +
         `\n${tr("commands.title")} — ${VERSION}\n${tr("commands.copyright")} © Adriano Lima 2025 — 2026` +
         `\n` +
-        `====================================================`,
+        `==================================================`,
     { type: "console" }
 )
 
@@ -45,7 +44,8 @@ const changeHTML = () => {
     setProperty("og:locale", locales[Config.language])
     document.title = title
 
-    document.querySelector("h1").textContent = tr("main.h1")
+    const h1 = document.querySelector("h1")
+    if (h1) h1.textContent = tr("main.h1")
 
     setMeta("title", title)
     setMeta("description", description)
@@ -62,25 +62,29 @@ const hasKnownCoefficients = () =>
 
 const areCoefficientsUnknown = () => State.globalA == "a" || State.globalB == "b" || State.globalC == "c"
 
-const resolveUnknownCoefficients = kind => {
+/** @param {FunctionType} kind */
+const resolveUnknownCoefficients = (kind = "poly") => {
     State.coefficients = Algebra.resolveUnknown({ a: State.globalA, b: State.globalB, c: State.globalC }, kind)
     State.globalA = Algebra.round(State.coefficients.a)
     State.globalB = Algebra.round(State.coefficients.b)
     State.globalC = Algebra.round(State.coefficients.c)
 }
 
+/** @param {Numeric | CommandsNames} subType @param {Numeric} maxOption */
 const isValidSubType = (subType, maxOption) =>
-    (subType >= 0 && subType <= maxOption) || (subType >= 6 && subType <= 9) || Commands.names.includes(subType)
+    (Checks.isFiniteNumber(subType) && ((subType >= 0 && subType <= maxOption) || (subType >= 6 && subType <= 9))) ||
+    Checks.isValidCommand(subType)
 
+/** @param {Numeric | CommandsNames} subType */
 const handleSubMenu = subType => {
-    if (subType >= 6 && subType <= 9) {
+    if (Checks.isFiniteNumber(subType) && subType >= 6 && subType <= 9) {
         State.type = subType
         State.loop = true
         State.keepType = true
         return true
     }
 
-    if (Commands.names.includes(subType)) {
+    if (Checks.isValidCommand(subType)) {
         State.type = subType
         State.loop = true
         if (subType != "exit") State.keepType = true
@@ -95,6 +99,7 @@ const handleSubMenu = subType => {
     return false
 }
 
+/** @param {Function} buildMenuText @param {Numeric} maxOption @param {Record<Numeric, () => void>} handlers */
 const runSubMenu = (buildMenuText, maxOption, handlers) => {
     let subLoop
 
@@ -109,14 +114,14 @@ const runSubMenu = (buildMenuText, maxOption, handlers) => {
 const handlePolynomial = () => {
     if (!hasKnownCoefficients()) resolveUnknownCoefficients()
     if (!hasKnownCoefficients()) return
-    if (State.globalA == 0 && State.globalB == 0) Analyze.resolveConstant({ a: 0, b: 0, c: State.globalC })
-    else if (State.globalA == 0) Analyze.resolveAffine({ a: 0, b: State.globalB, c: State.globalC })
+    if (State.globalA == 0 && State.globalB == 0) Analyze.resolveConstant({ c: State.globalC })
+    else if (State.globalA == 0) Analyze.resolveAffine({ b: State.globalB, c: State.globalC })
     else Analyze.resolveQuadratic({ a: State.globalA, b: State.globalB, c: State.globalC })
 }
 
-const handleExpOrLog = (kind, label, resolveFn) => {
+/** @param {FunctionType} kind @param {Str} label @param {(coefs: Coefficients) => void} resolveFn */
+const handleExpOrLog = (kind = "exp", label, resolveFn) => {
     if (areCoefficientsUnknown()) resolveUnknownCoefficients(kind)
-
     if (areCoefficientsUnknown()) return
 
     if (
@@ -169,7 +174,8 @@ const handleNonPolynomial = () => {
     )
 }
 
-const handleTrig = (kind, label, resolveFn, mergeOnZeroA = false) => {
+/** @param {FunctionType} kind @param {Str} label @param {(coefs: Coefficients) => void} resolveFn @param {boolean} mergeOnZeroA */
+const handleTrig = (kind = "sin", label, resolveFn, mergeOnZeroA = false) => {
     if (areCoefficientsUnknown()) resolveUnknownCoefficients(kind)
 
     if (areCoefficientsUnknown()) return
@@ -222,7 +228,7 @@ const handleHistory = () => {
     State.loop = true
 
     if (State.history.length <= 1) {
-        Ui.notifyOptions(tr("main.noHistory"), tr("main.noHistoryExp"))
+        Ui.notifyOptions(tr("main.noHistory"), { explanation: tr("main.noHistoryExp") })
         return
     }
 
@@ -231,6 +237,7 @@ const handleHistory = () => {
 
     for (let func = State.history.length - 1; func >= 0; func--) {
         const stored = State.history[func]
+        if (!stored) continue
         message += `${String(option)} ⇒ “a” = ${Writing.decimalOptions(stored.a)}; “b” = ${Writing.decimalOptions(stored.b)}; “c” = ${Writing.decimalOptions(stored.c)}`
         option++
     }
@@ -239,6 +246,7 @@ const handleHistory = () => {
     if (answer == 0) return
 
     const stored = State.history.at(State.history.length - answer)
+    if (!stored) return
     State.globalA = stored.a
     State.globalB = stored.b
     State.globalC = stored.c
@@ -277,6 +285,7 @@ const buildConfigOptions = () => [
     "---",
 ]
 
+/** @param {Numeric} page @param {Numeric} total @param {Str[]} configOptions */
 const buildSettingsMenu = (page, total, configOptions) => {
     let text = `=== ${tr("main.settings")} ===\n${tr("commands.page")}${String(page)}/${String(
         total
@@ -303,14 +312,15 @@ const restoreDefaults = () => {
         return
     }
 
+    const changedKeys = /** @type {Array<keyof typeof Config>} */ (Object.keys(Config)).filter(
+        key => Config[key] != DEFAULT_CONFIG[key]
+    )
     if (
-        Ui.notifyOptions(
-            tr("main.wantRestoreDefault") +
-                Object.keys(Config)
-                    .filter(key => Config[key] != DEFAULT_CONFIG[key])
-                    .join(", "),
-            { explanation: tr("main.noteRestoreDefault"), type: "warning", asConfirm: true }
-        )
+        Ui.notifyOptions(tr("main.wantRestoreDefault") + changedKeys.join(", "), {
+            explanation: tr("main.noteRestoreDefault"),
+            type: "warning",
+            asConfirm: true,
+        })
     )
         resetConfig()
 }
@@ -318,6 +328,7 @@ const restoreDefaults = () => {
 const settingsPageActions = {
     1: {
         1: () => {
+            /** @type {Language[]} */
             const LANGUAGES = ["pt-br", "pt-pt", "en-us", "en-gb", "es-419", "es-es"],
                 displayLocale = Config.language.replace(/(-\w+)$/, m => Writing.uppercase(m)),
                 languageNames = new Intl.DisplayNames([displayLocale], { type: "language" }),
@@ -329,7 +340,8 @@ const settingsPageActions = {
                     6,
                     0
                 ),
-                language = LANGUAGES[question - 1]
+                /** @type {Language} */
+                language = LANGUAGES[question - 1] ?? "pt-br"
 
             if (language != Config.language) {
                 changeLanguage(language)
@@ -349,22 +361,25 @@ const settingsPageActions = {
             })
         },
         4: () => {
-            Config.textCase = ["capitalized", "uppercase", "lowercase", "normal"][
-                Ui.range(
-                    `${Writing.configItem(tr("main.changeTextCase"), "textCase")}\n${[
-                        tr("main.textCaseCapitalized"),
-                        tr("main.textCaseUppercase"),
-                        tr("main.textCaseLowercase"),
-                        tr("main.textCaseNormal"),
-                    ]
-                        .map((label, index) => `${index + 1} = ${label}`)
-                        .join("\n")}`,
-                    tr("main.noteTextCase"),
-                    1,
-                    4,
-                    0
-                ) - 1
-            ]
+            /** @type {TextCase[]} */
+            const cases = ["capitalized", "uppercase", "lowercase", "normal"]
+            Config.textCase =
+                cases[
+                    Ui.range(
+                        `${Writing.configItem(tr("main.changeTextCase"), "textCase")}\n${[
+                            tr("main.textCaseCapitalized"),
+                            tr("main.textCaseUppercase"),
+                            tr("main.textCaseLowercase"),
+                            tr("main.textCaseNormal"),
+                        ]
+                            .map((label, index) => `${index + 1} = ${label}`)
+                            .join("\n")}`,
+                        tr("main.noteTextCase"),
+                        1,
+                        4,
+                        0
+                    ) - 1
+                ] ?? "normal"
         },
         5: () => {
             Config.decimalSeparator = Ui.notifyOptions(
@@ -436,21 +451,25 @@ const settingsPageActions = {
             if (State.globalC != "c") State.globalC = Algebra.round(State.globalC)
         },
         2: () => {
-            Config.logPrecision = Ui.range(
-                Writing.configItem(tr("main.whatLogPrecision"), "logPrecision"),
-                tr("main.noteLogPrecision"),
-                1e-12,
-                1e-6,
-                20
+            Config.logPrecision = /** @type {Precision} */ (
+                Ui.range(
+                    Writing.configItem(tr("main.whatLogPrecision"), "logPrecision"),
+                    tr("main.noteLogPrecision"),
+                    1e-12,
+                    1e-6,
+                    20
+                )
             )
         },
         3: () => {
-            Config.divPrecision = Ui.range(
-                Writing.configItem(tr("main.whatDivisionPrecision"), "divPrecision"),
-                tr("main.noteDivisionPrecision"),
-                1e-12,
-                1e-6,
-                20
+            Config.divPrecision = /** @type {Precision} */ (
+                Ui.range(
+                    Writing.configItem(tr("main.whatDivisionPrecision"), "divPrecision"),
+                    tr("main.noteDivisionPrecision"),
+                    1e-12,
+                    1e-6,
+                    20
+                )
             )
         },
         4: () => {
@@ -499,7 +518,11 @@ const handleSettings = () => {
         else if (choice == "exit") {
             choice = 0
             State.type = "exit"
-        } else settingsPageActions[page]?.[choice]?.()
+        } else if (Checks.isFiniteNumber(choice)) {
+            /** @type {Record<Numeric, Record<Numeric, () => void> | undefined>} */
+            const pageActions = settingsPageActions
+            pageActions[page]?.[choice]?.()
+        }
 
         if (Checks.isFiniteNumber(choice) && choice >= 1 && choice <= 6) saveConfig()
     } while (choice != 0)
@@ -507,7 +530,7 @@ const handleSettings = () => {
 
 const handleReview = () => {
     Ui.notifyOptions(
-        `${tr("`${main.values")}\n` +
+        `${tr("main.values")}\n` +
             `“a” = ${Writing.decimalOptions(State.globalA)}\n` +
             `“b” = ${Writing.decimalOptions(State.globalB)}\n` +
             `“c” = ${Writing.decimalOptions(State.globalC)}\n`
@@ -534,6 +557,7 @@ const TYPE_ALIASES = {
     exit: 0,
 }
 
+/** @type {Record<Numeric, () => void>} */
 const typeActions = {
     1: handlePolynomial,
     2: handleNonPolynomial,
@@ -545,7 +569,8 @@ const typeActions = {
     0: handleExit,
 }
 
-const resolveTypeKey = type => TYPE_ALIASES[type] ?? type
+/** @param {Numeric | CommandsNames} type @returns {Numeric} */
+const resolveTypeKey = type => (typeof type == "string" ? TYPE_ALIASES[type] : type)
 
 const askMainMenu = () =>
     Ui.input(
@@ -595,9 +620,9 @@ do {
     State.loop = false
 
     if (
-        (State.type >= 0 && State.type <= 3) ||
-        (State.type >= 6 && State.type <= 9) ||
-        Commands.names.includes(State.type)
+        (Checks.isFiniteNumber(State.type) &&
+            ((State.type >= 0 && State.type <= 3) || (State.type >= 6 && State.type <= 9))) ||
+        Checks.isValidCommand(State.type)
     )
         typeActions[resolveTypeKey(State.type)]?.()
     else State.loop = true

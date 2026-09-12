@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Checks } from "./checks.js"
 import { Config, saveConfig } from "./config.js"
 import { Ui } from "./ui.js"
-
-import type { Language, Text } from "./values.js"
 
 import enGB from "./JSON/i18n/en-GB.json" with { type: "json" }
 import enUS from "./JSON/i18n/en-US.json" with { type: "json" }
@@ -38,17 +37,17 @@ const FALLBACK_DICT = ptBR,
  * @group i18n
  * @since v6.6.2
  */
-type PathsOf<T> = T extends string
+type PathsOf<T> = T extends Str
     ? never
     : {
-          [K in keyof T & string]: T[K] extends string
+          [K in keyof T & Str]: T[K] extends Str
               ? K
               : T[K] extends readonly unknown[]
                 ? never
                 : PathsOf<T[K]> extends never
                   ? never
                   : `${K}.${PathsOf<T[K]>}`
-      }[keyof T & string]
+      }[keyof T & Str]
 
 /**
  * União de todas as chaves de tradução válidas, derivada de `pt-BR.json` (dicionário master).
@@ -62,13 +61,13 @@ export type TranslationKey = PathsOf<typeof ptBR>
  * Navega um objeto de dicionário por uma chave em _dot-notation_.
  * @param dict - Dicionário a navegar.
  * @param key - Chave em _dot-notation_. (Ex.: `errors.error001`)
- * @returns O texto encontrado, ou `undefined` se a chave não existir nesse dicionário.
+ * @returns O texto encontrado, ou `null` se a chave não existir nesse dicionário.
  * @group i18n
  * @since v6.3.0
  */
-const resolveKey = (dict: Record<string, any>, key: string): Text | undefined => {
+const resolveKey = (dict: Record<Str, any>, key: Str): Str | null => {
     const raw = key.split(".").reduce<any>((obj, part) => obj?.[part], dict)
-    return typeof raw == "string" ? raw : undefined
+    return Checks.isValidText(raw) ? raw : null
 }
 
 /**
@@ -80,7 +79,7 @@ const resolveKey = (dict: Record<string, any>, key: string): Text | undefined =>
  * @group i18n
  * @since v6.2.0
  */
-export const tr = (key: TranslationKey, params?: Record<string, string | number>): Text => {
+export const tr = (key: TranslationKey, params?: Record<Str, Value>): Str => {
     const dict = dictionaries[Config.language] ?? dictionaries["pt-br"]
 
     let raw = resolveKey(dict, key)
@@ -103,7 +102,7 @@ export const tr = (key: TranslationKey, params?: Record<string, string | number>
  * @group i18n
  * @since v6.2.0
  */
-export const trArr = (keys: TranslationKey[] = []): Text[] => keys.map(key => tr(key))
+export const trArr = (keys: TranslationKey[] = []): Str[] => keys.map(key => tr(key))
 
 /**
  * Altera o idioma do programa, ajustando as configurações relacionadas (como {@link Config.accents} e {@link Config.decimalSeparator}).

@@ -52,26 +52,31 @@ export const Algebra = {
         if (!Array.isArray(func2) || func2.length != 3 || !func2.every(value => Checks.isFiniteNumber(value)))
             func2 = [0, 0, 0]
 
-        const [a1 = 0, b1 = 0, c1 = 0] = func1,
-            [a2 = 0, b2 = 0, c2 = 0] = func2,
-            coefA = a1 - a2,
-            coefB = b1 - b2,
-            coefC = c1 - c2
+        Algebra.resolveEquations(
+            { a1: func1[0], b1: func1[1], c1: func1[2] },
+            { a2: func2[0], b2: func2[1], c2: func2[2] }
+        )
+    },
 
-        if (coefA == 0 && coefB == 0) {
-            return coefC == 0
+    resolveEquations: ({ a1 = 0, b1 = 0, c1 = 0 } = {}, { a2 = 0, b2 = 0, c2 = 0 } = {}) => {
+        const a = a1 - a2,
+            b = b1 - b2,
+            c = c1 - c2
+
+        if (a == 0 && b == 0) {
+            return c == 0
                 ? Ui.notifyOptions(tr("algebra.constantCoincide"), { explanation: tr("algebra.constantCoincideExp") })
                 : Ui.notifyOptions(tr("algebra.constantDistinct"), { explanation: tr("algebra.constantDistinctExp") })
         }
 
-        if (coefA == 0) {
-            const x = Algebra.divisionOptions(-coefC, coefB)
+        if (a == 0) {
+            const x = Algebra.divisionOptions(-c, b)
             return Ui.notifyOptions(tr("algebra.oneRoot", { x: Writing.decimalOptions(x) }), {
                 explanation: "x = −c / b",
             })
         }
 
-        const delta = Helpers.calcDelta(coefA, coefB, coefC)
+        const delta = Helpers.calcDelta(a, b, c)
 
         return Helpers.showDelta(
             delta[0],
@@ -79,10 +84,6 @@ export const Algebra = {
             tr("algebra.oneRoot", { x: Writing.decimalOptions(delta[1]) }),
             tr("algebra.twoRoots", { x1: Writing.decimalOptions(delta[1]), x2: Writing.decimalOptions(delta[2]) })
         )
-    },
-
-    resolveEquations: ({ a1 = 0, b1 = 0, c1 = 0 } = {}, { a2 = 0, b2 = 0, c2 = 0 } = {}) => {
-        Algebra.equations([a1, b1, c1], [a2, b2, c2])
     },
 
     solveLinearSystem: (matrix, vector) => {
@@ -116,13 +117,10 @@ export const Algebra = {
         return solution
     },
 
-    solveLinearCoefs: (basis = null, known, unknownKeys, points) => {
+    solveLinearCoefs: (basis, known, unknownKeys, points) => {
         const knownKeys = Object.keys(basis).filter(key => !unknownKeys.includes(key)),
             matrix = points.map(({ x }) => unknownKeys.map(key => basis[key](x))),
-            vector = points.map(({ x, y }) => {
-                const contribution = knownKeys.reduce((sum, key) => sum + known[key] * basis[key](x), 0)
-                return y - contribution
-            }),
+            vector = points.map(({ x, y }) => y - knownKeys.reduce((sum, key) => sum + known[key] * basis[key](x), 0)),
             solved = Algebra.solveLinearSystem(matrix, vector)
 
         if (!solved) return null
@@ -142,7 +140,7 @@ export const Algebra = {
         return pairs
     },
 
-    solvePolynomial: ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) => {
+    solvePolynomial: ({ a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC) } = {}) => {
         const coefs = { a, b, c },
             basis = { a: x => x * x, b: x => x, c: () => 1 },
             eligible = { constant: ["c"], affine: ["b", "c"], quadratic: ["a", "b", "c"] },
@@ -155,7 +153,7 @@ export const Algebra = {
         return Algebra.solveLinearCoefs(basis, coefs, unknownKeys, points)
     },
 
-    solveExponential: ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) => {
+    solveExponential: ({ a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC) } = {}) => {
         const coefs = { a, b, c },
             linearKeys = ["b", "c"],
             unknownKeys = ["a", "b", "c"].filter(key => coefs[key] == key)
@@ -170,7 +168,10 @@ export const Algebra = {
             )
 
         if (unknownKeys.length == 1 && unknownKeys[0] == "a") {
-            const [{ x, y }] = Algebra.getPointPairs(1)
+            const [point] = Algebra.getPointPairs(1) ?? []
+            if (!point) return { ...coefs, a: -1, b: coefs.b, c: coefs.c }
+
+            const { x, y } = point
             a = Algebra.round(
                 Algebra.divisionOptions(y - coefs.c, coefs.b, { round: false }) **
                     Algebra.divisionOptions(1, x, { round: false })
@@ -179,7 +180,9 @@ export const Algebra = {
         }
 
         if (unknownKeys.includes("a") && unknownKeys.includes("b")) {
-            const [p0, p1] = Algebra.getPointPairs(2)
+            const [p0, p1] = Algebra.getPointPairs(2) ?? []
+            if (!p0 || !p1) return { ...coefs, a: -1, b: coefs.b, c: coefs.c }
+
             a = Algebra.round(
                 Algebra.divisionOptions(p0.y - coefs.c, p1.y - coefs.c, { round: false }) **
                     Algebra.divisionOptions(1, p0.x - p1.x, { round: false })
@@ -195,7 +198,7 @@ export const Algebra = {
         return { ...coefs, a: -1, c: 0 }
     },
 
-    solveLogarithmic: ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) => {
+    solveLogarithmic: ({ a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC) } = {}) => {
         const coefs = { a, b, c },
             linearKeys = ["b", "c"],
             unknownKeys = ["a", "b", "c"].filter(key => coefs[key] == key)
@@ -207,12 +210,17 @@ export const Algebra = {
         }
 
         if (unknownKeys.length == 1 && unknownKeys[0] == "a") {
-            const [{ x, y }] = Algebra.getPointPairs(1)
+            const [point] = Algebra.getPointPairs(1) ?? []
+            if (!point) return { ...coefs, a: -1, b: coefs.b, c: coefs.c }
+
+            const { x, y } = point
             return { ...coefs, a: Algebra.round(x ** Algebra.divisionOptions(coefs.b, y - coefs.c, { round: false })) }
         }
 
         if (unknownKeys.includes("a") && unknownKeys.includes("c")) {
-            const [p0, p1] = Algebra.getPointPairs(2)
+            const [p0, p1] = Algebra.getPointPairs(2) ?? []
+            if (!p0 || !p1) return { ...coefs, a: -1, b: coefs.b, c: coefs.c }
+
             a = Algebra.round(
                 Algebra.divisionOptions(p0.x, p1.x, { round: false }) **
                     Algebra.divisionOptions(coefs.b, p0.y - p1.y, { round: false })
@@ -228,7 +236,10 @@ export const Algebra = {
         return { ...coefs, a: -1, b: 1, c: 0 }
     },
 
-    resolveUnknown: ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}, funcType = "poly") => {
+    resolveUnknown: (
+        { a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC) } = {},
+        /** @type {FunctionType} */ funcType = "poly"
+    ) => {
         const coefs = { a, b, c },
             solvers = { poly: Algebra.solvePolynomial, exp: Algebra.solveExponential, log: Algebra.solveLogarithmic },
             solver = solvers[funcType] ?? Algebra.solvePolynomial // TODO - trig cai em poly
@@ -283,14 +294,14 @@ export const Algebra = {
     },
 
     unknown: (
-        coefA = State.globalA,
-        coefB = State.globalB,
-        coefC = State.globalC,
+        coefA = Number(State.globalA),
+        coefB = Number(State.globalB),
+        coefC = Number(State.globalC),
         funcExp = false,
         funcLog = false,
         funcTrig = ""
     ) => {
-        const funcType = funcExp ? "exp" : funcLog ? "log" : funcTrig || "poly",
+        const funcType = /** @type {FunctionType} */ (funcExp ? "exp" : funcLog ? "log" : funcTrig || "poly"),
             result = Algebra.resolveUnknown({ a: coefA, b: coefB, c: coefC }, funcType)
         return [
             Checks.isFiniteNumber(result.a) ? "a" : result.a,
@@ -339,7 +350,6 @@ export const Algebra = {
 
     ln: (x = 1, precision = Config.logPrecision, round = false, places = Config.decimalPlaces) =>
         Algebra.logOptions(x, Math.E, { round, places, precision }),
-
     lnOptions: (x = 1, { round = false, places = Config.decimalPlaces, precision = Config.logPrecision } = {}) =>
         Algebra.logOptions(x, Math.E, { precision, round, places }),
 

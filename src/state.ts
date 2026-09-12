@@ -1,7 +1,5 @@
 import stateJson from "./JSON/state.json" with { type: "json" }
 
-import type { Coefficients, CommandsNames, Numeric, Value } from "./values.js"
-
 /**
  * Tipo do estado do programa.
  * @since ~v6.2.0
@@ -25,7 +23,7 @@ export type StateType = {
     globalC: Value
 
     /** Função padrão. */
-    baseFunc: Coefficients
+    baseFunc: Coefficients | null
     /** Coeficientes. */
     coefficients: Coefficients
     /** Função atual. */

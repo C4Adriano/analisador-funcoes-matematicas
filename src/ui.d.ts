@@ -1,14 +1,4 @@
-import type {
-    Coefficients,
-    CommandsNames,
-    FunctionType,
-    MessageOptions,
-    Numeric,
-    NumericArray,
-    Places,
-    Text,
-    Value,
-} from "./values.js"
+import type { CommandsNames, MessageOptions } from "./values.d.ts"
 
 /**
  * # Ui
@@ -35,9 +25,9 @@ import type {
  */
 export declare const Ui: {
     /** Exibe uma mensagem qualquer, como {@link Ui.display display}. @deprecated */
-    notify(message: Text, explanation?: Text, asConfirm?: false): undefined
+    notify(message: Str, explanation?: Str, asConfirm?: false): undefined
     /** Exibe uma mensagem qualquer, como {@link Ui.confirm `confirm`}. @deprecated */
-    notify(message: Text, explanation?: Text, asConfirm: true): boolean
+    notify(message: Str, explanation?: Str, asConfirm: true): boolean
     /**
      * Exibe uma mensagem qualquer.
      * @deprecated
@@ -51,28 +41,30 @@ export declare const Ui: {
      * @group UI
      * @since v6.6.1
      */
-    notify(message: Text, explanation?: Text, asConfirm?: boolean): boolean | undefined
+    notify(message: Str, explanation?: Str, asConfirm?: boolean): boolean | undefined
 
-    /** Exibe uma mensagem qualquer, como {@link Ui.confirm `confirm`}. */
-    notifyOptions(message: Text, option: MessageOptions & { type: "confirm" }): boolean
+    /** Exibe uma mensagem qualquer, como {@link Ui.warning aviso}. */
+    notifyOptions(message: Str, option: MessageOptions & { type: "warning"; asConfirm?: false }): null
     /** Exibe uma mensagem qualquer, como {@link Ui.confirm `confirm`}, via {@link Ui.warning aviso}. */
-    notifyOptions(message: Text, option: MessageOptions & { type: "warning"; asConfirm: true }): boolean
+    notifyOptions(message: Str, option: MessageOptions & { type: "warning"; asConfirm: true }): boolean
     /** Exibe uma mensagem qualquer, como {@link Ui.confirm `confirm`}. */
-    notifyOptions(message: Text, option: MessageOptions & { asConfirm: true }): boolean
-    /** Exibe uma mensagem qualquer, sem retorno. */
+    notifyOptions(message: Str, option: MessageOptions & { type: "confirm"; asConfirm?: never }): boolean
+    /** Exibe uma mensagem qualquer, como {@link Ui.confirm `confirm`}. @deprecated Use `{ type: "confirm" }` no lugar. */
+    notifyOptions(message: Str, option: MessageOptions & { asConfirm: true }): boolean
+    /** Exibe uma mensagem qualquer. */
     notifyOptions(
-        message: Text,
-        option?: MessageOptions & { type?: "display" | "error" | "warning" | "console" }
-    ): undefined
+        message?: Str,
+        option?: MessageOptions & { type?: "display" | "error" | "console"; asConfirm?: never }
+    ): null
     /**
      * Exibe uma mensagem qualquer, com base no `type` informado.
      * @param message - Mensagem
      * @param option - Opções
-     * @default options: { asConfirm: false, type: "display" }
+     * @default options = { asConfirm: false, type: "display" }
      * @group UI
      * @since v6.6.1
      */
-    notifyOptions(message: Text, option?: MessageOptions): boolean | undefined
+    notifyOptions(message: Str, option?: MessageOptions): boolean | null
 
     /**
      * Exibe um `alert` personalizado.
@@ -85,7 +77,7 @@ export declare const Ui: {
      * @group UI
      * @since v6.1.0
      */
-    display(message: Text, explanation?: Text): undefined
+    display(message: Str, explanation?: Str): undefined
 
     /**
      * Exibe um `confirm` personalizado.
@@ -99,7 +91,7 @@ export declare const Ui: {
      * @group UI
      * @since v6.1.0
      */
-    confirm(message: Text, explanation?: Text): boolean
+    confirm(message: Str, explanation?: Str): boolean
 
     /**
      * Exibe uma mensagem de erro.
@@ -112,12 +104,12 @@ export declare const Ui: {
      * @group UI
      * @since v6.1.0
      */
-    error(message: Text, explanation?: Text): undefined
+    error(message: Str, explanation?: Str): undefined
 
     /** Exibe uma mensagem de aviso, como `alert`. @deprecated */
-    warning(message: Text, explanation?: Text, asConfirm?: false): undefined
+    warning(message: Str, explanation?: Str, asConfirm?: false): undefined
     /** Exibe uma mensagem de aviso, como {@link Ui.confirm `confirm`}. @deprecated */
-    warning(message: Text, explanation?: Text, asConfirm: true): boolean
+    warning(message: Str, explanation?: Str, asConfirm: true): boolean
     /**
      * Exibe uma mensagem de aviso.
      * @deprecated
@@ -131,7 +123,7 @@ export declare const Ui: {
      * @group UI
      * @since v6.1.0
      */
-    warning(message: Text, explanation?: Text, asConfirm?: boolean): boolean | undefined
+    warning(message: Str, explanation?: Str, asConfirm?: boolean): boolean | undefined
 
     /**
      * Formata um menu paginado.
@@ -141,8 +133,26 @@ export declare const Ui: {
      * @group UI
      * @since v6.1.0
      */
-    menu(options: Text[], page: Numeric): NumericArray
+    menu(options: Str[], page: Numeric): [CommandsNames | Numeric, Numeric]
 
+    /** Texto */
+    input(
+        message: Str,
+        explanation?: Str,
+        number?: false,
+        places?: Places,
+        allowCommands?: boolean,
+        angle?: boolean
+    ): Variable
+    /** Número */
+    input(
+        message: Str,
+        explanation: Str,
+        number: true,
+        places?: Places,
+        allowCommands?: boolean,
+        angle?: boolean
+    ): Numeric
     /**
      * Exibe um prompt personalizado e verifica ele.
      * @param message - Mensagem.
@@ -157,8 +167,8 @@ export declare const Ui: {
      * @since v6.1.0
      */
     input(
-        message: Text,
-        explanation?: Text,
+        message: Str,
+        explanation?: Str,
         number?: boolean,
         places?: Places,
         allowCommands?: boolean,
@@ -171,7 +181,6 @@ export declare const Ui: {
      * Desde v6.6.1. Use {@link Ui.resolveFunction} com um objeto {@link Coefficients} e um {@link FunctionType} no lugar dos outros três parâmetros.
      *
      * Mantido apenas para compatibilidade retroativa; **não remover**.
-     *
      * @param coefA - Coeficiente `a`.
      * @param coefB - Coeficiente `b`.
      * @param coefC - Coeficiente `c`.
@@ -195,7 +204,6 @@ export declare const Ui: {
 
     /**
      * Formata uma Função.
-     * @remarks Substitui {@link Ui.function} com uma assinatura mais enxuta, agrupando os Coeficientes em um único objeto e os antigos parâmetros (`funcExp`, `funcLog`, `funcTrig`) em um único tipo discriminado.
      * @param coefs - Coeficientes.
      * @param funcType - Tipo da Função.
      * @param show - Mostrará a Função ou não, baseado na configuração.
@@ -205,6 +213,15 @@ export declare const Ui: {
      */
     resolveFunction(coefs?: Coefficients, funcType?: FunctionType, show?: boolean): void
 
+    /** Sem commandos */
+    range(
+        message: Str,
+        explanation?: Str,
+        min?: Numeric,
+        max?: Numeric,
+        places?: Places,
+        allowCommands?: false
+    ): Numeric
     /**
      * Pede ao usuário um valor entre o intervalo.
      * @param message - Mensagem.
@@ -218,8 +235,8 @@ export declare const Ui: {
      * @since v6.1.0
      */
     range(
-        message: Text,
-        explanation?: Text,
+        message: Str,
+        explanation?: Str,
         min?: Numeric,
         max?: Numeric,
         places?: Places,

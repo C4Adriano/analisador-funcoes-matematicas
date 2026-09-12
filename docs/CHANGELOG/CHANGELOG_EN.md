@@ -23,6 +23,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 -
 
+## \[6.6.7] - 2026-09-12
+
+### Fixed
+
+- All type and structure bugs in all files.
+
 ## \[6.6.6] - 2026-09-07
 
 ### Added

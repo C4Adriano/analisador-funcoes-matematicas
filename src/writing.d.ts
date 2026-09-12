@@ -1,5 +1,5 @@
-import type { ConfigKey } from "./config.ts"
-import type { Numeric, Options, Places, Text, Value, Variable } from "./values.js"
+import type { ConfigKey } from "./config.js"
+import type { Options } from "./values.d.ts"
 
 /**
  * # Writing
@@ -42,7 +42,7 @@ export declare const Writing: {
      * @group Texto
      * @since v6.1.0
      */
-    replace(text: Text, from: Text, to: Text): Text
+    replace(text: Str, from: Str, to: Str): Str
 
     /**
      * Substitui uma parte de várias `strings` por outra.
@@ -52,7 +52,7 @@ export declare const Writing: {
      * @group Texto
      * @since v6.1.0
      */
-    replaceGroup(text: Text, list: Text[][]): Text
+    replaceGroup(text: Str, list: Str[][]): Str
 
     /**
      * Substituição da grafia de Unicode, traduzindo os termos textuais para o idioma configurado.
@@ -61,14 +61,14 @@ export declare const Writing: {
      * @group Texto
      * @since v6.1.0
      */
-    noUnicode(text: Text): Text
+    noUnicode(text: Str): Str
 
     /**
      * Substituição da grafia de acentos.
      * @param text - Texto.
      * @returns Texto convertido.
      */
-    noAccents(text: Text): Text
+    noAccents(text: Str): Str
 
     /**
      * Conversão para minúsculas.
@@ -77,7 +77,7 @@ export declare const Writing: {
      * @group Texto
      * @since v6.1.0
      */
-    lowercase(text: Text): Text
+    lowercase(text: Str): Str
 
     /**
      * Conversão para maiúsculas.
@@ -86,7 +86,7 @@ export declare const Writing: {
      * @group Texto
      * @since v6.1.0
      */
-    uppercase(text: Text): Text
+    uppercase(text: Str): Str
 
     /**
      * Conversão para capitalizadas.
@@ -95,7 +95,7 @@ export declare const Writing: {
      * @group Texto
      * @since v6.6.7
      */
-    capitalize(text: Text): Text
+    capitalize(text: Str): Str
 
     /** Manipulação de separadores decimais (para exibição). */
     decimal(number: Value, invert?: false, round?: boolean, places?: Places): Variable
@@ -116,7 +116,7 @@ export declare const Writing: {
     /** Manipulação de separadores decimais (para exibição). */
     decimalOptions(number: Value, options?: Options & { invert?: false }): Variable
     /** Manipulação de separadores decimais (inversão para uso em contas). */
-    decimalOptions(number: Value, options?: Options & { invert: true }): Numeric
+    decimalOptions(number: Value, options: Options & { invert: true }): Numeric
     /**
      * Manipulação de separadores decimais. Alias para {@link Writing.decimal}.
      * @param number - Número.
@@ -134,7 +134,7 @@ export declare const Writing: {
      * @group Texto
      * @since v6.1.0
      */
-    simplifyMultiplication(text: Text): Text
+    simplifyMultiplication(text: Str): Str
 
     /**
      * Formatação geral de mensagens.
@@ -144,25 +144,25 @@ export declare const Writing: {
      * @group Texto
      * @since v6.1.0
      */
-    format(message: Text, explanation?: Text): Text
+    format(message: Str, explanation?: Str): Str
 
     /**
      * Conversão para sobrescrito.
-     * @param text - Número.
+     * @param value - Número.
      * @returns Número convertido.
      * @group Texto
      * @since v6.1.0
      */
-    superscript(text: Text): Text
+    superscript(value: Value): Str
 
     /**
      * Conversão para subscrito.
-     * @param text - Número.
+     * @param value - Número.
      * @returns Número subscrito.
      * @group Texto
      * @since v6.1.0
      */
-    subscript(text: Text): Text
+    subscript(value: Value): Str
 
     /**
      * Formatação de valores `boolean`.
@@ -171,7 +171,7 @@ export declare const Writing: {
      * @group Texto
      * @since v6.1.0
      */
-    formatValue(value: boolean): Text
+    formatValue(value: boolean): Str
 
     /**
      * Formatação de itens de configuração.
@@ -181,7 +181,7 @@ export declare const Writing: {
      * @group Texto
      * @since v6.1.0
      */
-    configItem(message: Text, name: ConfigKey): Text
+    configItem(message: Str, name: ConfigKey): Str
 
     /**
      * Análise de texto para conversão de graus para radianos.
@@ -190,7 +190,7 @@ export declare const Writing: {
      * @group Texto
      * @since v6.1.0
      */
-    parseDegree(text: Text): Text
+    parseDegree(text: Str): Str
 
     /**
      * Análise de texto para conversão de radianos para graus.
@@ -199,7 +199,7 @@ export declare const Writing: {
      * @group Texto
      * @since v6.1.0
      */
-    parseRadian(text: Text): Text
+    parseRadian(text: Str): Str
 
     /**
      * Análise de texto para conversão de ângulos.
@@ -208,7 +208,7 @@ export declare const Writing: {
      * @group Texto
      * @since v6.1.0
      */
-    parseAngle(text: Text): Text
+    parseAngle(text: Str): Str
 
     /**
      * Formatação de ângulos para exibição.

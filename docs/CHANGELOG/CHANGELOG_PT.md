@@ -23,6 +23,12 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 -
 
+## \[6.6.7] - 2026-09-12
+
+### Corrigido
+
+- Arrumados todos os _bugs_ de tipos e estrutura em todos os arquivos.
+
 ## \[6.6.6] - 2026-09-07
 
 ### Adicionado

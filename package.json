@@ -1,7 +1,6 @@
 {
-  "$schema": "https://json.schemastore.org/package.json",
   "name": "analisador",
-  "version": "6.6.6",
+  "version": "6.6.7",
   "description": "Mathematical Function Analyzer / Analisador de Funções Matemáticas",
   "repository": {
     "type": "git",
@@ -29,9 +28,9 @@
   },
   "homepage": "https://github.com/C4Adriano/analisador-funcoes-matematicas#readme",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --project tsconfig.build.json",
     "build:css": "sass src/style.scss src/style.css --no-source-map",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --project tsconfig.build.json --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",

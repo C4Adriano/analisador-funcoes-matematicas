@@ -1,3 +1,4 @@
+import { Checks } from "./checks.js"
 import { Config, saveConfig } from "./config.js"
 import { Ui } from "./ui.js"
 import enGB from "./JSON/i18n/en-GB.json" with { type: "json" }
@@ -21,7 +22,7 @@ const FALLBACK_DICT = ptBR,
     }
 const resolveKey = (dict, key) => {
     const raw = key.split(".").reduce((obj, part) => obj?.[part], dict)
-    return typeof raw == "string" ? raw : undefined
+    return Checks.isValidText(raw) ? raw : null
 }
 export const tr = (key, params) => {
     const dict = dictionaries[Config.language] ?? dictionaries["pt-br"]

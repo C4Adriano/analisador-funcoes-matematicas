@@ -1,4 +1,4 @@
-import type { Numeric, Text } from "./values.js"
+import type { Numeric, Str } from "./values.d.ts"
 
 /**
  * # Errors
@@ -36,7 +36,7 @@ export declare const Errors: {
      * @group Erro
      * @since v6.1.0
      */
-    divZero(reason: Text): void
+    divZero(reason: Str): void
 
     /**
      * Exibe um erro de limite de iterações estourado.
@@ -51,7 +51,7 @@ export declare const Errors: {
      * @group Erro
      * @since v6.1.0
      */
-    constantFunction(type: Text): void
+    constantFunction(type: Str): void
 
     /**
      * Exibe um erro de Função inválida pelos Coeficientes dados.
@@ -59,7 +59,7 @@ export declare const Errors: {
      * @group Erro
      * @since v6.1.0
      */
-    invalidFunction(type: Text): void
+    invalidFunction(type: Str): void
 
     /**
      * Exibe um erro de logaritmo inválido.
@@ -68,5 +68,5 @@ export declare const Errors: {
      * @group Erro
      * @since v6.1.0
      */
-    invalidLog(type: "log" | "ln", reason: Text): void
+    invalidLog(type: "log" | "ln", reason: Str): void
 }

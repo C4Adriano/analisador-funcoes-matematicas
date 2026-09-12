@@ -1,5 +1,3 @@
-import type { Coefficients, Value } from "./values.js"
-
 /**
  * # Analyze
  *
@@ -24,7 +22,7 @@ import type { Coefficients, Value } from "./values.js"
  */
 export declare const Analyze: {
     /**
-     * Monta uma Função Constante: ƒ(x) = c
+     * Monta uma Função Constante: `ƒ(x) = c`
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveConstant} com um objeto {@link Coefficients}.
      *
@@ -35,7 +33,7 @@ export declare const Analyze: {
     constant(coefC?: Value): void
 
     /**
-     * Resolve uma Função Constante: ƒ(x) = c
+     * Resolve uma Função Constante: `ƒ(x) = c`
      * @param coefs - Coeficientes.
      * @default coefs = { c: State.globalC }
      * @group Função
@@ -44,7 +42,7 @@ export declare const Analyze: {
     resolveConstant(coefs?: Pick<Coefficients, "c">): void
 
     /**
-     * Monta uma Função Afim: ƒ(x) = bx + c
+     * Monta uma Função Afim: `ƒ(x) = bx + c`
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveAffine} com um objeto {@link Coefficients}.
      *
@@ -55,7 +53,7 @@ export declare const Analyze: {
     affine(coefB?: Value, coefC?: Value): void
 
     /**
-     * Resolve uma Função Afim: ƒ(x) = bx + c
+     * Resolve uma Função Afim: `ƒ(x) = bx + c`
      * @param coefs - Coeficientes.
      * @default coefs = { b: State.globalB, c: State.globalC }
      * @group Função
@@ -64,7 +62,7 @@ export declare const Analyze: {
     resolveAffine(coefs?: Pick<Coefficients, "c" | "b">): void
 
     /**
-     * Monta uma Função Quadrática: ƒ(x) = ax² + bx + c
+     * Monta uma Função Quadrática: `ƒ(x) = ax² + bx + c`
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveQuadratic} com um objeto {@link Coefficients}.
      *
@@ -75,7 +73,7 @@ export declare const Analyze: {
     quadratic(coefA?: Value, coefB?: Value, coefC?: Value): void
 
     /**
-     * Resolve uma Função Quadrática: ƒ(x) = ax² + bx + c
+     * Resolve uma Função Quadrática: `ƒ(x) = ax² + bx + c`
      * @param coefs - Coeficientes.
      * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
      * @group Função
@@ -84,7 +82,7 @@ export declare const Analyze: {
     resolveQuadratic(coefs?: Coefficients): void
 
     /**
-     * Monta uma Função Exponencial: ƒ(x) = b × aˣ + c
+     * Monta uma Função Exponencial: `ƒ(x) = b × aˣ + c`
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveExponential} com um objeto {@link Coefficients}.
      *
@@ -95,7 +93,7 @@ export declare const Analyze: {
     exponential(coefA?: Value, coefB?: Value, coefC?: Value): void
 
     /**
-     * Resolve uma Função Exponencial: ƒ(x) = b × aˣ + c
+     * Resolve uma Função Exponencial: `ƒ(x) = b × aˣ + c`
      * @param coefs - Coeficientes.
      * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
      * @group Função
@@ -104,7 +102,7 @@ export declare const Analyze: {
     resolveExponential(coefs?: Coefficients): void
 
     /**
-     * Monta a Função Logarítmica: ƒ(x) = b × logₐ(x) + c
+     * Monta a Função Logarítmica: `ƒ(x) = b × logₐ(x) + c`
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveLogarithmic} com um objeto {@link Coefficients}.
      *
@@ -115,7 +113,7 @@ export declare const Analyze: {
     logarithmic(coefA?: Value, coefB?: Value, coefC?: Value): void
 
     /**
-     * Resolve uma Função Logarítmica: ƒ(x) = b × logₐ(x) + c
+     * Resolve uma Função Logarítmica: `ƒ(x) = b × logₐ(x) + c`
      * @param coefs - Coeficientes.
      * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
      * @group Função
@@ -124,7 +122,7 @@ export declare const Analyze: {
     resolveLogarithmic(coefs?: Coefficients): void
 
     /**
-     * Monta a Função Seno: ƒ(x) = b × sin(a · x) + c
+     * Monta a Função Seno: `ƒ(x) = b × sin(a · x) + c`
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveSine} com um objeto {@link Coefficients}.
      *
@@ -135,7 +133,7 @@ export declare const Analyze: {
     sine(coefA?: Value, coefB?: Value, coefC?: Value): void
 
     /**
-     * Resolve uma Função Seno: ƒ(x) = b × sin(a · x) + c
+     * Resolve uma Função Seno: `ƒ(x) = b × sin(a · x) + c`
      * @param coefs - Coeficientes.
      * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
      * @group Função
@@ -144,7 +142,7 @@ export declare const Analyze: {
     resolveSine(coefs?: Coefficients): void
 
     /**
-     * Monta a Função Cosseno: ƒ(x) = b × cos(a · x) + c
+     * Monta a Função Cosseno: `ƒ(x) = b × cos(a · x) + c`
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveCosine} com um objeto {@link Coefficients}.
      *
@@ -155,7 +153,7 @@ export declare const Analyze: {
     cosine(coefA?: Value, coefB?: Value, coefC?: Value): void
 
     /**
-     * Resolve uma Função Cosseno: ƒ(x) = b × cos(a · x) + c
+     * Resolve uma Função Cosseno: `ƒ(x) = b × cos(a · x) + c`
      * @param coefs - Coeficientes.
      * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
      * @group Função
@@ -164,7 +162,7 @@ export declare const Analyze: {
     resolveCosine(coefs?: Coefficients): void
 
     /**
-     * Monta a Função Tangente: ƒ(x) = b × tan(a · x) + c
+     * Monta a Função Tangente: `ƒ(x) = b × tan(a · x) + c`
      * @deprecated
      * Desde v6.6.1. Use {@link Analyze.resolveTangent} com um objeto {@link Coefficients}.
      *
@@ -175,7 +173,7 @@ export declare const Analyze: {
     tangent(coefA?: Value, coefB?: Value, coefC?: Value): void
 
     /**
-     * Resolve uma Função Tangente: ƒ(x) = b × tan(a · x) + c
+     * Resolve uma Função Tangente: `ƒ(x) = b × tan(a · x) + c`
      * @param coefs - Coeficientes.
      * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
      * @group Função

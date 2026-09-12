@@ -1,8 +1,6 @@
 import defaultConfigJson from "../src/JSON/config.json" with { type: "json" }
 import { VERSION } from "./version.js"
 
-import type { Degrees, Language, Numeric, Places, Precision, Text, TextCase } from "./values.js"
-
 /**
  * Tipo de configuração baseado no `JSON`.
  * @since ~v6.1.0
@@ -48,8 +46,8 @@ export const DEFAULT_CONFIG: ConfigType = structuredClone(defaultConfigJson) as 
  * @since ~v6.1.0
  */
 export const loadConfig = () => {
-    const saved: Text | null = localStorage.getItem("config"),
-        savedVersion: Text | null = localStorage.getItem("configVersion")
+    const saved: Str | null = localStorage.getItem("config"),
+        savedVersion: Str | null = localStorage.getItem("configVersion")
 
     if (!saved) return
 

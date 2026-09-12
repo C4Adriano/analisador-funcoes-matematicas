@@ -8,8 +8,6 @@
         "rootDir": "src",
         "outDir": "src",
 
-        "allowJs": true,
-        "checkJs": false,
         "declaration": false,
         "noEmit": false,
         "resolveJsonModule": true,
@@ -24,6 +22,11 @@
         "exactOptionalPropertyTypes": true
     },
 
-    "include": ["src/**/*.ts"],
-    "exclude": ["pessoal/**", "src/**/*.js"]
+    "include": [
+        "src/config.ts",
+        "src/state.ts",
+        "src/i18n.ts",
+        "src/global.d.ts"
+    ],
+    "exclude": ["pessoal/**"]
 }

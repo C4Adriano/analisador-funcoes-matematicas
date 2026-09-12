@@ -1,5 +1,5 @@
-import type { ConfigKey, ConfigType } from "./config.ts"
-import type { CommandsNames, Text } from "./values.js"
+import type { ConfigKey, ConfigType } from "./config.js"
+import type { CommandsNames } from "./values.d.ts"
 
 /**
  * # Commands
@@ -37,7 +37,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    process(raw: Text): unknown
+    process(raw: Str): CommandsNames | null
 
     /**
      * Calcula a distância de _Levenshtein_ entre duas `strings`.
@@ -46,7 +46,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    levenshtein(source: Text, target: Text): void
+    levenshtein(source: Str, target: Str): void
 
     /**
      * Sugere um comando baseado no digitado pelo usuário usando distância de _Levenshtein_.
@@ -55,7 +55,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    suggestCmd(typed: Text): void
+    suggestCmd(typed: Str): void
 
     /**
      * Pesquisa comandos por termo — busca no canônico, variações, `short` e `long`.
@@ -64,7 +64,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.2.0
      */
-    searchCmds(term: Text): void
+    searchCmds(term: Str): void
 
     /**
      * Retorna a lista de comandos disponíveis.
@@ -81,16 +81,16 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    resolveCmd(specific: Text): void
+    resolveCmd(specific: Str): void
 
     /**
      * Converte um texto em um valor `boolean`.
      * @param text - Texto.
-     * @returns Se é parecido com um valor `boolean` `(true | false)` ou se não é reconhecido.
+     * @returns Se é parecido com um valor `boolean` `(true | false)` ou `null` se não é reconhecido.
      * @group JS
      * @since v6.1.0
      */
-    parseBool(text: Text): void
+    parseBool(text: Str): boolean | null
 
     /**
      * Exibe ajuda sobre um comando específico ou lista paginada de todos os comandos.
@@ -98,7 +98,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    help(specific?: Text): null
+    help(specific?: Str): null
 
     /**
      * Exibe os resultados de uma pesquisa de comandos de forma paginada.
@@ -106,7 +106,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.2.0
      */
-    searchHelp(term: Text): null
+    searchHelp(term: Str): null
 
     /**
      * Exibe todas as variações aceitas de um comando.
@@ -114,7 +114,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.2.0
      */
-    shortcuts(specific: Text): null
+    shortcuts(specific: Str): null
 
     /**
      * Exibe informações sobre o projeto.

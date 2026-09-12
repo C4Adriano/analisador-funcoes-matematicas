@@ -3,9 +3,8 @@ import fs from "fs"
 import path from "path"
 import { fileURLToPath } from "url"
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
-const msgFile = process.argv[2],
+const __dirname = path.dirname(fileURLToPath(import.meta.url)),
+    msgFile = process.argv[2],
     message = msgFile
         ? fs
               .readFileSync(msgFile, "utf8")
@@ -14,11 +13,9 @@ const msgFile = process.argv[2],
         : execSync("git log -1 --pretty=%B")
               .toString()
               .replace(/^\uFEFF/, "")
-              .trim()
-
-const firstLine = message.split("\n")[0]
-
-const isMajor = /^feat: :fire:/.test(firstLine),
+              .trim(),
+    firstLine = message.split("\n")[0],
+    isMajor = /^feat: :fire:/.test(firstLine),
     isMinor = !isMajor && /^feat:/.test(firstLine),
     isPatch = !isMajor && !isMinor && /^fix:/.test(firstLine)
 

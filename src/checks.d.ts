@@ -1,5 +1,5 @@
 import type { ConfigKey } from "./config.js"
-import type { CommandsNames, Numeric, Text, Value, ValueArray } from "./values.js"
+import type { CommandsNames } from "./values.d.ts"
 
 /**
  * # Checks
@@ -25,7 +25,7 @@ export declare const Checks: {
     /**
      * Verifica se o valor é um texto.
      * @param value Valor qualquer.
-     * @remarks
+     * @deprecated
      * Não valida o conteúdo, apenas o tipo.
      *
      * Use apenas quando a validade do texto já for garantida por outro meio; para o caso geral, prefira {@link Checks.isValidText isValidText}.
@@ -33,7 +33,7 @@ export declare const Checks: {
      * @group JS
      * @since v6.1.0
      */
-    isText(value: unknown): value is Text
+    isText(value: unknown): value is Str
 
     /**
      * Verifica se o valor é um texto válido.
@@ -41,12 +41,12 @@ export declare const Checks: {
      * @group JS
      * @since v6.1.0
      */
-    isValidText(value: unknown): value is Text
+    isValidText(value: unknown): value is Str
 
     /**
      * Verifica se o valor é um número.
      * @param value Valor qualquer.
-     * @remarks
+     * @deprecated
      * Não garante que o número seja finito (aceita `NaN`, `Infinity` e `-Infinity`).
      *
      * Use apenas quando isso já for garantido por outro meio; para o caso geral, prefira {@link Checks.isFiniteNumber isFiniteNumber}.
@@ -67,7 +67,7 @@ export declare const Checks: {
     /**
      * Verifica se o valor é um valor `(string | number)`.
      * @param value Valor qualquer.
-     * @remarks
+     * @deprecated
      * Não valida o conteúdo do texto nem garante que o número seja finito.
      *
      * Use apenas quando isso já for garantido por outro meio; para o caso geral, prefira {@link Checks.isValidValue isValidValue}.
@@ -87,11 +87,23 @@ export declare const Checks: {
 
     /**
      * Verifica se o valor é um comando.
+     * @deprecated
+     * Não valida o conteúdo, apenas o tipo.
+     *
+     * Use apenas quando a validade do texto já for garantida por outro meio; para o caso geral, prefira {@link Checks.isValidCommand isValidCommand}.
      * @param value Valor qualquer.
      * @group JS
      * @since v6.1.0
      */
-    isCommand(value: Value): value is CommandsNames
+    isCommand(value: unknown): value is CommandsNames
+
+    /**
+     * Verifica se o valor é um comando válido.
+     * @param value Valor qualquer.
+     * @group JS
+     * @since v6.1.0
+     */
+    isValidCommand(value: unknown): value is CommandsNames
 
     /**
      * Verifica se o valor é uma chave de `Config`.

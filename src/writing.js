@@ -3,7 +3,7 @@ import { Config, DEFAULT_CONFIG } from "./config.js"
 import { tr } from "./i18n.js"
 
 export const Writing = {
-    replace: (text = "", from = "", to = "") => text.replaceAll(from, to),
+    replace: (text = "", from = "", to = "") => String(text).replaceAll(from, to),
 
     replaceGroup: (text = "", list = [["", ""]]) => {
         for (const value of list)
@@ -170,22 +170,26 @@ export const Writing = {
         return Writing.replaceGroup(text, [...localizedReplacements, ...staticReplacements])
     },
 
-    noAccents: (text = "") => text.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
+    noAccents: (text = "") =>
+        String(text)
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, ""),
 
-    lowercase: (text = "") => Writing.replace(text.toLowerCase(), "δ", "Δ"),
-    uppercase: (text = "") => Writing.replace(text.toUpperCase(), "Ƒ", "ƒ"),
+    lowercase: (text = "") => Writing.replace(String(text).toLowerCase(), "δ", "Δ"),
+    uppercase: (text = "") => Writing.replace(String(text).toUpperCase(), "Ƒ", "ƒ"),
     capitalize: (text = "") =>
         Writing.lowercase(text).replace(/\p{L}+/gu, word => Writing.uppercase(word[0]) + word.slice(1)),
 
     decimal: (number = 0, invert = false, round = true, places = Config.decimalPlaces) =>
         Writing.decimalOptions(number, { invert, round, places }),
 
+    /** @param {Value} number */
     decimalOptions: (number = 0, { invert = false, round = true, places = Config.decimalPlaces } = {}) => {
         number = String(number)
 
         if (invert) return Writing.replace(number, ",", ".")
         if (round) number = Algebra.round(number, places)
-        if (Config.decimalSeparator) return Writing.replace(number, ".", ",")
+        if (Config.decimalSeparator) return Writing.replace(String(number), ".", ",")
 
         return number
     },
@@ -204,9 +208,9 @@ export const Writing = {
         return message
     },
 
-    superscript: (text = "") =>
+    superscript: (value = "") =>
         Config.unicode
-            ? Writing.replaceGroup(text, [
+            ? Writing.replaceGroup(value, [
                   ["0", "⁰"],
                   ["1", "¹"],
                   ["2", "²"],
@@ -220,11 +224,11 @@ export const Writing = {
                   ["-", "⁻"],
                   [".", "․"],
               ])
-            : `^${text}`,
+            : `^${value}`,
 
-    subscript: (text = "") =>
+    subscript: (value = "") =>
         Config.unicode
-            ? Writing.replaceGroup(text, [
+            ? Writing.replaceGroup(value, [
                   ["0", "₀"],
                   ["1", "₁"],
                   ["2", "₂"],
@@ -238,29 +242,31 @@ export const Writing = {
                   ["-", "₋"],
                   [".", "․"],
               ])
-            : `_${text}`,
+            : `_${value}`,
 
+    /** @param {Value | boolean} value */
     formatValue: (value = true) =>
         typeof value == "boolean" ? (value ? tr("writing.yes") : tr("writing.no")) : String(value),
 
-    configItem: (message = "", name = "") =>
+    /** @param {import("./config.js").ConfigKey} name */
+    configItem: (message = "", name) =>
         tr("writing.currentDefault", {
             message,
             current: Writing.formatValue(Config[name]),
             default: Writing.formatValue(DEFAULT_CONFIG[name]),
         }),
 
-    parseDegree: (text = "") => parseFloat(Writing.replace(text, "°", "")) * (Math.PI / 180),
+    parseDegree: (text = "") => Number(Writing.replace(text, "°", "")) * (Math.PI / 180),
 
     parseRadian: (text = "") => {
-        const parts = text.split("/"),
-            denominator = parts[1] ? parseFloat(parts[1]) : 1,
-            multiParts = parts[0].split("*"),
-            multiplier = multiParts.length > 1 ? parseFloat(multiParts[0]) : 1
+        const parts = String(text).split("/"),
+            denominator = parts[1] ? Number(parts[1]) : 1,
+            multiParts = String(parts[0]).split("*"),
+            multiplier = multiParts.length > 1 ? Number(multiParts[0]) : 1
         return (multiplier * Math.PI) / denominator
     },
 
-    parseAngle: (text = "") => (text.includes("°") ? Writing.parseDegree(text) : Writing.parseRadian(text)),
+    parseAngle: (text = "") => (String(text).includes("°") ? Writing.parseDegree(text) : Writing.parseRadian(text)),
 
     formatAngle: (value = 0) => {
         const ratio = value / Math.PI

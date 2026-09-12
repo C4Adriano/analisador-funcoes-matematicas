@@ -6,7 +6,7 @@ import { Ui } from "./ui.js"
 import { VERSION } from "./version.js"
 import { Writing } from "./writing.js"
 
-/** @type {import("./values.js").CommandsNames[]} */
+/** @type {CommandsNames[]} */
 export const COMMANDS_NAMES = ["config", "exit", "start", "review", "history", "change"]
 
 export const Commands = {
@@ -44,39 +44,38 @@ export const Commands = {
             return null
         }
 
-        const command = cmds[canonical]
-        if (command == null) return null
-
-        return command.action(arg, parts)
+        return cmds[canonical]?.action(arg, parts) ?? null
     },
 
     levenshtein: (source = "", target = "") => {
         if (source == target) return 0
-
         if (source.length == 0) return target.length
-
         if (target.length == 0) return source.length
 
         const rows = target.length + 1,
             cols = source.length + 1,
-            matrix = Array.from({ length: rows }, () => Array(cols).fill(0))
-
-        for (let row = 0; row < rows; row++) matrix[row][0] = row
-
-        for (let col = 0; col < cols; col++) matrix[0][col] = col
+            /** @type {NumericMatrix} */
+            matrix = Array.from({ length: rows }, (_, row) =>
+                Array.from({ length: cols }, (__, col) => (row == 0 ? col : col == 0 ? row : 0))
+            )
 
         for (let row = 1; row < rows; row++) {
+            const currentRow = matrix[row],
+                previousRow = matrix[row - 1]
+
+            if (!currentRow || !previousRow) continue
+
             for (let col = 1; col < cols; col++) {
                 const cost = source[col - 1] == target[row - 1] ? 0 : 1,
-                    deletion = matrix[row - 1][col] + 1,
-                    insertion = matrix[row][col - 1] + 1,
-                    substitution = matrix[row - 1][col - 1] + cost
+                    deletion = (previousRow[col] ?? 0) + 1,
+                    insertion = (currentRow[col - 1] ?? 0) + 1,
+                    substitution = (previousRow[col - 1] ?? 0) + cost
 
-                matrix[row][col] = Math.min(deletion, insertion, substitution)
+                currentRow[col] = Math.min(deletion, insertion, substitution)
             }
         }
 
-        return matrix[rows - 1][cols - 1]
+        return matrix[rows - 1]?.[cols - 1] ?? 0
     },
 
     suggestCmd: (typed = "") => {
@@ -109,22 +108,16 @@ export const Commands = {
         if (term == "") return []
 
         const cmds = Commands.listCmds,
-            normalizedTerm = Writing.noAccents(term.toLowerCase()),
-            results = new Set()
+            normalizedTerm = Writing.noAccents(Writing.lowercase(term))
 
-        Object.keys(cmds).forEach(key => {
+        return Object.keys(cmds).filter(key => {
             const cmd = cmds[key]
-            if (cmd == null) return
+            if (cmd == null) return false
 
-            const candidates = [key, cmd.short, cmd.long, ...cmd.variations],
-                matched = candidates.some(candidate =>
-                    Writing.noAccents(candidate.toLowerCase()).includes(normalizedTerm)
-                )
-
-            if (matched) results.add(key)
+            return [key, cmd.short, cmd.long, ...cmd.variations].some(candidate =>
+                Writing.noAccents(Writing.lowercase(candidate)).includes(normalizedTerm)
+            )
         })
-
-        return [...results]
     },
 
     get listCmds() {
@@ -133,19 +126,19 @@ export const Commands = {
                 short: tr("commands.shortHelp"),
                 long: tr("commands.longHelp"),
                 variations: ["ajuda", "help", "a", "h", "cmd", "cmds", "c", "comandos", "?"],
-                action: (arg, parts) => Commands.help(parts[1]),
+                action: (_, parts) => Commands.help(parts[1]),
             },
             search: {
                 short: tr("commands.shortSearch"),
                 long: tr("commands.longSearch"),
                 variations: ["pesquisa", "pesquisar", "search", "buscar", "find", "procurar", "seek", "s"],
-                action: (arg, parts) => Commands.searchHelp(parts[1]),
+                action: (_, parts) => Commands.searchHelp(parts[1]),
             },
             shortcuts: {
                 short: tr("commands.shortShortcuts"),
                 long: tr("commands.longShortcuts"),
                 variations: ["atalhos", "shortcuts", "variacoes", "variacao", "aliases", "alias", "sc"],
-                action: (arg, parts) => Commands.shortcuts(parts[1]),
+                action: (_, parts) => Commands.shortcuts(parts[1]),
             },
             about: {
                 short: tr("commands.shortAbout"),
@@ -263,13 +256,15 @@ export const Commands = {
                     "lower",
                     "normal",
                 ],
-                action: (arg, parts) => {
+                action: (_, parts) => {
+                    /** @type {TextCase[]} */
                     const TEXT_CASES = ["capitalized", "uppercase", "lowercase", "normal"],
                         target = parts[1] != null ? Writing.noAccents(Writing.lowercase(parts[1])) : undefined
+                    /** @type {TextCase} */
                     let value
 
                     if (target == null)
-                        value = TEXT_CASES[(TEXT_CASES.indexOf(Config.textCase) + 1) % TEXT_CASES.length]
+                        value = TEXT_CASES[(TEXT_CASES.indexOf(Config.textCase) + 1) % TEXT_CASES.length] ?? "normal"
                     else if (
                         [
                             "capitalizado",
@@ -293,7 +288,10 @@ export const Commands = {
                         return null
                     }
 
-                    return Commands.change("textCase", value)
+                    return Commands.change(
+                        "textCase",
+                        /** @type {import("./config.js").ConfigType} */ (/** @type {unknown} */ (value))
+                    )
                 },
             },
             separator: {
@@ -392,8 +390,8 @@ export const Commands = {
                     "es-419",
                     "espanol",
                 ],
-                action: (arg, parts) => {
-                    let target = parts[1] != null ? parts[1] : parts[0]
+                action: (_, parts) => {
+                    let target = parts[1] ?? parts[0]
                     target = Writing.noAccents(Writing.lowercase(target))
 
                     if (["br", "pt-br", "ptbr", "brasileiro", "brazilian", "brasil", "brazil"].includes(target))
@@ -433,20 +431,15 @@ export const Commands = {
         if (specific == "") return null
         const cmds = Commands.listCmds,
             found = Object.entries(cmds).find(([, cmd]) => cmd?.variations.includes(specific))
-        return found ? found[0] : cmds[specific] != null ? specific : null
+        return found?.[0] ?? (specific in cmds ? specific : null)
     },
 
-    parseBool: (text = "") => {
-        if (["true", "1", "sim", "yes", "on", "ativo", "enable", "enabled", "ligar", "ativar"].includes(text))
-            return true
-
-        if (
-            ["false", "0", "nao", "no", "off", "inativo", "disable", "disabled", "desligar", "desativar"].includes(text)
-        )
-            return false
-
-        return undefined
-    },
+    parseBool: (text = "") =>
+        ["true", "1", "sim", "yes", "on", "enable", "enabled", "ligar", "ativar"].includes(text)
+            ? true
+            : ["false", "0", "nao", "no", "off", "disable", "disabled", "desligar", "desativar"].includes(text)
+              ? false
+              : null,
 
     help: (specific = "") => {
         const cmds = Commands.listCmds
@@ -485,7 +478,7 @@ export const Commands = {
 
             for (let i = start; i < end; i++) {
                 const aliases = [key[i], ...cmds[key[i]].variations].join(", ")
-                menu += `\n/${key[i]} — ${cmds[key[i]].short}\n  ↳ ${aliases}`
+                menu += `\n/${key[i]} — ${cmds[key[i]].short}\n ↳ ${aliases}`
             }
 
             menu += `\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`
@@ -564,31 +557,30 @@ export const Commands = {
             return null
         }
 
-        const all = cmds[canonical].variations,
-            list = all.map(v => `/${v}`).join("\n")
-
-        Ui.notifyOptions(`${tr("commands.commandVariations")}“/${canonical}”:\n${list}`)
+        Ui.notifyOptions(
+            `${tr("commands.commandVariations")}“/${canonical}”:\n${cmds[canonical].variations.map(v => `/${v}`).join("\n")}`
+        )
         return null
     },
 
     get about() {
         Ui.notifyOptions(
-            `====================================================\n` +
+            `==================================================\n` +
                 `${tr("commands.title")} — ${VERSION}\n` +
                 `${tr("commands.author")}Adriano Lima\n` +
                 `${tr("commands.repository")}github.com/C4Adriano/analisador-funcoes-matematicas\n` +
                 `${tr("commands.copyright")} © Adriano Lima 2025 — 2026\n` +
-                `====================================================`
+                `==================================================`
         )
         return null
     },
 
     get version() {
         Ui.notifyOptions(
-            `====================================================\n` +
+            `==================================================\n` +
                 `${tr("commands.title")} — ${VERSION}\n` +
                 `${tr("commands.copyright")} © Adriano Lima 2025 — 2026\n` +
-                `====================================================`
+                `==================================================`
         )
         return null
     },
@@ -597,13 +589,13 @@ export const Commands = {
      * @param {import("./config.js").ConfigKey} name
      * @param {import("./config.js").ConfigType} value
      */
-    change: (name = "", value = false) => {
+    change: (name, value) => {
         const currentValue = Config[name]
 
         if (currentValue == null) return null
 
-        if (typeof currentValue == "boolean" && value == null) Config[name] = !currentValue
-        else if (value != null && typeof currentValue == typeof value) Config[name] = value
+        if (typeof currentValue == "boolean" && value == null) Object.assign(Config, { [name]: !currentValue })
+        else if (value != null && typeof currentValue == typeof value) Object.assign(Config, { [name]: value })
         else return null
 
         saveConfig()

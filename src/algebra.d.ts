@@ -1,18 +1,4 @@
-import type {
-    Coefficients,
-    FunctionType,
-    LinearBasis,
-    Numeric,
-    NumericArray,
-    Options,
-    Places,
-    PointPair,
-    Precision,
-    Text,
-    TrigonometricFunction,
-    Value,
-    ValueArray,
-} from "./values.js"
+import type { Options } from "./values.d.ts"
 
 /**
  * # Algebra
@@ -62,7 +48,7 @@ export declare const Algebra: {
      * @group UI
      * @since v6.1.0
      */
-    variables(name?: Text): Value
+    variables(name?: Str): Value
 
     /** Pede um ponto. */
     point(type?: 1): [Numeric, Numeric]
@@ -78,16 +64,29 @@ export declare const Algebra: {
      * @group UI
      * @since v6.1.0
      */
-    point(type?: Numeric): NumericArray
+    point(type?: 1 | 2 | 3): NumericArray
 
     /**
      * Vê se as Funções têm pontos de encontro.
+     * @deprecated
+     * Desde v6.6.7. Use {@link Algebra.resolveEquations} com dois objetos {@link Coefficients} no lugar dos `array`s
+     *
+     * Mantido apenas para compatibilidade retroativa; **não remover**
      * @param func1 - Primeira Função [a, b, c].
      * @param func2 - Segunda Função [a, b, c].
      * @group UI
      * @since v6.1.0
      */
     equations(func1: NumericArray, func2: NumericArray): void
+
+    /**
+     * Vê se as Funções têm pontos de encontro.
+     * @param func1 - Primeira Função { a, b, c }.
+     * @param func2 - Segunda Função { a, b, c }.
+     * @group UI
+     * @since v6.1.0
+     */
+    resolveEquations(func1: Coefficients, func2: Coefficients): void
 
     /**
      * Resolve um sistema linear quadrado `matrix · x = vector` por eliminação de Gauss com pivô parcial.
@@ -112,7 +111,7 @@ export declare const Algebra: {
     solveLinearCoefs(
         basis: LinearBasis,
         known: Coefficients,
-        unknownKeys: string[],
+        unknownKeys: Str[],
         points: PointPair[]
     ): Coefficients | null
 
