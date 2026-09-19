@@ -10,9 +10,8 @@ import { VERSION } from "./version.js"
 import { Writing } from "./writing.js"
 
 Ui.notifyOptions(
-    `==================================================` +
-        `\n${tr("commands.title")} — ${VERSION}\n${tr("commands.copyright")} © Adriano Lima 2025 — 2026` +
-        `\n` +
+    `==================================================\n` +
+        `${tr("commands.title")} — ${VERSION}\n${tr("commands.copyright")} © Adriano Lima 2025 — 2026\n` +
         `==================================================`,
     { type: "console" }
 )

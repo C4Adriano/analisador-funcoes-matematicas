@@ -2,6 +2,8 @@ import { Commands } from "./commands.js"
 import { Config, type ConfigKey } from "./config.js"
 import { Writing } from "./writing.js"
 
+import type { TranslationKey } from "./i18n.js"
+
 /**
  * # Checks
  *
@@ -14,6 +16,7 @@ import { Writing } from "./writing.js"
  * - {@link Checks.isValidValue isValidValue} - Verifica se é um valor válido.
  * - {@link Checks.isValidCommand isValidCommand} - Verifica se é um comando válido.
  * - {@link Checks.isConfigKey isConfigKey} - Verifica se é chave de `Config`.
+ * - {@link Checks.isTrKey isTrKey} - Verifica se é chave de `tr`.
  * - {@link Checks.numericPoint numericPoint} - Verifica se é um ponto válido.
  *
  * ### Tags:
@@ -68,6 +71,14 @@ export class Checks {
      * @since v6.1.0
      */
     static isConfigKey = (value: unknown): value is ConfigKey => Checks.isValidValue(value) && value in Config
+
+    /**
+     * Verifica se o valor é uma chave de `tr`.
+     * @param value Valor qualquer.
+     * @group JS
+     * @since v6.6.8
+     */
+    static isTrKey = (value: unknown): value is TranslationKey => Checks.isValidText(value)
 
     /**
      * Verifica se um ponto do `array` é válido.

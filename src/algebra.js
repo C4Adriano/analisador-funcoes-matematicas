@@ -60,26 +60,26 @@ export const Algebra = {
             if (token == "(") {
                 consume()
                 const value = parseExpression()
-                if (peek() != ")") throw new Error("Parêntese não fechado")
+                if (peek() != ")") throw "errors.error007"
                 consume()
                 return value
             }
 
-            if (typeof token == "number") return consume()
+            if (Checks.isFiniteNumber(token)) return consume()
 
-            if (typeof token == "string" && token in ROOTS) {
+            if (Checks.isValidText(token) && token in ROOTS) {
                 const degree = ROOTS[consume()]
-                if (peek() != "(") throw new Error("Esperado parêntese após função de raiz")
+                if (peek() != "(") throw "errors.error008"
                 consume()
                 const value = parseExpression()
-                if (peek() != ")") throw new Error("Parêntese não fechado")
+                if (peek() != ")") throw "errors.error007"
                 consume()
                 return value ** (1 / degree)
             }
 
-            if (typeof token == "string" && /^[a-zA-Z√]+$/.test(token)) throw UNKNOWN_SYMBOL
+            if (Checks.isValidText(token) && /^[a-zA-Z√]+$/.test(token)) throw UNKNOWN_SYMBOL
 
-            throw new Error("Token inesperado")
+            throw "errors.error009"
         }
 
         function parsePercent() {
@@ -134,7 +134,9 @@ export const Algebra = {
             const result = parseExpression()
             return pos == tokens.length ? result : null
         } catch (e) {
-            return e == UNKNOWN_SYMBOL ? NaN : null
+            if (e == UNKNOWN_SYMBOL) return NaN
+            if (Checks.isTrKey(e)) Ui.notifyOptions(tr(e))
+            return null
         }
     },
 
@@ -202,7 +204,7 @@ export const Algebra = {
             }
         }
 
-        const solution = new Array(n).fill(0)
+        const solution = new Array(n)
         for (let row = n - 1; row >= 0; row--) {
             let sum = v[row]
             for (let k = row + 1; k < n; k++) sum -= m[row][k] * solution[k]

@@ -50,7 +50,7 @@ export class Writing {
      * @group Texto
      * @since v6.1.0
      */
-    static replaceGroup = (text: Str = "", list: Str[][] = [["", ""]]): Str =>
+    static replaceGroup = (text: Str = "", list: [Str, Str][] = [["", ""]]): Str =>
         list.reduce((acc, [from, to]) => (from != null && to != null ? Writing.replace(acc, from, to) : acc), text)
 
     /**
@@ -265,11 +265,12 @@ export class Writing {
      * @group Texto
      * @since v6.6.1
      */
-    static decimalOptions: {
-        (number: Value, options?: Options & { invert?: false }): Variable
-        (number: Value, options: Options & { invert: true }): Numeric
-        (number: Value, options?: Options & { invert?: boolean }): Value
-    } = ((number: Value = 0, { invert = false, round = true, places = Config.decimalPlaces }: Options = {}): Value => {
+    static decimalOptions(number: Value, options?: Options & { invert?: false }): Variable
+    static decimalOptions(number: Value, options: Options & { invert: true }): Numeric
+    static decimalOptions(
+        number: Value = 0,
+        { invert = false, round = true, places = Config.decimalPlaces }: Options = {}
+    ): Value {
         let result: Value = String(number)
 
         if (invert) return Writing.replace(result, ",", ".")
@@ -277,10 +278,6 @@ export class Writing {
         if (Config.decimalSeparator) return Writing.replace(String(result), ".", ",")
 
         return result
-    }) as unknown as {
-        (number: Value, options?: Options & { invert?: false }): Variable
-        (number: Value, options: Options & { invert: true }): Numeric
-        (number: Value, options?: Options & { invert?: boolean }): Value
     }
 
     /**

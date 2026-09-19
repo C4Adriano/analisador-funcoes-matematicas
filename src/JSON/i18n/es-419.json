@@ -145,7 +145,10 @@
         "error004": "ERROR-004: La función proporcionada no es {type}, ya que es constante.",
         "error005": "ERROR-005: La función proporcionada no es {type}.",
         "error006": "ERROR-006: {type} no válido",
-        "error006Exp": "Intentaste calcular un logaritmo con una base menor o igual que 1, lo cual no está definido matemáticamente."
+        "error006Exp": "Intentaste calcular un logaritmo con una base menor o igual que 1, lo cual no está definido matemáticamente.",
+        "error007": "ERROR-007: Paréntesis sin cerrar",
+        "error008": "ERROR-008: Se esperaba un paréntesis después de la función de raíz",
+        "error009": "ERROR-009: Token inesperado"
     },
     "helpers": {
         "functionTakeX": "La función puede tomar cualquier valor real de x.",

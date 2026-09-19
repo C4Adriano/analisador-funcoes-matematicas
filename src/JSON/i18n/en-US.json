@@ -145,7 +145,10 @@
         "error004": "ERROR-004: The provided function is not {type}, as it is constant.",
         "error005": "ERROR-005: The provided function is not {type}.",
         "error006": "ERROR-006: Invalid {type}",
-        "error006Exp": "You tried to calculate a logarithm with a base less than or equal to 1, which is mathematically undefined."
+        "error006Exp": "You tried to calculate a logarithm with a base less than or equal to 1, which is mathematically undefined.",
+        "error007": "ERROR-007: Unclosed parenthesis",
+        "error008": "ERROR-008: Expected parenthesis after root function",
+        "error009": "ERROR-009: Unexpected token"
     },
     "helpers": {
         "functionTakeX": "The function can take any real value of x.",

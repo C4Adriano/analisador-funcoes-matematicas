@@ -162,7 +162,7 @@ export class Writing {
     static uppercase = (text = "") => Writing.replace(String(text).toUpperCase(), "Ƒ", "ƒ")
     static capitalize = (text = "") =>
         Writing.lowercase(text).replace(/\p{L}+/gu, word => Writing.uppercase(word[0]) + word.slice(1))
-    static decimalOptions = (number = 0, { invert = false, round = true, places = Config.decimalPlaces } = {}) => {
+    static decimalOptions(number = 0, { invert = false, round = true, places = Config.decimalPlaces } = {}) {
         let result = String(number)
         if (invert) return Writing.replace(result, ",", ".")
         if (round) result = Algebra.round(result, places)

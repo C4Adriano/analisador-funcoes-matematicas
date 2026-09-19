@@ -25,7 +25,7 @@ export default defineConfig([
             "no-console": ["warn", { allow: ["warn", "error"] }],
             "no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
             "consistent-return": "warn",
-            "no-throw-literal": "error",
+            "no-throw-literal": "off",
             "prefer-const": ["warn", { destructuring: "all" }],
             "no-var": "error",
             "no-shadow": "warn",

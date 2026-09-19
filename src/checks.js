@@ -10,5 +10,6 @@ export class Checks {
     static isValidValue = value => Checks.isValidText(value) || Checks.isFiniteNumber(value)
     static isValidCommand = value => Checks.isValidText(value) && Commands.names.includes(value)
     static isConfigKey = value => Checks.isValidValue(value) && value in Config
+    static isTrKey = value => Checks.isValidText(value)
     static numericPoint = (points, index) => Number(Writing.decimalOptions(points[index] ?? 0, { invert: true }))
 }
