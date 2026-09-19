@@ -9,9 +9,9 @@
  * - {@link Helpers.range range} - Imagem de uma Função.
  * - {@link Helpers.xAxis xAxis} - Intercessões com o eixo x de uma Função.
  * - {@link Helpers.yAxis yAxis} - Intercessões com o eixo y de uma Função.
- * - {@link Helpers.xValues xValues} - Valores de x de uma Função.
- * - {@link Helpers.yValues yValues} - Valores de y de uma Função.
- * - {@link Helpers.sign sign} - Estudo do sinal de uma Função.
+ * - {@link Helpers.resolveXValues resolveXValues} - Valores de x de uma Função.
+ * - {@link Helpers.resolveYValues resolveYValues} - Valores de y de uma Função.
+ * - {@link Helpers.resolveSign resolveSign} - Estudo do sinal de uma Função.
  * - {@link Helpers.equations equations} - Equações entre Funções.
  * - {@link Helpers.curve curve} - Curva de uma Função.
  * - {@link Helpers.calcRoot calcRoot} - Calcula as raízes de uma Função.
@@ -72,68 +72,20 @@ export declare const Helpers: {
     yAxis(point: Value, func: Str, explanation?: Str): void
 
     /**
-     * Monta o valor de y para o x dado.
-     * @deprecated
-     * Desde v6.6.7. Use {@link Helpers.resolveXValues} com um objeto {@link Coefficients} e um {@link FunctionType} no lugar dos outros três parâmetros.
-     *
-     * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @param coefA - Coeficiente `a`.
-     * @param coefB - Coeficiente `b`.
-     * @param coefC - Coeficiente `c`.
-     * @param funcExp - Exponencial.
-     * @param funcLog - Logarítmica.
-     * @param funcTrig - Trigonométrica.
-     * @group Função
-     * @since v6.1.0
-     */
-    xValues(
-        coefA?: Value,
-        coefB?: Value,
-        coefC?: Value,
-        funcExp?: boolean,
-        funcLog?: boolean,
-        funcTrig?: TrigonometricFunction
-    ): void
-
-    /**
      * Monta o valor de `y` para o `x` dado.
      * @param coefs - Coeficientes.
      * @param funcType - Tipo da Função.
-     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }; funcType = "poly"
+     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }; funcType = "poly"
      * @group Função
      * @since v6.6.7
      */
     resolveXValues(coefs?: Coefficients, funcType?: FunctionType): void
 
     /**
-     * Monta o valor de x para o y dado.
-     * @deprecated
-     * Desde v6.6.7. Use {@link Helpers.resolveYValues} com um objeto {@link Coefficients} e um {@link FunctionType} no lugar dos outros três parâmetros.
-     *
-     * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @param coefA - Coeficiente `a`.
-     * @param coefB - Coeficiente `b`.
-     * @param coefC - Coeficiente `c`.
-     * @param funcExp - Exponencial.
-     * @param funcLog - Logarítmica.
-     * @param funcTrig - Trigonométrica.
-     * @group Função
-     * @since v6.1.0
-     */
-    yValues(
-        coefA?: Value,
-        coefB?: Value,
-        coefC?: Value,
-        funcExp?: boolean,
-        funcLog?: boolean,
-        funcTrig?: TrigonometricFunction
-    ): void
-
-    /**
      * Monta o valor de `x` para o `y` dado.
      * @param coefs - Coeficientes.
      * @param funcType - Tipo da Função.
-     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }; funcType = "poly"
+     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }; funcType = "poly"
      * @group Função
      * @since v6.6.7
      */
@@ -141,33 +93,9 @@ export declare const Helpers: {
 
     /**
      * Monta o estudo do sinal de uma Função.
-     * @deprecated
-     * Desde v6.6.7. Use {@link Helpers.resolveSign} com um objeto {@link Coefficients} e um {@link FunctionType} no lugar dos outros três parâmetros.
-     *
-     * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @param coefA - Coeficiente `a`.
-     * @param coefB - Coeficiente `b`.
-     * @param coefC - Coeficiente `c`.
-     * @param funcExp - Exponencial.
-     * @param funcLog - Logarítmica.
-     * @param funcTrig - Trigonométrica.
-     * @group Função
-     * @since v6.1.0
-     */
-    sign(
-        coefA?: Value,
-        coefB?: Value,
-        coefC?: Value,
-        funcExp?: boolean,
-        funcLog?: boolean,
-        funcTrig?: TrigonometricFunction
-    ): void
-
-    /**
-     * Monta o estudo do sinal de uma Função.
      * @param coefs - Coeficientes.
      * @param funcType - Tipo da Função.
-     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }; funcType = "poly"
+     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }; funcType = "poly"
      * @group Função
      * @since v6.6.7
      */

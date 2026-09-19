@@ -21,17 +21,36 @@ const BASE_OPTIONS = [
     "analyze.options.functionEquations",
 ]
 
+/**
+ * @param {Coefficients} coefs
+ * @param {FunctionType} funcType
+ * @param {import("./i18n.js").TranslationKey[]} extraOptions
+ * @param {Record<Numeric, Record<Numeric, () => unknown>>} pageActions
+ */
+const runAnalysisMenu = (coefs, funcType, extraOptions, pageActions) => {
+    /** @type {Numeric | CommandsNames} */ let option,
+        [page, limit] = [1, 0]
+
+    do {
+        ;[option, page] = Ui.menu(trArr([...extraOptions, ...BASE_OPTIONS]), page)
+        if (Checks.isValidCommand(option)) [option, page] = [0, 1]
+
+        if (Checks.isFiniteNumber(option)) {
+            const result = pageActions[page]?.[option]?.()
+            if (Checks.isFiniteNumber(result)) option = result
+        }
+
+        if (option == 6) Ui.resolveFunction(coefs, funcType, true)
+        if (Helpers.exceededLimit(++limit)) option = 0
+    } while (option != 0)
+}
+
 export const Analyze = {
-    constant: (c = Number(State.globalC)) => Analyze.resolveConstant({ c }),
-    resolveConstant: ({ c = Number(State.globalC) } = {}) => {
+    resolveConstant: ({ c = State.numericC } = {}) => {
         const coefs = { a: 0, b: 0, c }
         Ui.resolveFunction(coefs)
 
-        let option,
-            [page, limit] = [1, 0]
-
-        /** @type {Record<Numeric, Record<Numeric, () => void>>} */
-        const pageActions = {
+        runAnalysisMenu(coefs, "poly", [], {
             1: {
                 1: () => Helpers.domain(),
                 2: () => Helpers.range(`= ${Writing.decimalOptions(coefs.c)}`, "", tr("analyze.constantValue")),
@@ -42,33 +61,18 @@ export const Analyze = {
             2: {
                 1: () => Helpers.resolveYValues(coefs),
                 2: () => Helpers.resolveSign(coefs),
-                3: () => {
-                    option = Helpers.equations(true, 0, 0, coefs.c)
-                },
+                3: () => Helpers.equations(true, 0, 0, coefs.c),
             },
-        }
-
-        do {
-            ;[option, page] = Ui.menu(trArr(BASE_OPTIONS), page)
-            if (Checks.isValidCommand(option)) [option, page] = [0, 1]
-            if (Checks.isFiniteNumber(option)) pageActions[page]?.[option]?.()
-            if (option == 6) Ui.resolveFunction(coefs, "poly", true)
-            if (Helpers.exceededLimit(++limit)) option = 0
-        } while (option != 0)
+        })
     },
 
-    affine: (b = Number(State.globalB), c = Number(State.globalC)) => Analyze.resolveAffine({ b, c }),
-    resolveAffine: ({ b = Number(State.globalB), c = Number(State.globalC) } = {}) => {
+    resolveAffine: ({ b = State.numericB, c = State.numericC } = {}) => {
         const coefs = { a: 0, b, c }
         Ui.resolveFunction(coefs)
 
         const root = Helpers.calcRoot(0, coefs.b, coefs.c)
 
-        let option,
-            [page, limit] = [1, 0]
-
-        /** @type {Record<Numeric, Record<Numeric, () => void>>} */
-        const pageActions = {
+        runAnalysisMenu(coefs, "poly", ["analyze.options.slope", "analyze.options.root"], {
             1: {
                 1: () => Helpers.curve(0, coefs.b),
                 2: () => Helpers.showRoot(root, "(−c) / b"),
@@ -81,172 +85,121 @@ export const Analyze = {
                 2: () => Helpers.resolveXValues(coefs),
                 3: () => Helpers.resolveYValues(coefs),
                 4: () => Helpers.resolveSign(coefs),
-                5: () => {
-                    option = Helpers.equations(true, 0, coefs.b, coefs.c)
-                },
+                5: () => Helpers.equations(true, 0, coefs.b, coefs.c),
             },
-        }
-
-        do {
-            ;[option, page] = Ui.menu(trArr(["analyze.options.slope", "analyze.options.root", ...BASE_OPTIONS]), page)
-            if (Checks.isValidCommand(option)) [option, page] = [0, 1]
-            if (Checks.isFiniteNumber(option)) pageActions[page]?.[option]?.()
-            if (option == 6) Ui.resolveFunction(coefs, "poly", true)
-            if (Helpers.exceededLimit(++limit)) option = 0
-        } while (option != 0)
+        })
     },
 
-    quadratic: (a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC)) =>
-        Analyze.resolveQuadratic({ a, b, c }),
-    resolveQuadratic: ({ a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC) } = {}) => {
+    resolveQuadratic: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs)
 
         const delta = Helpers.calcDelta(coefs.a, coefs.b, coefs.c),
             vertex = Helpers.vertex(coefs.a, coefs.b, delta[0])
 
-        let option,
-            [page, limit] = [1, 0]
-
-        /** @type {Record<Numeric, Record<Numeric, () => void>>} */
-        const pageActions = {
-            1: {
-                1: () => Helpers.curve(coefs.a),
-                2: () =>
-                    Helpers.showDelta(
-                        delta[0],
-                        tr("analyze.noRoots"),
-                        tr("analyze.oneRoot", { x: Writing.decimalOptions(delta[1]) }),
-                        tr("analyze.twoRoots", {
-                            x1: Writing.decimalOptions(delta[1]),
-                            x2: Writing.decimalOptions(delta[2]),
-                        })
-                    ),
-                3: () =>
-                    Ui.notifyOptions(
-                        tr("analyze.vertexPoint", {
-                            p1: Writing.decimalOptions(vertex[0]),
-                            p2: Writing.decimalOptions(vertex[1]),
-                        }),
-                        { explanation: tr("analyze.vertexExp") }
-                    ),
-                4: () => Helpers.domain(),
-                5: () =>
-                    coefs.a > 0
-                        ? Helpers.range(
-                              `∈ [${Writing.decimalOptions(vertex[1])}, ∞)`,
-                              tr("analyze.betweenVertexInfinity")
-                          )
-                        : Helpers.range(
-                              `∈ (-∞, ${Writing.decimalOptions(vertex[1])} ]`,
-                              tr("analyze.betweenInfinityVertex")
-                          ),
-            },
-            2: {
-                1: () =>
-                    Helpers.showDelta(
-                        delta[0],
-                        tr("analyze.noIntersectionXAxis"),
-                        tr("analyze.oneIntersectionXAxis", { p: Writing.decimalOptions(delta[1]) }),
-                        tr("analyze.twoIntersectionsXAxis", {
-                            p1: Writing.decimalOptions(delta[1]),
-                            p2: Writing.decimalOptions(delta[2]),
-                        })
-                    ),
-                2: () => Helpers.yAxis(coefs.c, "ax² + bx + c", "c"),
-                3: () => Helpers.resolveXValues(coefs),
-                4: () => Helpers.resolveYValues(coefs),
-                5: () => Helpers.resolveSign(coefs),
-            },
-            3: {
-                1: () => (option = Helpers.equations(true, coefs.a, coefs.b, coefs.c)),
-            },
-        }
-
-        do {
-            ;[option, page] = Ui.menu(
-                trArr(["analyze.options.concavity", "analyze.options.root", "analyze.options.vertex", ...BASE_OPTIONS]),
-                page
-            )
-            if (Checks.isValidCommand(option)) [option, page] = [0, 1]
-            if (Checks.isFiniteNumber(option)) pageActions[page]?.[option]?.()
-            if (option == 6) Ui.resolveFunction(coefs, "poly", true)
-            if (Helpers.exceededLimit(++limit)) option = 0
-        } while (option != 0)
+        runAnalysisMenu(
+            coefs,
+            "poly",
+            ["analyze.options.concavity", "analyze.options.root", "analyze.options.vertex"],
+            {
+                1: {
+                    1: () => Helpers.curve(coefs.a),
+                    2: () =>
+                        Helpers.showDelta(
+                            delta[0],
+                            tr("analyze.noRoots"),
+                            tr("analyze.oneRoot", { x: Writing.decimalOptions(delta[1]) }),
+                            tr("analyze.twoRoots", {
+                                x1: Writing.decimalOptions(delta[1]),
+                                x2: Writing.decimalOptions(delta[2]),
+                            })
+                        ),
+                    3: () =>
+                        Ui.notifyOptions(
+                            tr("analyze.vertexPoint", {
+                                p1: Writing.decimalOptions(vertex[0]),
+                                p2: Writing.decimalOptions(vertex[1]),
+                            }),
+                            { explanation: tr("analyze.vertexExp") }
+                        ),
+                    4: () => Helpers.domain(),
+                    5: () =>
+                        coefs.a > 0
+                            ? Helpers.range(
+                                  `∈ [${Writing.decimalOptions(vertex[1])}, ∞)`,
+                                  tr("analyze.betweenVertexInfinity")
+                              )
+                            : Helpers.range(
+                                  `∈ (-∞, ${Writing.decimalOptions(vertex[1])} ]`,
+                                  tr("analyze.betweenInfinityVertex")
+                              ),
+                },
+                2: {
+                    1: () =>
+                        Helpers.showDelta(
+                            delta[0],
+                            tr("analyze.noIntersectionXAxis"),
+                            tr("analyze.oneIntersectionXAxis", { p: Writing.decimalOptions(delta[1]) }),
+                            tr("analyze.twoIntersectionsXAxis", {
+                                p1: Writing.decimalOptions(delta[1]),
+                                p2: Writing.decimalOptions(delta[2]),
+                            })
+                        ),
+                    2: () => Helpers.yAxis(coefs.c, "ax² + bx + c", "c"),
+                    3: () => Helpers.resolveXValues(coefs),
+                    4: () => Helpers.resolveYValues(coefs),
+                    5: () => Helpers.resolveSign(coefs),
+                },
+                3: { 1: () => Helpers.equations(true, coefs.a, coefs.b, coefs.c) },
+            }
+        )
     },
 
-    exponential: (a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC)) =>
-        Analyze.resolveExponential({ a, b, c }),
-    resolveExponential: ({ a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC) } = {}) => {
+    resolveExponential: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "exp")
 
         const root = Helpers.calcRoot(coefs.a, coefs.b, coefs.c, true)
 
-        let option,
-            [page, limit] = [1, 0]
-
-        /** @type {Record<Numeric, Record<Numeric, () => void>>} */
-        const pageActions = {
-            1: {
-                1: () => Helpers.curve(coefs.a, coefs.b, false),
-                2: () => Helpers.showRoot(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"),
-                3: () =>
-                    Ui.notifyOptions(
-                        tr("analyze.options.horizontalAsymptote", { y: Writing.decimalOptions(coefs.c) }),
-                        {
-                            explanation: "y = c",
-                        }
-                    ),
-                4: () => Helpers.domain(),
-                5: () => {
-                    if (coefs.b > 0)
-                        Helpers.range(`∈ (${Writing.decimalOptions(coefs.c)}, ∞)`, tr("analyze.betweenCInfinity"))
-                    else Helpers.range(`∈ (-∞, ${Writing.decimalOptions(coefs.c)})`, tr("analyze.betweenInfinityC"))
+        runAnalysisMenu(
+            coefs,
+            "exp",
+            ["analyze.options.curve", "analyze.options.root", "analyze.options.horizontalAsymptote"],
+            {
+                1: {
+                    1: () => Helpers.curve(coefs.a, coefs.b, false),
+                    2: () => Helpers.showRoot(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"),
+                    3: () =>
+                        Ui.notifyOptions(
+                            tr("analyze.options.horizontalAsymptote", { y: Writing.decimalOptions(coefs.c) }),
+                            { explanation: "y = c" }
+                        ),
+                    4: () => Helpers.domain(),
+                    5: () => {
+                        if (coefs.b > 0)
+                            Helpers.range(`∈ (${Writing.decimalOptions(coefs.c)}, ∞)`, tr("analyze.betweenCInfinity"))
+                        else Helpers.range(`∈ (-∞, ${Writing.decimalOptions(coefs.c)})`, tr("analyze.betweenInfinityC"))
+                    },
                 },
-            },
-            2: {
-                1: () => Helpers.xAxis(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"),
-                2: () => Helpers.yAxis(coefs.b + coefs.c, "b × aˣ + c", "b + c"),
-                3: () => Helpers.resolveXValues(coefs, "exp"),
-                4: () => Helpers.resolveYValues(coefs, "exp"),
-                5: () => Helpers.resolveSign(coefs, "exp"),
-            },
-            3: {
-                1: () => Helpers.equations(false),
-            },
-        }
-
-        do {
-            ;[option, page] = Ui.menu(
-                trArr([
-                    "analyze.options.curve",
-                    "analyze.options.root",
-                    "analyze.options.horizontalAsymptote",
-                    ...BASE_OPTIONS,
-                ]),
-                page
-            )
-            if (Checks.isValidCommand(option)) [option, page] = [0, 1]
-            if (Checks.isFiniteNumber(option)) pageActions[page]?.[option]?.()
-            if (option == 6) Ui.resolveFunction(coefs, "exp", true)
-            if (Helpers.exceededLimit(++limit)) option = 0
-        } while (option != 0)
+                2: {
+                    1: () => Helpers.xAxis(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"),
+                    2: () => Helpers.yAxis(coefs.b + coefs.c, "b × aˣ + c", "b + c"),
+                    3: () => Helpers.resolveXValues(coefs, "exp"),
+                    4: () => Helpers.resolveYValues(coefs, "exp"),
+                    5: () => Helpers.resolveSign(coefs, "exp"),
+                },
+                3: { 1: () => Helpers.equations(false) },
+            }
+        )
     },
 
-    logarithmic: (a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC)) =>
-        Analyze.resolveLogarithmic({ a, b, c }),
-    resolveLogarithmic: ({ a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC) } = {}) => {
+    resolveLogarithmic: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "log")
 
         const root = Algebra.round(coefs.a ** Algebra.divisionOptions(-coefs.c, coefs.b, { round: false }))
 
-        let option,
-            [page, limit] = [1, 0]
-
-        /** @type {Record<Numeric, Record<Numeric, () => void>>} */
-        const pageActions = {
+        runAnalysisMenu(coefs, "log", ["analyze.options.curve", "analyze.options.root"], {
             1: {
                 1: () => Helpers.curve(coefs.a, coefs.b, false),
                 2: () => Helpers.showRoot(root, "a⁽⁻ᶜ⁄ᵇ⁾"),
@@ -261,30 +214,16 @@ export const Analyze = {
                 4: () => Helpers.resolveSign(coefs, "log"),
                 5: () => Helpers.equations(false),
             },
-        }
-
-        do {
-            ;[option, page] = Ui.menu(trArr(["analyze.options.curve", "analyze.options.root", ...BASE_OPTIONS]), page)
-            if (Checks.isValidCommand(option)) [option, page] = [0, 1]
-            if (Checks.isFiniteNumber(option)) pageActions[page]?.[option]?.()
-            if (option == 6) Ui.resolveFunction(coefs, "log", true)
-            if (Helpers.exceededLimit(++limit)) option = 0
-        } while (option != 0)
+        })
     },
 
-    sine: (a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC)) =>
-        Analyze.resolveSine({ a, b, c }),
-    resolveSine: ({ a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC) } = {}) => {
+    resolveSine: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "sin")
 
         const root = Algebra.round(Math.asin(Algebra.divisionOptions(-coefs.c, coefs.b)) / coefs.a)
 
-        let option,
-            [page, limit] = [1, 0]
-
-        /** @type {Record<Numeric, Record<Numeric, () => void>>} */
-        const pageActions = {
+        runAnalysisMenu(coefs, "sin", ["analyze.options.amplitude", "analyze.options.period"], {
             1: {
                 1: () => Helpers.amplitude(coefs.b),
                 2: () => Helpers.showPeriod(coefs.a),
@@ -302,33 +241,16 @@ export const Analyze = {
                 4: () => Helpers.resolveSign(coefs, "sin"),
                 5: () => Helpers.equations(false),
             },
-        }
-
-        do {
-            ;[option, page] = Ui.menu(
-                trArr(["analyze.options.amplitude", "analyze.options.period", ...BASE_OPTIONS]),
-                page
-            )
-            if (Checks.isValidCommand(option)) [option, page] = [0, 1]
-            if (Checks.isFiniteNumber(option)) pageActions[page]?.[option]?.()
-            if (option == 6) Ui.resolveFunction(coefs, "sin", true)
-            if (Helpers.exceededLimit(++limit)) option = 0
-        } while (option != 0)
+        })
     },
 
-    cosine: (a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC)) =>
-        Analyze.resolveCosine({ a, b, c }),
-    resolveCosine: ({ a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC) } = {}) => {
+    resolveCosine: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "cos")
 
         const root = Algebra.round(Math.acos(Algebra.divisionOptions(-coefs.c, coefs.b)) / coefs.a)
 
-        let option,
-            [page, limit] = [1, 0]
-
-        /** @type {Record<Numeric, Record<Numeric, () => void>>} */
-        const pageActions = {
+        runAnalysisMenu(coefs, "cos", ["analyze.options.amplitude", "analyze.options.period"], {
             1: {
                 1: () => Helpers.amplitude(coefs.b),
                 2: () => Helpers.showPeriod(coefs.a),
@@ -348,33 +270,16 @@ export const Analyze = {
                 4: () => Helpers.resolveSign(coefs, "cos"),
                 5: () => Helpers.equations(false),
             },
-        }
-
-        do {
-            ;[option, page] = Ui.menu(
-                trArr(["analyze.options.amplitude", "analyze.options.period", ...BASE_OPTIONS]),
-                page
-            )
-            if (Checks.isValidCommand(option)) [option, page] = [0, 1]
-            if (Checks.isFiniteNumber(option)) pageActions[page]?.[option]?.()
-            if (option == 6) Ui.resolveFunction(coefs, "cos", true)
-            if (Helpers.exceededLimit(++limit)) option = 0
-        } while (option != 0)
+        })
     },
 
-    tangent: (a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC)) =>
-        Analyze.resolveTangent({ a, b, c }),
-    resolveTangent: ({ a = Number(State.globalA), b = Number(State.globalB), c = Number(State.globalC) } = {}) => {
+    resolveTangent: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "tan")
 
         const root = Algebra.round(Math.atan(Algebra.divisionOptions(-coefs.c, coefs.b)) / coefs.a)
 
-        let option,
-            [page, limit] = [1, 0]
-
-        /** @type {Record<Numeric, Record<Numeric, () => void>>} */
-        const pageActions = {
+        runAnalysisMenu(coefs, "tan", ["analyze.options.verticalAsymptote", "analyze.options.period"], {
             1: {
                 1: () => Helpers.verticalAsymptote(coefs.a),
                 2: () => Helpers.showPeriod(coefs.a, true),
@@ -389,17 +294,6 @@ export const Analyze = {
                 4: () => Helpers.resolveSign(coefs, "tan"),
                 5: () => Helpers.equations(false),
             },
-        }
-
-        do {
-            ;[option, page] = Ui.menu(
-                trArr(["analyze.options.verticalAsymptote", "analyze.options.period", ...BASE_OPTIONS]),
-                page
-            )
-            if (Checks.isValidCommand(option)) [option, page] = [0, 1]
-            if (Checks.isFiniteNumber(option)) pageActions[page]?.[option]?.()
-            if (option == 6) Ui.resolveFunction(coefs, "tan", true)
-            if (Helpers.exceededLimit(++limit)) option = 0
-        } while (option != 0)
+        })
     },
 }

@@ -1,71 +1,72 @@
 {
-  "name": "analisador",
-  "version": "6.6.7",
-  "description": "Mathematical Function Analyzer / Analisador de Funções Matemáticas",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/C4Adriano/analisador-funcoes-matematicas.git"
-  },
-  "keywords": [
-    "mathematics",
-    "math",
-    "function",
-    "analyzer",
-    "analisador",
-    "função",
-    "matemática",
-    "typescript",
-    "i18n",
-    "trigonometry",
-    "trigonometria"
-  ],
-  "author": "Adriano Lima",
-  "license": "UNLICENSED",
-  "private": true,
-  "type": "module",
-  "bugs": {
-    "url": "https://github.com/C4Adriano/analisador-funcoes-matematicas/issues"
-  },
-  "homepage": "https://github.com/C4Adriano/analisador-funcoes-matematicas#readme",
-  "scripts": {
-    "build": "tsc --project tsconfig.build.json",
-    "build:css": "sass src/style.scss src/style.css --no-source-map",
-    "typecheck": "tsc --project tsconfig.build.json --noEmit",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "prepare": "husky",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
-  },
-  "lint-staged": {
-    "**/*.{js,ts}": [
-      "eslint --fix",
-      "prettier --write"
+    "name": "analisador",
+    "version": "6.6.7",
+    "description": "Mathematical Function Analyzer / Analisador de Funções Matemáticas",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/C4Adriano/analisador-funcoes-matematicas.git"
+    },
+    "keywords": [
+        "mathematics",
+        "math",
+        "function",
+        "analyzer",
+        "analisador",
+        "função",
+        "matemática",
+        "typescript",
+        "i18n",
+        "trigonometry",
+        "trigonometria"
     ],
-    "**/*.{json,jsonc,json5,html,css,scss,md,yaml,yml}": [
-      "prettier --write"
-    ]
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^26.5.0",
-    "@typescript/native": "npm:typescript@^7.0.2",
-    "eslint": "^10.10.0",
-    "eslint-config-prettier": "^10.1.8",
-    "globals": "^17.12.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^17.5.0",
-    "prettier": "^3.9.6",
-    "sass": "^1.104.0",
-    "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "typescript-eslint": "^8.70.0"
-  },
-  "engines": {
-    "node": ">=24.0.0"
-  },
-  "packageManager": "npm@12.0.2",
-  "dependencies": {
-    "@eslint/json": "^2.1.0",
-    "@eslint/markdown": "^8.0.3"
-  }
+    "author": "Adriano Lima",
+    "license": "UNLICENSED",
+    "private": true,
+    "type": "module",
+    "bugs": {
+        "url": "https://github.com/C4Adriano/analisador-funcoes-matematicas/issues"
+    },
+    "homepage": "https://github.com/C4Adriano/analisador-funcoes-matematicas#readme",
+    "scripts": {
+        "build": "tsc --project tsconfig.build.json",
+        "build:css": "sass src/style.scss src/style.css --no-source-map",
+        "typecheck": "tsc --project tsconfig.build.json --noEmit",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "prepare": "husky",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix"
+    },
+    "lint-staged": {
+        "**/*.{js,ts}": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "**/*.{json,jsonc,json5,html,css,scss,md,yaml,yml}": [
+            "prettier --write"
+        ]
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@types/node": "^26.5.0",
+        "@typescript/native": "npm:typescript@^7.0.2",
+        "eslint": "^10.10.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-jsdoc": "^63.3.3",
+        "globals": "^17.12.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^17.5.0",
+        "prettier": "^3.9.6",
+        "sass": "^1.104.0",
+        "typescript": "npm:@typescript/typescript6@^6.0.2",
+        "typescript-eslint": "^8.70.0"
+    },
+    "engines": {
+        "node": ">=24.0.0"
+    },
+    "packageManager": "npm@12.0.2",
+    "dependencies": {
+        "@eslint/json": "^2.1.0",
+        "@eslint/markdown": "^8.0.3"
+    }
 }

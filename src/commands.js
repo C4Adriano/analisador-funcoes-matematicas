@@ -1,13 +1,12 @@
 import { Checks } from "./checks.js"
-import { Config, resetConfig, saveConfig } from "./config.js"
+import { Config } from "./config.js"
 import { changeLanguage, tr } from "./i18n.js"
 import { State } from "./state.js"
 import { Ui } from "./ui.js"
 import { VERSION } from "./version.js"
 import { Writing } from "./writing.js"
 
-/** @type {CommandsNames[]} */
-export const COMMANDS_NAMES = ["config", "exit", "start", "review", "history", "change"]
+/** @type {CommandsNames[]} */ export const COMMANDS_NAMES = ["config", "exit", "start", "review", "history", "change"]
 
 export const Commands = {
     process: (raw = "") => {
@@ -54,8 +53,7 @@ export const Commands = {
 
         const rows = target.length + 1,
             cols = source.length + 1,
-            /** @type {NumericMatrix} */
-            matrix = Array.from({ length: rows }, (_, row) =>
+            /** @type {NumericMatrix} */ matrix = Array.from({ length: rows }, (_, row) =>
                 Array.from({ length: cols }, (__, col) => (row == 0 ? col : col == 0 ? row : 0))
             )
 
@@ -79,17 +77,12 @@ export const Commands = {
     },
 
     suggestCmd: (typed = "") => {
-        const LIMIT = 3,
-            cmds = Commands.listCmds,
-            keys = Object.keys(cmds)
+        const cmds = Commands.listCmds
         let best = "",
-            lowerDist = Infinity,
-            candidates = []
+            lowerDist = Infinity
 
-        keys.forEach(key => {
-            candidates = [key, ...cmds[key].variations]
-
-            candidates.forEach(candidate => {
+        Object.entries(cmds).forEach(([key, cmd]) => {
+            ;[key, ...cmd.variations].forEach(candidate => {
                 const dist = Commands.levenshtein(typed, candidate)
                 if (dist < lowerDist) {
                     lowerDist = dist
@@ -98,9 +91,8 @@ export const Commands = {
             })
         })
 
-        if (lowerDist <= LIMIT)
+        if (lowerDist <= 3)
             return { type: lowerDist == 0 ? "exact" : "suggestion", canonical: best, distance: lowerDist }
-
         return { type: "unknown", canonical: "", distance: -1 }
     },
 
@@ -169,7 +161,7 @@ export const Commands = {
                 long: tr("commands.longReset"),
                 variations: ["resetar", "reset", "restaurar", "restore"],
                 action: () => {
-                    resetConfig()
+                    Config.reset()
                     Ui.notifyOptions(tr("commands.resetConfirm"), { type: "warning" })
                     return null
                 },
@@ -257,16 +249,12 @@ export const Commands = {
                     "normal",
                 ],
                 action: (_, parts) => {
-                    /** @type {TextCase[]} */
-                    const TEXT_CASES = ["capitalized", "uppercase", "lowercase", "normal"],
-                        target = parts[1] != null ? Writing.noAccents(Writing.lowercase(parts[1])) : undefined
-                    /** @type {TextCase} */
-                    let value
+                    /** @type {TextCase[]} */ const TEXT_CASES = ["capitalized", "uppercase", "lowercase", "normal"],
+                        target = parts[1] == null ? null : Writing.noAccents(Writing.lowercase(parts[1]))
+                    /** @type {TextCase} */ let value
 
-                    if (target == null)
-                        value = TEXT_CASES[(TEXT_CASES.indexOf(Config.textCase) + 1) % TEXT_CASES.length] ?? "normal"
-                    else if (
-                        [
+                    /** @type {Record<TextCase, string[]>} */ const TEXT_CASE_ALIASES = {
+                        capitalized: [
                             "capitalizado",
                             "capitalizada",
                             "capitalize",
@@ -274,24 +262,31 @@ export const Commands = {
                             "capitalise",
                             "capitalised",
                             "cap",
-                        ].includes(target)
-                    )
-                        value = "capitalized"
-                    else if (["maiuscula", "maiusculas", "uppercase", "upper"].includes(target)) value = "uppercase"
-                    else if (["minuscula", "minusculas", "lowercase", "lower"].includes(target)) value = "lowercase"
-                    else if (target == "normal") value = "normal"
-                    else {
-                        Ui.notifyOptions(tr("commands.invalidSetting"), {
-                            explanation: tr("commands.invalidSettingExp", { setting: target }),
-                            type: "error",
-                        })
-                        return null
+                        ],
+                        uppercase: ["maiuscula", "maiusculas", "uppercase", "upper"],
+                        lowercase: ["minuscula", "minusculas", "lowercase", "lower"],
+                        normal: ["normal"],
                     }
 
-                    return Commands.change(
-                        "textCase",
-                        /** @type {import("./config.js").ConfigType} */ (/** @type {unknown} */ (value))
-                    )
+                    if (target == null)
+                        value = TEXT_CASES[(TEXT_CASES.indexOf(Config.textCase) + 1) % TEXT_CASES.length] ?? "normal"
+                    else {
+                        const match = /** @type {TextCase | undefined} */ (
+                            Object.entries(TEXT_CASE_ALIASES).find(([, aliases]) => aliases.includes(target))?.[0]
+                        )
+
+                        if (match == null) {
+                            Ui.notifyOptions(tr("commands.invalidSetting"), {
+                                explanation: tr("commands.invalidSettingExp", { setting: target }),
+                                type: "error",
+                            })
+                            return null
+                        }
+
+                        value = match
+                    }
+
+                    return Commands.change("textCase", value)
                 },
             },
             separator: {
@@ -390,25 +385,27 @@ export const Commands = {
                     "es-419",
                     "espanol",
                 ],
+
                 action: (_, parts) => {
+                    /** @type {Record<Language, string[]>} */
+                    const LANGUAGE_ALIASES = {
+                        "pt-br": ["br", "pt-br", "ptbr", "brasileiro", "brazilian", "brasil", "brazil"],
+                        "pt-pt": ["pt", "pt-pt", "ptpt", "portugues", "portuguese", "portugal"],
+                        "en-us": ["en", "en-us", "enus", "americano", "american", "eua", "usa"],
+                        "en-gb": ["gb", "en-gb", "engb", "ingles", "english", "britanico", "british", "uk"],
+                        "es-419": ["es", "es-419", "espanol"],
+                        "es-es": ["es-es"],
+                    }
                     let target = parts[1] ?? parts[0]
                     target = Writing.noAccents(Writing.lowercase(target))
 
-                    if (["br", "pt-br", "ptbr", "brasileiro", "brazilian", "brasil", "brazil"].includes(target))
-                        changeLanguage("pt-br")
-                    else if (["pt", "pt-pt", "ptpt", "portugues", "portuguese", "portugal"].includes(target))
-                        changeLanguage("pt-pt")
-                    else if (["en", "en-us", "enus", "americano", "american", "eua", "usa"].includes(target))
-                        changeLanguage("en-us")
-                    else if (
-                        ["gb", "en-gb", "engb", "ingles", "english", "britanico", "british", "uk"].includes(target)
-                    )
-                        changeLanguage("en-gb")
-                    else if (["es", "es-419", "espanol"].includes(target)) changeLanguage("es-419")
-                    else if (["es-es"].includes(target)) changeLanguage("es-es")
+                    const entries = /** @type {[Language, string[]][]} */ (Object.entries(LANGUAGE_ALIASES))
+                    const match = entries.find(([, aliases]) => aliases.includes(target))?.[0]
+
+                    if (match != null) changeLanguage(match)
                     else if (parts[1] != null)
                         Ui.notifyOptions(tr("commands.invalidLanguage"), {
-                            explanation: `“${target}” ${tr("commands.noteInvalidLanguage")}`,
+                            explanation: `"${target}" ${tr("commands.noteInvalidLanguage")}`,
                             type: "error",
                         })
 
@@ -430,7 +427,7 @@ export const Commands = {
     resolveCmd: (specific = "") => {
         if (specific == "") return null
         const cmds = Commands.listCmds,
-            found = Object.entries(cmds).find(([, cmd]) => cmd?.variations.includes(specific))
+            found = Object.entries(cmds).find(([_, cmd]) => cmd.variations.includes(specific))
         return found?.[0] ?? (specific in cmds ? specific : null)
     },
 
@@ -476,14 +473,14 @@ export const Commands = {
                 end = Math.min(start + 5, key.length)
             let menu = `=== ${tr("commands.help")} ===\n${tr("commands.page")} ${String(page)}/${String(total)}`
 
-            for (let i = start; i < end; i++) {
-                const aliases = [key[i], ...cmds[key[i]].variations].join(", ")
-                menu += `\n/${key[i]} — ${cmds[key[i]].short}\n ↳ ${aliases}`
-            }
+            menu += key
+                .slice(start, end)
+                .map(name => `\n/${name} — ${cmds[name].short}\n ↳ ${[name, ...cmds[name].variations].join(", ")}`)
+                .join("")
 
             menu += `\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`
 
-            answer = Ui.range(menu, "", 0, 9, 0, true)
+            answer = Ui.rangeOptions(menu, { max: 9, commands: true })
 
             if (answer == 8) page--
             if (answer == 9) page++
@@ -522,13 +519,14 @@ export const Commands = {
                 "commands.resultsSearch"
             )}${String(page)}/${String(total)}\n`
 
-            for (let i = start; i < end; i++) menu += `\n/${results[i]} — ${cmds[results[i]].short}`
+            menu += results
+                .slice(start, end)
+                .map(name => `\n/${name} — ${cmds[name].short}`)
+                .join("")
 
-            menu +=
-                `\n----------------\n` +
-                `8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`
+            menu += `\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`
 
-            answer = Ui.range(menu, "", 0, 9, 0, true)
+            answer = Ui.rangeOptions(menu, { max: 9, commands: true })
 
             if (answer == 8) page--
             else if (answer == 9) page++
@@ -586,8 +584,9 @@ export const Commands = {
     },
 
     /**
-     * @param {import("./config.js").ConfigKey} name
-     * @param {import("./config.js").ConfigType} value
+     * @template {import("./config.js").ConfigKey} K
+     * @param {K} name
+     * @param {import("./config.js").ConfigType[K]} value
      */
     change: (name, value) => {
         const currentValue = Config[name]
@@ -598,7 +597,7 @@ export const Commands = {
         else if (value != null && typeof currentValue == typeof value) Object.assign(Config, { [name]: value })
         else return null
 
-        saveConfig()
+        Config.save()
         Ui.notifyOptions(Writing.configItem(`${tr("commands.changed")} “${name}”`, name), { type: "warning" })
 
         return null

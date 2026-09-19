@@ -10,7 +10,7 @@ import type { Options } from "./values.d.ts"
  * - {@link Algebra.round round} — Arredonda números.
  * - {@link Algebra.variables variables} — Pede variáveis.
  * - {@link Algebra.point point} — Pede pontos.
- * - {@link Algebra.equations equations} — Executa equações entre Funções.
+ * - {@link Algebra.resolveEquations resolveEquations} — Executa equações entre Funções.
  * - {@link Algebra.solveLinearSystem solveLinearSystem} — Resolve um sistema linear.
  * - {@link Algebra.solveLinearCoefs solveLinearCoefs} — Resolve um subconjunto de Coeficientes desconhecidos de um Função.
  * - {@link Algebra.getPointPairs getPointPairs} — Coleta `count` pares de pontos (x, y).
@@ -18,9 +18,9 @@ import type { Options } from "./values.d.ts"
  * - {@link Algebra.solveExponential solveExponential} — Resolve os Coeficientes desconhecidos de uma Função Exponencial.
  * - {@link Algebra.solveLogarithmic solveLogarithmic} — Resolve os Coeficientes desconhecidos de uma Função Logarítmica.
  * - {@link Algebra.resolveUnknown resolveUnknown} — Descobre quais são as incógnitas de uma Função.
- * - {@link Algebra.log log} — Logaritmo de `x` de uma `base` qualquer.
- * - {@link Algebra.division division} — Divide números de forma segura.
- * - {@link Algebra.absolute absolute} — Calcula o valor absoluto de números.
+ * - {@link Algebra.logOptions logOptions} — Logaritmo de `x` de uma `base` qualquer.
+ * - {@link Algebra.divisionOptions divisionOptions} — Divide números de forma segura.
+ * - {@link Algebra.absoluteOptions absoluteOptions} — Calcula o valor absoluto de números.
  *
  * ### Tags:
  * @author [C4Adriano](https://github.com/C4Adriano)
@@ -65,19 +65,6 @@ export declare const Algebra: {
      * @since v6.1.0
      */
     point(type?: 1 | 2 | 3): NumericArray
-
-    /**
-     * Vê se as Funções têm pontos de encontro.
-     * @deprecated
-     * Desde v6.6.7. Use {@link Algebra.resolveEquations} com dois objetos {@link Coefficients} no lugar dos `array`s
-     *
-     * Mantido apenas para compatibilidade retroativa; **não remover**
-     * @param func1 - Primeira Função [a, b, c].
-     * @param func2 - Segunda Função [a, b, c].
-     * @group UI
-     * @since v6.1.0
-     */
-    equations(func1: NumericArray, func2: NumericArray): void
 
     /**
      * Vê se as Funções têm pontos de encontro.
@@ -128,7 +115,7 @@ export declare const Algebra: {
     /**
      * Resolve os Coeficientes desconhecidos de uma Função Polinomial (constante, afim ou quadrática), inferindo o grau a partir dos Coeficientes `a` e `b` já conhecidos.
      * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
-     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
+     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }
      * @returns Coeficientes resolvidos, ou `null` caso os pontos coletados levem a um sistema singular (ex.: pontos com mesmo x)
      * @group Numérico
      * @since v6.6.0
@@ -142,7 +129,7 @@ export declare const Algebra: {
      *
      * A combinação `a` e `c` juntos ainda não é suportada.
      * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
-     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
+     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }
      * @returns Coeficientes resolvidos, ou `null` caso o sistema linear associado seja singular
      * @group Numérico
      * @since v6.6.0
@@ -156,7 +143,7 @@ export declare const Algebra: {
      *
      * A combinação `a` e `b` juntos ainda não é suportada.
      * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
-     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }
+     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }
      * @returns Coeficientes resolvidos, ou `null` caso o sistema linear associado seja singular
      * @group Numérico
      * @since v6.6.0
@@ -167,7 +154,7 @@ export declare const Algebra: {
      * Descobre quais são as incógnitas de uma Função e resolve seus Coeficientes, solicitando pontos ao usuário quando necessário.
      * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
      * @param funcType - Tipo da Função sendo resolvida
-     * @default coefs = { a: State.globalA, b: State.globalB, c: State.globalC }; funcType = "poly"
+     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }; funcType = "poly"
      * @returns Coeficientes finais resolvidos.
      * @group Numérico
      * @since v6.6.0
@@ -175,37 +162,8 @@ export declare const Algebra: {
     resolveUnknown(coefs?: Coefficients, funcType?: FunctionType): Coefficients
 
     /**
-     * Descobre quais são as incógnitas.
-     * @deprecated
-     * Desde v6.6.0. Use {@link Algebra.resolveUnknown} com um objeto {@link Coefficients} e um {@link FunctionType} no lugar dos outros três parâmetros.
-     *
-     * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @group Numérico
-     * @since v6.1.0
-     */
-    unknown(
-        coefA?: Value,
-        coefB?: Value,
-        coefC?: Value,
-        funcExp?: boolean,
-        funcLog?: boolean,
-        funcTrig?: TrigonometricFunction
-    ): ValueArray
-
-    /**
      * Calcula o logaritmo de x.
-     * @deprecated
-     * Desde v6.6.7. Use {@link Algebra.logOptions} com `options` ao invés dos parâmetros.
-     *
-     * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @group Numérico
-     * @since v6.1.0
-     */
-    log(x: Numeric, base?: Numeric, precision?: Precision, round?: boolean, places?: Places): Numeric
-
-    /**
-     * Calcula o logaritmo de x.
-     * @remarks Se `base` for {@link Math.E} (`undefined` também, pois é o valor padrão), prefira {@link Algebra.lnOptions}.
+     * @remarks Se `base` for {@link Math.E} (ou nada também, pois é o valor padrão), prefira {@link Algebra.lnOptions}.
      * @param x - Número.
      * @param base - Base.
      * @param options - Opções (round, precision, places).
@@ -215,17 +173,6 @@ export declare const Algebra: {
      * @since v6.6.1
      */
     logOptions(x: Numeric, base?: Numeric, options?: Options): Numeric
-
-    /**
-     * Calcula o logaritmo natural de x.
-     * @deprecated
-     * Desde v6.6.7. Use {@link Algebra.lnOptions} com `options` ao invés dos parâmetros.
-     *
-     * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @group Numérico
-     * @since v6.1.0
-     */
-    ln(x: Numeric, precision?: Precision, round?: boolean, places?: Places): Numeric
 
     /**
      * Calcula o logaritmo natural de x.
@@ -245,17 +192,6 @@ export declare const Algebra: {
 
     /**
      * Divide o `numerator` pelo `denominator`.
-     * @deprecated
-     * Desde v6.6.7. Use {@link Algebra.divisionOptions} com `options` ao invés dos parâmetros.
-     *
-     * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @group Numérico
-     * @since v6.1.0
-     */
-    division(numerator: Numeric, denominator: Numeric, round?: boolean, precision?: Precision): Numeric
-
-    /**
-     * Divide o `numerator` pelo `denominator`.
      * @param numerator - Parte de cima da fração.
      * @param denominator - Parte de baixo da fração.
      * @param options - Opções.
@@ -265,17 +201,6 @@ export declare const Algebra: {
      * @since v6.6.1
      */
     divisionOptions(numerator: Numeric, denominator: Numeric, options?: Options): Numeric
-
-    /**
-     * Calcula o valor absoluto de um número.
-     * @deprecated
-     * Desde v6.6.7. Use {@link Algebra.absoluteOptions} com `options` ao invés dos parâmetros.
-     *
-     * Mantido apenas para compatibilidade retroativa; **não remover**.
-     * @group Numérico
-     * @since v6.1.0
-     */
-    absolute(number: Numeric, round?: boolean, places?: Places): Numeric
 
     /**
      * Calcula o valor absoluto de um número.

@@ -109,9 +109,7 @@ type PointPair = {
  * Usado para montar a matriz de um sistema linear genérico.
  * @since v6.6.0
  */
-type LinearBasis = {
-    [coefficient: Str]: (x: Numeric) => Numeric
-}
+type LinearBasis = { [coefficient: Str]: (x: Numeric) => Numeric }
 
 /**
  * Unidades de ângulo suportadas pelo programa.

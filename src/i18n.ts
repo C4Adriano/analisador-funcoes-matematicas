@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Checks } from "./checks.js"
-import { Config, saveConfig } from "./config.js"
+import { Config } from "./config.js"
 import { Ui } from "./ui.js"
 
 import enGB from "./JSON/i18n/en-GB.json" with { type: "json" }
@@ -122,6 +122,6 @@ export const changeLanguage = (language: Language = "pt-br") => {
         }
 
         Config.language = language
-        saveConfig()
+        Config.save()
     }
 }

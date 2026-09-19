@@ -1,5 +1,5 @@
 import { Checks } from "./checks.js"
-import { Config, saveConfig } from "./config.js"
+import { Config } from "./config.js"
 import { Ui } from "./ui.js"
 import enGB from "./JSON/i18n/en-GB.json" with { type: "json" }
 import enUS from "./JSON/i18n/en-US.json" with { type: "json" }
@@ -7,19 +7,9 @@ import es419 from "./JSON/i18n/es-419.json" with { type: "json" }
 import esES from "./JSON/i18n/es-ES.json" with { type: "json" }
 import ptBR from "./JSON/i18n/pt-BR.json" with { type: "json" }
 import ptPT from "./JSON/i18n/pt-PT.json" with { type: "json" }
-const dictionaries = {
-    "pt-br": ptBR,
-    "pt-pt": ptPT,
-    "en-us": enUS,
-    "en-gb": enGB,
-    "es-419": es419,
-    "es-es": esES,
-}
+const dictionaries = { "pt-br": ptBR, "pt-pt": ptPT, "en-us": enUS, "en-gb": enGB, "es-419": es419, "es-es": esES }
 const FALLBACK_DICT = ptBR,
-    FALLBACK_CHAIN = {
-        "en-gb": ["en-us"],
-        "es-es": ["es-419"],
-    }
+    FALLBACK_CHAIN = { "en-gb": ["en-us"], "es-es": ["es-419"] }
 const resolveKey = (dict, key) => {
     const raw = key.split(".").reduce((obj, part) => obj?.[part], dict)
     return Checks.isValidText(raw) ? raw : null
@@ -48,6 +38,6 @@ export const changeLanguage = (language = "pt-br") => {
             Config.accents = false
         }
         Config.language = language
-        saveConfig()
+        Config.save()
     }
 }

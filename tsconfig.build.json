@@ -26,6 +26,8 @@
         "src/config.ts",
         "src/state.ts",
         "src/i18n.ts",
+        "src/errors.ts",
+        "src/checks.ts",
         "src/global.d.ts"
     ],
     "exclude": ["pessoal/**"]

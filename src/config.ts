@@ -30,82 +30,121 @@ export type ConfigType = {
 export type ConfigKey = keyof ConfigType
 
 /**
- * Configurações ativas do programa.
- * @since ~v6.1.0
- */
-export const Config: ConfigType = structuredClone(defaultConfigJson) as ConfigType
-
-/**
  * Configurações padrões do programa.
  * @since ~v6.1.0
  */
 export const DEFAULT_CONFIG: ConfigType = structuredClone(defaultConfigJson) as ConfigType
 
 /**
- * Carrega configurações salvas no `localStorage`.
- * @since ~v6.1.0
+ * Classe das configurações ativas do programa.
+ * @since ~v6.7.0
  */
-export const loadConfig = () => {
-    const saved: Str | null = localStorage.getItem("config"),
-        savedVersion: Str | null = localStorage.getItem("configVersion")
+class ConfigStore implements ConfigType {
+    /** Idioma do sistema. */
+    language!: Language
 
-    if (!saved) return
+    /** Se terá caracteres Unicode? */
+    unicode!: boolean
+    /** Se terá acentos gráficos? */
+    accents!: boolean
+    /** O estilo do texto. */
+    textCase!: TextCase
+    /** Separador decimal ("," / "."). */
+    decimalSeparator!: boolean
 
-    if (savedVersion != VERSION) {
-        localStorage.removeItem("config")
-        localStorage.removeItem("configVersion")
-        return
+    /** Se terá explicações? */
+    explanations!: boolean
+    /** Se terá erros? */
+    errors!: boolean
+    /** Se irá mostrar a função? */
+    showFunction!: boolean
+    /** Se terá que confirmar as entradas? */
+    inputConfirm!: boolean
+    /** Se terá que confirmar as saidas? */
+    outputConfirm!: boolean
+    /** Se irá simplificar a multiplicação? */
+    simpleMulti!: boolean
+
+    /** Quantidade de casas decimais. */
+    decimalPlaces!: Places
+    /** Qual a precisão do Logaritmo? */
+    logPrecision!: Precision
+    /** Qual a precisão da divisão? */
+    divPrecision!: Precision
+    /** Qual o limite de iterações? */
+    iterationLimit!: Numeric
+    /** Qual o tipo do ângulo? */
+    degrees!: Degrees
+
+    constructor() {
+        Object.assign(this, structuredClone(defaultConfigJson))
     }
 
-    let parsed: Partial<ConfigType>
+    /**
+     * Carrega configurações salvas no `localStorage`.
+     * @since ~v6.1.0
+     */
+    load(): void {
+        const saved: Str | null = localStorage.getItem("config")
 
-    try {
-        parsed = JSON.parse(saved)
-    } catch (e) {
-        console.warn("[loadConfig] Config corrompida no localStorage. Ignorando.", e)
-        localStorage.removeItem("config")
-        localStorage.removeItem("configVersion")
-        return
+        if (!saved) return
+
+        let parsed: Partial<ConfigType>
+
+        try {
+            parsed = JSON.parse(saved)
+        } catch (e) {
+            console.warn("[Config.load] Config corrompida no localStorage. Ignorando.", e)
+            localStorage.removeItem("config")
+            return
+        }
+
+        const keys = Object.keys(defaultConfigJson) as ConfigKey[],
+            updates: Partial<ConfigType> = {}
+
+        for (const key of keys) {
+            const defaultValue = (defaultConfigJson as Record<string, unknown>)[key],
+                newValue = parsed[key]
+
+            if (newValue == null) continue
+
+            if (typeof newValue == typeof defaultValue) (updates as Record<string, unknown>)[key] = newValue
+            else
+                console.warn(
+                    `[Config.load] Tipo inválido para '${String(key)}'. Mantendo padrão da versão atual.`,
+                    `Esperado: ${typeof defaultValue} | Recebido: ${typeof newValue}`
+                )
+        }
+
+        Object.assign(this, updates)
     }
 
-    const keys = Object.keys(parsed) as (keyof ConfigType)[]
-
-    for (const key of keys) {
-        if (!(key in Config)) continue
-
-        const currentType = typeof Config[key],
-            newValue = parsed[key]
-
-        if (typeof newValue == currentType) (Config as Record<string, unknown>)[key] = newValue
-        else {
-            console.warn(
-                `[loadConfig] Tipo inválido para '${String(key)}'.`,
-                `Esperado: ${currentType} | Recebido: ${typeof newValue}`
-            )
+    /**
+     * Salva configurações atuais no `localStorage`.
+     * @since ~v6.1.0
+     */
+    save(): void {
+        try {
+            localStorage.setItem("config", JSON.stringify(this))
+            localStorage.setItem("configVersion", VERSION)
+        } catch (e) {
+            console.warn("[Config.save] Não foi possível salvar as configurações.", e)
         }
     }
-}
 
-/**
- * Salva configurações atuais no `localStorage`.
- * @since ~v6.1.0
- */
-export const saveConfig = () => {
-    try {
-        localStorage.setItem("config", JSON.stringify(Config))
-        localStorage.setItem("configVersion", VERSION)
-    } catch (e) {
-        console.warn("[saveConfig] Não foi possível salvar as configurações.", e)
+    /**
+     * Reseta para os valores padrão do `JSON`.
+     * @since ~v6.1.0
+     */
+    reset(): void {
+        localStorage.removeItem("config")
+        localStorage.removeItem("configVersion")
+        Object.assign(this, structuredClone(defaultConfigJson))
     }
 }
 
 /**
- * Reseta para os valores padrão do `JSON`.
+ * Configurações ativas do programa.
  * @since ~v6.1.0
  */
-export const resetConfig = () => {
-    localStorage.removeItem("config")
-    localStorage.removeItem("configVersion")
-
-    Object.assign(Config, structuredClone(defaultConfigJson))
-}
+export const Config = new ConfigStore()

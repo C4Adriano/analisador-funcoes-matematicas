@@ -8,7 +8,12 @@ import { tr } from "./i18n.js"
 import { State } from "./state.js"
 import { Writing } from "./writing.js"
 
-/** @param {Value} coef @param {Str} symbol @param {Str} term @returns {Str} */
+/**
+ * @param {Value} coef
+ * @param {Str} symbol
+ * @param {Str} term
+ * @returns {Str}
+ */
 const formatLeadingTerm = (coef, symbol, term) =>
     coef == symbol
         ? `${symbol} · ${term}`
@@ -18,7 +23,12 @@ const formatLeadingTerm = (coef, symbol, term) =>
             ? ""
             : `${String(coef)} · ${term}`
 
-/** @param {Value} coef @param {Str} symbol @param {Str} term @returns {Str} */
+/**
+ * @param {Value} coef
+ * @param {Str} symbol
+ * @param {Str} term
+ * @returns {Str}
+ */
 const formatMiddleTerm = (coef, symbol, term) =>
     coef == symbol
         ? ` + ${symbol} · ${term}`
@@ -29,11 +39,19 @@ const formatMiddleTerm = (coef, symbol, term) =>
                 ? term
                 : `${String(Algebra.absoluteOptions(Number(coef)))} · ${term}`)
 
-/** @param {Value} coef @param {Str} symbol @returns {Str} */
+/**
+ * @param {Value} coef
+ * @param {Str} symbol
+ * @returns {Str}
+ */
 const formatConstantTerm = (coef, symbol) =>
     coef == symbol ? ` + ${symbol}` : coef == 0 ? "" : Number(coef) > 0 ? ` + ${String(coef)}` : ` − ${String(-coef)}`
 
-/** @param {Value} coef @param {Str} symbol @returns {Str} */
+/**
+ * @param {Value} coef
+ * @param {Str} symbol
+ * @returns {Str}
+ */
 const formatMultiplier = (coef, symbol) =>
     coef == symbol ? `${symbol} × ` : coef != 0 && coef != 1 ? `${String(coef)} × ` : ""
 
@@ -70,7 +88,7 @@ const buildQuadraticFunction = ({ a = State.globalA, b = State.globalB, c = Stat
 const buildExponentialFunction = ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) =>
     tr("ui.theFunction") +
     formatMultiplier(b, "b") +
-    (a == "a" ? "aˣ" : a != 0 ? `${String(a)}ˣ` : "") +
+    (a == "a" ? "aˣ" : a == 0 ? "" : `${String(a)}ˣ`) +
     formatConstantTerm(c, "c") +
     tr("ui.exponential") +
     (b == 1 && c == 0 ? tr("ui.pure") : "") +
@@ -79,7 +97,7 @@ const buildExponentialFunction = ({ a = State.globalA, b = State.globalB, c = St
 const buildLogarithmicFunction = ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}) =>
     tr("ui.theFunction") +
     formatMultiplier(b, "b") +
-    (a == "a" ? "logₐ(x)" : a != 0 ? `log${Writing.subscript(a)}(x)` : "") +
+    (a == "a" ? "logₐ(x)" : a == 0 ? "" : `log${Writing.subscript(a)}(x)`) +
     formatConstantTerm(c, "c") +
     tr("ui.logarithmic") +
     (b == 1 && c == 0 ? tr("ui.pure") : "") +
@@ -88,20 +106,15 @@ const buildLogarithmicFunction = ({ a = State.globalA, b = State.globalB, c = St
 const buildTrigFunction = ({ a = State.globalA, b = State.globalB, c = State.globalC } = {}, funcType = "") =>
     tr("ui.theFunction") +
     formatMultiplier(b, "b") +
-    (a == "a" ? `${funcType}(a · x)` : a != 0 ? `${funcType}(${String(a)} · x)` : "") +
+    (a == "a" ? `${funcType}(a · x)` : a == 0 ? "" : `${funcType}(${String(a)} · x)`) +
     formatConstantTerm(c, "c")
 
 export const Ui = {
-    notify: (message = "", explanation = "", asConfirm = false) =>
-        asConfirm
-            ? confirm(Writing.format(message, `${explanation}\n\n${tr("ui.confirm")}`))
-            : alert(Writing.format(message, explanation)),
-
-    notifyOptions: (message = "", { explanation = "", asConfirm = false, type = "display" } = {}) =>
+    notifyOptions: (message = "", { explanation = "", type = "display", asConfirm = false } = {}) =>
         type == "error"
             ? Config.errors
                 ? Ui.notify(`=== ${tr("ui.error")} ===\n${message}`, explanation)
-                : null
+                : undefined
             : type == "warning"
               ? Ui.notify(`=== ${tr("ui.warning")} ===\n${message}`, explanation, asConfirm)
               : type == "console"
@@ -109,12 +122,10 @@ export const Ui = {
                 : type == "display"
                   ? Ui.notify(message, explanation, false)
                   : Ui.notify(message, explanation, true),
-
-    display: (message = "", explanation = "") => Ui.notifyOptions(message, { explanation }),
-    confirm: (message = "", explanation = "") => Ui.notifyOptions(message, { explanation, type: "confirm" }),
-    error: (message = "", explanation = "") => Ui.notifyOptions(message, { explanation, type: "error" }),
-    warning: (message = "", explanation = "", asConfirm = false) =>
-        Ui.notifyOptions(message, { explanation, asConfirm, type: "warning" }),
+    notify: (message = "", explanation = "", asConfirm = false) =>
+        asConfirm
+            ? confirm(Writing.format(message, `${explanation}\n\n${tr("ui.confirm")}`))
+            : alert(Writing.format(message, explanation)),
 
     menu: (options = ["---"], page = 1) => {
         let answer,
@@ -133,17 +144,14 @@ export const Ui = {
 
             let menu = `=== ${tr("ui.menu")} ===\n${tr("ui.page", { page, total })}\n${tr("main.whatWant")}`
 
-            while (option <= 5) {
-                menu += `\n${String(option)} = ${String(list[option - 1 + 5 * (page - 1)])}`
-                option++
-            }
+            for (; option <= 5; option++) menu += `\n${option} = ${list[option - 1 + 5 * (page - 1)]}`
 
             option = 1
             menu +=
                 `\n----------------\n` +
                 `6 = ${tr("main.review")} | 7 = ${tr("main.change")} | 8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`
 
-            answer = Ui.range(menu, "", 0, 9, 0, true)
+            answer = Ui.rangeOptions(menu, { max: 9, commands: true })
             if (answer == 0) {
                 State.askCoeffs = false
                 State.loop = true
@@ -167,45 +175,34 @@ export const Ui = {
         return [answer, page]
     },
 
-    input: (
+    inputOptions: (
         message = "",
-        explanation = "",
-        number = false,
-        places = Config.decimalPlaces,
-        allowCommands = false,
-        angle = "deg"
+        { explanation = "", number = false, places = Config.decimalPlaces, commands = false, placeholder = "" } = {}
     ) => {
         let limit = 0
 
         do {
-            const raw = prompt(Writing.format(message, explanation))
+            const raw = prompt(Writing.format(message, explanation), placeholder)
             if (raw == null) continue
 
             const text = raw.trim()
             if (text == "") continue
 
-            if (raw[0] == "/" && allowCommands) {
+            if (raw[0] == "/" && commands) {
                 const action = Commands.process(raw)
                 if (action == null) continue
                 return action
             }
 
-            if (
-                number &&
-                !Checks.isFiniteNumber(
-                    angle == "rad" ? Writing.parseAngle(text) : Writing.decimalOptions(text, { invert: true })
-                )
-            )
-                continue
+            if (number && !Checks.isFiniteNumber(Writing.decimalOptions(text, { invert: true }))) continue
 
             if (
                 Config.inputConfirm &&
-                !Ui.notifyOptions(
-                    tr("ui.inputConfirm", {
-                        input: number ? (angle ? Writing.formatAngle(Number(raw)) : Writing.decimalOptions(raw)) : text,
-                    }),
-                    { explanation: tr("ui.inputConfirmNote"), type: "warning", asConfirm: true }
-                )
+                !Ui.notifyOptions(tr("ui.inputConfirm", { input: number ? Writing.decimalOptions(raw) : text }), {
+                    explanation: tr("ui.inputConfirmNote"),
+                    type: "warning",
+                    asConfirm: true,
+                })
             )
                 continue
 
@@ -215,25 +212,10 @@ export const Ui = {
         return number ? 0 : ""
     },
 
-    function: (
-        coefA = 0,
-        coefB = 0,
-        coefC = 0,
-        funcExp = false,
-        funcLog = false,
-        funcTrig = "",
-        show = Config.showFunction
-    ) =>
-        Ui.resolveFunction(
-            { a: coefA, b: coefB, c: coefC },
-            funcExp ? "exp" : funcLog ? "log" : funcTrig != "" ? funcTrig : "poly",
-            show
-        ),
-
     resolveFunction: (
         { a = State.globalA, b = State.globalB, c = State.globalC } = {},
         funcType = "poly",
-        show = true
+        show = Config.showFunction
     ) => {
         const coefs = { a, b, c }
         if (!show) return
@@ -254,11 +236,13 @@ export const Ui = {
         Ui.notifyOptions(`=== ${tr("ui.currentFunction")} ===\n${Writing.decimalOptions(funcStr)}`)
     },
 
-    range: (message = "", explanation = "", min = 0, max = 1, places = 0, allowCommands = false) => {
-        let value
+    rangeOptions: (message = "", { explanation = "", min = 0, max = 1, places = 0, commands = false } = {}) => {
+        /** @type {Numeric | CommandsNames | "end"} */ let value
+
+        if (max < min) [max, min] = [min, max]
 
         do {
-            value = Ui.input(message, explanation, true, places, allowCommands)
+            value = Ui.inputOptions(message, { explanation, number: true, places, commands, placeholder: String(min) })
 
             if (Checks.isValidCommand(value)) return value
             if (value == "end") return 0
