@@ -1,27 +1,22 @@
-import stateJson from "./JSON/state.json" with { type: "json" }
+import stateJson from "./JSON/state.json" with { type: "json" };
+import { MathFunction } from "./math.js";
 class StateStore {
-    loop
-    type
-    keepType
-    askCoeffs
-    globalA
-    globalB
-    globalC
-    baseFunc
-    coefficients
-    currentFunc
-    history
+    loop;
+    type;
+    keepType;
+    askCoeffs;
+    current;
+    baseFunc;
+    lastSaved;
+    history;
     constructor() {
-        Object.assign(this, structuredClone(stateJson))
+        Object.assign(this, structuredClone(stateJson));
+        this.current = new MathFunction();
     }
-    get numericA() {
-        return Number(this.globalA)
-    }
-    get numericB() {
-        return Number(this.globalB)
-    }
-    get numericC() {
-        return Number(this.globalC)
+    get funcChanged() {
+        return (this.current.a !== this.lastSaved?.a ||
+            this.current.b !== this.lastSaved?.b ||
+            this.current.c !== this.lastSaved?.c);
     }
 }
-export const State = new StateStore()
+export const State = new StateStore();

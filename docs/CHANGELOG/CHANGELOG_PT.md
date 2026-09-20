@@ -23,6 +23,17 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 -
 
+## \[7.0.0] - 2026-09-20
+
+### Adicionado
+
+- `MathFunction` para uma **Função Matemática** qualquer.
+- Vários arquivos `.ts`.
+
+## Corrigido
+
+- Praticamente todos os _bugs_ atuais do código.
+
 ## \[6.6.7] - 2026-09-12
 
 ### Corrigido
@@ -33,19 +44,19 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ### Adicionado
 
-- Keep a Changelog
+- Keep a Changelog.
 
 ### Corrigido
 
-- O _bug_ que deixava `ax² + bx + c` em **Funções Consates ou Afins** sendo exibido como `undefined x² - 0x`
+- O _bug_ que deixava `ax² + bx + c` em **Funções Consates ou Afins** sendo exibido como `undefined x² - 0x`.
 
 ## \[6.x]
 
 ### Adicionado
 
+- **Funções Trigonométricas**.
 - Comandos `/` em PT/EN/ES.
 - Lançamento oficial no **GitHub**.
-- **Funções Trigonométricas**.
 - Tradução para Espanhol (_ES_)
 
 ## \[5.x]
@@ -64,23 +75,23 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ### Adicionado
 
-- Suporte a **Funções JS**.
 - Equações entre **Funções**.
 - Lançamento oficial do projeto.
+- Suporte a **Funções JS**.
 
 ## \[3.x]
 
 ### Adicionado
 
-- Resolução de variáveis por pontos.
 - Páginas de menu.
+- Resolução de variáveis por pontos.
 
 ## \[2.x]
 
 ### Adicionado
 
-- Cálculos de x/y.
 - **Funções Exponencial**.
+- Cálculos de x/y.
 
 ## \[1.x]
 
@@ -91,6 +102,6 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ---
 
 [Docs]: /README.md
-[Main]: /CHANGELOG.md
 [EN]: CHANGELOG_EN.md
+[Main]: /CHANGELOG.md
 [OLD_CHANGELOG]: OLD/OLD_CHANGELOG_PT.md

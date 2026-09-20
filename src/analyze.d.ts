@@ -24,7 +24,7 @@ export declare const Analyze: {
     /**
      * Resolve uma Função Constante: `ƒ(x) = c`
      * @param coefs - Coeficientes.
-     * @default coefs = { c: State.numericC }
+     * @default coefs = { c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
@@ -33,7 +33,7 @@ export declare const Analyze: {
     /**
      * Resolve uma Função Afim: `ƒ(x) = bx + c`
      * @param coefs - Coeficientes.
-     * @default coefs = { b: State.numericB, c: State.numericC }
+     * @default coefs = { b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
@@ -42,7 +42,7 @@ export declare const Analyze: {
     /**
      * Resolve uma Função Quadrática: `ƒ(x) = ax² + bx + c`
      * @param coefs - Coeficientes.
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
@@ -51,7 +51,7 @@ export declare const Analyze: {
     /**
      * Resolve uma Função Exponencial: `ƒ(x) = b × aˣ + c`
      * @param coefs - Coeficientes.
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
@@ -60,7 +60,7 @@ export declare const Analyze: {
     /**
      * Resolve uma Função Logarítmica: `ƒ(x) = b × logₐ(x) + c`
      * @param coefs - Coeficientes.
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
@@ -69,7 +69,7 @@ export declare const Analyze: {
     /**
      * Resolve uma Função Seno: `ƒ(x) = b × sin(a · x) + c`
      * @param coefs - Coeficientes.
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
@@ -78,7 +78,7 @@ export declare const Analyze: {
     /**
      * Resolve uma Função Cosseno: `ƒ(x) = b × cos(a · x) + c`
      * @param coefs - Coeficientes.
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
@@ -87,7 +87,7 @@ export declare const Analyze: {
     /**
      * Resolve uma Função Tangente: `ƒ(x) = b × tan(a · x) + c`
      * @param coefs - Coeficientes.
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */

@@ -1,4 +1,5 @@
 import defaultConfigJson from "../src/JSON/config.json" with { type: "json" }
+import { Ui } from "./ui.js"
 import { VERSION } from "./version.js"
 
 /**
@@ -94,7 +95,10 @@ class ConfigStore implements ConfigType {
         try {
             parsed = JSON.parse(saved)
         } catch (e) {
-            console.warn("[Config.load] Config corrompida no localStorage. Ignorando.", e)
+            Ui.notifyOptions("[Config.load] Config corrompida no localStorage. Ignorando.", {
+                explanation: String(e),
+                type: "console",
+            })
             localStorage.removeItem("config")
             return
         }
@@ -110,9 +114,9 @@ class ConfigStore implements ConfigType {
 
             if (typeof newValue == typeof defaultValue) (updates as Record<string, unknown>)[key] = newValue
             else
-                console.warn(
+                Ui.notifyOptions(
                     `[Config.load] Tipo inválido para '${String(key)}'. Mantendo padrão da versão atual.`,
-                    `Esperado: ${typeof defaultValue} | Recebido: ${typeof newValue}`
+                    { explanation: `Esperado: ${typeof defaultValue} | Recebido: ${typeof newValue}`, type: "console" }
                 )
         }
 
@@ -128,7 +132,10 @@ class ConfigStore implements ConfigType {
             localStorage.setItem("config", JSON.stringify(this))
             localStorage.setItem("configVersion", VERSION)
         } catch (e) {
-            console.warn("[Config.save] Não foi possível salvar as configurações.", e)
+            Ui.notifyOptions("[Config.save] Não foi possível salvar as configurações.", {
+                explanation: String(e),
+                type: "console",
+            })
         }
     }
 

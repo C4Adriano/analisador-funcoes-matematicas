@@ -1,55 +1,55 @@
 # === SISTEMA OPERACIONAL ===
 
 # Windows
+$RECYCLE.BIN/
 Thumbs.db
 desktop.ini
-$RECYCLE.BIN/
 
 # macOS
 .DS_Store
-._*
 .Spotlight-V100
 .Trashes
+._*
 
 # Linux
 *~
-.fuse_hidden*
 .Trash-*
+.fuse_hidden*
 
 # === EDITOR / IDE ===
 
 # VSCode
-.vscode/
 *.code-workspace
+.vscode/
 
 # JetBrains
 .idea/
 
 # Vim
-*.swp
 *.swo
+*.swp
 
 # Sublime Text
 *.sublime-project
 *.sublime-workspace
 
 # === LOGS E TEMPORÁRIOS ===
-*.log
-*.tmp
 *.bak
 *.cache
+*.log
+*.tmp
 
 # === ARQUIVOS PESSOAIS ===
-notes.md
-TODO.md
-node_modules/
-pessoal/
 *.map
 *.txt
 .VSCodeCounter/
+TODO.md
+node_modules/
+notes.md
+pessoal/
 
 # === CREDENCIAIS ===
 .env
 .env.*
-secrets.*
 credentials.*
+secrets.*

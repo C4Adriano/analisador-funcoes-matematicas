@@ -7,11 +7,11 @@ import type { InputOptions, MessageOptions, RangeOptions } from "./values.d.ts"
  * Objeto base para os métodos envolvendo exibições na tela.
  *
  * ## Métodos:
- * - {@link Ui.notifyOptions notifyOptions} - Mostra uma mensagem qualquer, com base no `type` informado.
- * - {@link Ui.menu menu} - Mostra um menu.
  * - {@link Ui.inputOptions inputOptions} - Pergunta algo para o usuário.
- * - {@link Ui.resolveFunction resolveFunction} - Mostra uma Função.
+ * - {@link Ui.menu menu} - Mostra um menu.
+ * - {@link Ui.notifyOptions notifyOptions} - Mostra uma mensagem qualquer, com base no `type` informado.
  * - {@link Ui.rangeOptions rangeOptions} - Mostra um intervalo.
+ * - {@link Ui.resolveFunction resolveFunction} - Mostra uma Função.
  *
  * ### Tags:
  * @author [C4Adriano](https://github.com/C4Adriano)
@@ -77,7 +77,7 @@ export declare const Ui: {
      * @param coefs - Coeficientes.
      * @param funcType - Tipo da Função.
      * @param show - Mostrará a Função ou não, baseado na configuração.
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }; funcType = "poly"; show = true
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }; funcType = "poly"; show = true
      * @group UI
      * @since v6.6.1
      */

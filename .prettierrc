@@ -1,49 +1,9 @@
 {
-    "printWidth": 120,
-    "tabWidth": 4,
-    "useTabs": false,
-    "semi": true,
-    "singleQuote": false,
-    "quoteProps": "as-needed",
-    "jsxSingleQuote": false,
-    "trailingComma": "none",
-    "bracketSpacing": true,
-    "bracketSameLine": false,
     "arrowParens": "avoid",
-    "proseWrap": "preserve",
-    "htmlWhitespaceSensitivity": "css",
-    "vueIndentScriptAndStyle": false,
-    "endOfLine": "lf",
-    "embeddedLanguageFormatting": "auto",
-    "singleAttributePerLine": false,
+    "bracketSameLine": true,
     "objectWrap": "collapse",
-
-    "overrides": [
-        {
-            "files": ["*.?(m|c)@(js|ts)"],
-            "options": {
-                "semi": false,
-                "trailingComma": "es5"
-            }
-        },
-        {
-            "files": ["*.md", "*.json?(c|5)"],
-            "options": {
-                "printWidth": 80
-            }
-        },
-        {
-            "files": ["*.htm?(l)"],
-            "options": {
-                "htmlWhitespaceSensitivity": "ignore",
-                "bracketSameLine": true
-            }
-        },
-        {
-            "files": ["*.y?(a)ml"],
-            "options": {
-                "tabWidth": 2
-            }
-        }
-    ]
+    "printWidth": 120,
+    "semi": false,
+    "tabWidth": 4,
+    "trailingComma": "es5"
 }

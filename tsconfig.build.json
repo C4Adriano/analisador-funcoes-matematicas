@@ -1,34 +1,26 @@
 {
     "compilerOptions": {
-        "target": "es2025",
         "lib": ["ES2025", "DOM"],
         "module": "nodenext",
         "moduleResolution": "nodenext",
+        "target": "es2025",
 
-        "rootDir": "src",
         "outDir": "src",
+        "rootDir": "src",
 
         "declaration": false,
+        "exactOptionalPropertyTypes": true,
         "noEmit": false,
-        "resolveJsonModule": true,
-        "removeComments": true,
-        "strict": true,
-
-        "skipLibCheck": true,
-        "noImplicitAny": false,
-
-        "noUncheckedIndexedAccess": true,
         "noEmitOnError": true,
-        "exactOptionalPropertyTypes": true
+        "noImplicitAny": false,
+        "noUncheckedIndexedAccess": true,
+        "removeComments": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "strict": true
     },
 
-    "include": [
-        "src/config.ts",
-        "src/state.ts",
-        "src/i18n.ts",
-        "src/errors.ts",
-        "src/checks.ts",
-        "src/global.d.ts"
-    ],
-    "exclude": ["pessoal/**"]
+    "files": ["src/global.d.ts"],
+    "include": ["src/*.ts"],
+    "exclude": ["src/*.d.ts", "pessoal"]
 }

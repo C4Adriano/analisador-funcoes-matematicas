@@ -7,17 +7,17 @@
         "url": "git+https://github.com/C4Adriano/analisador-funcoes-matematicas.git"
     },
     "keywords": [
-        "mathematics",
-        "math",
-        "function",
-        "analyzer",
         "analisador",
+        "analyzer",
+        "function",
         "função",
-        "matemática",
-        "typescript",
         "i18n",
+        "matemática",
+        "math",
+        "mathematics",
+        "trigonometria",
         "trigonometry",
-        "trigonometria"
+        "typescript"
     ],
     "author": "Adriano Lima",
     "license": "UNLICENSED",
@@ -30,12 +30,12 @@
     "scripts": {
         "build": "tsc --project tsconfig.build.json",
         "build:css": "sass src/style.scss src/style.css --no-source-map",
-        "typecheck": "tsc --project tsconfig.build.json --noEmit",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "prepare": "husky",
         "lint": "eslint .",
-        "lint:fix": "eslint . --fix"
+        "lint:fix": "eslint . --fix",
+        "prepare": "husky",
+        "typecheck": "tsc --project tsconfig.build.json --noEmit"
     },
     "lint-staged": {
         "**/*.{js,ts}": [

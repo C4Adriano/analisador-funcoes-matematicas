@@ -10,7 +10,7 @@ import { Writing } from "./writing.js"
 
 export const Commands = {
     process: (raw = "") => {
-        if (raw.length == 0 || raw[0] != "/") return null
+        if (raw.length === 0 || raw[0] !== "/") return null
 
         const parts = Writing.noAccents(raw.slice(1).toLowerCase()).split(" "),
             cmd = parts[0] ?? "",
@@ -21,7 +21,7 @@ export const Commands = {
         if (canonical == null) {
             const suggestion = Commands.suggestCmd(cmd)
 
-            if (suggestion.type == "suggestion") {
+            if (suggestion.type === "suggestion") {
                 if (
                     Ui.notifyOptions(tr("commands.commandSuggestion", { suggestion: suggestion.canonical }), {
                         explanation: tr("commands.commandSuggestionExp", {
@@ -47,14 +47,14 @@ export const Commands = {
     },
 
     levenshtein: (source = "", target = "") => {
-        if (source == target) return 0
-        if (source.length == 0) return target.length
-        if (target.length == 0) return source.length
+        if (source === target) return 0
+        if (source.length === 0) return target.length
+        if (target.length === 0) return source.length
 
         const rows = target.length + 1,
             cols = source.length + 1,
             /** @type {NumericMatrix} */ matrix = Array.from({ length: rows }, (_, row) =>
-                Array.from({ length: cols }, (__, col) => (row == 0 ? col : col == 0 ? row : 0))
+                Array.from({ length: cols }, (__, col) => (row === 0 ? col : col === 0 ? row : 0))
             )
 
         for (let row = 1; row < rows; row++) {
@@ -64,7 +64,7 @@ export const Commands = {
             if (!currentRow || !previousRow) continue
 
             for (let col = 1; col < cols; col++) {
-                const cost = source[col - 1] == target[row - 1] ? 0 : 1,
+                const cost = source[col - 1] === target[row - 1] ? 0 : 1,
                     deletion = (previousRow[col] ?? 0) + 1,
                     insertion = (currentRow[col - 1] ?? 0) + 1,
                     substitution = (previousRow[col - 1] ?? 0) + cost
@@ -92,12 +92,12 @@ export const Commands = {
         })
 
         if (lowerDist <= 3)
-            return { type: lowerDist == 0 ? "exact" : "suggestion", canonical: best, distance: lowerDist }
+            return { type: lowerDist === 0 ? "exact" : "suggestion", canonical: best, distance: lowerDist }
         return { type: "unknown", canonical: "", distance: -1 }
     },
 
     searchCmds: (term = "") => {
-        if (term == "") return []
+        if (String(term).trim() === "") return []
 
         const cmds = Commands.listCmds,
             normalizedTerm = Writing.noAccents(Writing.lowercase(term))
@@ -399,8 +399,8 @@ export const Commands = {
                     let target = parts[1] ?? parts[0]
                     target = Writing.noAccents(Writing.lowercase(target))
 
-                    const entries = /** @type {[Language, string[]][]} */ (Object.entries(LANGUAGE_ALIASES))
-                    const match = entries.find(([, aliases]) => aliases.includes(target))?.[0]
+                    const entries = /** @type {[Language, string[]][]} */ (Object.entries(LANGUAGE_ALIASES)),
+                        match = entries.find(([, aliases]) => aliases.includes(target))?.[0]
 
                     if (match != null) changeLanguage(match)
                     else if (parts[1] != null)
@@ -425,9 +425,9 @@ export const Commands = {
     },
 
     resolveCmd: (specific = "") => {
-        if (specific == "") return null
+        if (String(specific).trim() === "") return null
         const cmds = Commands.listCmds,
-            found = Object.entries(cmds).find(([_, cmd]) => cmd.variations.includes(specific))
+            found = Object.entries(cmds).find(([, cmd]) => cmd.variations.includes(specific))
         return found?.[0] ?? (specific in cmds ? specific : null)
     },
 
@@ -441,7 +441,7 @@ export const Commands = {
     help: (specific = "") => {
         const cmds = Commands.listCmds
 
-        if (specific != "") {
+        if (String(specific).trim() !== "") {
             const canonical = Commands.resolveCmd(specific)
 
             if (canonical == null) {
@@ -482,15 +482,15 @@ export const Commands = {
 
             answer = Ui.rangeOptions(menu, { max: 9, commands: true })
 
-            if (answer == 8) page--
-            if (answer == 9) page++
-        } while (answer != 0)
+            if (answer === 8) page--
+            if (answer === 9) page++
+        } while (answer !== 0)
 
         return null
     },
 
     searchHelp: (term = "") => {
-        if (term == "") {
+        if (String(term).trim() === "") {
             Ui.notifyOptions(tr("commands.emptySearch"), { explanation: tr("commands.usageSearch"), type: "error" })
             return null
         }
@@ -500,7 +500,7 @@ export const Commands = {
         const results = Commands.searchCmds(term),
             cmds = Commands.listCmds
 
-        if (results.length == 0) {
+        if (results.length === 0) {
             Ui.notifyOptions(`${tr("commands.noCommand")}“${term}”`, { type: "warning" })
             return null
         }
@@ -528,15 +528,15 @@ export const Commands = {
 
             answer = Ui.rangeOptions(menu, { max: 9, commands: true })
 
-            if (answer == 8) page--
-            else if (answer == 9) page++
-        } while (answer != 0)
+            if (answer === 8) page--
+            else if (answer === 9) page++
+        } while (answer !== 0)
 
         return null
     },
 
     shortcuts: (specific = "") => {
-        if (specific == "") {
+        if (String(specific).trim() === "") {
             Ui.notifyOptions(tr("commands.commandNotProvided"), {
                 explanation: tr("commands.usageShortcuts"),
                 type: "error",

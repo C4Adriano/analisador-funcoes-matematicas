@@ -11,24 +11,35 @@ import ptBR from "./JSON/i18n/pt-BR.json" with { type: "json" }
 import ptPT from "./JSON/i18n/pt-PT.json" with { type: "json" }
 
 const dictionaries = {
-    /** Português (Brasil). */
-    "pt-br": ptBR,
-    /** Português (Portugal). */
-    "pt-pt": ptPT,
-    /** Inglês (Estados Unidos). */
-    "en-us": enUS,
-    /** Inglês (Reino Unido). */
-    "en-gb": enGB,
-    /** Espanhol (América Latina). */
-    "es-419": es419,
-    /** Espanhol (Espanha). */
-    "es-es": esES,
-}
-
-const FALLBACK_DICT = ptBR,
+        /** Português (Brasil). */
+        "pt-br": ptBR,
+        /** Português (Portugal). */
+        "pt-pt": ptPT,
+        /** Inglês (Estados Unidos). */
+        "en-us": enUS,
+        /** Inglês (Reino Unido). */
+        "en-gb": enGB,
+        /** Espanhol (América Latina). */
+        "es-419": es419,
+        /** Espanhol (Espanha). */
+        "es-es": esES,
+    },
+    FALLBACK_DICT = ptBR,
     FALLBACK_CHAIN: Partial<Record<keyof typeof dictionaries, (keyof typeof dictionaries)[]>> = {
         "en-gb": ["en-us"],
         "es-es": ["es-419"],
+    },
+    /**
+     * Navega um objeto de dicionário por uma chave em _dot-notation_.
+     * @param dict - Dicionário a navegar.
+     * @param key - Chave em _dot-notation_. (Ex.: `errors.error001`)
+     * @returns O texto encontrado, ou `null` se a chave não existir nesse dicionário.
+     * @group i18n
+     * @since v6.3.0
+     */
+    resolveKey = (dict: Record<Str, any>, key: Str): Str | null => {
+        const raw = key.split(".").reduce<any>((obj, part) => obj?.[part], dict)
+        return Checks.isValidText(raw) ? raw : null
     }
 
 /**
@@ -58,19 +69,6 @@ type PathsOf<T> = T extends Str
 export type TranslationKey = PathsOf<typeof ptBR>
 
 /**
- * Navega um objeto de dicionário por uma chave em _dot-notation_.
- * @param dict - Dicionário a navegar.
- * @param key - Chave em _dot-notation_. (Ex.: `errors.error001`)
- * @returns O texto encontrado, ou `null` se a chave não existir nesse dicionário.
- * @group i18n
- * @since v6.3.0
- */
-const resolveKey = (dict: Record<Str, any>, key: Str): Str | null => {
-    const raw = key.split(".").reduce<any>((obj, part) => obj?.[part], dict)
-    return Checks.isValidText(raw) ? raw : null
-}
-
-/**
  * Retorna o texto no idioma configurado, a partir de uma chave em _dot-notation_.
  * @remarks Se a chave não existir no idioma ativo, cai automaticamente para `pt-BR` antes de desistir.
  * @param key - Chave do texto. (Ex.: `main.welcome.title`)
@@ -89,7 +87,7 @@ export const tr = (key: TranslationKey, params?: Record<Str, Value>): Str => {
             raw = resolveKey(dictionaries[lang], key)
             if (raw != null) break
         }
-    if (raw == null && dict != FALLBACK_DICT) raw = resolveKey(FALLBACK_DICT, key)
+    if (raw == null && dict !== FALLBACK_DICT) raw = resolveKey(FALLBACK_DICT, key)
     if (raw == null) return key
 
     return params ? Object.entries(params).reduce((str, [k, v]) => str.replaceAll(`{${k}}`, String(v)), raw) : raw
@@ -111,12 +109,12 @@ export const trArr = (keys: TranslationKey[] = []): Str[] => keys.map(key => tr(
  * @since v6.2.0
  */
 export const changeLanguage = (language: Language = "pt-br") => {
-    if (Config.language == language) Ui.notifyOptions(tr("commands.languageAlready"), { type: "warning" })
+    if (Config.language === language) Ui.notifyOptions(tr("commands.languageAlready"), { type: "warning" })
     else if (confirm(tr("i18n.confirmChangeLanguage", { language }))) {
-        if (language == "pt-br" || language == "pt-pt" || language == "es-419" || language == "es-es") {
+        if (language === "pt-br" || language === "pt-pt" || language === "es-419" || language === "es-es") {
             Config.decimalSeparator = true
             Config.accents = true
-        } else if (language == "en-us" || language == "en-gb") {
+        } else if (language === "en-us" || language === "en-gb") {
             Config.decimalSeparator = false
             Config.accents = false
         }

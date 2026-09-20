@@ -17,22 +17,21 @@ The status of each item is updated as development progresses.
 
 ### Planned
 
-- [ ] Translations into _Spanish_ and other languages
-- [ ] Internal code improvements, such as the migration to **TS**
-
 ### Completed
 
 - [x] **Constant, Linear, and Quadratic Functions**
 - [x] **Exponential Functions**
-- [x] Coefficients as unknowns (calculated from known points)
-- [x] **Logarithmic Functions**
-- [x] Settings system
 - [x] **JS** object architecture
-- [x] Function history during the session
-- [x] Public release on **GitHub** with **GitHub Pages**
-- [x] Full English translation _(PT-BR / EN)_
-- [x] `/` commands for quick menu access
+- [x] **Logarithmic Functions**
 - [x] **Trigonometric Functions** _(Sine, Cosine, Tangent)_
+- [x] Coefficients as unknowns (calculated from known points)
+- [x] Full English translation _(PT-BR / EN)_
+- [x] Function history during the session
+- [x] Internal code improvements, such as the migration to **TS**
+- [x] Public release on **GitHub** with **GitHub Pages**
+- [x] Settings system
+- [x] Translations into _Spanish_ and other languages
+- [x] `/` commands for quick menu access
 
 ---
 

@@ -11,5 +11,5 @@
 ---
 
 [Docs]: README.md
-[PT]: docs/CHANGELOG/CHANGELOG_PT.md
 [EN]: docs/CHANGELOG/CHANGELOG_EN.md
+[PT]: docs/CHANGELOG/CHANGELOG_PT.md

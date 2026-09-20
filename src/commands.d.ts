@@ -8,20 +8,20 @@ import type { CommandsNames } from "./values.d.ts"
  * Objeto base para os métodos envolvendo comandos.
  *
  * ## Métodos:
- * - {@link Commands.process process} - Processa um comando.
- * - {@link Commands.levenshtein levenshtein} - Faz a verificação da distância de _Levenshtein_ e acha a correspondente mais próxima.
- * - {@link Commands.suggestCmd suggestCmd} - Sugere um comando, com base na verificação da distância de _Levenshtein_.
- * - {@link Commands.searchCmds searchCmds} - Procura por comandos.
- * - {@link Commands.listCmds listCmds} - Lista todos os comandos.
- * - {@link Commands.resolveCmd resolveCmd} - Resolve um comando.
- * - {@link Commands.parseBool parseBool} - Transforma uma `string` em `boolean` (Ex.: "Não" -> `false`).
+ * - {@link Commands.about about} - Exibe informações sobre o projeto.
+ * - {@link Commands.change change} - Muda o valor de uma chave em `Config`.
  * - {@link Commands.help help} - Exibe o menu de ajuda.
+ * - {@link Commands.levenshtein levenshtein} - Faz a verificação da distância de _Levenshtein_ e acha a correspondente mais próxima.
+ * - {@link Commands.listCmds listCmds} - Lista todos os comandos.
+ * - {@link Commands.names names} - `Array` dos nomes dos comandos.
+ * - {@link Commands.parseBool parseBool} - Transforma uma `string` em `boolean` (Ex.: "Não" -> `false`).
+ * - {@link Commands.process process} - Processa um comando.
+ * - {@link Commands.resolveCmd resolveCmd} - Resolve um comando.
+ * - {@link Commands.searchCmds searchCmds} - Procura por comandos.
  * - {@link Commands.searchHelp searchHelp} - Procura por uma ajuda específica.
  * - {@link Commands.shortcuts shortcuts} - Exibe todas as variações de um comando.
- * - {@link Commands.about about} - Exibe informações sobre o projeto.
+ * - {@link Commands.suggestCmd suggestCmd} - Sugere um comando, com base na verificação da distância de _Levenshtein_.
  * - {@link Commands.version version} - Exibe a versão do projeto.
- * - {@link Commands.change change} - Muda o valor de uma chave em `Config`.
- * - {@link Commands.names names} - `Array` dos nomes dos comandos.
  *
  * ### Tags:
  * @author [C4Adriano](https://github.com/C4Adriano)

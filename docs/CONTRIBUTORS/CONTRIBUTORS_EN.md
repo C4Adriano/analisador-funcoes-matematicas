@@ -20,13 +20,13 @@ Thanks to everyone who contributed to this project.
 | -------------- | -------------------------- | ---------------------------------------------------- |
 | Adriano Lima   | **Author** & **Developer** | [@C4Adriano](https://github.com/C4Adriano)           |
 | Caio César     | **HTML** & **CSS**         | [@caius-caesaris](https://github.com/caius-caesaris) |
-| Claude         | **AI** Assistant           | [claude.ai](https://claude.ai)                       |
 | ChatGPT        | **AI** Assistant           | [chatgpt.com](https://chatgpt.com)                   |
+| Claude         | **AI** Assistant           | [claude.ai](https://claude.ai)                       |
 | GitHub Copilot | **AI** Assistant           | [copilot.github.com](https://copilot.github.com)     |
 
 ---
 
 [Docs]: /README.md
+[License]: /LICENSE.md#english-en
 [Main]: ../CONTRIBUTORS.md
 [PT]: CONTRIBUTORS_PT.md
-[License]: /LICENSE.md#english-en

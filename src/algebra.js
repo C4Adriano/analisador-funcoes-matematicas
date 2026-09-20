@@ -15,26 +15,26 @@ export const Algebra = {
 
         if (Checks.isFiniteNumber(number)) {
             number = Math.round(number * 10 ** places) / 10 ** places
-            if (number == 0) number = 0
+            if (number === 0) number = 0
         }
 
         return number
     },
 
     variables: (name = "x", placeholder = name) => {
-        if (name.trim() == "") name = "x"
+        if (name.trim() === "") name = "x"
 
         const raw = Writing.decimalOptions(
-            Ui.inputOptions(`${name} = `, { explanation: tr("algebra.variableAsk", { name }), placeholder }),
-            { invert: true }
-        )
+                Ui.inputOptions(`${name} = `, { explanation: tr("algebra.variableAsk", { name }), placeholder }),
+                { invert: true }
+            ),
+            value = Algebra.evaluateExpression(String(raw))
 
-        const value = Algebra.evaluateExpression(String(raw))
-
-        if (value == null) return Algebra.variables(name, String(raw))
-        if (Checks.isFiniteNumber(value)) return Algebra.round(value)
-
-        return name
+        return value == null
+            ? Algebra.variables(name, String(raw))
+            : Checks.isFiniteNumber(value)
+              ? Algebra.round(value)
+              : name
     },
 
     tokenize: (expression = "") =>
@@ -43,24 +43,22 @@ export const Algebra = {
         ),
     evaluateExpression: (expression = "") => {
         if (/[^0-9.+\-*/%^()a-zA-Z√ ]/.test(expression)) return NaN
-        if (expression.trim() == "") return NaN
+        if (expression.trim() === "") return NaN
 
-        const ROOTS = { "√": 2, sqrt: 2, raiz: 2, raizQ: 2, cbrt: 3, raizC: 3 }
-        const UNKNOWN_SYMBOL = Symbol("unknownSymbol")
-
-        const tokens = Algebra.tokenize(expression)
         let pos = 0
-
-        const peek = () => tokens[pos]
-        const consume = () => tokens[pos++]
+        const ROOTS = { "√": 2, sqrt: 2, raiz: 2, raizQ: 2, cbrt: 3, raizC: 3 },
+            UNKNOWN_SYMBOL = Symbol("unknownSymbol"),
+            tokens = Algebra.tokenize(expression),
+            peek = () => tokens[pos],
+            consume = () => tokens[pos++]
 
         function parsePrimary() {
             const token = peek()
 
-            if (token == "(") {
+            if (token === "(") {
                 consume()
                 const value = parseExpression()
-                if (peek() != ")") throw "errors.error007"
+                if (peek() !== ")") throw "errors.error007"
                 consume()
                 return value
             }
@@ -69,10 +67,10 @@ export const Algebra = {
 
             if (Checks.isValidText(token) && token in ROOTS) {
                 const degree = ROOTS[consume()]
-                if (peek() != "(") throw "errors.error008"
+                if (peek() !== "(") throw "errors.error008"
                 consume()
                 const value = parseExpression()
-                if (peek() != ")") throw "errors.error007"
+                if (peek() !== ")") throw "errors.error007"
                 consume()
                 return value ** (1 / degree)
             }
@@ -84,7 +82,7 @@ export const Algebra = {
 
         function parsePercent() {
             let value = parsePrimary()
-            while (peek() == "%") {
+            while (peek() === "%") {
                 consume()
                 value /= 100
             }
@@ -93,7 +91,7 @@ export const Algebra = {
 
         function parsePower() {
             const base = parsePercent()
-            if (peek() == "^" || peek() == "**") {
+            if (peek() === "^" || peek() === "**") {
                 consume()
                 return base ** parsePower()
             }
@@ -101,11 +99,11 @@ export const Algebra = {
         }
 
         function parseUnary() {
-            if (peek() == "-") {
+            if (peek() === "-") {
                 consume()
                 return -parseUnary()
             }
-            if (peek() == "+") {
+            if (peek() === "+") {
                 consume()
                 return parseUnary()
             }
@@ -114,27 +112,27 @@ export const Algebra = {
 
         function parseTerm() {
             let value = parseUnary()
-            while (peek() == "*" || peek() == "/") {
+            while (peek() === "*" || peek() === "/") {
                 const operator = consume()
-                value = operator == "*" ? value * parseUnary() : value / parseUnary()
+                value = operator === "*" ? value * parseUnary() : value / parseUnary()
             }
             return value
         }
 
         function parseExpression() {
             let value = parseTerm()
-            while (peek() == "+" || peek() == "-") {
+            while (peek() === "+" || peek() === "-") {
                 const operator = consume()
-                value = operator == "+" ? value + parseTerm() : value - parseTerm()
+                value = operator === "+" ? value + parseTerm() : value - parseTerm()
             }
             return value
         }
 
         try {
             const result = parseExpression()
-            return pos == tokens.length ? result : null
+            return pos === tokens.length ? result : null
         } catch (e) {
-            if (e == UNKNOWN_SYMBOL) return NaN
+            if (e === UNKNOWN_SYMBOL) return NaN
             if (Checks.isTrKey(e)) Ui.notifyOptions(tr(e))
             return null
         }
@@ -159,13 +157,12 @@ export const Algebra = {
             b = b1 - b2,
             c = c1 - c2
 
-        if (a == 0 && b == 0) {
-            return c == 0
+        if (a === 0 && b === 0)
+            return c === 0
                 ? Ui.notifyOptions(tr("algebra.constantCoincide"), { explanation: tr("algebra.constantCoincideExp") })
                 : Ui.notifyOptions(tr("algebra.constantDistinct"), { explanation: tr("algebra.constantDistinctExp") })
-        }
 
-        if (a == 0) {
+        if (a === 0) {
             const x = Algebra.divisionOptions(-c, b)
             return Ui.notifyOptions(tr("algebra.oneRoot", { x: Writing.decimalOptions(x) }), {
                 explanation: "x = −c / b",
@@ -192,7 +189,7 @@ export const Algebra = {
             for (let row = col + 1; row < n; row++)
                 if (Algebra.absoluteOptions(m[row][col]) > Algebra.absoluteOptions(m[pivotRow][col])) pivotRow = row
 
-            if (m[pivotRow][col] == 0) return null
+            if (m[pivotRow][col] === 0) return null
 
             ;[m[col], m[pivotRow]] = [m[pivotRow], m[col]]
             ;[v[col], v[pivotRow]] = [v[pivotRow], v[col]]
@@ -236,24 +233,24 @@ export const Algebra = {
         return pairs
     },
 
-    solvePolynomial: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
+    solvePolynomial: ({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) => {
         const coefs = { a, b, c },
             basis = { a: x => x * x, b: x => x, c: () => 1 },
             eligible = { constant: ["c"], affine: ["b", "c"], quadratic: ["a", "b", "c"] },
-            degree = coefs.a == 0 && coefs.b == 0 ? "constant" : coefs.a == 0 ? "affine" : "quadratic",
-            unknownKeys = degree == "constant" ? ["c"] : eligible[degree].filter(key => coefs[key] == key)
+            degree = coefs.a === 0 && coefs.b === 0 ? "constant" : coefs.a === 0 ? "affine" : "quadratic",
+            unknownKeys = degree === "constant" ? ["c"] : eligible[degree].filter(key => String(coefs[key]) === key)
 
-        if (unknownKeys.length == 0) return coefs
+        if (unknownKeys.length === 0) return coefs
 
         const points = Algebra.getPointPairs(unknownKeys.length)
         return Algebra.solveLinearCoefs(basis, coefs, unknownKeys, points)
     },
 
-    solveExponential: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
+    solveExponential: ({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) => {
         const coefs = { a, b, c },
             linearKeys = ["b", "c"],
-            unknownKeys = ["a", "b", "c"].filter(key => coefs[key] == key)
-        if (unknownKeys.length == 0) return coefs
+            unknownKeys = ["a", "b", "c"].filter(key => String(coefs[key]) === key)
+        if (unknownKeys.length === 0) return coefs
 
         if (unknownKeys.every(key => linearKeys.includes(key)))
             return Algebra.solveLinearCoefs(
@@ -263,7 +260,7 @@ export const Algebra = {
                 Algebra.getPointPairs(unknownKeys.length)
             )
 
-        if (unknownKeys.length == 1 && unknownKeys[0] == "a") {
+        if (unknownKeys.length === 1 && unknownKeys[0] === "a") {
             const [point] = Algebra.getPointPairs(1) ?? []
             if (!point) return { ...coefs, a: -1, b: coefs.b, c: coefs.c }
 
@@ -294,18 +291,18 @@ export const Algebra = {
         return { ...coefs, a: -1, c: 0 }
     },
 
-    solveLogarithmic: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
+    solveLogarithmic: ({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) => {
         const coefs = { a, b, c },
             linearKeys = ["b", "c"],
-            unknownKeys = ["a", "b", "c"].filter(key => coefs[key] == key)
-        if (unknownKeys.length == 0) return coefs
+            unknownKeys = ["a", "b", "c"].filter(key => String(coefs[key]) === key)
+        if (unknownKeys.length === 0) return coefs
 
         if (unknownKeys.every(key => linearKeys.includes(key))) {
             const basis = { b: x => Algebra.logOptions(x, coefs.a), c: () => 1 }
             return Algebra.solveLinearCoefs(basis, coefs, unknownKeys, Algebra.getPointPairs(unknownKeys.length))
         }
 
-        if (unknownKeys.length == 1 && unknownKeys[0] == "a") {
+        if (unknownKeys.length === 1 && unknownKeys[0] === "a") {
             const [point] = Algebra.getPointPairs(1) ?? []
             if (!point) return { ...coefs, a: -1, b: coefs.b, c: coefs.c }
 
@@ -333,22 +330,20 @@ export const Algebra = {
     },
 
     resolveUnknown: (
-        { a = State.numericA, b = State.numericB, c = State.numericC } = {},
+        { a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {},
         /** @type {FunctionType} */ funcType = "poly"
     ) => {
         const coefs = { a, b, c },
             solvers = { poly: Algebra.solvePolynomial, exp: Algebra.solveExponential, log: Algebra.solveLogarithmic },
             solver = solvers[funcType] ?? Algebra.solvePolynomial // TODO - trig cai em poly
 
-        if (funcType != "poly") {
-            if (coefs.a == 0 || coefs.a == 1 || coefs.b == 0) {
+        if (funcType !== "poly")
+            if (coefs.a === 0 || coefs.a === 1 || coefs.b === 0)
                 return {
                     a: Checks.isFiniteNumber(coefs.a) ? coefs.a : 0,
                     b: Checks.isFiniteNumber(coefs.b) ? coefs.b : 0,
                     c: Checks.isFiniteNumber(coefs.c) ? coefs.c : 0,
                 }
-            }
-        }
 
         Ui.resolveFunction(coefs, funcType)
 
@@ -396,10 +391,11 @@ export const Algebra = {
         base = Math.E,
         { round = false, places = Config.decimalPlaces, precision = Config.logPrecision } = {}
     ) => {
-        const isNatural = Algebra.round(base) == Algebra.round(Math.E)
+        const isNatural = Algebra.round(base) === Algebra.round(Math.E)
 
-        if (x <= 0 || (!isNatural && (base <= 0 || base == 1))) {
-            isNatural ? Errors.invalidLog("ln", "x > 0") : Errors.invalidLog("log", "x > 0 ∧ base > 0, base ≠ 1")
+        if (x <= 0 || (!isNatural && (base <= 0 || base === 1))) {
+            if (isNatural) Errors.invalidLog("ln", "x > 0")
+            else Errors.invalidLog("log", "x > 0 ∧ base > 0, base ≠ 1")
 
             return NaN
         }
@@ -428,7 +424,7 @@ export const Algebra = {
         numerator = Writing.decimalOptions(numerator, { invert: true })
         denominator = Writing.decimalOptions(denominator, { invert: true })
 
-        if (denominator == 0 || !Checks.isFiniteNumber(numerator) || !Checks.isFiniteNumber(denominator)) return NaN
+        if (denominator === 0 || !Checks.isFiniteNumber(numerator) || !Checks.isFiniteNumber(denominator)) return NaN
         if (Algebra.absoluteOptions(denominator) <= precision) return NaN
         const result = numerator / denominator
         if (!Checks.isFiniteNumber(result)) return NaN

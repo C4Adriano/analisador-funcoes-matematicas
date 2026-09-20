@@ -7,20 +7,20 @@ import type { Options } from "./values.d.ts"
  * Objeto base para os métodos envolvendo álgebra.
  *
  * ## Métodos:
- * - {@link Algebra.round round} — Arredonda números.
- * - {@link Algebra.variables variables} — Pede variáveis.
+ * - {@link Algebra.absoluteOptions absoluteOptions} — Calcula o valor absoluto de números.
+ * - {@link Algebra.divisionOptions divisionOptions} — Divide números de forma segura.
+ * - {@link Algebra.getPointPairs getPointPairs} — Coleta `count` pares de pontos (x, y).
+ * - {@link Algebra.logOptions logOptions} — Logaritmo de `x` de uma `base` qualquer.
  * - {@link Algebra.point point} — Pede pontos.
  * - {@link Algebra.resolveEquations resolveEquations} — Executa equações entre Funções.
- * - {@link Algebra.solveLinearSystem solveLinearSystem} — Resolve um sistema linear.
- * - {@link Algebra.solveLinearCoefs solveLinearCoefs} — Resolve um subconjunto de Coeficientes desconhecidos de um Função.
- * - {@link Algebra.getPointPairs getPointPairs} — Coleta `count` pares de pontos (x, y).
- * - {@link Algebra.solvePolynomial solvePolynomial} — Resolve os Coeficientes desconhecidos de uma Função Polinomial.
- * - {@link Algebra.solveExponential solveExponential} — Resolve os Coeficientes desconhecidos de uma Função Exponencial.
- * - {@link Algebra.solveLogarithmic solveLogarithmic} — Resolve os Coeficientes desconhecidos de uma Função Logarítmica.
  * - {@link Algebra.resolveUnknown resolveUnknown} — Descobre quais são as incógnitas de uma Função.
- * - {@link Algebra.logOptions logOptions} — Logaritmo de `x` de uma `base` qualquer.
- * - {@link Algebra.divisionOptions divisionOptions} — Divide números de forma segura.
- * - {@link Algebra.absoluteOptions absoluteOptions} — Calcula o valor absoluto de números.
+ * - {@link Algebra.round round} — Arredonda números.
+ * - {@link Algebra.solveExponential solveExponential} — Resolve os Coeficientes desconhecidos de uma Função Exponencial.
+ * - {@link Algebra.solveLinearCoefs solveLinearCoefs} — Resolve um subconjunto de Coeficientes desconhecidos de um Função.
+ * - {@link Algebra.solveLinearSystem solveLinearSystem} — Resolve um sistema linear.
+ * - {@link Algebra.solveLogarithmic solveLogarithmic} — Resolve os Coeficientes desconhecidos de uma Função Logarítmica.
+ * - {@link Algebra.solvePolynomial solvePolynomial} — Resolve os Coeficientes desconhecidos de uma Função Polinomial.
+ * - {@link Algebra.variables variables} — Pede variáveis.
  *
  * ### Tags:
  * @author [C4Adriano](https://github.com/C4Adriano)
@@ -48,7 +48,7 @@ export declare const Algebra: {
      * @group UI
      * @since v6.1.0
      */
-    variables(name?: Str): Value
+    variables(name?: Str): MathValue
 
     /** Pede um ponto. */
     point(type?: 1): [Numeric, Numeric]
@@ -115,7 +115,7 @@ export declare const Algebra: {
     /**
      * Resolve os Coeficientes desconhecidos de uma Função Polinomial (constante, afim ou quadrática), inferindo o grau a partir dos Coeficientes `a` e `b` já conhecidos.
      * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @returns Coeficientes resolvidos, ou `null` caso os pontos coletados levem a um sistema singular (ex.: pontos com mesmo x)
      * @group Numérico
      * @since v6.6.0
@@ -129,7 +129,7 @@ export declare const Algebra: {
      *
      * A combinação `a` e `c` juntos ainda não é suportada.
      * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @returns Coeficientes resolvidos, ou `null` caso o sistema linear associado seja singular
      * @group Numérico
      * @since v6.6.0
@@ -143,7 +143,7 @@ export declare const Algebra: {
      *
      * A combinação `a` e `b` juntos ainda não é suportada.
      * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @returns Coeficientes resolvidos, ou `null` caso o sistema linear associado seja singular
      * @group Numérico
      * @since v6.6.0
@@ -154,7 +154,7 @@ export declare const Algebra: {
      * Descobre quais são as incógnitas de uma Função e resolve seus Coeficientes, solicitando pontos ao usuário quando necessário.
      * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
      * @param funcType - Tipo da Função sendo resolvida
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }; funcType = "poly"
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }; funcType = "poly"
      * @returns Coeficientes finais resolvidos.
      * @group Numérico
      * @since v6.6.0

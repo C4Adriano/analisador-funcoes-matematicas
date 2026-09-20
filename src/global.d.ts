@@ -14,13 +14,19 @@ type Numeric = number
  * Variável matemática.
  * @since ~v6.2.0
  */
-type Variable = Str
+type Variable = "a" | "b" | "c"
+
+/**
+ * Valor qualquer.
+ * @since ~v6.2.0
+ */
+type Value = Str | Numeric
 
 /**
  * Valor matemático.
- * @since ~v6.2.0
+ * @since v7.0.0
  */
-type Value = Variable | Numeric
+type MathValue = Variable | Numeric
 
 /**
  * Precisão numérica.
@@ -87,11 +93,11 @@ type FunctionType =
  */
 type Coefficients = {
     /** Coeficiente `a`. */
-    a: Value
+    a: MathValue
     /** Coeficiente `b`. */
-    b: Value
+    b: MathValue
     /** Coeficiente `c`. */
-    c: Value
+    c: MathValue
 }
 
 /**
@@ -115,7 +121,7 @@ type LinearBasis = { [coefficient: Str]: (x: Numeric) => Numeric }
  * Unidades de ângulo suportadas pelo programa.
  * @since ~v6.2.0
  */
-type Degrees = /** Graus (°). */ "deg" | /** Radianos (PI rad). */ "rad"
+type Degrees = "deg" | "rad"
 
 /**
  * Idiomas suportados pelo programa.
@@ -133,31 +139,16 @@ type Language =
  * Comandos suportados pelo programa.
  * @since ~v6.2.0
  */
-type CommandsNames =
-    | /** Abre as configurações do programa. */ "config"
-    | /** Reinicia o fluxo de análise. */ "start"
-    | /** Reexibe a última função analisada. */ "review"
-    | /** Troca os coeficientes da função atual. */ "change"
-    | /** Exibe o histórico de funções analisadas. */ "history"
-    | /** Encerra o programa. */ "exit"
+type CommandsNames = "change" | "config" | "exit" | "history" | "review" | "start"
 
 /**
  * Tipos de mensagens suportadas pelo programa.
  * @since v6.6.2
  */
-type TypeMessage =
-    | /** Mensagem informativa simples. */ "display"
-    | /** Mensagem de erro. */ "error"
-    | /** Mensagem que exige confirmação do usuário. */ "confirm"
-    | /** Mensagem de aviso. */ "warning"
-    | /** Mensagem no `console` */ "console"
+type TypeMessage = "confirm" | "console" | "display" | "error" | "warning"
 
 /**
  * Tipos de formatação de texto suportadas pelo programa.
  * @since v6.6.7
  */
-type TextCase =
-    | /** Mensagens normais, escritas como vireram do `i18n`. */ "normal"
-    | /** MENSAGENS EM MAIÚSCULAS */ "uppercase"
-    | /** mensagens em minúsculas */ "lowercase"
-    | /** Mensagens Com A Primeira Letra Maiúscula E As Outras Minúsculas */ "capitalized"
+type TextCase = "capitalized" | "lowercase" | "normal" | "uppercase"

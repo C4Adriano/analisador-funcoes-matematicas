@@ -74,23 +74,31 @@ Acesse: [![GitHub Pages](https://img.shields.io/badge/Access%20here-GitHub%20Pag
 
 ### Documentação
 
-- **[Registro de Alterações][CHANGELOG]**
-- **[Próximas Atualizações][ROADMAP]**
 - **[Contribuidores][Contributors]**
-- **[Política de Segurança][SECURITY]**
 - **[Licença]**
+- **[Política de Segurança][SECURITY]**
+- **[Próximas Atualizações][ROADMAP]**
+- **[Registro de Alterações][CHANGELOG]**
 
 ### Tecnologias
 
-[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![HTML](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
-[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript) [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![HTML](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML) [![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS)
 
 ---
 
+[1.x]: ../CHANGELOG/CHANGELOG_PT.md#1x
+[2.x]: ../CHANGELOG/CHANGELOG_PT.md#2x
+[3.x]: ../CHANGELOG/CHANGELOG_PT.md#3x
+[4.x]: ../CHANGELOG/CHANGELOG_PT.md#4x
+[5.x]: ../CHANGELOG/CHANGELOG_PT.md#5x
+[6.x]: ../CHANGELOG/CHANGELOG_PT.md#6x
+[CHANGELOG]: ../CHANGELOG/CHANGELOG_PT.md
+[Contributors]: ../CONTRIBUTORS/CONTRIBUTORS_PT.md
 [Docs]: /README.md
 [EN]: README_EN.md
+[Licença]: /LICENSE.md#português-pt-br
+[ROADMAP]: ../ROADMAP/ROADMAP_PT.md
+[SECURITY]: ../SECURITY.md#português-pt-br
 [algebra]: /src/algebra.js
 [analyze]: /src/analyze.js
 [checks]: /src/checks.js
@@ -105,14 +113,3 @@ Acesse: [![GitHub Pages](https://img.shields.io/badge/Access%20here-GitHub%20Pag
 [values]: /src/values.d.ts
 [version]: /src/version.js
 [writing]: /src/writing.js
-[CHANGELOG]: ../CHANGELOG/CHANGELOG_PT.md
-[1.x]: ../CHANGELOG/CHANGELOG_PT.md#1x
-[2.x]: ../CHANGELOG/CHANGELOG_PT.md#2x
-[3.x]: ../CHANGELOG/CHANGELOG_PT.md#3x
-[4.x]: ../CHANGELOG/CHANGELOG_PT.md#4x
-[5.x]: ../CHANGELOG/CHANGELOG_PT.md#5x
-[6.x]: ../CHANGELOG/CHANGELOG_PT.md#6x
-[ROADMAP]: ../ROADMAP/ROADMAP_PT.md
-[Licença]: /LICENSE.md#português-pt-br
-[SECURITY]: ../SECURITY.md#português-pt-br
-[Contributors]: ../CONTRIBUTORS/CONTRIBUTORS_PT.md

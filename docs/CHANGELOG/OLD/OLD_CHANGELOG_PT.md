@@ -18,15 +18,13 @@
 
 ## Versões **1.x**
 
-> **Linhas nestas versões:** _`185`_<br>
-> **Datada de:** _`2025-07-10 -> 2025-07-10`_
+> **Linhas nestas versões:** _`185`_<br> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 ---
 
 ### Versão **1.0** - **Funções Quadráticas, Afins e Constantes**
 
-> **Linhas nesta versão:** _`165`_<br>
-> **Datada de:** _`2025-07-10 -> 2025-07-10`_
+> **Linhas nesta versão:** _`165`_<br> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 #### Adições
 
@@ -64,8 +62,7 @@
 
 ### Versão **1.1** - Melhorias nos `alerts`
 
-> **Linhas nesta versão:** _`185`_<br>
-> **Datada de:** _`2025-07-10 -> 2025-07-10`_
+> **Linhas nesta versão:** _`185`_<br> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 #### Adições
 
@@ -79,13 +76,11 @@
 
 ## Versões **2.x**
 
-> **Linhas nestas versões:** _`422`_<br>
-> **Datada de:** _`2025-07-10 -> 2025-07-10`_
+> **Linhas nestas versões:** _`422`_<br> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 ### Versão **2.0** - Melhorias
 
-> **Linhas nesta versão:** _`≈ 296`_<br>
-> **Datada de:** _`2025-07-10 -> 2025-07-10`_
+> **Linhas nesta versão:** _`≈ 296`_<br> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 #### Adições
 
@@ -115,8 +110,7 @@
 
 ### Versão **2.1** - **Função Exponencial**
 
-> **Linhas nesta versão:** _`≈ 402`_<br>
-> **Datada de:** _`2025-07-10 -> 2025-07-10`_
+> **Linhas nesta versão:** _`≈ 402`_<br> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 #### Adições
 
@@ -147,8 +141,7 @@
 
 ### Versão **2.2** - Melhorias
 
-> **Linhas nesta versão:** _`422`_<br>
-> **Datada de:** _`2025-07-10 -> 2025-07-10`_
+> **Linhas nesta versão:** _`422`_<br> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 #### Adições
 
@@ -163,13 +156,11 @@
 
 ## Versões **3.x**
 
-> **Linhas nestas versões:** _`1068`_<br>
-> **Datada de:** _`2025-07-10 -> 2025-07-12`_
+> **Linhas nestas versões:** _`1068`_<br> **Datada de:** _`2025-07-10 -> 2025-07-12`_
 
 ### Versão **3.0** - Variáveis `a`, `b`, `c` nas **Funções Quadráticas, Afins e Constantes**
 
-> **Linhas nesta versão:** _`≈ 692`_<br>
-> **Datada de:** _`2025-07-10 -> 2025-07-10`_
+> **Linhas nesta versão:** _`≈ 692`_<br> **Datada de:** _`2025-07-10 -> 2025-07-10`_
 
 #### Adições
 
@@ -180,8 +171,7 @@
 
 ### Versão **3.1** - Correção de `bugs` e melhorias
 
-> **Linhas nesta versão:** _`786`_<br>
-> **Datada de:** _`2025-07-10 -> 2025-07-12`_
+> **Linhas nesta versão:** _`786`_<br> **Datada de:** _`2025-07-10 -> 2025-07-12`_
 
 #### Adições
 
@@ -223,8 +213,7 @@
 
 ### Versão **3.2** - Variáveis nas **Funções Exponenciais**
 
-> **Linhas nesta versão:** _`1068`_<br>
-> **Datada de:** _`2025-07-12 -> 2025-07-12`_
+> **Linhas nesta versão:** _`1068`_<br> **Datada de:** _`2025-07-12 -> 2025-07-12`_
 
 #### Adições
 
@@ -274,8 +263,7 @@
 
 ### Versão **3.3** - Melhorias
 
-> **Linhas nesta versão:** _`1068`_<br>
-> **Datada de:** _`2025-12-30 -> 2025-03-04`_
+> **Linhas nesta versão:** _`1068`_<br> **Datada de:** _`2025-12-30 -> 2025-03-04`_
 
 #### Adições
 
@@ -285,13 +273,11 @@
 
 ## Versões **4.x**
 
-> **Linhas nestas versões:** _`1568`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-04`_
+> **Linhas nestas versões:** _`1568`_<br> **Datada de:** _`2025-12-30 -> 2026-03-04`_
 
 ### Versão **4.0** - **Funções _JS_**
 
-> **Linhas nesta versão:** _`1220`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-04`_
+> **Linhas nesta versão:** _`1220`_<br> **Datada de:** _`2025-12-30 -> 2026-03-04`_
 
 #### Adições
 
@@ -311,8 +297,7 @@
 
 ### Versão **4.1** - Melhorias
 
-> **Linhas nesta versão:** _`1220`_<br>
-> **Datada de:** _`2025-10-18 -> 2025-12-30`_
+> **Linhas nesta versão:** _`1220`_<br> **Datada de:** _`2025-10-18 -> 2025-12-30`_
 
 #### Adições
 
@@ -341,8 +326,7 @@
 
 ### Versão **4.2** - **Funções _JS_** nas **Funções Exponenciais**
 
-> **Linhas nesta versão:** _`1209`_<br>
-> **Datada de:** _`2025-09-17 -> 2025-12-30`_
+> **Linhas nesta versão:** _`1209`_<br> **Datada de:** _`2025-09-17 -> 2025-12-30`_
 
 #### Adições
 
@@ -360,8 +344,7 @@
 
 ### Versão **4.3** - Melhorias
 
-> **Linhas nesta versão:** _`1450`_<br>
-> **Datada de:** _`2025-10-31 -> 2025-12-30`_
+> **Linhas nesta versão:** _`1450`_<br> **Datada de:** _`2025-10-31 -> 2025-12-30`_
 
 #### Adições
 
@@ -401,8 +384,7 @@
 
 ### Versão **4.4** - **Funções Logarítmicas**
 
-> **Linhas nesta versão:** _`1450`_<br>
-> **Datada de:** _`2025-10-31 -> 2025-12-30`_
+> **Linhas nesta versão:** _`1450`_<br> **Datada de:** _`2025-10-31 -> 2025-12-30`_
 
 #### Adições
 
@@ -427,8 +409,7 @@
 
 ### Versão **4.5** - Lançamento Oficial
 
-> **Linhas nesta versão:** _`1568`_<br>
-> **Datada de:** _`2025-12-30 -> 2026-03-04`_
+> **Linhas nesta versão:** _`1568`_<br> **Datada de:** _`2025-12-30 -> 2026-03-04`_
 
 #### Correções
 
@@ -442,13 +423,11 @@
 
 ## Versões **5.x**
 
-> **Linhas nestas versões:** _`3255`_<br>
-> **Datada de:** _`2025-11-26 -> 2026-03-09`_
+> **Linhas nestas versões:** _`3255`_<br> **Datada de:** _`2025-11-26 -> 2026-03-09`_
 
 ### Versão **5.0** - Reestruturação do Código
 
-> **Linhas nesta versão:** _`1483`_<br>
-> **Datada de:** _`2026-03-07 -> 2026-03-17`_
+> **Linhas nesta versão:** _`1483`_<br> **Datada de:** _`2026-03-07 -> 2026-03-17`_
 
 #### Adições
 
@@ -464,8 +443,7 @@
 
 ### Versão **5.1** - Melhorias
 
-> **Linhas nesta versão:** _`1755`_<br>
-> **Datada de:** _`2026-02-07 -> 2026-02-08`_
+> **Linhas nesta versão:** _`1755`_<br> **Datada de:** _`2026-02-07 -> 2026-02-08`_
 
 #### Adições
 
@@ -493,8 +471,7 @@
 
 ### Versão **5.2** - Objetos e Melhorias das Configurações
 
-> **Linhas nesta versão:** _`1867`_<br>
-> **Datada de:** _`2026-02-08 -> 2026-02-09`_
+> **Linhas nesta versão:** _`1867`_<br> **Datada de:** _`2026-02-08 -> 2026-02-09`_
 
 #### Mudanças
 
@@ -533,8 +510,7 @@
 
 ### Versão **5.3.1** - Melhorias nas Configurações
 
-> **Linhas nesta versão:** _`2162`_<br>
-> **Datada de:** _`2026-02-09 -> 2026-03-03`_
+> **Linhas nesta versão:** _`2162`_<br> **Datada de:** _`2026-02-09 -> 2026-03-03`_
 
 #### Adições
 
@@ -574,8 +550,7 @@
 
 ### Versão **5.3.2** - Melhorias nas **Funções Logarítmicas**
 
-> **Linhas nesta versão:** _`2162`_<br>
-> **Datada de:** _`2026-02-09 -> 2026-03-03`_
+> **Linhas nesta versão:** _`2162`_<br> **Datada de:** _`2026-02-09 -> 2026-03-03`_
 
 #### Adições
 
@@ -593,8 +568,7 @@
 
 ### Versão **5.3.3** - Melhorias de `UI` e `UX`
 
-> **Linhas nesta versão:** _`2162`_<br>
-> **Datada de:** _`2026-02-09 -> 2026-03-03`_
+> **Linhas nesta versão:** _`2162`_<br> **Datada de:** _`2026-02-09 -> 2026-03-03`_
 
 #### Mudanças
 
@@ -623,8 +597,7 @@
 
 ### Versão **5.4** - Melhorias
 
-> **Linhas nesta versão:** _`2268`_<br>
-> **Datada de:** _`2026-02-24 -> 2026-03-06`_
+> **Linhas nesta versão:** _`2268`_<br> **Datada de:** _`2026-02-24 -> 2026-03-06`_
 
 #### Adições
 
@@ -641,8 +614,7 @@
 
 ### Versão **5.5** - Melhorias
 
-> **Linhas nesta versão:** _`3255`_<br>
-> **Datada de:** _`2026-03-07 -> 2026-03-17`_
+> **Linhas nesta versão:** _`3255`_<br> **Datada de:** _`2026-03-07 -> 2026-03-17`_
 
 #### Adições
 
@@ -665,13 +637,11 @@
 
 ## Versões **6.x**
 
-> **Linhas nestas versões:** _`3296`_<br>
-> **Datada de:** _`2026-03-18 -> 2026-03-19`_
+> **Linhas nestas versões:** _`3296`_<br> **Datada de:** _`2026-03-18 -> 2026-03-19`_
 
 ### Versão **6.0** - Lançamento
 
-> **Linhas nesta versão:** _`3296`_<br>
-> **Datada de:** _`2026-03-18 -> 2026-03-19`_
+> **Linhas nesta versão:** _`3296`_<br> **Datada de:** _`2026-03-18 -> 2026-03-19`_
 
 #### Adições
 

@@ -8,12 +8,12 @@ import { Ui } from "./ui.js"
  * Objeto base para os métodos envolvendo erros.
  *
  * ## Métodos:
- * - {@link Errors.range range} - Erro de intervalo.
- * - {@link Errors.divZero divZero} - Erro de divisão por zero (x/0).
- * - {@link Errors.limitExceeded limitExceeded} - Erro de limite excedido.
  * - {@link Errors.constantFunction constantFunction} - Erro sobre a Função ser Constante, não o que foi pensado para ser.
+ * - {@link Errors.divZero divZero} - Erro de divisão por zero (x/0).
  * - {@link Errors.invalidFunction invalidFunction} - Erro sobre a Função ser inválida.
  * - {@link Errors.invalidLog invalidLog} - Erro de log inválido.
+ * - {@link Errors.limitExceeded limitExceeded} - Erro de limite excedido.
+ * - {@link Errors.range range} - Erro de intervalo.
  *
  * ### Tags:
  * @author [C4Adriano](https://github.com/C4Adriano)
@@ -31,7 +31,7 @@ export class Errors {
      */
     static range = (min: Numeric = 0, max: Numeric = 1): void =>
         Ui.notifyOptions(
-            `${tr("errors.error001", { firstValue: min + (min == 0 ? 1 : 0), max })} ${min == 0 ? tr("errors.zeroToBack") : ""}`,
+            `${tr("errors.error001", { firstValue: min + (min === 0 ? 1 : 0), max })} ${min === 0 ? tr("errors.zeroToBack") : ""}`,
             { explanation: tr("errors.error001Exp"), type: "error" }
         )
 
@@ -43,7 +43,7 @@ export class Errors {
      */
     static divZero = (reason: Str = ""): void =>
         Ui.notifyOptions(tr("errors.error002"), {
-            explanation: reason == "" ? tr("errors.zeroDivision") : tr("errors.reason", { reason }),
+            explanation: String(reason).trim() === "" ? tr("errors.zeroDivision") : tr("errors.reason", { reason }),
             type: "error",
         })
 
@@ -82,7 +82,7 @@ export class Errors {
      */
     static invalidLog = (type: "log" | "ln" = "log", reason: Str = ""): void =>
         Ui.notifyOptions(tr("errors.error006", { type }), {
-            explanation: reason == "" ? tr("errors.error006Exp") : tr("errors.reason", { reason }),
+            explanation: String(reason).trim() === "" ? tr("errors.error006Exp") : tr("errors.reason", { reason }),
             type: "error",
         })
 }

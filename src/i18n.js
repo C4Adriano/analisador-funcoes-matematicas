@@ -1,43 +1,55 @@
-import { Checks } from "./checks.js"
-import { Config } from "./config.js"
-import { Ui } from "./ui.js"
-import enGB from "./JSON/i18n/en-GB.json" with { type: "json" }
-import enUS from "./JSON/i18n/en-US.json" with { type: "json" }
-import es419 from "./JSON/i18n/es-419.json" with { type: "json" }
-import esES from "./JSON/i18n/es-ES.json" with { type: "json" }
-import ptBR from "./JSON/i18n/pt-BR.json" with { type: "json" }
-import ptPT from "./JSON/i18n/pt-PT.json" with { type: "json" }
-const dictionaries = { "pt-br": ptBR, "pt-pt": ptPT, "en-us": enUS, "en-gb": enGB, "es-419": es419, "es-es": esES }
-const FALLBACK_DICT = ptBR,
-    FALLBACK_CHAIN = { "en-gb": ["en-us"], "es-es": ["es-419"] }
-const resolveKey = (dict, key) => {
-    const raw = key.split(".").reduce((obj, part) => obj?.[part], dict)
-    return Checks.isValidText(raw) ? raw : null
-}
+import { Checks } from "./checks.js";
+import { Config } from "./config.js";
+import { Ui } from "./ui.js";
+import enGB from "./JSON/i18n/en-GB.json" with { type: "json" };
+import enUS from "./JSON/i18n/en-US.json" with { type: "json" };
+import es419 from "./JSON/i18n/es-419.json" with { type: "json" };
+import esES from "./JSON/i18n/es-ES.json" with { type: "json" };
+import ptBR from "./JSON/i18n/pt-BR.json" with { type: "json" };
+import ptPT from "./JSON/i18n/pt-PT.json" with { type: "json" };
+const dictionaries = {
+    "pt-br": ptBR,
+    "pt-pt": ptPT,
+    "en-us": enUS,
+    "en-gb": enGB,
+    "es-419": es419,
+    "es-es": esES,
+}, FALLBACK_DICT = ptBR, FALLBACK_CHAIN = {
+    "en-gb": ["en-us"],
+    "es-es": ["es-419"],
+}, resolveKey = (dict, key) => {
+    const raw = key.split(".").reduce((obj, part) => obj?.[part], dict);
+    return Checks.isValidText(raw) ? raw : null;
+};
 export const tr = (key, params) => {
-    const dict = dictionaries[Config.language] ?? dictionaries["pt-br"]
-    let raw = resolveKey(dict, key)
+    const dict = dictionaries[Config.language] ?? dictionaries["pt-br"];
+    let raw = resolveKey(dict, key);
     if (raw == null)
         for (const lang of FALLBACK_CHAIN[Config.language] ?? []) {
-            raw = resolveKey(dictionaries[lang], key)
-            if (raw != null) break
+            raw = resolveKey(dictionaries[lang], key);
+            if (raw != null)
+                break;
         }
-    if (raw == null && dict != FALLBACK_DICT) raw = resolveKey(FALLBACK_DICT, key)
-    if (raw == null) return key
-    return params ? Object.entries(params).reduce((str, [k, v]) => str.replaceAll(`{${k}}`, String(v)), raw) : raw
-}
-export const trArr = (keys = []) => keys.map(key => tr(key))
+    if (raw == null && dict !== FALLBACK_DICT)
+        raw = resolveKey(FALLBACK_DICT, key);
+    if (raw == null)
+        return key;
+    return params ? Object.entries(params).reduce((str, [k, v]) => str.replaceAll(`{${k}}`, String(v)), raw) : raw;
+};
+export const trArr = (keys = []) => keys.map(key => tr(key));
 export const changeLanguage = (language = "pt-br") => {
-    if (Config.language == language) Ui.notifyOptions(tr("commands.languageAlready"), { type: "warning" })
+    if (Config.language === language)
+        Ui.notifyOptions(tr("commands.languageAlready"), { type: "warning" });
     else if (confirm(tr("i18n.confirmChangeLanguage", { language }))) {
-        if (language == "pt-br" || language == "pt-pt" || language == "es-419" || language == "es-es") {
-            Config.decimalSeparator = true
-            Config.accents = true
-        } else if (language == "en-us" || language == "en-gb") {
-            Config.decimalSeparator = false
-            Config.accents = false
+        if (language === "pt-br" || language === "pt-pt" || language === "es-419" || language === "es-es") {
+            Config.decimalSeparator = true;
+            Config.accents = true;
         }
-        Config.language = language
-        Config.save()
+        else if (language === "en-us" || language === "en-gb") {
+            Config.decimalSeparator = false;
+            Config.accents = false;
+        }
+        Config.language = language;
+        Config.save();
     }
-}
+};

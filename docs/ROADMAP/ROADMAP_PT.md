@@ -17,25 +17,24 @@ O status de cada item é atualizado conforme o desenvolvimento avança.
 
 ### Planejado
 
-- [ ] Traduções em _Espanhol_ e outros idiomas
-- [ ] Melhorias internas de código, como a passagem para **_TS_**
-
 ### Concluído
 
 - [x] **Funções Constantes, Afins e Quadráticas**
 - [x] **Funções Exponenciais**
-- [x] Coeficientes como variáveis (incógnitas calculadas a partir de pontos)
 - [x] **Funções Logarítmicas**
-- [x] Sistema de configurações
+- [x] **Funções Trigonométricas** _(Seno, Cosseno, Tangente)_
 - [x] Arquitetura em objetos **_JS_**
+- [x] Coeficientes como variáveis (incógnitas calculadas a partir de pontos)
+- [x] Comandos com `/` para acesso rápido aos menus
 - [x] Histórico de funções durante a sessão
 - [x] Lançamento público no **GitHub** com **GitHub Pages**
+- [x] Melhorias internas de código, como a passagem para **_TS_**
+- [x] Sistema de configurações
 - [x] Tradução completa para inglês _(PT-BR / EN)_
-- [x] Comandos com `/` para acesso rápido aos menus
-- [x] **Funções Trigonométricas** _(Seno, Cosseno, Tangente)_
+- [x] Traduções em _Espanhol_ e outros idiomas
 
 ---
 
 [Docs]: /README.md
-[Main]: ../ROADMAP.md
 [EN]: ROADMAP_EN.md
+[Main]: ../ROADMAP.md

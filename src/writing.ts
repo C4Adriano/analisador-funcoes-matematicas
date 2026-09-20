@@ -10,19 +10,19 @@ import type { Options } from "./values.d.ts"
  * Objeto base para os métodos envolvendo escrita.
  *
  * ## Métodos:
+ * - {@link Writing.configItem configItem} - Formata um valor de configuração.
+ * - {@link Writing.decimalOptions decimalOptions} - Transforma o ponto decimal de um número.
+ * - {@link Writing.format format} - Formata uma mensagem.
+ * - {@link Writing.formatValue formatValue} - Formata um valor.
+ * - {@link Writing.lowercase lowercase} - Transforma para minúsculas.
+ * - {@link Writing.noAccents noAccents} - Remove os acentos.
+ * - {@link Writing.noUnicode noUnicode} - Remove os caracteres Unicode.
  * - {@link Writing.replace replace} - Muda uma sequência de letras dentro de uma frase.
  * - {@link Writing.replaceGroup replaceGroup} - Muda uma sequência de letras dentro de várias frases.
- * - {@link Writing.noUnicode noUnicode} - Remove os caracteres Unicode.
- * - {@link Writing.noAccents noAccents} - Remove os acentos.
- * - {@link Writing.lowercase lowercase} - Transforma para minúsculas.
- * - {@link Writing.uppercase uppercase} - Transforma para maiúsculas.
- * - {@link Writing.decimalOptions decimalOptions} - Transforma o ponto decimal de um número.
  * - {@link Writing.simplifyMultiplication simplifyMultiplication} - Transforma o ponto da multiplicação.
- * - {@link Writing.format format} - Formata uma mensagem.
- * - {@link Writing.superscript superscript} - Transforma em sobrescrito.
  * - {@link Writing.subscript subscript} - Transforma em subscrito.
- * - {@link Writing.formatValue formatValue} - Formata um valor.
- * - {@link Writing.configItem configItem} - Formata um valor de configuração.
+ * - {@link Writing.superscript superscript} - Transforma em sobrescrito.
+ * - {@link Writing.uppercase uppercase} - Transforma para maiúsculas.
  *
  * ### Tags:
  * @author [C4Adriano](https://github.com/C4Adriano)
@@ -45,7 +45,7 @@ export class Writing {
     /**
      * Substitui uma parte de várias `strings` por outra.
      * @param text - Texto.
-     * @param list - Lista de substituições do tipo: [["removido", "adicionado"], ["removido", "adicionado"], ...].
+     * @param list - Lista de substituições do tipo: `[["removido", "adicionado"], ["removido", "adicionado"], ...]`.
      * @returns Texto convertido.
      * @group Texto
      * @since v6.1.0
@@ -62,159 +62,151 @@ export class Writing {
      */
     static noUnicode = (text: Str = ""): Str => {
         const staticReplacements: [Str, Str][] = [
-            ["©", "(c)"],
-            ["ƒ", "f"],
-            ["₁", "1"],
-            ["₂", "2"],
-            ["₃", "3"],
-            ["²", "^2"],
-            ["³", "^3"],
-            ["ˣ", "^x"],
-            ["ₐ", "_a"],
-            ["ₑ", "_e"],
-            ["ₒ", "_o"],
-            ["ₓ", "_x"],
-            ["⁽", "^("],
-            ["⁾", ")"],
-            ["₍", "_("],
-            ["₎", ")"],
-            ["⁻", "-"],
-            ["⁺", "+"],
-            ["⁼", "="],
-            ["ᶜ", "c"],
-            ["ᵇ", "b"],
-            ["ʸ", "y"],
-            ["⁄", "/"],
-            ["₌", "="],
-            ["₋", "-"],
-            ["₊", "+"],
-            ["≠", "!="],
-            ["≤", "<="],
-            ["≥", ">="],
-            ["≪", "<<"],
-            ["≫", ">>"],
-            ["·", "*"],
-            ["×", "*"],
-            ["±", "+/-"],
-            ["∓", "-/+"],
-            ["÷", "/"],
-            ["∖", "-"],
-            ["⇒", "=>"],
-            ["⇐", "<="],
-            ["⇑", "^^"],
-            ["⇓", "vv"],
-            ["⇔", "<=>"],
-            ["⇕", "^^vv"],
-            ["⇖", "\\"],
-            ["⇗", "//"],
-            ["⇘", "\\"],
-            ["⇙", "//"],
-            ["→", "->"],
-            ["←", "<-"],
-            ["↑", "^"],
-            ["↓", "v"],
-            ["↳", "->"],
-            ["↔", "<->"],
-            ["↕", "^v"],
-            ["↖", "\\"],
-            ["↗", "/"],
-            ["↘", "\\"],
-            ["↙", "/"],
-            ["“", "'"],
-            ["”", "'"],
-            ["‘", "'"],
-            ["’", "'"],
-            ["«", "'"],
-            ["»", "'"],
-            ["…", "..."],
-            ["—", "-"],
-            ["–", "-"],
-            ["−", "-"],
-            ["•", "*"],
-        ]
-
-        const localizedReplacements: [Str, Str][] = [
-            ["Δ", tr("symbols.delta")],
-            ["π", tr("symbols.pi")],
-            ["ℯ", tr("symbols.eNumber")],
-            ["φ", tr("symbols.phi")],
-            ["θ", tr("symbols.theta")],
-            ["λ", tr("symbols.lambda")],
-            ["μ", tr("symbols.mu")],
-            ["σ", tr("symbols.sigma")],
-            ["ρ", tr("symbols.rho")],
-            ["τ", tr("symbols.tau")],
-            ["ε", tr("symbols.epsilon")],
-            ["γ", tr("symbols.gamma")],
-            ["η", tr("symbols.eta")],
-            ["ζ", tr("symbols.zeta")],
-            ["κ", tr("symbols.kappa")],
-            ["ν", tr("symbols.nu")],
-            ["ξ", tr("symbols.xi")],
-            ["ω", tr("symbols.omega")],
-            ["α", tr("symbols.alpha")],
-            ["β", tr("symbols.beta")],
-            ["χ", tr("symbols.chi")],
-            ["ψ", tr("symbols.psi")],
-
-            ["∑", tr("symbols.sum")],
-            ["∏", tr("symbols.product")],
-            ["∫", tr("symbols.integral")],
-            ["∬", tr("symbols.doubleIntegral")],
-            ["∭", tr("symbols.tripleIntegral")],
-            ["∮", tr("symbols.lineIntegral")],
-            ["∯", tr("symbols.surfaceIntegral")],
-            ["∰", tr("symbols.volumeIntegral")],
-            ["∂", tr("symbols.partialDerivative")],
-            ["∇", tr("symbols.nabla")],
-
-            ["ℝ", tr("symbols.reals")],
-            ["ℤ", tr("symbols.integers")],
-            ["ℕ", tr("symbols.naturals")],
-            ["ℚ", tr("symbols.rationals")],
-            ["ℂ", tr("symbols.complexes")],
-            ["∅", tr("symbols.emptySet")],
-            ["∪", tr("symbols.union")],
-            ["∩", tr("symbols.intersection")],
-            ["⊆", tr("symbols.subsetOf")],
-            ["⊇", tr("symbols.supersetOf")],
-            ["⊈", tr("symbols.notSubsetOf")],
-            ["⊉", tr("symbols.notSupersetOf")],
-
-            ["∃!", tr("symbols.existsUniqueOne")],
-            ["∄!", tr("symbols.notExistsUniqueOne")],
-            ["∃∞", tr("symbols.existsInfinite")],
-            ["∄∞", tr("symbols.notExistsInfinite")],
-            ["∀", tr("symbols.forAll")],
-            ["∃", tr("symbols.exists")],
-            ["∄", tr("symbols.notExists")],
-
-            ["∈", tr("symbols.belongsTo")],
-            ["∉", tr("symbols.notBelongsTo")],
-            ["∋", tr("symbols.containsAsElement")],
-            ["∌", tr("symbols.notContainsAsElement")],
-
-            ["∝", tr("symbols.proportionalTo")],
-            ["∠", tr("symbols.angle")],
-            ["∼", tr("symbols.similarTo")],
-            ["≅", tr("symbols.congruentTo")],
-            ["≈", tr("symbols.approximatelyEqualTo")],
-            ["≡", tr("symbols.identicalTo")],
-
-            ["√", tr("symbols.squareRootOf")],
-            ["∛", tr("symbols.cubeRootOf")],
-            ["∜", tr("symbols.fourthRootOf")],
-            ["-∞", tr("symbols.negativeInfinity")],
-            ["∞", tr("symbols.infinity")],
-
-            ["∴", tr("symbols.therefore")],
-            ["∵", tr("symbols.because")],
-            ["∨", tr("symbols.or")],
-            ["∧", tr("symbols.and")],
-            ["¬", tr("symbols.notWord")],
-            ["⊕", tr("symbols.exclusiveOr")],
-            ["⊗", tr("symbols.inclusiveOr")],
-        ]
+                ["©", "(c)"],
+                ["«", "'"],
+                ["±", "+/-"],
+                ["²", "^2"],
+                ["³", "^3"],
+                ["·", "*"],
+                ["»", "'"],
+                ["×", "*"],
+                ["÷", "/"],
+                ["ƒ", "f"],
+                ["ʸ", "y"],
+                ["ˣ", "^x"],
+                ["ᵇ", "b"],
+                ["ᶜ", "c"],
+                ["–", "-"],
+                ["—", "-"],
+                ["‘", "'"],
+                ["’", "'"],
+                ["“", "'"],
+                ["”", "'"],
+                ["•", "*"],
+                ["…", "..."],
+                ["⁄", "/"],
+                ["⁺", "+"],
+                ["⁻", "-"],
+                ["⁼", "="],
+                ["⁽", "^("],
+                ["⁾", ")"],
+                ["₁", "1"],
+                ["₂", "2"],
+                ["₃", "3"],
+                ["₊", "+"],
+                ["₋", "-"],
+                ["₌", "="],
+                ["₍", "_("],
+                ["₎", ")"],
+                ["ₐ", "_a"],
+                ["ₑ", "_e"],
+                ["ₒ", "_o"],
+                ["ₓ", "_x"],
+                ["←", "<-"],
+                ["↑", "^"],
+                ["→", "->"],
+                ["↓", "v"],
+                ["↔", "<->"],
+                ["↕", "^v"],
+                ["↖", "\\"],
+                ["↗", "/"],
+                ["↘", "\\"],
+                ["↙", "/"],
+                ["↳", "->"],
+                ["⇐", "<="],
+                ["⇑", "^^"],
+                ["⇒", "=>"],
+                ["⇓", "vv"],
+                ["⇔", "<=>"],
+                ["⇕", "^^vv"],
+                ["⇖", "\\"],
+                ["⇗", "//"],
+                ["⇘", "\\"],
+                ["⇙", "//"],
+                ["−", "-"],
+                ["∓", "-/+"],
+                ["∖", "-"],
+                ["≠", "!="],
+                ["≤", "<="],
+                ["≥", ">="],
+                ["≪", "<<"],
+                ["≫", ">>"],
+            ],
+            localizedReplacements: [Str, Str][] = [
+                ["-∞", tr("symbols.negativeInfinity")],
+                ["¬", tr("symbols.notWord")],
+                ["Δ", tr("symbols.delta")],
+                ["α", tr("symbols.alpha")],
+                ["β", tr("symbols.beta")],
+                ["γ", tr("symbols.gamma")],
+                ["ε", tr("symbols.epsilon")],
+                ["ζ", tr("symbols.zeta")],
+                ["η", tr("symbols.eta")],
+                ["θ", tr("symbols.theta")],
+                ["κ", tr("symbols.kappa")],
+                ["λ", tr("symbols.lambda")],
+                ["μ", tr("symbols.mu")],
+                ["ν", tr("symbols.nu")],
+                ["ξ", tr("symbols.xi")],
+                ["π", tr("symbols.pi")],
+                ["ρ", tr("symbols.rho")],
+                ["σ", tr("symbols.sigma")],
+                ["τ", tr("symbols.tau")],
+                ["φ", tr("symbols.phi")],
+                ["χ", tr("symbols.chi")],
+                ["ψ", tr("symbols.psi")],
+                ["ω", tr("symbols.omega")],
+                ["ℂ", tr("symbols.complexes")],
+                ["ℕ", tr("symbols.naturals")],
+                ["ℚ", tr("symbols.rationals")],
+                ["ℝ", tr("symbols.reals")],
+                ["ℤ", tr("symbols.integers")],
+                ["ℯ", tr("symbols.eNumber")],
+                ["∀", tr("symbols.forAll")],
+                ["∂", tr("symbols.partialDerivative")],
+                ["∃!", tr("symbols.existsUniqueOne")],
+                ["∃∞", tr("symbols.existsInfinite")],
+                ["∃", tr("symbols.exists")],
+                ["∄!", tr("symbols.notExistsUniqueOne")],
+                ["∄∞", tr("symbols.notExistsInfinite")],
+                ["∄", tr("symbols.notExists")],
+                ["∅", tr("symbols.emptySet")],
+                ["∇", tr("symbols.nabla")],
+                ["∈", tr("symbols.belongsTo")],
+                ["∉", tr("symbols.notBelongsTo")],
+                ["∋", tr("symbols.containsAsElement")],
+                ["∌", tr("symbols.notContainsAsElement")],
+                ["∏", tr("symbols.product")],
+                ["∑", tr("symbols.sum")],
+                ["√", tr("symbols.squareRootOf")],
+                ["∛", tr("symbols.cubeRootOf")],
+                ["∜", tr("symbols.fourthRootOf")],
+                ["∝", tr("symbols.proportionalTo")],
+                ["∞", tr("symbols.infinity")],
+                ["∠", tr("symbols.angle")],
+                ["∧", tr("symbols.and")],
+                ["∨", tr("symbols.or")],
+                ["∩", tr("symbols.intersection")],
+                ["∪", tr("symbols.union")],
+                ["∫", tr("symbols.integral")],
+                ["∬", tr("symbols.doubleIntegral")],
+                ["∭", tr("symbols.tripleIntegral")],
+                ["∮", tr("symbols.lineIntegral")],
+                ["∯", tr("symbols.surfaceIntegral")],
+                ["∰", tr("symbols.volumeIntegral")],
+                ["∴", tr("symbols.therefore")],
+                ["∵", tr("symbols.because")],
+                ["∼", tr("symbols.similarTo")],
+                ["≅", tr("symbols.congruentTo")],
+                ["≈", tr("symbols.approximatelyEqualTo")],
+                ["≡", tr("symbols.identicalTo")],
+                ["⊆", tr("symbols.subsetOf")],
+                ["⊇", tr("symbols.supersetOf")],
+                ["⊈", tr("symbols.notSubsetOf")],
+                ["⊉", tr("symbols.notSupersetOf")],
+                ["⊕", tr("symbols.exclusiveOr")],
+                ["⊗", tr("symbols.inclusiveOr")],
+            ]
 
         return Writing.replaceGroup(text, [...localizedReplacements, ...staticReplacements])
     }
@@ -298,13 +290,13 @@ export class Writing {
      * @since v6.1.0
      */
     static format = (message: Str = "", explanation: Str = ""): Str => {
-        if (Config.explanations && explanation != "") message += `\n\n${explanation}`
+        if (Config.explanations && explanation !== "") message += `\n\n${explanation}`
         if (Config.simpleMulti) message = Writing.simplifyMultiplication(message)
         if (!Config.unicode) message = Writing.noUnicode(message)
         if (!Config.accents) message = Writing.noAccents(message)
-        if (Config.textCase == "capitalized") message = Writing.capitalize(message)
-        else if (Config.textCase == "lowercase") message = Writing.lowercase(message)
-        else if (Config.textCase == "uppercase") message = Writing.uppercase(message)
+        if (Config.textCase === "capitalized") message = Writing.capitalize(message)
+        else if (Config.textCase === "lowercase") message = Writing.lowercase(message)
+        else if (Config.textCase === "uppercase") message = Writing.uppercase(message)
 
         return message
     }
@@ -319,6 +311,8 @@ export class Writing {
     static superscript = (value: Value = ""): Str =>
         Config.unicode
             ? Writing.replaceGroup(String(value), [
+                  ["-", "⁻"],
+                  [".", "․"],
                   ["0", "⁰"],
                   ["1", "¹"],
                   ["2", "²"],
@@ -329,8 +323,6 @@ export class Writing {
                   ["7", "⁷"],
                   ["8", "⁸"],
                   ["9", "⁹"],
-                  ["-", "⁻"],
-                  [".", "․"],
               ])
             : `^${value}`
 
@@ -344,6 +336,8 @@ export class Writing {
     static subscript = (value: Value = ""): Str =>
         Config.unicode
             ? Writing.replaceGroup(String(value), [
+                  ["-", "₋"],
+                  [".", "․"],
                   ["0", "₀"],
                   ["1", "₁"],
                   ["2", "₂"],
@@ -354,8 +348,6 @@ export class Writing {
                   ["7", "₇"],
                   ["8", "₈"],
                   ["9", "₉"],
-                  ["-", "₋"],
-                  [".", "․"],
               ])
             : `_${value}`
 

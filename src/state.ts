@@ -1,81 +1,48 @@
 import stateJson from "./JSON/state.json" with { type: "json" }
+import { MathFunction } from "./math.js"
 
-/**
- * Tipo do estado do programa.
- * @since ~v6.2.0
- */
 export type StateType = {
-    /** Irá repetir o `loop` principal? */
     loop: boolean
-
-    /** Tipo da Função. */
     type: Numeric | CommandsNames
-    /** Manter o tipo da Função? */
     keepType: boolean
-    /** Irá perguntar por outros coeficientes? */
     askCoeffs: boolean
 
-    /** Coeficiente `a` global. */
-    globalA: Value
-    /** Coeficiente `b` global. */
-    globalB: Value
-    /** Coeficiente `c` global. */
-    globalC: Value
-
-    /** Função padrão. */
+    /** Função sendo editada/analisada no momento. */
+    current: MathFunction
+    /** Função padrão (ƒ₁), usada em equações entre Funções. */
     baseFunc: Coefficients | null
-    /** Coeficientes. */
-    coefficients: Coefficients
-    /** Função atual. */
-    currentFunc: Coefficients
+    /** Última Função empurrada pro histórico — usada só para detectar mudança. */
+    lastSaved: Coefficients | null
     /** Histórico de Funções. */
     history: Coefficients[]
 
-    /** Coeficiente numérico `a` */
-    get numericA(): Numeric
-    /** Coeficiente numérico `b` */
-    get numericB(): Numeric
-    /** Coeficiente numérico `c` */
-    get numericC(): Numeric
+    /** `current` difere de `lastSaved`? */
+    get funcChanged(): boolean
 }
 
-/**
- * Classe do estado do programa.
- * @since ~v6.7.0
- */
 class StateStore implements StateType {
     loop!: boolean
-
     type!: Numeric | CommandsNames
     keepType!: boolean
     askCoeffs!: boolean
 
-    globalA!: Value
-    globalB!: Value
-    globalC!: Value
-
+    current!: MathFunction
     baseFunc!: Coefficients | null
-    coefficients!: Coefficients
-    currentFunc!: Coefficients
+    lastSaved!: Coefficients | null
     history!: Coefficients[]
 
     constructor() {
         Object.assign(this, structuredClone(stateJson))
+        this.current = new MathFunction()
     }
 
-    get numericA() {
-        return Number(this.globalA)
-    }
-    get numericB() {
-        return Number(this.globalB)
-    }
-    get numericC() {
-        return Number(this.globalC)
+    get funcChanged() {
+        return (
+            this.current.a !== this.lastSaved?.a ||
+            this.current.b !== this.lastSaved?.b ||
+            this.current.c !== this.lastSaved?.c
+        )
     }
 }
 
-/**
- * Estado do programa.
- * @since ~v6.2.0
- */
 export const State = new StateStore()

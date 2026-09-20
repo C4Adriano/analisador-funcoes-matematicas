@@ -11,42 +11,35 @@ import { Writing } from "./writing.js"
  * @type {import("./i18n.js").TranslationKey[]}
  */
 const BASE_OPTIONS = [
-    "analyze.options.domain",
-    "analyze.options.range",
-    "analyze.options.xIntersection",
-    "analyze.options.yIntersection",
-    "analyze.options.xValues",
-    "analyze.options.yValues",
-    "analyze.options.signAnalysis",
-    "analyze.options.functionEquations",
-]
+        "analyze.options.domain",
+        "analyze.options.range",
+        "analyze.options.xIntersection",
+        "analyze.options.yIntersection",
+        "analyze.options.xValues",
+        "analyze.options.yValues",
+        "analyze.options.signAnalysis",
+        "analyze.options.functionEquations",
+    ],
+    runAnalysisMenu = (coefs, funcType, extraOptions, pageActions) => {
+        /** @type {Numeric | CommandsNames} */ let option,
+            [page, limit] = [1, 0]
 
-/**
- * @param {Coefficients} coefs
- * @param {FunctionType} funcType
- * @param {import("./i18n.js").TranslationKey[]} extraOptions
- * @param {Record<Numeric, Record<Numeric, () => unknown>>} pageActions
- */
-const runAnalysisMenu = (coefs, funcType, extraOptions, pageActions) => {
-    /** @type {Numeric | CommandsNames} */ let option,
-        [page, limit] = [1, 0]
+        do {
+            ;[option, page] = Ui.menu(trArr([...extraOptions, ...BASE_OPTIONS]), page)
+            if (Checks.isValidCommand(option)) [option, page] = [0, 1]
 
-    do {
-        ;[option, page] = Ui.menu(trArr([...extraOptions, ...BASE_OPTIONS]), page)
-        if (Checks.isValidCommand(option)) [option, page] = [0, 1]
+            if (Checks.isFiniteNumber(option)) {
+                const result = pageActions[page]?.[option]?.()
+                if (Checks.isFiniteNumber(result)) option = result
+            }
 
-        if (Checks.isFiniteNumber(option)) {
-            const result = pageActions[page]?.[option]?.()
-            if (Checks.isFiniteNumber(result)) option = result
-        }
-
-        if (option == 6) Ui.resolveFunction(coefs, funcType, true)
-        if (Helpers.exceededLimit(++limit)) option = 0
-    } while (option != 0)
-}
+            if (option === 6) Ui.resolveFunction(coefs, funcType, true)
+            if (Helpers.exceededLimit(++limit)) option = 0
+        } while (option !== 0)
+    }
 
 export const Analyze = {
-    resolveConstant: ({ c = State.numericC } = {}) => {
+    resolveConstant: ({ c = State.current.numericC } = {}) => {
         const coefs = { a: 0, b: 0, c }
         Ui.resolveFunction(coefs)
 
@@ -66,7 +59,7 @@ export const Analyze = {
         })
     },
 
-    resolveAffine: ({ b = State.numericB, c = State.numericC } = {}) => {
+    resolveAffine: ({ b = State.current.numericB, c = State.current.numericC } = {}) => {
         const coefs = { a: 0, b, c }
         Ui.resolveFunction(coefs)
 
@@ -90,7 +83,7 @@ export const Analyze = {
         })
     },
 
-    resolveQuadratic: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
+    resolveQuadratic: ({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs)
 
@@ -155,7 +148,11 @@ export const Analyze = {
         )
     },
 
-    resolveExponential: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
+    resolveExponential: ({
+        a = State.current.numericA,
+        b = State.current.numericB,
+        c = State.current.numericC,
+    } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "exp")
 
@@ -193,7 +190,11 @@ export const Analyze = {
         )
     },
 
-    resolveLogarithmic: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
+    resolveLogarithmic: ({
+        a = State.current.numericA,
+        b = State.current.numericB,
+        c = State.current.numericC,
+    } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "log")
 
@@ -217,7 +218,7 @@ export const Analyze = {
         })
     },
 
-    resolveSine: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
+    resolveSine: ({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "sin")
 
@@ -244,7 +245,7 @@ export const Analyze = {
         })
     },
 
-    resolveCosine: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
+    resolveCosine: ({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "cos")
 
@@ -273,7 +274,7 @@ export const Analyze = {
         })
     },
 
-    resolveTangent: ({ a = State.numericA, b = State.numericB, c = State.numericC } = {}) => {
+    resolveTangent: ({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) => {
         const coefs = { a, b, c }
         Ui.resolveFunction(coefs, "tan")
 

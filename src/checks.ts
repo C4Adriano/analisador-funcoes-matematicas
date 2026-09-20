@@ -11,12 +11,12 @@ import type { TranslationKey } from "./i18n.js"
  * Objeto base para os métodos envolvendo verificações.
  *
  * ## Métodos:
- * - {@link Checks.isValidText isValidText} - Verifica se é texto válido.
- * - {@link Checks.isFiniteNumber isFiniteNumber} - Verifica se é um número finito.
- * - {@link Checks.isValidValue isValidValue} - Verifica se é um valor válido.
- * - {@link Checks.isValidCommand isValidCommand} - Verifica se é um comando válido.
  * - {@link Checks.isConfigKey isConfigKey} - Verifica se é chave de `Config`.
+ * - {@link Checks.isFiniteNumber isFiniteNumber} - Verifica se é um número finito.
  * - {@link Checks.isTrKey isTrKey} - Verifica se é chave de `tr`.
+ * - {@link Checks.isValidCommand isValidCommand} - Verifica se é um comando válido.
+ * - {@link Checks.isValidText isValidText} - Verifica se é texto válido.
+ * - {@link Checks.isValidValue isValidValue} - Verifica se é um valor válido.
  * - {@link Checks.numericPoint numericPoint} - Verifica se é um ponto válido.
  *
  * ### Tags:
@@ -88,5 +88,5 @@ export class Checks {
      * @since v6.1.0
      */
     static numericPoint = (points: ValueArray, index: Numeric): Numeric =>
-        Number(Writing.decimalOptions(points[index] ?? 0, { invert: true }))
+        Number(Writing.decimalOptions(points.at(index) ?? 0, { invert: true }))
 }

@@ -5,25 +5,25 @@
  * Objeto base para os métodos envolvendo ajudas.
  *
  * ## Métodos:
+ * - {@link Helpers.amplitude amplitude} - Amplitude de uma Função.
+ * - {@link Helpers.calcDelta calcDelta} - Calcula o Delta de uma Função.
+ * - {@link Helpers.calcPeriod calcPeriod} - Calcula o período de uma Função.
+ * - {@link Helpers.calcRoot calcRoot} - Calcula as raízes de uma Função.
+ * - {@link Helpers.curve curve} - Curva de uma Função.
  * - {@link Helpers.domain domain} - Domínio de uma Função.
+ * - {@link Helpers.equations equations} - Equações entre Funções.
+ * - {@link Helpers.exceededLimit exceededLimit} - Vê se excedeu o limite.
  * - {@link Helpers.range range} - Imagem de uma Função.
- * - {@link Helpers.xAxis xAxis} - Intercessões com o eixo x de uma Função.
- * - {@link Helpers.yAxis yAxis} - Intercessões com o eixo y de uma Função.
+ * - {@link Helpers.resolveSign resolveSign} - Estudo do sinal de uma Função.
  * - {@link Helpers.resolveXValues resolveXValues} - Valores de x de uma Função.
  * - {@link Helpers.resolveYValues resolveYValues} - Valores de y de uma Função.
- * - {@link Helpers.resolveSign resolveSign} - Estudo do sinal de uma Função.
- * - {@link Helpers.equations equations} - Equações entre Funções.
- * - {@link Helpers.curve curve} - Curva de uma Função.
- * - {@link Helpers.calcRoot calcRoot} - Calcula as raízes de uma Função.
- * - {@link Helpers.showRoot showRoot} - Mostra as raízes de uma Função.
- * - {@link Helpers.calcDelta calcDelta} - Calcula o Delta de uma Função.
  * - {@link Helpers.showDelta showDelta} - Mostra o Delta de uma Função.
- * - {@link Helpers.vertex vertex} - Vértice de uma Função.
- * - {@link Helpers.exceededLimit exceededLimit} - Vê se excedeu o limite.
- * - {@link Helpers.calcPeriod calcPeriod} - Calcula o período de uma Função.
  * - {@link Helpers.showPeriod showPeriod} - Mostra o período de uma Função.
- * - {@link Helpers.amplitude amplitude} - Amplitude de uma Função.
+ * - {@link Helpers.showRoot showRoot} - Mostra as raízes de uma Função.
+ * - {@link Helpers.vertex vertex} - Vértice de uma Função.
  * - {@link Helpers.verticalAsymptote verticalAsymptotes} - Assíntotas verticais de uma Função.
+ * - {@link Helpers.xAxis xAxis} - Intercessões com o eixo x de uma Função.
+ * - {@link Helpers.yAxis yAxis} - Intercessões com o eixo y de uma Função.
  *
  * ### Tags:
  * @author [C4Adriano](https://github.com/C4Adriano)
@@ -75,7 +75,7 @@ export declare const Helpers: {
      * Monta o valor de `y` para o `x` dado.
      * @param coefs - Coeficientes.
      * @param funcType - Tipo da Função.
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }; funcType = "poly"
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }; funcType = "poly"
      * @group Função
      * @since v6.6.7
      */
@@ -85,7 +85,7 @@ export declare const Helpers: {
      * Monta o valor de `x` para o `y` dado.
      * @param coefs - Coeficientes.
      * @param funcType - Tipo da Função.
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }; funcType = "poly"
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }; funcType = "poly"
      * @group Função
      * @since v6.6.7
      */
@@ -95,7 +95,7 @@ export declare const Helpers: {
      * Monta o estudo do sinal de uma Função.
      * @param coefs - Coeficientes.
      * @param funcType - Tipo da Função.
-     * @default coefs = { a: State.numericA, b: State.numericB, c: State.numericC }; funcType = "poly"
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }; funcType = "poly"
      * @group Função
      * @since v6.6.7
      */

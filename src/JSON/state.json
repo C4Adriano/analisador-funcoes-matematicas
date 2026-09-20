@@ -5,12 +5,7 @@
     "keepType": false,
     "askCoeffs": false,
 
-    "globalA": "a",
-    "globalB": "b",
-    "globalC": "c",
-
     "baseFunc": null,
-    "coefficients": { "a": "a", "b": "b", "c": "c" },
-    "currentFunc": { "a": "a", "b": "b", "c": "c" },
+    "lastSaved": null,
     "history": []
 }

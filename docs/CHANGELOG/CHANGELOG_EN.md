@@ -23,6 +23,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 -
 
+## \[7.0.0] - 2026-09-20
+
+### Added
+
+- `MathFunction` for any **Mathematical Function**.
+- Multiple `.ts` files.
+
+## Fixed
+
+- Virtually all current code bugs.
+
 ## \[6.6.7] - 2026-09-12
 
 ### Fixed
@@ -43,10 +54,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- `/` commands in PT/EN/ES.
-- Official **GitHub** release.
 - **Trigonometric Functions**.
+- Official **GitHub** release.
 - Spanish translation.
+- `/` commands in PT/EN/ES.
 
 ## \[5.x]
 
@@ -72,15 +83,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- Variable resolution by points.
 - Menu pages.
+- Variable resolution by points.
 
 ## \[2.x]
 
 ### Added
 
-- x/y calculations.
 - **Exponential Functions**.
+- x/y calculations.
 
 ## \[1.x]
 
@@ -92,5 +103,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 [Docs]: /README.md
 [Main]: /CHANGELOG.md
-[PT]: CHANGELOG_PT.md
 [OLD_CHANGELOG]: OLD/OLD_CHANGELOG_EN.md
+[PT]: CHANGELOG_PT.md
