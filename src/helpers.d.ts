@@ -26,9 +26,9 @@
  * - {@link Helpers.yAxis yAxis} - Intercessões com o eixo y de uma Função.
  *
  * ### Tags:
- * @author [C4Adriano](https://github.com/C4Adriano)
  * @license [License](../LICENSE.md)
  * @group Função
+ * @author [C4Adriano](https://github.com/C4Adriano)
  * @since v6.1.0
  */
 export declare const Helpers: {
@@ -39,7 +39,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    domain(belongs?: Str, explanation?: Str): void
+    domain: (belongs?: Str, explanation?: Str) => void
 
     /**
      * Monta a imagem de uma Função.
@@ -49,7 +49,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    range(belongs?: Str, interval?: Str, explanation?: Str): void
+    range: (belongs?: Str, interval?: Str, explanation?: Str) => void
 
     /**
      * Monta a intercessão com o eixo x de uma Função.
@@ -59,7 +59,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    xAxis(root: Numeric, explanation?: Str, noHave?: Str): void
+    xAxis: (root: Numeric, explanation?: Str, noHave?: Str) => void
 
     /**
      * Monta a intercessão com o eixo y de uma Função.
@@ -69,7 +69,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    yAxis(point: Value, func: Str, explanation?: Str): void
+    yAxis: (point: Value, func: Str, explanation?: Str) => void
 
     /**
      * Monta o valor de `y` para o `x` dado.
@@ -79,7 +79,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.6.7
      */
-    resolveXValues(coefs?: Coefficients, funcType?: FunctionType): void
+    resolveXValues: (coefs?: Coefficients, funcType?: FunctionType) => void
 
     /**
      * Monta o valor de `x` para o `y` dado.
@@ -89,7 +89,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.6.7
      */
-    resolveYValues(coefs?: Coefficients, funcType?: FunctionType): void
+    resolveYValues: (coefs?: Coefficients, funcType?: FunctionType) => void
 
     /**
      * Monta o estudo do sinal de uma Função.
@@ -99,7 +99,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.6.7
      */
-    resolveSign(coefs?: Coefficients, funcType?: FunctionType): void
+    resolveSign: (coefs?: Coefficients, funcType?: FunctionType) => void
 
     /**
      * Monta a equação entre duas Funções.
@@ -107,11 +107,11 @@ export declare const Helpers: {
      * @param coefA - Coeficiente `a`.
      * @param coefB - Coeficiente `b`.
      * @param coefC - Coeficiente `c`.
-     * @returns Operação futura
+     * @returns Operação futura.
      * @group Função
      * @since v6.1.0
      */
-    equations(polynomial: boolean, coefA?: Value, coefB?: Value, coefC?: Value): 0 | 1
+    equations: (polynomial: boolean, coefA?: Value, coefB?: Value, coefC?: Value) => 0 | 1
 
     /**
      * Monta a curva de uma Função.
@@ -121,38 +121,31 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    curve(coefA?: Value, coefB?: Value, polynomial?: boolean): void
+    curve: (coefA?: Value, coefB?: Value, polynomial?: boolean) => void
 
-    /** Função Constante */
-    calcRoot(coefA: 0, coefB: 0, coefC?: Value, funcExp?: false, funcLog?: false, funcTrig?: ""): typeof NaN
-    /** Função Afim */
-    calcRoot(coefA: 0, coefB?: Value, coefC?: Value, funcExp?: false, funcLog?: false, funcTrig?: ""): Numeric
-    /** Função Quadrática @deprecated Use {@link Helpers.calcDelta} */
-    calcRoot(coefA: Value, coefB?: Value, coefC?: Value, funcExp?: false, funcLog?: false, funcTrig?: ""): NumericArray
-    /** Função Exponencial */
-    calcRoot(coefA: Value, coefB: Value, coefC: Value, funcExp: true, funcLog?: boolean, funcTrig?: ""): Numeric
-    /** Função Logarítmica */
-    calcRoot(coefA: Value, coefB: Value, coefC: Value, funcExp: boolean, funcLog: true, funcTrig?: ""): Numeric
     /**
-     * Calcula a raiz de uma Função.
-     * @param coefA - Coeficiente `a`.
-     * @param coefB - Coeficiente `b`.
-     * @param coefC - Coeficiente `c`.
-     * @param funcExp - Exponencial.
-     * @param funcLog - Logarítmica.
-     * @param funcTrig - Trigonométrica.
-     * @returns - Raiz
-     * @group Função
-     * @since v6.1.0
+     * Função Constante.
      */
-    calcRoot(
-        coefA?: Value,
-        coefB?: Value,
-        coefC?: Value,
-        funcExp?: boolean,
-        funcLog?: boolean,
-        funcTrig?: TrigonometricFunction
-    ): Numeric | NumericArray
+    calcRoot: ((coefA: 0, coefB: 0, coefC?: Value, funcExp?: false, funcLog?: false, funcTrig?: "") => typeof NaN) &
+        ((coefA: 0, coefB?: Value, coefC?: Value, funcExp?: false, funcLog?: false, funcTrig?: "") => Numeric) &
+        ((
+            coefA: Value,
+            coefB?: Value,
+            coefC?: Value,
+            funcExp?: false,
+            funcLog?: false,
+            funcTrig?: ""
+        ) => NumericArray) &
+        ((coefA: Value, coefB: Value, coefC: Value, funcExp: true, funcLog?: boolean, funcTrig?: "") => Numeric) &
+        ((coefA: Value, coefB: Value, coefC: Value, funcExp: boolean, funcLog: true, funcTrig?: "") => Numeric) &
+        ((
+            coefA?: Value,
+            coefB?: Value,
+            coefC?: Value,
+            funcExp?: boolean,
+            funcLog?: boolean,
+            funcTrig?: TrigonometricFunction
+        ) => Numeric | NumericArray)
 
     /**
      * Mostra a raiz de uma Função.
@@ -162,7 +155,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    showRoot(root: Numeric, explanation?: Str, noHave?: Str): void
+    showRoot: (root: Numeric, explanation?: Str, noHave?: Str) => void
 
     /**
      * Calcula o Delta de uma Função.
@@ -173,11 +166,11 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    calcDelta(coefA?: Value, coefB?: Value, coefC?: Value): [Numeric, Numeric, Numeric]
+    calcDelta: (coefA?: Value, coefB?: Value, coefC?: Value) => [Numeric, Numeric, Numeric]
 
     /**
      * Exibe o Delta de uma Função.
-     * @param delta - Delta.
+     * @param delta - Delta da Função.
      * @param lower - Mensagem para Delta < 0.
      * @param equal - Mensagem para Delta = 0.
      * @param higher - Mensagem para Delta > 0.
@@ -185,18 +178,18 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    showDelta(delta: Numeric, lower: Str, equal: Str, higher: Str, hasY?: boolean): void
+    showDelta: (delta: Numeric, lower: Str, equal: Str, higher: Str, hasY?: boolean) => void
 
     /**
      * Calcula o vértice de uma Função.
      * @param coefA - Coeficiente `a`.
      * @param coefB - Coeficiente `b`.
-     * @param delta - Delta.
+     * @param delta - Delta da função.
      * @returns Vértice.
      * @group Função
      * @since v6.1.0
      */
-    vertex(coefA?: Value, coefB?: Value, delta?: Numeric): [Numeric, Numeric]
+    vertex: (coefA?: Value, coefB?: Value, delta?: Numeric) => [Numeric, Numeric]
 
     /**
      * Vê se estourou o limite.
@@ -205,7 +198,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    exceededLimit(limit: Numeric): boolean
+    exceededLimit: (limit: Numeric) => boolean
 
     /**
      * Calcula o período de uma Função.
@@ -215,16 +208,16 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    calcPeriod(coefA?: Value, funcTan?: boolean): void
+    calcPeriod: (coefA?: Value, funcTan?: boolean) => void
 
     /**
-     * Exibe o período de uma Função
+     * Exibe o período de uma Função.
      * @param coefA - Coeficiente `a` (frequência angular).
      * @param funcTan - Se é Função Tangente.
      * @group Função
      * @since v6.1.0
      */
-    showPeriod(coefA?: Value, funcTan?: boolean): void
+    showPeriod: (coefA?: Value, funcTan?: boolean) => void
 
     /**
      * Exibe a amplitude de uma Função.
@@ -232,7 +225,7 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    amplitude(coefB?: Value): void
+    amplitude: (coefB?: Value) => void
 
     /**
      * Exibe as assíntotas verticais de uma Função Tangente.
@@ -240,5 +233,5 @@ export declare const Helpers: {
      * @group Função
      * @since v6.1.0
      */
-    verticalAsymptote(coefA?: Value): void
+    verticalAsymptote: (coefA?: Value) => void
 }

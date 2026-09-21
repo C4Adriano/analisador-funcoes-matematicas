@@ -15,81 +15,81 @@
  * - {@link Analyze.resolveTangent resolveTangent} - Função Tangente.
  *
  * ### Tags:
- * @author [C4Adriano](https://github.com/C4Adriano)
  * @license [License](../LICENSE.md)
  * @group Função
+ * @author [C4Adriano](https://github.com/C4Adriano)
  * @since v6.1.0
  */
 export declare const Analyze: {
     /**
-     * Resolve uma Função Constante: `ƒ(x) = c`
+     * Resolve uma Função Constante: `ƒ(x) = c`.
      * @param coefs - Coeficientes.
      * @default coefs = { c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
-    resolveConstant(coefs?: Pick<Coefficients, "c">): void
+    resolveConstant: (coefs?: Pick<Coefficients, "c">) => void
 
     /**
-     * Resolve uma Função Afim: `ƒ(x) = bx + c`
+     * Resolve uma Função Afim: `ƒ(x) = bx + c`.
      * @param coefs - Coeficientes.
      * @default coefs = { b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
-    resolveAffine(coefs?: Pick<Coefficients, "c" | "b">): void
+    resolveAffine: (coefs?: Pick<Coefficients, "c" | "b">) => void
 
     /**
-     * Resolve uma Função Quadrática: `ƒ(x) = ax² + bx + c`
+     * Resolve uma Função Quadrática: `ƒ(x) = ax² + bx + c`.
      * @param coefs - Coeficientes.
      * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
-    resolveQuadratic(coefs?: Coefficients): void
+    resolveQuadratic: (coefs?: Coefficients) => void
 
     /**
-     * Resolve uma Função Exponencial: `ƒ(x) = b × aˣ + c`
+     * Resolve uma Função Exponencial: `ƒ(x) = b × aˣ + c`.
      * @param coefs - Coeficientes.
      * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
-    resolveExponential(coefs?: Coefficients): void
+    resolveExponential: (coefs?: Coefficients) => void
 
     /**
-     * Resolve uma Função Logarítmica: `ƒ(x) = b × logₐ(x) + c`
+     * Resolve uma Função Logarítmica: `ƒ(x) = b × logₐ(x) + c`.
      * @param coefs - Coeficientes.
      * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
-    resolveLogarithmic(coefs?: Coefficients): void
+    resolveLogarithmic: (coefs?: Coefficients) => void
 
     /**
-     * Resolve uma Função Seno: `ƒ(x) = b × sin(a · x) + c`
+     * Resolve uma Função Seno: `ƒ(x) = b × sin(a · x) + c`.
      * @param coefs - Coeficientes.
      * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
-    resolveSine(coefs?: Coefficients): void
+    resolveSine: (coefs?: Coefficients) => void
 
     /**
-     * Resolve uma Função Cosseno: `ƒ(x) = b × cos(a · x) + c`
+     * Resolve uma Função Cosseno: `ƒ(x) = b × cos(a · x) + c`.
      * @param coefs - Coeficientes.
      * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
-    resolveCosine(coefs?: Coefficients): void
+    resolveCosine: (coefs?: Coefficients) => void
 
     /**
-     * Resolve uma Função Tangente: `ƒ(x) = b × tan(a · x) + c`
+     * Resolve uma Função Tangente: `ƒ(x) = b × tan(a · x) + c`.
      * @param coefs - Coeficientes.
      * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @group Função
      * @since v6.6.1
      */
-    resolveTangent(coefs?: Coefficients): void
+    resolveTangent: (coefs?: Coefficients) => void
 }

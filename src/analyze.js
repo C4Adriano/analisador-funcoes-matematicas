@@ -1,3 +1,7 @@
+/**
+ * @import * as i18n from './i18n.js';
+ */
+
 import { Algebra } from "./algebra.js"
 import { Checks } from "./checks.js"
 import { Helpers } from "./helpers.js"
@@ -7,8 +11,8 @@ import { Ui } from "./ui.js"
 import { Writing } from "./writing.js"
 
 /**
- * Opções Base
- * @type {import("./i18n.js").TranslationKey[]}
+ * Opções Base.
+ * @type {i18n.TranslationKey[]}
  */
 const BASE_OPTIONS = [
         "analyze.options.domain",
@@ -33,8 +37,9 @@ const BASE_OPTIONS = [
                 if (Checks.isFiniteNumber(result)) option = result
             }
 
-            if (option === 6) Ui.resolveFunction(coefs, funcType, true)
-            if (Helpers.exceededLimit(++limit)) option = 0
+            if (option == 6) Ui.resolveFunction(coefs, funcType, true)
+            limit++
+            if (Helpers.exceededLimit(limit)) option = 0
         } while (option !== 0)
     }
 
@@ -65,7 +70,7 @@ export const Analyze = {
 
         const root = Helpers.calcRoot(0, coefs.b, coefs.c)
 
-        runAnalysisMenu(coefs, "poly", ["analyze.options.slope", "analyze.options.root"], {
+        runAnalysisMenu(coefs, "poly", ["analyze.options.slope", root], {
             1: {
                 1: () => Helpers.curve(0, coefs.b),
                 2: () => Helpers.showRoot(root, "(−c) / b"),
@@ -158,36 +163,31 @@ export const Analyze = {
 
         const root = Helpers.calcRoot(coefs.a, coefs.b, coefs.c, true)
 
-        runAnalysisMenu(
-            coefs,
-            "exp",
-            ["analyze.options.curve", "analyze.options.root", "analyze.options.horizontalAsymptote"],
-            {
-                1: {
-                    1: () => Helpers.curve(coefs.a, coefs.b, false),
-                    2: () => Helpers.showRoot(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"),
-                    3: () =>
-                        Ui.notifyOptions(
-                            tr("analyze.options.horizontalAsymptote", { y: Writing.decimalOptions(coefs.c) }),
-                            { explanation: "y = c" }
-                        ),
-                    4: () => Helpers.domain(),
-                    5: () => {
-                        if (coefs.b > 0)
-                            Helpers.range(`∈ (${Writing.decimalOptions(coefs.c)}, ∞)`, tr("analyze.betweenCInfinity"))
-                        else Helpers.range(`∈ (-∞, ${Writing.decimalOptions(coefs.c)})`, tr("analyze.betweenInfinityC"))
-                    },
+        runAnalysisMenu(coefs, "exp", ["analyze.options.curve", root, "analyze.options.horizontalAsymptote"], {
+            1: {
+                1: () => Helpers.curve(coefs.a, coefs.b, false),
+                2: () => Helpers.showRoot(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"),
+                3: () =>
+                    Ui.notifyOptions(
+                        tr("analyze.options.horizontalAsymptote", { y: Writing.decimalOptions(coefs.c) }),
+                        { explanation: "y = c" }
+                    ),
+                4: () => Helpers.domain(),
+                5: () => {
+                    if (coefs.b > 0)
+                        Helpers.range(`∈ (${Writing.decimalOptions(coefs.c)}, ∞)`, tr("analyze.betweenCInfinity"))
+                    else Helpers.range(`∈ (-∞, ${Writing.decimalOptions(coefs.c)})`, tr("analyze.betweenInfinityC"))
                 },
-                2: {
-                    1: () => Helpers.xAxis(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"),
-                    2: () => Helpers.yAxis(coefs.b + coefs.c, "b × aˣ + c", "b + c"),
-                    3: () => Helpers.resolveXValues(coefs, "exp"),
-                    4: () => Helpers.resolveYValues(coefs, "exp"),
-                    5: () => Helpers.resolveSign(coefs, "exp"),
-                },
-                3: { 1: () => Helpers.equations(false) },
-            }
-        )
+            },
+            2: {
+                1: () => Helpers.xAxis(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"),
+                2: () => Helpers.yAxis(coefs.b + coefs.c, "b × aˣ + c", "b + c"),
+                3: () => Helpers.resolveXValues(coefs, "exp"),
+                4: () => Helpers.resolveYValues(coefs, "exp"),
+                5: () => Helpers.resolveSign(coefs, "exp"),
+            },
+            3: { 1: () => Helpers.equations(false) },
+        })
     },
 
     resolveLogarithmic: ({
@@ -200,7 +200,7 @@ export const Analyze = {
 
         const root = Algebra.round(coefs.a ** Algebra.divisionOptions(-coefs.c, coefs.b, { round: false }))
 
-        runAnalysisMenu(coefs, "log", ["analyze.options.curve", "analyze.options.root"], {
+        runAnalysisMenu(coefs, "log", ["analyze.options.curve", root], {
             1: {
                 1: () => Helpers.curve(coefs.a, coefs.b, false),
                 2: () => Helpers.showRoot(root, "a⁽⁻ᶜ⁄ᵇ⁾"),

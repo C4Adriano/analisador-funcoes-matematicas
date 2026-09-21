@@ -15,6 +15,16 @@
         "variableAsk": "Digite “{name}” caso queira que “{name}” seja uma incógnita."
     },
     "analyze": {
+        "betweenCInfinity": "entre c e ∞, exceto o próprio c.",
+        "betweenInfinityC": "entre -∞ e c, exceto o próprio c.",
+        "betweenInfinityVertex": "entre -∞ e o vértice.",
+        "betweenVertexInfinity": "entre o vértice e o ∞.",
+        "constantValue": "y = c ⇒ ƒ(x) assume apenas esse valor.",
+        "horizontalAsymptotePoint": "Assíntota horizontal: y = {y}",
+        "noIntersectionXAxis": "Não há interseção com o eixo x.",
+        "noRoots": "Não há raízes reais.",
+        "oneIntersectionXAxis": "Interseção com o eixo x: ({p}, 0)",
+        "oneRoot": "Raiz real: x₁ = x₂ = {x}",
         "options": {
             "amplitude": "Amplitude",
             "concavity": "Concavidade",
@@ -35,16 +45,6 @@
             "yIntersection": "Interseção com o eixo y",
             "yValues": "Valores para y"
         },
-        "betweenCInfinity": "entre c e ∞, exceto o próprio c.",
-        "betweenInfinityC": "entre -∞ e c, exceto o próprio c.",
-        "betweenInfinityVertex": "entre -∞ e o vértice.",
-        "betweenVertexInfinity": "entre o vértice e o ∞.",
-        "constantValue": "y = c ⇒ ƒ(x) assume apenas esse valor.",
-        "horizontalAsymptotePoint": "Assíntota horizontal: y = {y}",
-        "noIntersectionXAxis": "Não há interseção com o eixo x.",
-        "noRoots": "Não há raízes reais.",
-        "oneIntersectionXAxis": "Interseção com o eixo x: ({p}, 0)",
-        "oneRoot": "Raiz real: x₁ = x₂ = {x}",
         "twoIntersectionsXAxis": "Interseções com o eixo x: ({p1}, 0), ({p2}, 0)",
         "twoRoots": "Raízes reais: x₁ = {x1}, x₂ = {x2}",
         "vertexExp": "Ponto mais baixo (ou mais alto, conforme a concavidade) da função.\nPonto: (-b / (2 · a), -Δ / (4 · a))",
@@ -280,36 +280,6 @@
         "whatLogPrecision": "Qual a precisão do logaritmo?",
         "whatWant": "O que deseja fazer?"
     },
-    "ui": {
-        "affine": " é afim",
-        "affineIdentity": " / identidade",
-        "affineLinear": " / linear",
-        "affineOpposite": " / oposta",
-        "confirm": "“OK” = Sim | “Cancelar” = Não",
-        "constant": " é constante",
-        "constantNull": " / nula",
-        "currentFunction": "Função atual",
-        "decimal": " / decimal",
-        "error": "Erro",
-        "exponential": " é exponencial",
-        "inputConfirm": "Você digitou: “{input}”\nTem certeza?",
-        "inputConfirmNote": "Obs.₁: Se isto for uma variável e o valor digitado não for um número, ele será interpretado como o nome da variável, e não como seu valor\nObs.₂: Essas mensagens podem ser desativadas em “Confirmações de entrada”.",
-        "logarithmic": " é logarítmica",
-        "menu": "Menu",
-        "natural": " / natural",
-        "page": "Página: {page}/{total}",
-        "pure": " / pura",
-        "quadratic": " é quadrática",
-        "quadraticIncompleteConstant": " / incompleta (sem termo constante)",
-        "quadraticIncompleteLinear": " / incompleta (sem termo linear)",
-        "theFunction": "A função: ƒ(x) = ",
-        "warning": "Aviso"
-    },
-    "writing": {
-        "currentDefault": "{message} “Atual”: “{current}” — “Padrão”: “{default}”",
-        "no": "Não",
-        "yes": "Sim"
-    },
     "symbols": {
         "alpha": "alfa",
         "and": "e",
@@ -384,5 +354,31 @@
         "volumeIntegral": "integral de volume",
         "xi": "csi",
         "zeta": "zeta"
-    }
+    },
+    "ui": {
+        "affine": " é afim",
+        "affineIdentity": " / identidade",
+        "affineLinear": " / linear",
+        "affineOpposite": " / oposta",
+        "confirm": "“OK” = Sim | “Cancelar” = Não",
+        "constant": " é constante",
+        "constantNull": " / nula",
+        "currentFunction": "Função atual",
+        "decimal": " / decimal",
+        "error": "Erro",
+        "exponential": " é exponencial",
+        "inputConfirm": "Você digitou: “{input}”\nTem certeza?",
+        "inputConfirmNote": "Obs.₁: Se isto for uma variável e o valor digitado não for um número, ele será interpretado como o nome da variável, e não como seu valor\nObs.₂: Essas mensagens podem ser desativadas em “Confirmações de entrada”.",
+        "logarithmic": " é logarítmica",
+        "menu": "Menu",
+        "natural": " / natural",
+        "page": "Página: {page}/{total}",
+        "pure": " / pura",
+        "quadratic": " é quadrática",
+        "quadraticIncompleteConstant": " / incompleta (sem termo constante)",
+        "quadraticIncompleteLinear": " / incompleta (sem termo linear)",
+        "theFunction": "A função: ƒ(x) = ",
+        "warning": "Aviso"
+    },
+    "writing": { "currentDefault": "{message} “Atual”: “{current}” — “Padrão”: “{default}”", "no": "Não", "yes": "Sim" }
 }

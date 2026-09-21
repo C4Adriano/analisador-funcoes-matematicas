@@ -5,7 +5,7 @@ export class MathFunction {
     a;
     b;
     c;
-    constructor({ type = "poly", a = "a", b = "b", c = "c" } = {}) {
+    constructor({ type = "poly", a = "a", b = "b", c = "c", } = {}) {
         this.type = type;
         this.a = a;
         this.b = b;
@@ -26,22 +26,22 @@ export class MathFunction {
             Checks.isFiniteNumber(this.numericC));
     }
     get variableA() {
-        return this.a === "a";
+        return this.a == "a";
     }
     get variableB() {
-        return this.b === "b";
+        return this.b == "b";
     }
     get variableC() {
-        return this.c === "c";
+        return this.c == "c";
     }
     get variableCoefs() {
         return this.variableA || this.variableB || this.variableC;
     }
     get isConstant() {
-        return this.numericA === 0 && this.numericB === 0;
+        return this.numericA == 0 && this.numericB == 0;
     }
     get isAffine() {
-        return this.numericA === 0 && this.numericB !== 0;
+        return this.numericA == 0 && this.numericB !== 0;
     }
     get isQuadratic() {
         return this.numericA !== 0;
@@ -50,7 +50,7 @@ export class MathFunction {
         return this.numericA > 0 && this.numericA !== 1 && this.numericB !== 0;
     }
     get isConstantExpLog() {
-        return this.numericA === 0 || this.numericA === 1 || this.numericB === 0;
+        return this.numericA == 0 || this.numericA == 1 || this.numericB == 0;
     }
     get isInvalidExpLog() {
         return this.numericA < 0;
@@ -59,7 +59,7 @@ export class MathFunction {
         return this.numericA !== 0 && this.numericB !== 0;
     }
     get isConstantTrig() {
-        return this.numericA === 0 || this.numericB === 0;
+        return this.numericA == 0 || this.numericB == 0;
     }
     resolveCoefs = () => {
         const solved = Algebra.resolveUnknown({ a: this.a, b: this.b, c: this.c }, this.type);

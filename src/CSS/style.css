@@ -1,5 +1,5 @@
 body {
-    background-color: black;
+    background-color: #000;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -9,34 +9,20 @@ body {
 }
 
 h1 {
-    font-family: "Times New Roman", Times, serif;
+    font-family: "times new roman", times, serif;
     font-size: clamp(3rem, 15vw, 10rem);
     font-variant: small-caps;
     letter-spacing: 0.05em;
+    color: rgb(255, 0, 0);
     user-select: none;
-    animation: rgbColors 35s linear infinite;
+    animation: rgb-colors 35s linear infinite;
 }
 
-@keyframes rgbColors {
+@keyframes rgb-colors {
     0% {
-        color: rgb(255, 0, 0);
-    }
-    16% {
-        color: rgb(255, 255, 0);
-    }
-    33% {
-        color: rgb(0, 255, 0);
-    }
-    50% {
-        color: rgb(0, 255, 255);
-    }
-    66% {
-        color: rgb(0, 0, 255);
-    }
-    83% {
-        color: rgb(255, 0, 255);
+        filter: hue-rotate(0deg);
     }
     100% {
-        color: rgb(255, 0, 0);
+        filter: hue-rotate(360deg);
     }
 }

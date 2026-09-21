@@ -23,9 +23,9 @@ import type { Options } from "./values.d.ts"
  * - {@link Algebra.variables variables} — Pede variáveis.
  *
  * ### Tags:
- * @author [C4Adriano](https://github.com/C4Adriano)
  * @license [License](../LICENSE.md)
  * @group Numérico
+ * @author [C4Adriano](https://github.com/C4Adriano)
  * @since v6.1.0
  */
 export declare const Algebra: {
@@ -33,38 +33,30 @@ export declare const Algebra: {
      * Arredonda um número.
      * @param number - Número.
      * @param places - Casas decimais.
-     * @default places = Config.decimalPlaces
      * @returns Número arredondado.
+     * @default places = Config.decimalPlaces
      * @group Numérico
      * @since v6.1.0
      */
-    round(number: Value, places?: Places): Numeric
+    round: (number: Value, places?: Places) => Numeric
 
     /**
      * Pede uma variável.
      * @param name - Nome da variável.
-     * @default name = "x"
      * @returns Se a variável tiver valor numérico, retorna o valor. Se não, retorna o nome.
+     * @default name = "x"
      * @group UI
      * @since v6.1.0
      */
-    variables(name?: Str): MathValue
+    variables: (name?: Str) => MathValue
 
-    /** Pede um ponto. */
-    point(type?: 1): [Numeric, Numeric]
-    /** Pede dois pontos. */
-    point(type: 2): [Numeric, Numeric, Numeric, Numeric]
-    /** Pede três pontos. */
-    point(type: 3): [Numeric, Numeric, Numeric, Numeric, Numeric, Numeric]
     /**
-     * Pede um ou mais pontos.
-     * @param type - Quantos pontos vão ser pedidos (1, 2 ou 3).
-     * @default type = 1
-     * @returns Um array com os pontos, na ordem: [x₁, y₁, x₂, y₂, x₃, y₃].
-     * @group UI
-     * @since v6.1.0
+     * Pede um ponto.
      */
-    point(type?: 1 | 2 | 3): NumericArray
+    point: ((type?: 1) => [Numeric, Numeric]) &
+        ((type: 2) => [Numeric, Numeric, Numeric, Numeric]) &
+        ((type: 3) => [Numeric, Numeric, Numeric, Numeric, Numeric, Numeric]) &
+        ((type?: 1 | 2 | 3) => NumericArray)
 
     /**
      * Vê se as Funções têm pontos de encontro.
@@ -73,7 +65,7 @@ export declare const Algebra: {
      * @group UI
      * @since v6.1.0
      */
-    resolveEquations(func1: Coefficients, func2: Coefficients): void
+    resolveEquations: (func1: Coefficients, func2: Coefficients) => void
 
     /**
      * Resolve um sistema linear quadrado `matrix · x = vector` por eliminação de Gauss com pivô parcial.
@@ -83,7 +75,7 @@ export declare const Algebra: {
      * @group Numérico
      * @since v6.6.0
      */
-    solveLinearSystem(matrix: NumericArray[], vector: NumericArray): NumericArray | null
+    solveLinearSystem: (matrix: NumericArray[], vector: NumericArray) => NumericArray | null
 
     /**
      * Resolve um subconjunto de Coeficientes desconhecidos de uma Função, a partir de pontos amostrados e de uma base linear que descreve a contribuição de cada coeficiente.
@@ -95,121 +87,121 @@ export declare const Algebra: {
      * @group Numérico
      * @since v6.6.0
      */
-    solveLinearCoefs(
+    solveLinearCoefs: (
         basis: LinearBasis,
         known: Coefficients,
         unknownKeys: Str[],
         points: PointPair[]
-    ): Coefficients | null
+    ) => Coefficients | null
 
     /**
      * Coleta `count` pares de pontos (x, y) do usuário, usando a mesma convenção de {@link Algebra.point} (valores intercalados x₁, y₁, x₂, y₂, ...).
      * @param count - Quantidade de pares para coletar.
-     * @default count = 1
      * @returns Lista de pares ordenados já convertidos para número.
+     * @default count = 1
      * @group Numérico
      * @since v6.6.0
      */
-    getPointPairs(count?: Numeric): PointPair[]
+    getPointPairs: (count?: Numeric) => PointPair[]
 
     /**
      * Resolve os Coeficientes desconhecidos de uma Função Polinomial (constante, afim ou quadrática), inferindo o grau a partir dos Coeficientes `a` e `b` já conhecidos.
-     * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
+     * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c").
+     * @returns Coeficientes resolvidos, ou `null` caso os pontos coletados levem a um sistema singular (ex.: pontos com mesmo x).
      * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
-     * @returns Coeficientes resolvidos, ou `null` caso os pontos coletados levem a um sistema singular (ex.: pontos com mesmo x)
      * @group Numérico
      * @since v6.6.0
      */
-    solvePolynomial(coefs?: Coefficients): Coefficients | null
+    solvePolynomial: (coefs?: Coefficients) => Coefficients | null
 
     /**
      * Resolve os Coeficientes desconhecidos de uma Função Exponencial (`y = b × aˣ + c`).
+     * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c").
+     * @returns Coeficientes resolvidos, ou `null` caso o sistema linear associado seja singular.
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @remarks
      * Os casos que envolvem apenas `b` e/ou `c` são lineares e resolvidos via {@link Algebra.solveLinearCoefs}; os que envolvem `a` usam fórmula fechada.
      *
      * A combinação `a` e `c` juntos ainda não é suportada.
-     * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
-     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
-     * @returns Coeficientes resolvidos, ou `null` caso o sistema linear associado seja singular
      * @group Numérico
      * @since v6.6.0
      */
-    solveExponential(coefs?: Coefficients): Coefficients | null
+    solveExponential: (coefs?: Coefficients) => Coefficients | null
 
     /**
      * Resolve os Coeficientes desconhecidos de uma Função Logarítmica (`y = b × logₐ(x) + c`).
+     * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c").
+     * @returns Coeficientes resolvidos, ou `null` caso o sistema linear associado seja singular.
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
      * @remarks
      * Os casos que envolvem apenas `b` e/ou `c` são lineares e resolvidos via {@link Algebra.solveLinearCoefs}; os que envolvem `a` usam fórmula fechada.
      *
      * A combinação `a` e `b` juntos ainda não é suportada.
-     * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
-     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }
-     * @returns Coeficientes resolvidos, ou `null` caso o sistema linear associado seja singular
      * @group Numérico
      * @since v6.6.0
      */
-    solveLogarithmic(coefs?: Coefficients): Coefficients | null
+    solveLogarithmic: (coefs?: Coefficients) => Coefficients | null
 
     /**
      * Descobre quais são as incógnitas de uma Função e resolve seus Coeficientes, solicitando pontos ao usuário quando necessário.
-     * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c")
-     * @param funcType - Tipo da Função sendo resolvida
-     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }; funcType = "poly"
+     * @param coefs - Coeficientes atuais, com incógnitas marcadas pela própria letra ("a", "b" ou "c").
+     * @param funcType - Tipo da Função sendo resolvida.
      * @returns Coeficientes finais resolvidos.
+     * @default coefs = { a: State.current.numericA, b: State.current.numericB, c: State.current.numericC }; funcType = "poly"
      * @group Numérico
      * @since v6.6.0
      */
-    resolveUnknown(coefs?: Coefficients, funcType?: FunctionType): Coefficients
+    resolveUnknown: (coefs?: Coefficients, funcType?: FunctionType) => Coefficients
 
     /**
      * Calcula o logaritmo de x.
-     * @remarks Se `base` for {@link Math.E} (ou nada também, pois é o valor padrão), prefira {@link Algebra.lnOptions}.
      * @param x - Número.
-     * @param base - Base.
+     * @param base - Base do logaritmo.
      * @param options - Opções (round, precision, places).
-     * @default base = Math.E; options = { round: false, precision: Config.logPrecision, places: Config.decimalPlaces }
      * @returns Resultado.
+     * @default base = Math.E; options = { round: false, precision: Config.logPrecision, places: Config.decimalPlaces }
+     * @remarks Se `base` for {@link Math.E} (ou nada também, pois é o valor padrão), prefira {@link Algebra.lnOptions}.
      * @group Numérico
      * @since v6.6.1
      */
-    logOptions(x: Numeric, base?: Numeric, options?: Options): Numeric
+    logOptions: (x: Numeric, base?: Numeric, options?: Options) => Numeric
 
     /**
      * Calcula o logaritmo natural de x.
-     * @see {@link Algebra.logOptions}
+     * @param x - Número.
+     * @param options - Opções.
+     * @returns Resultado.
+     * @default options = { round: false, precision: Config.logPrecision, places: Config.decimalPlaces }
      * @remarks
      * Alias de {@link Algebra.logOptions} com `base` fixa em `Math.E`.
      *
      * Equivalente a `Algebra.logOptions(x, Math.E, { precision, round, places })`.
-     * @param x - Número.
-     * @param options - Opções.
-     * @default options = { round: false, precision: Config.logPrecision, places: Config.decimalPlaces }
-     * @returns Resultado.
      * @group Numérico
+     * @see {@link Algebra.logOptions}
      * @since v6.6.1
      */
-    lnOptions(x: Numeric, options?: Options): Numeric
+    lnOptions: (x: Numeric, options?: Options) => Numeric
 
     /**
      * Divide o `numerator` pelo `denominator`.
      * @param numerator - Parte de cima da fração.
      * @param denominator - Parte de baixo da fração.
      * @param options - Opções.
-     * @default options = { round: true, precision: Config.logPrecision }
      * @returns Resultado.
+     * @default options = { round: true, precision: Config.logPrecision }
      * @group Numérico
      * @since v6.6.1
      */
-    divisionOptions(numerator: Numeric, denominator: Numeric, options?: Options): Numeric
+    divisionOptions: (numerator: Numeric, denominator: Numeric, options?: Options) => Numeric
 
     /**
      * Calcula o valor absoluto de um número.
      * @param number - Número.
      * @param options - Opções.
-     * @default options = { round: true, places: Config.decimalPlaces }
      * @returns Número absoluto.
+     * @default options = { round: true, places: Config.decimalPlaces }
      * @group Numérico
      * @since v6.6.1
      */
-    absoluteOptions(number: Numeric, options?: Options): Numeric
+    absoluteOptions: (number: Numeric, options?: Options) => Numeric
 }

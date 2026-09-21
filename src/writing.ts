@@ -25,12 +25,12 @@ import type { Options } from "./values.d.ts"
  * - {@link Writing.uppercase uppercase} - Transforma para maiúsculas.
  *
  * ### Tags:
- * @author [C4Adriano](https://github.com/C4Adriano)
  * @license [License](../LICENSE.md)
  * @group Texto
+ * @author [C4Adriano](https://github.com/C4Adriano)
  * @since v6.1.0
  */
-export class Writing {
+export const Writing = {
     /**
      * Substitui uma parte de uma `string` por outra.
      * @param text - Texto.
@@ -40,7 +40,7 @@ export class Writing {
      * @group Texto
      * @since v6.1.0
      */
-    static replace = (text: Str = "", from: Str = "", to: Str = ""): Str => String(text).replaceAll(from, to)
+    replace: (text: Str = "", from: Str = "", to: Str = ""): Str => text.replaceAll(from, () => to),
 
     /**
      * Substitui uma parte de várias `strings` por outra.
@@ -50,8 +50,8 @@ export class Writing {
      * @group Texto
      * @since v6.1.0
      */
-    static replaceGroup = (text: Str = "", list: [Str, Str][] = [["", ""]]): Str =>
-        list.reduce((acc, [from, to]) => (from != null && to != null ? Writing.replace(acc, from, to) : acc), text)
+    replaceGroup: (text: Str = "", list: [Str, Str][] = [["", ""]]): Str =>
+        list.reduce((acc, [from, to]) => Writing.replace(acc, from, to), text),
 
     /**
      * Substituição da grafia de Unicode, traduzindo os termos textuais para o idioma configurado.
@@ -60,7 +60,7 @@ export class Writing {
      * @group Texto
      * @since v6.1.0
      */
-    static noUnicode = (text: Str = ""): Str => {
+    noUnicode: (text: Str = ""): Str => {
         const staticReplacements: [Str, Str][] = [
                 ["©", "(c)"],
                 ["«", "'"],
@@ -209,17 +209,14 @@ export class Writing {
             ]
 
         return Writing.replaceGroup(text, [...localizedReplacements, ...staticReplacements])
-    }
+    },
 
     /**
      * Substituição da grafia de acentos.
      * @param text - Texto.
      * @returns Texto convertido.
      */
-    static noAccents = (text: Str = ""): Str =>
-        String(text)
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
+    noAccents: (text: Str = ""): Str => text.normalize("NFD").replaceAll(/\p{M}/gv, ""),
 
     /**
      * Conversão para minúsculas.
@@ -228,7 +225,7 @@ export class Writing {
      * @group Texto
      * @since v6.1.0
      */
-    static lowercase = (text: Str = ""): Str => Writing.replace(String(text).toLowerCase(), "δ", "Δ")
+    lowercase: (text: Str = ""): Str => Writing.replace(text.toLowerCase(), "δ", "Δ"),
 
     /**
      * Conversão para maiúsculas.
@@ -237,7 +234,7 @@ export class Writing {
      * @group Texto
      * @since v6.1.0
      */
-    static uppercase = (text: Str = ""): Str => Writing.replace(String(text).toUpperCase(), "Ƒ", "ƒ")
+    uppercase: (text: Str = ""): Str => Writing.replace(text.toUpperCase(), "Ƒ", "ƒ"),
 
     /**
      * Conversão para capitalizadas.
@@ -246,8 +243,8 @@ export class Writing {
      * @group Texto
      * @since v6.6.7
      */
-    static capitalize = (text: Str = ""): Str =>
-        Writing.lowercase(text).replace(/\p{L}+/gu, word => Writing.uppercase(word[0]) + word.slice(1))
+    capitalize: (text: Str = ""): Str =>
+        Writing.lowercase(text).replaceAll(/\p{L}+/gv, word => Writing.uppercase(word[0]) + word.slice(1)),
 
     /**
      * Manipulação de separadores decimais.
@@ -257,20 +254,19 @@ export class Writing {
      * @group Texto
      * @since v6.6.1
      */
-    static decimalOptions(number: Value, options?: Options & { invert?: false }): Variable
-    static decimalOptions(number: Value, options: Options & { invert: true }): Numeric
-    static decimalOptions(
+    decimalOptions<Invert extends boolean = false>(
         number: Value = 0,
-        { invert = false, round = true, places = Config.decimalPlaces }: Options = {}
-    ): Value {
+        { invert = false as Invert, round = true, places = Config.decimalPlaces }: Options & { invert?: Invert } = {}
+    ): Invert extends true ? Numeric : Variable {
         let result: Value = String(number)
 
-        if (invert) return Writing.replace(result, ",", ".")
-        if (round) result = Algebra.round(result, places)
-        if (Config.decimalSeparator) return Writing.replace(String(result), ".", ",")
-
-        return result
-    }
+        if (invert) result = Writing.replace(result, ",", ".")
+        else {
+            if (round) result = Algebra.round(result, places)
+            if (Config.decimalSeparator) result = Writing.replace(String(result), ".", ",")
+        }
+        return result as Invert extends true ? Numeric : Variable
+    },
 
     /**
      * Simplificação de símbolos de multiplicação.
@@ -279,7 +275,7 @@ export class Writing {
      * @group Texto
      * @since v6.1.0
      */
-    static simplifyMultiplication = (text: Str = ""): Str => Writing.replace(text, " · ", "")
+    simplifyMultiplication: (text: Str = ""): Str => Writing.replace(text, " · ", ""),
 
     /**
      * Formatação geral de mensagens.
@@ -289,17 +285,34 @@ export class Writing {
      * @group Texto
      * @since v6.1.0
      */
-    static format = (message: Str = "", explanation: Str = ""): Str => {
-        if (Config.explanations && explanation !== "") message += `\n\n${explanation}`
+    format: (message: Str = "", explanation: Str = ""): Str => {
+        if (explanation !== "" && Config.explanations) message += `\n\n${explanation}`
         if (Config.simpleMulti) message = Writing.simplifyMultiplication(message)
         if (!Config.unicode) message = Writing.noUnicode(message)
         if (!Config.accents) message = Writing.noAccents(message)
-        if (Config.textCase === "capitalized") message = Writing.capitalize(message)
-        else if (Config.textCase === "lowercase") message = Writing.lowercase(message)
-        else if (Config.textCase === "uppercase") message = Writing.uppercase(message)
+        switch (Config.textCase) {
+            case "capitalized": {
+                message = Writing.capitalize(message)
+                break
+            }
+            case "lowercase": {
+                message = Writing.lowercase(message)
+                break
+            }
+            case "uppercase": {
+                message = Writing.uppercase(message)
+                break
+            }
+            case "normal": {
+                break
+            }
+            default: {
+                break
+            }
+        }
 
         return message
-    }
+    },
 
     /**
      * Conversão para sobrescrito.
@@ -308,7 +321,7 @@ export class Writing {
      * @group Texto
      * @since v6.1.0
      */
-    static superscript = (value: Value = ""): Str =>
+    superscript: (value: Value = ""): Str =>
         Config.unicode
             ? Writing.replaceGroup(String(value), [
                   ["-", "⁻"],
@@ -324,7 +337,7 @@ export class Writing {
                   ["8", "⁸"],
                   ["9", "⁹"],
               ])
-            : `^${value}`
+            : `^${String(value)}`,
 
     /**
      * Conversão para subscrito.
@@ -333,7 +346,7 @@ export class Writing {
      * @group Texto
      * @since v6.1.0
      */
-    static subscript = (value: Value = ""): Str =>
+    subscript: (value: Value = ""): Str =>
         Config.unicode
             ? Writing.replaceGroup(String(value), [
                   ["-", "₋"],
@@ -349,7 +362,7 @@ export class Writing {
                   ["8", "₈"],
                   ["9", "₉"],
               ])
-            : `_${value}`
+            : `_${String(value)}`,
 
     /**
      * Formatação de valores `boolean`.
@@ -358,8 +371,8 @@ export class Writing {
      * @group Texto
      * @since v6.1.0
      */
-    static formatValue = (value: Value | boolean = true): Str =>
-        typeof value == "boolean" ? (value ? tr("writing.yes") : tr("writing.no")) : String(value)
+    formatValue: (value: Value | boolean = true): Str =>
+        typeof value == "boolean" ? tr(value ? "writing.yes" : "writing.no") : String(value),
 
     /**
      * Formatação de itens de configuração.
@@ -369,10 +382,10 @@ export class Writing {
      * @group Texto
      * @since v6.1.0
      */
-    static configItem = (message: Str = "", name: ConfigKey): Str =>
+    configItem: (message: Str, name: ConfigKey): Str =>
         tr("writing.currentDefault", {
             message,
             current: Writing.formatValue(Config[name]),
             default: Writing.formatValue(DEFAULT_CONFIG[name]),
-        })
+        }),
 }

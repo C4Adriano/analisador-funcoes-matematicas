@@ -15,6 +15,16 @@
         "variableAsk": "Escribe «{name}» si quieres que «{name}» sea una incógnita."
     },
     "analyze": {
+        "betweenCInfinity": "entre c y +∞, excluyendo el propio c.",
+        "betweenInfinityC": "entre -∞ y c, excluyendo el propio c.",
+        "betweenInfinityVertex": "entre -∞ y el vértice.",
+        "betweenVertexInfinity": "entre el vértice y +∞.",
+        "constantValue": "y = c ⇒ ƒ(x) solo toma este valor.",
+        "horizontalAsymptotePoint": "Asíntota horizontal: y = {y}",
+        "noIntersectionXAxis": "No existe intersección con el eje x.",
+        "noRoots": "No existen raíces reales.",
+        "oneIntersectionXAxis": "Intersección con el eje x: ({p}, 0)",
+        "oneRoot": "Raíz real: x₁ = x₂ = {x}",
         "options": {
             "amplitude": "Amplitud",
             "concavity": "Concavidad",
@@ -35,16 +45,6 @@
             "yIntersection": "Intersección con el eje y",
             "yValues": "Valores de y"
         },
-        "betweenCInfinity": "entre c y +∞, excluyendo el propio c.",
-        "betweenInfinityC": "entre -∞ y c, excluyendo el propio c.",
-        "betweenInfinityVertex": "entre -∞ y el vértice.",
-        "betweenVertexInfinity": "entre el vértice y +∞.",
-        "constantValue": "y = c ⇒ ƒ(x) solo toma este valor.",
-        "horizontalAsymptotePoint": "Asíntota horizontal: y = {y}",
-        "noIntersectionXAxis": "No existe intersección con el eje x.",
-        "noRoots": "No existen raíces reales.",
-        "oneIntersectionXAxis": "Intersección con el eje x: ({p}, 0)",
-        "oneRoot": "Raíz real: x₁ = x₂ = {x}",
         "twoIntersectionsXAxis": "Intersecciones con el eje x: ({p1}, 0), ({p2}, 0)",
         "twoRoots": "Raíces reales: x₁ = {x1}, x₂ = {x2}",
         "vertexExp": "Punto más bajo (o más alto, según la concavidad) de la función.\nPunto: (-b / (2 · a), -Δ / (4 · a))",
@@ -280,36 +280,6 @@
         "whatLogPrecision": "¿Cuál debe ser la precisión del logaritmo?",
         "whatWant": "¿Qué quieres hacer?"
     },
-    "ui": {
-        "affine": " es afín",
-        "affineIdentity": " / identidad",
-        "affineLinear": " / lineal",
-        "affineOpposite": " / opuesta",
-        "confirm": "«Aceptar» = Sí | «Cancelar» = No",
-        "constant": " es constante",
-        "constantNull": " / nula",
-        "currentFunction": "Función actual",
-        "decimal": " / decimal",
-        "error": "Error",
-        "exponential": " es exponencial",
-        "inputConfirm": "Has escrito: «{input}»\n¿Estás seguro?",
-        "inputConfirmNote": "Nota₁: Si se trata de una variable y lo escrito no es un número, se convertirá en el nombre de la variable, no en lo que se ha escrito\nNota₂: Estos mensajes pueden desactivarse en los ajustes, en «Confirmaciones de entrada».",
-        "logarithmic": " es logarítmica",
-        "menu": "Menú",
-        "natural": " / natural",
-        "page": "Página: {page}/{total}",
-        "pure": " / pura",
-        "quadratic": " es cuadrática",
-        "quadraticIncompleteConstant": " / incompleta (sin término constante)",
-        "quadraticIncompleteLinear": " / incompleta (sin término lineal)",
-        "theFunction": "La función: ƒ(x) = ",
-        "warning": "Advertencia"
-    },
-    "writing": {
-        "currentDefault": "{message} «Actual»: «{current}» — «Predeterminado»: «{default}»",
-        "no": "No",
-        "yes": "Sí"
-    },
     "symbols": {
         "alpha": "alfa",
         "and": "y",
@@ -384,5 +354,35 @@
         "volumeIntegral": "integral de volumen",
         "xi": "xi",
         "zeta": "zeta"
+    },
+    "ui": {
+        "affine": " es afín",
+        "affineIdentity": " / identidad",
+        "affineLinear": " / lineal",
+        "affineOpposite": " / opuesta",
+        "confirm": "«Aceptar» = Sí | «Cancelar» = No",
+        "constant": " es constante",
+        "constantNull": " / nula",
+        "currentFunction": "Función actual",
+        "decimal": " / decimal",
+        "error": "Error",
+        "exponential": " es exponencial",
+        "inputConfirm": "Has escrito: «{input}»\n¿Estás seguro?",
+        "inputConfirmNote": "Nota₁: Si se trata de una variable y lo escrito no es un número, se convertirá en el nombre de la variable, no en lo que se ha escrito\nNota₂: Estos mensajes pueden desactivarse en los ajustes, en «Confirmaciones de entrada».",
+        "logarithmic": " es logarítmica",
+        "menu": "Menú",
+        "natural": " / natural",
+        "page": "Página: {page}/{total}",
+        "pure": " / pura",
+        "quadratic": " es cuadrática",
+        "quadraticIncompleteConstant": " / incompleta (sin término constante)",
+        "quadraticIncompleteLinear": " / incompleta (sin término lineal)",
+        "theFunction": "La función: ƒ(x) = ",
+        "warning": "Advertencia"
+    },
+    "writing": {
+        "currentDefault": "{message} «Actual»: «{current}» — «Predeterminado»: «{default}»",
+        "no": "No",
+        "yes": "Sí"
     }
 }

@@ -1,6 +1,6 @@
 // Variáveis
-$bg-color: black;
-$font-stack: "Times New Roman", Times, serif;
+$bg-color: #000;
+$font-stack: "times new roman", times, serif;
 
 // Cores do ciclo RGB, na ordem em que aparecem na animação
 $rgb-colors: (
@@ -57,14 +57,14 @@ h1 {
     font-variant: small-caps;
     letter-spacing: 0.05em;
     user-select: none;
-    animation: rgbColors 35s linear infinite;
+    animation: rgb-colors 35s linear infinite;
 }
 
 // RGB colors animation
-@keyframes rgbColors {
+@keyframes rgb-colors {
     @each $stop, $rgb in $rgb-colors {
         #{$stop} {
-            color: rgb($rgb...);
+            filter: rgb($rgb...);
         }
     }
 }

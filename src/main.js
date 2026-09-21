@@ -1,3 +1,6 @@
+/**
+ * @import * as config from './config.js';
+ */
 import { Algebra } from "./algebra.js"
 import { Analyze } from "./analyze.js"
 import { Checks } from "./checks.js"
@@ -21,9 +24,9 @@ Config.load()
 Ui.notifyOptions(tr("main.welcomeTitle"), { explanation: tr("main.welcomeDescription") })
 
 const setMeta = (name = "", content = "") =>
-        document.querySelector(`meta[name="${name}"]`)?.setAttribute("content", content),
+        document.querySelector(`meta[name="${CSS.escape(name)}"]`)?.setAttribute("content", content),
     setProperty = (property = "", content = "") =>
-        document.querySelector(`meta[property="${property}"]`)?.setAttribute("content", content),
+        document.querySelector(`meta[property="${CSS.escape(property)}"]`)?.setAttribute("content", content),
     locales = {
         "pt-br": "pt_BR",
         "pt-pt": "pt_PT",
@@ -50,40 +53,40 @@ const setMeta = (name = "", content = "") =>
         setMeta("twitter:title", title)
         setMeta("twitter:description", description)
     },
-    handleSubMenu = subType => {
-        if (Checks.isFiniteNumber(subType) && subType >= 6 && subType <= 9) {
-            State.type = subType
+    handleSubmenu = subtype => {
+        if (Checks.isFiniteNumber(subtype) && subtype >= 6 && subtype <= 9) {
+            State.type = subtype
             State.loop = true
             State.keepType = true
             return true
         }
 
-        if (Checks.isValidCommand(subType)) {
-            State.type = subType
+        if (Checks.isValidCommand(subtype)) {
+            State.type = subtype
             State.loop = true
-            if (subType !== "exit") State.keepType = true
+            if (subtype !== "exit") State.keepType = true
             return true
         }
 
-        if (subType === 0) {
+        if (subtype == 0) {
             State.loop = true
             return true
         }
 
         return false
     },
-    isValidSubType = (subType, maxOption) =>
-        (Checks.isFiniteNumber(subType) &&
-            ((subType >= 0 && subType <= maxOption) || (subType >= 6 && subType <= 9))) ||
-        Checks.isValidCommand(subType),
-    runSubMenu = (buildMenuText, maxOption, handlers) => {
+    isValidSubtype = (subtype, maxOption) =>
+        (Checks.isFiniteNumber(subtype) &&
+            ((subtype >= 0 && subtype <= maxOption) || (subtype >= 6 && subtype <= 9))) ||
+        Checks.isValidCommand(subtype),
+    runSubmenu = (buildMenuText, maxOption, handlers) => {
         let subLoop
 
         do {
-            const subType = Ui.inputOptions(buildMenuText(), { number: true, places: 0, commands: true })
-            subLoop = !isValidSubType(subType, maxOption)
+            const subtype = Ui.inputOptions(buildMenuText(), { number: true, places: 0, commands: true })
+            subLoop = !isValidSubtype(subtype, maxOption)
 
-            if (!subLoop && !handleSubMenu(subType)) handlers[subType]?.()
+            if (!subLoop && !handleSubmenu(subtype)) handlers[subtype]?.()
         } while (subLoop)
     },
     handlePolynomial = () => {
@@ -95,7 +98,7 @@ const setMeta = (name = "", content = "") =>
         else if (State.current.isAffine) Analyze.resolveAffine()
         else Analyze.resolveQuadratic()
     },
-    handleExpOrLog = (kind = "exp", label, resolveFn) => {
+    handleExpOrLog = (kind, label, resolveFn) => {
         State.current.type = /** @type {FunctionType} */ (kind)
 
         if (State.current.variableCoefs) State.current.resolveCoefs()
@@ -109,7 +112,7 @@ const setMeta = (name = "", content = "") =>
         if (State.current.isConstantExpLog) {
             Errors.constantFunction(label)
 
-            if (State.current.numericA === 1 && Checks.isFiniteNumber(State.current.numericC))
+            if (State.current.numericA == 1 && Checks.isFiniteNumber(State.current.numericC))
                 State.current.c = State.current.numericC + State.current.numericB
 
             State.current.a = 0
@@ -120,14 +123,14 @@ const setMeta = (name = "", content = "") =>
             return
         }
 
-        if (State.current.isInvalidExpLog) {
-            Errors.invalidFunction(label)
-            State.askCoeffs = true
-            State.loop = true
-        }
+        if (!State.current.isInvalidExpLog) return
+
+        Errors.invalidFunction(label)
+        State.askCoeffs = true
+        State.loop = true
     },
     handleNonPolynomial = () => {
-        runSubMenu(
+        runSubmenu(
             () =>
                 `=== Menu ===\n${tr("main.whatWant")}\n` +
                 `1 = ${tr("main.exponentialFunction")}\n` +
@@ -143,7 +146,7 @@ const setMeta = (name = "", content = "") =>
             }
         )
     },
-    handleTrig = (kind = "sin", label, resolveFn, mergeOnZeroA = false) => {
+    handleTrig = (kind, label, resolveFn, mergeOnZeroA = false) => {
         State.current.type = /** @type {FunctionType} */ (kind)
 
         if (State.current.variableCoefs) State.current.resolveCoefs()
@@ -154,21 +157,21 @@ const setMeta = (name = "", content = "") =>
             return
         }
 
-        if (State.current.isConstantTrig) {
-            Errors.constantFunction(label)
+        if (!State.current.isConstantTrig) return
 
-            if (mergeOnZeroA && State.current.numericA === 0 && Checks.isFiniteNumber(State.current.numericC))
-                State.current.c = State.current.numericC + State.current.numericB
+        Errors.constantFunction(label)
 
-            State.current.a = 0
-            State.current.b = 0
-            State.type = 1
-            State.keepType = true
-            State.loop = true
-        }
+        if (mergeOnZeroA && State.current.numericA == 0 && Checks.isFiniteNumber(State.current.numericC))
+            State.current.c = State.current.numericC + State.current.numericB
+
+        State.current.a = 0
+        State.current.b = 0
+        State.type = 1
+        State.keepType = true
+        State.loop = true
     },
     handleTrigonometric = () => {
-        runSubMenu(
+        runSubmenu(
             () =>
                 `=== Menu ===\n${tr("main.whatWant")}\n` +
                 `1 = ${tr("main.sineFunction")}\n` +
@@ -203,7 +206,7 @@ const setMeta = (name = "", content = "") =>
                 )
                 .join("")}`,
             answer = Ui.rangeOptions(message, { max: State.history.length })
-        if (answer === 0) return
+        if (answer == 0) return
 
         const stored = State.history.at(-answer)
         if (!stored) return
@@ -239,11 +242,6 @@ const setMeta = (name = "", content = "") =>
         Writing.configItem(tr("main.degrees"), "degrees"),
         "---",
     ],
-    /**
-     * @param {Numeric} page
-     * @param {Numeric} total
-     * @param {Str[]} configOptions
-     */
     buildSettingsMenu = (page, total, configOptions) => {
         let text = `=== ${tr("main.settings")} ===\n${tr("commands.page")}${String(page)}/${String(
             total
@@ -261,7 +259,7 @@ const setMeta = (name = "", content = "") =>
         return text
     },
     restoreDefaults = () => {
-        if (JSON.stringify(Config) === JSON.stringify(DEFAULT_CONFIG)) {
+        if (JSON.stringify(Config) == JSON.stringify(DEFAULT_CONFIG)) {
             Ui.notifyOptions(tr("main.allSettingsDefault"), {
                 explanation: tr("main.allSettingsDefaultExp"),
                 type: "warning",
@@ -269,7 +267,7 @@ const setMeta = (name = "", content = "") =>
             return
         }
 
-        const changedKeys = /** @type {(import("./config.js").ConfigKey)[]} */ (Object.keys(Config)).filter(
+        const changedKeys = /** @type {(config.ConfigKey)[]} */ (Object.keys(Config)).filter(
             key => Config[key] !== DEFAULT_CONFIG[key]
         )
         if (
@@ -285,7 +283,7 @@ const setMeta = (name = "", content = "") =>
         1: {
             1: () => {
                 /** @type {Language[]} */ const LANGUAGES = ["pt-br", "pt-pt", "en-us", "en-gb", "es-419", "es-es"],
-                    displayLocale = Config.language.replace(/(?:-\w+)$/, m => Writing.uppercase(m)),
+                    displayLocale = Config.language.replace(/-\w+$/v, m => Writing.uppercase(m)),
                     languageNames = new Intl.DisplayNames([displayLocale], { type: "language" }),
                     optionLines = LANGUAGES.map((lang, index) => `${index + 1} = ${languageNames.of(lang)}`),
                     question = Ui.rangeOptions(
@@ -294,10 +292,10 @@ const setMeta = (name = "", content = "") =>
                     ),
                     /** @type {Language} */ language = LANGUAGES[question - 1] ?? "pt-br"
 
-                if (language !== Config.language) {
-                    changeLanguage(language)
-                    changeHTML()
-                }
+                if (language == Config.language) return
+
+                changeLanguage(language)
+                changeHTML()
             },
             2: () => {
                 Config.unicode = Ui.notifyOptions(Writing.configItem(tr("main.enableUnicode"), "unicode"), {
@@ -415,7 +413,7 @@ const setMeta = (name = "", content = "") =>
             4: () => {
                 Config.iterationLimit = Ui.rangeOptions(
                     Writing.configItem(tr("main.whatIterationLimit"), "iterationLimit"),
-                    { explanation: tr("main.noteIterationLimit"), min: 100, max: 10000 }
+                    { explanation: tr("main.noteIterationLimit"), min: 100, max: 10_000 }
                 )
             },
             5: () => {
@@ -432,6 +430,40 @@ const setMeta = (name = "", content = "") =>
         let page = 1,
             choice
 
+        const hasChoice = c => {
+            switch (c) {
+                case 7: {
+                    restoreDefaults()
+                    break
+                }
+                case 8: {
+                    choice = -1
+                    page--
+                    break
+                }
+                case 9: {
+                    choice = -1
+                    page++
+                    break
+                }
+                case "config": {
+                    choice = -1
+                    break
+                }
+                case "exit": {
+                    choice = 0
+                    State.type = "exit"
+                    break
+                }
+                default: {
+                    if (Checks.isFiniteNumber(choice)) {
+                        /** @type {Record<Numeric, Record<Numeric, () => void> | undefined>} */ const pageActions =
+                            settingsPageActions
+                        pageActions[page]?.[choice]?.()
+                    }
+                }
+            }
+        }
         do {
             State.type = -1
             State.loop = true
@@ -444,22 +476,7 @@ const setMeta = (name = "", content = "") =>
 
             choice = Ui.rangeOptions(buildSettingsMenu(page, total, configOptions), { max: 9, commands: true })
 
-            if (choice === 7) restoreDefaults()
-            else if (choice === 8) {
-                choice = -1
-                page--
-            } else if (choice === 9) {
-                choice = -1
-                page++
-            } else if (choice === "config") choice = -1
-            else if (choice === "exit") {
-                choice = 0
-                State.type = "exit"
-            } else if (Checks.isFiniteNumber(choice)) {
-                /** @type {Record<Numeric, Record<Numeric, () => void> | undefined>} */ const pageActions =
-                    settingsPageActions
-                pageActions[page]?.[choice]?.()
-            }
+            hasChoice(choice)
 
             if (Checks.isFiniteNumber(choice) && choice >= 1 && choice <= 6) Config.save()
         } while (choice !== 0)
@@ -510,7 +527,7 @@ const setMeta = (name = "", content = "") =>
         State.lastSaved = State.current.toCoefficients()
         State.history.push(State.lastSaved)
 
-        if (State.history.length > 9) State.history.shift()
+        if (State.history.length > 9) State.history = State.history.slice(1)
     }
 
 State.current.refreshCoefs()
@@ -520,7 +537,7 @@ do {
 
     saveHistory()
 
-    if (!State.keepType || State.type === "start") State.type = askMainMenu()
+    if (!State.keepType || State.type == "start") State.type = askMainMenu()
 
     State.keepType = false
     State.askCoeffs = false

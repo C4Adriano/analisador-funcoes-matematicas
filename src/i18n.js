@@ -17,15 +17,18 @@ const dictionaries = {
 }, FALLBACK_DICT = ptBR, FALLBACK_CHAIN = {
     "en-gb": ["en-us"],
     "es-es": ["es-419"],
-}, resolveKey = (dict, key) => {
-    const raw = key.split(".").reduce((obj, part) => obj?.[part], dict);
-    return Checks.isValidText(raw) ? raw : null;
 };
-export const tr = (key, params) => {
-    const dict = dictionaries[Config.language] ?? dictionaries["pt-br"];
+const resolveKey = (dict, key) => {
+    const raw = key
+        .split(".")
+        .reduce((obj, part) => typeof obj !== "object" || obj == null ? undefined : obj[part], dict);
+    return Checks.isValidText(raw) ? raw : null;
+}, tr = (key, params) => {
+    const dict = dictionaries[Config.language];
     let raw = resolveKey(dict, key);
-    if (raw == null)
-        for (const lang of FALLBACK_CHAIN[Config.language] ?? []) {
+    const fallbackLanguages = FALLBACK_CHAIN[Config.language];
+    if (raw == null && fallbackLanguages)
+        for (const lang of fallbackLanguages) {
             raw = resolveKey(dictionaries[lang], key);
             if (raw != null)
                 break;
@@ -34,18 +37,16 @@ export const tr = (key, params) => {
         raw = resolveKey(FALLBACK_DICT, key);
     if (raw == null)
         return key;
-    return params ? Object.entries(params).reduce((str, [k, v]) => str.replaceAll(`{${k}}`, String(v)), raw) : raw;
-};
-export const trArr = (keys = []) => keys.map(key => tr(key));
-export const changeLanguage = (language = "pt-br") => {
-    if (Config.language === language)
+    return params ? Object.entries(params).reduce((str, [k, v]) => str.split(`{${k}}`).join(String(v)), raw) : raw;
+}, trArr = (keys = []) => keys.map(key => tr(key)), changeLanguage = (language = "pt-br") => {
+    if (Config.language == language)
         Ui.notifyOptions(tr("commands.languageAlready"), { type: "warning" });
     else if (confirm(tr("i18n.confirmChangeLanguage", { language }))) {
-        if (language === "pt-br" || language === "pt-pt" || language === "es-419" || language === "es-es") {
+        if (["pt-br", "pt-pt", "es-419", "es-es"].includes(language)) {
             Config.decimalSeparator = true;
             Config.accents = true;
         }
-        else if (language === "en-us" || language === "en-gb") {
+        else {
             Config.decimalSeparator = false;
             Config.accents = false;
         }
@@ -53,3 +54,4 @@ export const changeLanguage = (language = "pt-br") => {
         Config.save();
     }
 };
+export { changeLanguage, tr, trArr };

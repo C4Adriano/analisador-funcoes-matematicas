@@ -1,4 +1,7 @@
 node_modules/
+pessoal/
+package-lock.json
+package.json
 src/checks.js
 src/config.js
 src/errors.js

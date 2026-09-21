@@ -1,0 +1,23 @@
+{
+    "extends": ["stylelint-config-standard-scss"],
+    "overrides": [
+        { "files": ["**/*.css"], "rules": { "color-function-notation": null, "rule-empty-line-before": null } }
+    ],
+    "plugins": [
+        "stylelint-order",
+        "stylelint-declaration-strict-value",
+        "stylelint-high-performance-animation",
+        "@ivuorinen/stylelint-a11y"
+    ],
+    "rules": {
+        "a11y/no-outline-none": true,
+        "color-named": "never",
+        "declaration-block-no-duplicate-properties": true,
+        "declaration-no-important": true,
+        "no-descending-specificity": true,
+        "order/order": ["custom-properties", "declarations"],
+        "order/properties-alphabetical-order": null,
+        "plugin/no-low-performance-animation-properties": true,
+        "scss/comment-no-empty": true
+    }
+}

@@ -2,19 +2,24 @@
  * Dígito numérico.
  * @since ~v6.2.0
  */
-export type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
 /**
  * Opções básicas suportadas pelo programa.
  * @since v6.6.1
  */
-export type Options = { invert?: boolean; places?: Places; precision?: Precision; round?: boolean }
+interface Options {
+    invert?: boolean
+    places?: Places
+    precision?: Precision
+    round?: boolean
+}
 
 /**
  * Opções básicas para `input`s suportadas pelo programa.
  * @since v6.7.0
  */
-export type InputOptions = {
+interface InputOptions {
     commands?: boolean
     explanation?: Str
     number?: boolean
@@ -26,12 +31,20 @@ export type InputOptions = {
  * Opções básicas para intervalos suportadas pelo programa.
  * @since v6.7.0
  */
-export type RangeOptions = { commands?: boolean; explanation?: Str; max?: Numeric; min?: Numeric; places?: Places }
+interface RangeOptions {
+    commands?: boolean
+    explanation?: Str
+    max?: Numeric
+    min?: Numeric
+    places?: Places
+}
 
 /**
  * Opções básicas para mensagens suportadas pelo programa.
  * @since v6.6.1
  */
-export type MessageOptions =
+type MessageOptions =
     | { explanation?: Str; type?: Exclude<TypeMessage, "warning"> }
     | { explanation?: Str; type: "warning"; asConfirm?: boolean }
+
+export type { Digit, InputOptions, MessageOptions, Options, RangeOptions }

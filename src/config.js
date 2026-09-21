@@ -1,7 +1,7 @@
-import defaultConfigJson from "../src/JSON/config.json" with { type: "json" };
+import defaultConfigJson from "./JSON/config.json" with { type: "json" };
 import { Ui } from "./ui.js";
 import { VERSION } from "./version.js";
-export const DEFAULT_CONFIG = structuredClone(defaultConfigJson);
+const DEFAULT_CONFIG = structuredClone(defaultConfigJson);
 class ConfigStore {
     language;
     unicode;
@@ -24,7 +24,7 @@ class ConfigStore {
     }
     load() {
         const saved = localStorage.getItem("config");
-        if (!saved)
+        if (saved == null || saved.trim() == "")
             return;
         let parsed;
         try {
@@ -40,13 +40,17 @@ class ConfigStore {
         }
         const keys = Object.keys(defaultConfigJson), updates = {};
         for (const key of keys) {
-            const defaultValue = defaultConfigJson[key], newValue = parsed[key];
-            if (newValue == null)
+            const value = parsed[key];
+            if (value == null)
                 continue;
-            if (typeof newValue == typeof defaultValue)
-                updates[key] = newValue;
+            const defaultValue = defaultConfigJson[key];
+            if (typeof value == typeof defaultValue)
+                updates[key] = value;
             else
-                Ui.notifyOptions(`[Config.load] Tipo inválido para '${String(key)}'. Mantendo padrão da versão atual.`, { explanation: `Esperado: ${typeof defaultValue} | Recebido: ${typeof newValue}`, type: "console" });
+                Ui.notifyOptions(`[Config.load] Tipo inválido para '${key}'. Mantendo padrão da versão atual.`, {
+                    explanation: `Esperado: ${typeof defaultValue} | Recebido: ${typeof value}`,
+                    type: "console",
+                });
         }
         Object.assign(this, updates);
     }
@@ -68,4 +72,5 @@ class ConfigStore {
         Object.assign(this, structuredClone(defaultConfigJson));
     }
 }
-export const Config = new ConfigStore();
+const Config = new ConfigStore();
+export { Config, DEFAULT_CONFIG };

@@ -1,0 +1,16 @@
+{
+    "extends": ["html-validate:recommended", "html-validate:a11y"],
+    "rules": {
+        "attribute-boolean-style": ["error", { "style": "omit" }],
+        "attribute-empty-style": ["error", { "style": "empty" }],
+        "doctype-style": "off",
+        "element-permitted-content": "error",
+        "no-dup-id": "error",
+        "no-inline-style": "error",
+        "no-trailing-whitespace": "error",
+        "prefer-native-element": "error",
+        "require-sri": "off",
+        "svg-focusable": "error",
+        "void-style": "off"
+    }
+}

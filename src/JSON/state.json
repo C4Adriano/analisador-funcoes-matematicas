@@ -1,11 +1,1 @@
-{
-    "loop": false,
-
-    "type": 0,
-    "keepType": false,
-    "askCoeffs": false,
-
-    "baseFunc": null,
-    "lastSaved": null,
-    "history": []
-}
+{ "askCoeffs": false, "baseFunc": null, "history": [], "keepType": false, "lastSaved": null, "loop": false, "type": 0 }

@@ -20,73 +20,75 @@ import type { TranslationKey } from "./i18n.js"
  * - {@link Checks.numericPoint numericPoint} - Verifica se é um ponto válido.
  *
  * ### Tags:
- * @author [C4Adriano](https://github.com/C4Adriano)
  * @license [License](../LICENSE.md)
  * @group JS
+ * @author [C4Adriano](https://github.com/C4Adriano)
  * @since v6.1.0
  */
 export class Checks {
-    static #isText = (value: unknown): value is Str => typeof value == "string"
-
-    static #isNumeric = (value: unknown): value is Numeric => typeof value == "number"
-
     /**
      * Verifica se o valor é um texto válido.
-     * @param value Valor qualquer.
+     * @param value - Valor qualquer.
      * @group JS
      * @since v6.1.0
      */
-    static isValidText = (value: unknown): value is Str => Checks.#isText(value) && value.trim().length > 0
+    public static isValidText = (value: unknown): value is Str => Checks.#isText(value) && value.trim().length > 0
 
     /**
      * Verifica se o valor é um número válido.
-     * @param value Valor qualquer.
+     * @param value - Valor qualquer.
      * @group JS
      * @since v6.1.0
      */
-    static isFiniteNumber = (value: unknown): value is Numeric =>
+    public static isFiniteNumber = (value: unknown): value is Numeric =>
         (Checks.#isNumeric(value) || Checks.isValidText(value)) && Number.isFinite(Number(value))
 
     /**
      * Verifica se o valor é um valor `(string | number)` válido.
-     * @param value Valor qualquer.
+     * @param value - Valor qualquer.
      * @group JS
      * @since v6.1.0
      */
-    static isValidValue = (value: unknown): value is Value => Checks.isValidText(value) || Checks.isFiniteNumber(value)
+    public static isValidValue = (value: unknown): value is Value =>
+        Checks.isValidText(value) || Checks.isFiniteNumber(value)
 
     /**
      * Verifica se o valor é um comando válido.
-     * @param value Valor qualquer.
+     * @param value - Valor qualquer.
      * @group JS
      * @since v6.1.0
      */
-    static isValidCommand = (value: unknown): value is CommandsNames =>
-        Checks.isValidText(value) && Commands.names.includes(value as CommandsNames)
+    public static isValidCommand = (value: unknown): value is CommandsNames =>
+        Checks.isValidText(value) && Checks.#isCommand(value)
 
     /**
      * Verifica se o valor é uma chave de `Config`.
-     * @param value Valor qualquer.
+     * @param value - Valor qualquer.
      * @group JS
      * @since v6.1.0
      */
-    static isConfigKey = (value: unknown): value is ConfigKey => Checks.isValidValue(value) && value in Config
+    public static isConfigKey = (value: unknown): value is ConfigKey =>
+        Checks.isValidValue(value) && Object.hasOwn(Config, value)
 
     /**
      * Verifica se o valor é uma chave de `tr`.
-     * @param value Valor qualquer.
+     * @param value - Valor qualquer.
      * @group JS
      * @since v6.6.8
      */
-    static isTrKey = (value: unknown): value is TranslationKey => Checks.isValidText(value)
+    public static isTrKey = (value: unknown): value is TranslationKey => Checks.isValidText(value)
 
     /**
      * Verifica se um ponto do `array` é válido.
-     * @param points Array de pontos.
-     * @param index Número no `array` desse ponto.
+     * @param points - Array de pontos.
+     * @param index - Número no `array` desse ponto.
      * @group JS
      * @since v6.1.0
      */
-    static numericPoint = (points: ValueArray, index: Numeric): Numeric =>
-        Number(Writing.decimalOptions(points.at(index) ?? 0, { invert: true }))
+    public static numericPoint = (points: Readonly<ValueArray>, index: Numeric): Numeric =>
+        Writing.decimalOptions(points.at(index) ?? 0, { invert: true })
+
+    static readonly #isText = (value: unknown): value is Str => typeof value == "string"
+    static readonly #isNumeric = (value: unknown): value is Numeric => typeof value == "number"
+    static readonly #isCommand = (value: Str): value is CommandsNames => Commands.names.includes(value as CommandsNames)
 }

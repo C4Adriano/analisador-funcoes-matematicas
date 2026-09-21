@@ -1,5 +1,4 @@
 import type { ConfigKey, ConfigType } from "./config.js"
-import type { CommandsNames } from "./values.d.ts"
 
 /**
  * # Commands
@@ -24,9 +23,9 @@ import type { CommandsNames } from "./values.d.ts"
  * - {@link Commands.version version} - Exibe a versão do projeto.
  *
  * ### Tags:
- * @author [C4Adriano](https://github.com/C4Adriano)
  * @license [License](../LICENSE.md)
  * @group JS
+ * @author [C4Adriano](https://github.com/C4Adriano)
  * @since v6.1.0
  */
 export declare const Commands: {
@@ -37,7 +36,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    process(raw: Str): CommandsNames | null
+    process: (raw: Str) => CommandsNames | null
 
     /**
      * Calcula a distância de _Levenshtein_ entre duas `strings`.
@@ -46,7 +45,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    levenshtein(source: Str, target: Str): void
+    levenshtein: (source: Str, target: Str) => void
 
     /**
      * Sugere um comando baseado no digitado pelo usuário usando distância de _Levenshtein_.
@@ -55,7 +54,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    suggestCmd(typed: Str): void
+    suggestCmd: (typed: Str) => void
 
     /**
      * Pesquisa comandos por termo — busca no canônico, variações, `short` e `long`.
@@ -64,15 +63,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.2.0
      */
-    searchCmds(term: Str): void
-
-    /**
-     * Retorna a lista de comandos disponíveis.
-     * @returns Lista de comandos com suas descrições, variações e ações.
-     * @group JS
-     * @since v6.1.0
-     */
-    get listCmds(): object
+    searchCmds: (term: Str) => void
 
     /**
      * Resolve um comando específico para seu nome canônico.
@@ -81,7 +72,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    resolveCmd(specific: Str): void
+    resolveCmd: (specific: Str) => void
 
     /**
      * Converte um texto em um valor `boolean`.
@@ -90,7 +81,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    parseBool(text: Str): boolean | null
+    parseBool: (text: Str) => boolean | null
 
     /**
      * Exibe ajuda sobre um comando específico ou lista paginada de todos os comandos.
@@ -98,7 +89,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.1.0
      */
-    help(specific?: Str): null
+    help: (specific?: Str) => null
 
     /**
      * Exibe os resultados de uma pesquisa de comandos de forma paginada.
@@ -106,7 +97,7 @@ export declare const Commands: {
      * @group JS
      * @since v6.2.0
      */
-    searchHelp(term: Str): null
+    searchHelp: (term: Str) => null
 
     /**
      * Exibe todas as variações aceitas de um comando.
@@ -114,7 +105,24 @@ export declare const Commands: {
      * @group JS
      * @since v6.2.0
      */
-    shortcuts(specific: Str): null
+    shortcuts: (specific: Str) => null
+
+    /**
+     * Muda o valor de uma chave em `Config`.
+     * @param name - Nome em `Config`.
+     * @param value - Novo valor da chave.
+     * @group JS
+     * @since v6.1.0
+     */
+    change: (name: ConfigKey, value: ConfigType) => null
+
+    /**
+     * Retorna a lista de comandos disponíveis.
+     * @returns Lista de comandos com suas descrições, variações e ações.
+     * @group JS
+     * @since v6.1.0
+     */
+    get listCmds(): object
 
     /**
      * Exibe informações sobre o projeto.
@@ -129,15 +137,6 @@ export declare const Commands: {
      * @since v6.1.0
      */
     get version(): null
-
-    /**
-     * Muda o valor de uma chave em `Config`.
-     * @param name - Nome em `Config`.
-     * @param value - Novo valor da chave.
-     * @group JS
-     * @since v6.1.0
-     */
-    change(name: ConfigKey, value: ConfigType): null
 
     /**
      * Retorna uma lista com os nomes canônicos dos comandos que alteram o fluxo de estado.

@@ -1,10 +1,10 @@
 import { Algebra } from "./algebra.js";
 import { Config, DEFAULT_CONFIG } from "./config.js";
 import { tr } from "./i18n.js";
-export class Writing {
-    static replace = (text = "", from = "", to = "") => String(text).replaceAll(from, to);
-    static replaceGroup = (text = "", list = [["", ""]]) => list.reduce((acc, [from, to]) => (from != null && to != null ? Writing.replace(acc, from, to) : acc), text);
-    static noUnicode = (text = "") => {
+export const Writing = {
+    replace: (text = "", from = "", to = "") => text.replaceAll(from, () => to),
+    replaceGroup: (text = "", list = [["", ""]]) => list.reduce((acc, [from, to]) => Writing.replace(acc, from, to), text),
+    noUnicode: (text = "") => {
         const staticReplacements = [
             ["©", "(c)"],
             ["«", "'"],
@@ -151,26 +151,26 @@ export class Writing {
             ["⊗", tr("symbols.inclusiveOr")],
         ];
         return Writing.replaceGroup(text, [...localizedReplacements, ...staticReplacements]);
-    };
-    static noAccents = (text = "") => String(text)
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
-    static lowercase = (text = "") => Writing.replace(String(text).toLowerCase(), "δ", "Δ");
-    static uppercase = (text = "") => Writing.replace(String(text).toUpperCase(), "Ƒ", "ƒ");
-    static capitalize = (text = "") => Writing.lowercase(text).replace(/\p{L}+/gu, word => Writing.uppercase(word[0]) + word.slice(1));
-    static decimalOptions(number = 0, { invert = false, round = true, places = Config.decimalPlaces } = {}) {
+    },
+    noAccents: (text = "") => text.normalize("NFD").replaceAll(/\p{M}/gv, ""),
+    lowercase: (text = "") => Writing.replace(text.toLowerCase(), "δ", "Δ"),
+    uppercase: (text = "") => Writing.replace(text.toUpperCase(), "Ƒ", "ƒ"),
+    capitalize: (text = "") => Writing.lowercase(text).replaceAll(/\p{L}+/gv, word => Writing.uppercase(word[0]) + word.slice(1)),
+    decimalOptions(number = 0, { invert = false, round = true, places = Config.decimalPlaces } = {}) {
         let result = String(number);
         if (invert)
-            return Writing.replace(result, ",", ".");
-        if (round)
-            result = Algebra.round(result, places);
-        if (Config.decimalSeparator)
-            return Writing.replace(String(result), ".", ",");
+            result = Writing.replace(result, ",", ".");
+        else {
+            if (round)
+                result = Algebra.round(result, places);
+            if (Config.decimalSeparator)
+                result = Writing.replace(String(result), ".", ",");
+        }
         return result;
-    }
-    static simplifyMultiplication = (text = "") => Writing.replace(text, " · ", "");
-    static format = (message = "", explanation = "") => {
-        if (Config.explanations && explanation !== "")
+    },
+    simplifyMultiplication: (text = "") => Writing.replace(text, " · ", ""),
+    format: (message = "", explanation = "") => {
+        if (explanation !== "" && Config.explanations)
             message += `\n\n${explanation}`;
         if (Config.simpleMulti)
             message = Writing.simplifyMultiplication(message);
@@ -178,15 +178,29 @@ export class Writing {
             message = Writing.noUnicode(message);
         if (!Config.accents)
             message = Writing.noAccents(message);
-        if (Config.textCase === "capitalized")
-            message = Writing.capitalize(message);
-        else if (Config.textCase === "lowercase")
-            message = Writing.lowercase(message);
-        else if (Config.textCase === "uppercase")
-            message = Writing.uppercase(message);
+        switch (Config.textCase) {
+            case "capitalized": {
+                message = Writing.capitalize(message);
+                break;
+            }
+            case "lowercase": {
+                message = Writing.lowercase(message);
+                break;
+            }
+            case "uppercase": {
+                message = Writing.uppercase(message);
+                break;
+            }
+            case "normal": {
+                break;
+            }
+            default: {
+                break;
+            }
+        }
         return message;
-    };
-    static superscript = (value = "") => Config.unicode
+    },
+    superscript: (value = "") => Config.unicode
         ? Writing.replaceGroup(String(value), [
             ["-", "⁻"],
             [".", "․"],
@@ -201,8 +215,8 @@ export class Writing {
             ["8", "⁸"],
             ["9", "⁹"],
         ])
-        : `^${value}`;
-    static subscript = (value = "") => Config.unicode
+        : `^${String(value)}`,
+    subscript: (value = "") => Config.unicode
         ? Writing.replaceGroup(String(value), [
             ["-", "₋"],
             [".", "․"],
@@ -217,11 +231,11 @@ export class Writing {
             ["8", "₈"],
             ["9", "₉"],
         ])
-        : `_${value}`;
-    static formatValue = (value = true) => typeof value == "boolean" ? (value ? tr("writing.yes") : tr("writing.no")) : String(value);
-    static configItem = (message = "", name) => tr("writing.currentDefault", {
+        : `_${String(value)}`,
+    formatValue: (value = true) => typeof value == "boolean" ? tr(value ? "writing.yes" : "writing.no") : String(value),
+    configItem: (message, name) => tr("writing.currentDefault", {
         message,
         current: Writing.formatValue(Config[name]),
         default: Writing.formatValue(DEFAULT_CONFIG[name]),
-    });
-}
+    }),
+};

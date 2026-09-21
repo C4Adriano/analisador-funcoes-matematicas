@@ -1,7 +1,7 @@
 import type { InputOptions, MessageOptions, RangeOptions } from "./values.d.ts"
 
 /**
- * # Ui
+ * # UI
  *
  * ## Funcionalidades:
  * Objeto base para os métodos envolvendo exibições na tela.
@@ -14,63 +14,49 @@ import type { InputOptions, MessageOptions, RangeOptions } from "./values.d.ts"
  * - {@link Ui.resolveFunction resolveFunction} - Mostra uma Função.
  *
  * ### Tags:
- * @author [C4Adriano](https://github.com/C4Adriano)
  * @license [License](../LICENSE.md)
  * @group UI
+ * @author [C4Adriano](https://github.com/C4Adriano)
  * @since v6.1.0
  */
 export declare const Ui: {
-    /** Exibe uma mensagem qualquer, como {@link alert `alert`}. */
-    notifyOptions(message: Str, option: MessageOptions & { type: "warning"; asConfirm?: false }): void
-    /** Exibe uma mensagem qualquer, como {@link confirm `confirm`}, via {@link alert `alert`}. */
-    notifyOptions(message: Str, option: MessageOptions & { type: "warning"; asConfirm: true }): boolean
-    /** Exibe uma mensagem qualquer, como {@link confirm `confirm`}. */
-    notifyOptions(message: Str, option: MessageOptions & { type: "confirm"; asConfirm?: never }): boolean
-    /** Exibe uma mensagem qualquer, como {@link confirm `confirm`}. @deprecated Use `{ type: "confirm" }` no lugar. */
-    notifyOptions(message: Str, option: MessageOptions & { asConfirm: true }): boolean
-    /** Exibe uma mensagem qualquer. */
-    notifyOptions(
-        message?: Str,
-        option?: MessageOptions & { type?: "display" | "error" | "console"; asConfirm?: never }
-    ): void
     /**
-     * Exibe uma mensagem qualquer, com base no `type` informado.
-     * @param message - Mensagem
-     * @param option - Opções
-     * @default options = { asConfirm: false, type: "display" }
-     * @group UI
-     * @since v6.6.1
+     * Exibe uma mensagem qualquer, como {@link alert `alert`}.
      */
-    notifyOptions(message: Str, option?: MessageOptions): boolean | void
+    notifyOptions: ((message: Str, option: MessageOptions & { type: "warning"; asConfirm?: false }) => void) &
+        ((
+            message: Str,
+            option:
+                | (MessageOptions & { type: "warning"; asConfirm: true })
+                | (MessageOptions & { type: "confirm"; asConfirm?: never })
+        ) => boolean) &
+        ((
+            message?: Str,
+            option?: MessageOptions & { type?: "display" | "error" | "console"; asConfirm?: never }
+        ) => void) &
+        ((message: Str, option?: MessageOptions) => boolean | undefined)
 
     /**
      * Formata um menu paginado.
-     * @param options Array com todas as opções possíveis.
-     * @param page Página atual.
+     * @param options - Array com todas as opções possíveis.
+     * @param page - Página atual.
      * @returns Retorna a resposta, a página atual, as opções por página.
      * @group UI
      * @since v6.1.0
      */
-    menu(options: Str[], page: Numeric): [CommandsNames | Numeric, Numeric]
+    menu: (options: Str[], page: Numeric) => [CommandsNames | Numeric, Numeric]
 
-    /** Texto, com comandos. */
-    inputOptions(message: Str, options?: InputOptions & { number?: false; commands: true }): Variable | CommandsNames
-    /** Número, com comandos. */
-    inputOptions(message: Str, options?: InputOptions & { number: true; commands: true }): Numeric | CommandsNames
-    /** Texto. */
-    inputOptions(message: Str, options?: InputOptions & { number?: false }): Variable
-    /** Número. */
-    inputOptions(message: Str, options?: InputOptions & { number: true }): Numeric
     /**
-     * Exibe um prompt personalizado e verifica ele.
-     * @param message - Mensagem.
-     * @param options - Opções.
-     * @default { number: false, places: Config.decimalPlaces, commands: false }
-     * @returns Valor verificado.
-     * @group UI
-     * @since v6.1.0
+     * Texto, com comandos.
      */
-    inputOptions(message: Str, options?: InputOptions): Value
+    inputOptions: ((
+        message: Str,
+        options?: InputOptions & { number?: false; commands: true }
+    ) => Variable | CommandsNames) &
+        ((message: Str, options?: InputOptions & { number: true; commands: true }) => Numeric | CommandsNames) &
+        ((message: Str, options?: InputOptions & { number?: false }) => Variable) &
+        ((message: Str, options?: InputOptions & { number: true }) => Numeric) &
+        ((message: Str, options?: InputOptions) => Value)
 
     /**
      * Formata uma Função.
@@ -81,17 +67,11 @@ export declare const Ui: {
      * @group UI
      * @since v6.6.1
      */
-    resolveFunction(coefs?: Coefficients, funcType?: FunctionType, show?: boolean): void
+    resolveFunction: (coefs?: Coefficients, funcType?: FunctionType, show?: boolean) => void
 
-    /** Sem comandos. */
-    rangeOptions(message: Str, options?: RangeOptions & { commands?: false }): Numeric
     /**
-     * Pede ao usuário um valor entre o intervalo.
-     * @param message - Mensagem.
-     * @param options - Opções.
-     * @returns Um valor escolhido entre o intervalo.
-     * @group UI
-     * @since v6.1.0
+     * Sem comandos.
      */
-    rangeOptions(message: Str, options?: RangeOptions): Numeric | CommandsNames
+    rangeOptions: ((message: Str, options?: RangeOptions & { commands?: false }) => Numeric) &
+        ((message: Str, options?: RangeOptions) => Numeric | CommandsNames)
 }

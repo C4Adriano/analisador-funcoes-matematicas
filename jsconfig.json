@@ -1,19 +1,6 @@
 {
-    "compilerOptions": {
-        "lib": ["ES2025", "DOM"],
-        "module": "nodenext",
-        "moduleResolution": "nodenext",
-        "target": "es2025",
-
-        "checkJs": true,
-        "exactOptionalPropertyTypes": true,
-        "noImplicitAny": false,
-        "noUncheckedIndexedAccess": true,
-        "resolveJsonModule": true,
-        "skipLibCheck": true,
-        "strict": true
-    },
-
-    "include": ["src"],
-    "exclude": ["pessoal"]
+    "compilerOptions": { "checkJs": true },
+    "exclude": ["pessoal"],
+    "extends": "./tsconfig.base.json",
+    "include": ["src"]
 }
