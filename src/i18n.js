@@ -1,57 +1,46 @@
-import { Checks } from "./checks.js";
+import { isValidText } from "./checks.js";
 import { Config } from "./config.js";
-import { Ui } from "./ui.js";
+import { KEY_NOT_FOUND } from "./consts.js";
 import enGB from "./JSON/i18n/en-GB.json" with { type: "json" };
 import enUS from "./JSON/i18n/en-US.json" with { type: "json" };
 import es419 from "./JSON/i18n/es-419.json" with { type: "json" };
 import esES from "./JSON/i18n/es-ES.json" with { type: "json" };
 import ptBR from "./JSON/i18n/pt-BR.json" with { type: "json" };
 import ptPT from "./JSON/i18n/pt-PT.json" with { type: "json" };
-const dictionaries = {
-    "pt-br": ptBR,
-    "pt-pt": ptPT,
-    "en-us": enUS,
-    "en-gb": enGB,
-    "es-419": es419,
-    "es-es": esES,
-}, FALLBACK_DICT = ptBR, FALLBACK_CHAIN = {
-    "en-gb": ["en-us"],
-    "es-es": ["es-419"],
-};
-const resolveKey = (dict, key) => {
-    const raw = key
-        .split(".")
-        .reduce((obj, part) => typeof obj !== "object" || obj == null ? undefined : obj[part], dict);
-    return Checks.isValidText(raw) ? raw : null;
-}, tr = (key, params) => {
-    const dict = dictionaries[Config.language];
-    let raw = resolveKey(dict, key);
-    const fallbackLanguages = FALLBACK_CHAIN[Config.language];
-    if (raw == null && fallbackLanguages)
-        for (const lang of fallbackLanguages) {
-            raw = resolveKey(dictionaries[lang], key);
-            if (raw != null)
-                break;
-        }
-    if (raw == null && dict !== FALLBACK_DICT)
-        raw = resolveKey(FALLBACK_DICT, key);
-    if (raw == null)
-        return key;
-    return params ? Object.entries(params).reduce((str, [k, v]) => str.split(`{${k}}`).join(String(v)), raw) : raw;
-}, trArr = (keys = []) => keys.map(key => tr(key)), changeLanguage = (language = "pt-br") => {
-    if (Config.language == language)
-        Ui.notifyOptions(tr("commands.languageAlready"), { type: "warning" });
-    else if (confirm(tr("i18n.confirmChangeLanguage", { language }))) {
-        if (["pt-br", "pt-pt", "es-419", "es-es"].includes(language)) {
-            Config.decimalSeparator = true;
-            Config.accents = true;
-        }
-        else {
-            Config.decimalSeparator = false;
-            Config.accents = false;
-        }
-        Config.language = language;
-        Config.save();
+const dictionaries = Object.freeze({ "pt-br": ptBR, "pt-pt": ptPT, "en-us": enUS, "en-gb": enGB, "es-419": es419, "es-es": esES }), COMMA_DECIMAL_LANGUAGES = new Set(["pt-br", "pt-pt", "es-419", "es-es"]);
+function changeLanguage(language = "pt-br") {
+    if (Config.language === language)
+        return "same";
+    if (!confirm(tr("i18n.confirmChangeLanguage", { language })))
+        return "notChange";
+    const useComma = COMMA_DECIMAL_LANGUAGES.has(language);
+    Config.decimalSeparator = useComma;
+    Config.accents = useComma;
+    Config.language = language;
+    Config.save();
+    return "changed";
+}
+function isTrKey(value) {
+    return isValidText(value) && resolveKey(ptBR, value) !== KEY_NOT_FOUND;
+}
+function resolveKey(dict, key) {
+    const raw = key.split(".").reduce((obj, part) => (typeof obj !== "object" || obj == null ? undefined : obj[part]), dict);
+    return typeof raw === "string" ? raw : KEY_NOT_FOUND;
+}
+const trCache = new Map();
+function tr(key, params) {
+    const cacheKey = `${Config.language}:${key}`;
+    let raw = trCache.get(cacheKey);
+    if (raw === undefined) {
+        const resolved = resolveKey(dictionaries[Config.language], key);
+        if (resolved === KEY_NOT_FOUND)
+            return key;
+        raw = resolved;
+        trCache.set(cacheKey, raw);
     }
-};
-export { changeLanguage, tr, trArr };
+    return params ? Object.entries(params).reduce((str, [k, v]) => str.split(`{${k}}`).join(String(v)), raw) : raw;
+}
+function trArr(keys = []) {
+    return keys.map(key => tr(key));
+}
+export { changeLanguage, isTrKey, tr, trArr };

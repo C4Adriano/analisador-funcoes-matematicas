@@ -2,10 +2,4 @@ node_modules/
 pessoal/
 package-lock.json
 package.json
-src/checks.js
-src/config.js
-src/errors.js
-src/i18n.js
-src/math.js
-src/state.js
-src/writing.js
+src/*.js

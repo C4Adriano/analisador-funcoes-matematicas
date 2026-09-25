@@ -64,7 +64,7 @@ h1 {
 @keyframes rgb-colors {
     @each $stop, $rgb in $rgb-colors {
         #{$stop} {
-            filter: rgb($rgb...);
+            color: rgb($rgb...);
         }
     }
 }

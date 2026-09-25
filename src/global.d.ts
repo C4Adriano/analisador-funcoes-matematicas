@@ -1,171 +1,74 @@
 declare global {
     /**
-     * Texto genérico.
-     * @since ~v6.2.0
+    @deprecated
      */
     type Str = string
 
     /**
-     * Número genérico.
-     * @since ~v6.2.0
+    @deprecated
      */
     type Numeric = number
+    type NumericArray = number[]
+    type NumericMatrix = number[][]
 
-    /**
-     * Variável matemática.
-     * @since ~v6.2.0
-     */
-    type Variable = "a" | "b" | "c"
-
-    /**
-     * Valor qualquer.
-     * @since ~v6.2.0
-     */
-    type Value = Str | Numeric
-
-    /**
-     * Valor matemático.
-     * @since v7.0.0
-     */
-    type MathValue = Variable | Numeric
-
-    /**
-     * Precisão numérica.
-     * @since ~v6.2.0
-     */
-    type Precision = 1e-6 | 1e-7 | 1e-8 | 1e-9 | 1e-10 | 1e-11 | 1e-12
-
-    /**
-     * Casas decimais.
-     * @since ~v6.2.0
-     */
-    type Places = Numeric
-
-    /**
-     * Vetor de valores matemáticos.
-     * @since ~v6.2.0
-     */
+    type Value = string | number
     type ValueArray = Value[]
-
-    /**
-     * Matriz de valores matemáticos.
-     * @since ~v6.2.0
-     */
     type ValueMatrix = Value[][]
 
-    /**
-     * Array de números.
-     * @since ~v6.2.0
-     */
-    type NumericArray = Numeric[]
+    type Variable = "a" | "b" | "c"
+    type MathValue = Variable | number
 
-    /**
-     * Matriz de números.
-     * @since ~v6.2.0
-     */
-    type NumericMatrix = Numeric[][]
+    type Precision = 1e-6 | 1e-7 | 1e-8 | 1e-9 | 1e-10 | 1e-11 | 1e-12
+    type Places = number
 
-    /**
-     * Funções trigonométricas suportadas pelo programa.
-     * @since ~v6.2.0
-     */
-    type TrigonometricFunction =
-        | /** Seno. */ "sin"
-        | /** Cosseno. */ "cos"
-        | /** Tangente. */ "tan"
-        | /** Cossecante. */ "csc"
-        | /** Secante. */ "sec"
-        | /** Cotangente. */ "cot"
-        | /** Nenhuma função trigonométrica. */ ""
-
-    /**
-     * Funções suportadas pelo programa.
-     * @since v6.6.0
-     */
-    type FunctionType =
-        | /** Polinomial. */ "poly"
-        | /** Exponencial. */ "exp"
-        | /** Logarítmica. */ "log"
-        | /** Trigonométrica. */ Exclude<TrigonometricFunction, "">
-
-    /**
-     * Coeficientes suportados pelo programa.
-     * @since v6.6.0
-     */
+    type TrigonometricFunction = "sin" | "cos" | "tan" | "csc" | "sec" | "cot" | ""
+    type FunctionType = "poly" | "exp" | "log" | Exclude<TrigonometricFunction, "">
     interface Coefficients {
-        /**
-         * Coeficiente `a`.
-         */
         a: MathValue
-
-        /**
-         * Coeficiente `b`.
-         */
         b: MathValue
-
-        /**
-         * Coeficiente `c`.
-         */
         c: MathValue
     }
-
-    /**
-     * Um par ordenado de um ponto qualquer.
-     * @since v6.6.0
-     */
-    interface PointPair {
-        /**
-         * Valor de `x`.
-         */
-        x: Numeric
-
-        /**
-         * Valor de `y`.
-         */
-        y: Numeric
+    type NamedCoefficients = { [Name in Variable]: number | Name }
+    interface NumericCoefficients {
+        a: number
+        b: number
+        c: number
     }
 
-    /**
-     * Usado para montar a matriz de um sistema linear genérico.
-     * @since v6.6.0
-     */
-    type LinearBasis = Record<Str, (x: Numeric) => Numeric>
+    interface PointPair {
+        x: number
+        y: number
+    }
+    type LinearBasis = Record<string, (x: number) => number>
 
-    /**
-     * Unidades de ângulo suportadas pelo programa.
-     * @since ~v6.2.0
-     */
     type Degrees = "deg" | "rad"
-
-    /**
-     * Idiomas suportados pelo programa.
-     * @since ~v6.2.0
-     */
-    type Language =
-        | /** Português (Brasil). */ "pt-br"
-        | /** Português (Portugal). */ "pt-pt"
-        | /** Inglês (Estados Unidos). */ "en-us"
-        | /** Inglês (Reino Unido). */ "en-gb"
-        | /** Espanhol (América Latina). */ "es-419"
-        | /** Espanhol (Espanha). */ "es-es"
-
-    /**
-     * Comandos suportados pelo programa.
-     * @since ~v6.2.0
-     */
-    type CommandsNames = "change" | "config" | "exit" | "history" | "review" | "start"
-
-    /**
-     * Tipos de mensagens suportadas pelo programa.
-     * @since v6.6.2
-     */
+    type Language = "pt-br" | "pt-pt" | "en-us" | "en-gb" | "es-419" | "es-es"
     type TypeMessage = "confirm" | "console" | "display" | "error" | "warning"
+    type TextCase = "uppercase" | "capitalized" | "lowercase" | "default"
+    type CommandsNames = "change" | "config" | "exit" | "history" | "review" | "start"
+    type ExplicitMulti = "never" | "zero" | "one" | "always"
+    type ShowFunction = "always" | "never" | "onChange"
 
-    /**
-     * Tipos de formatação de texto suportadas pelo programa.
-     * @since v6.6.7
-     */
-    type TextCase = "capitalized" | "lowercase" | "normal" | "uppercase"
+    interface Options {
+        invert?: boolean
+        places?: Places
+        precision?: Precision
+        shouldRound?: boolean
+    }
+    interface InputOptions {
+        explanation?: string
+        number?: boolean
+        placeholder?: string
+        places?: Places
+    }
+    interface RangeOptions {
+        commands?: boolean
+        explanation?: string
+        max?: number
+        min?: number
+        places?: Places
+    }
+    type MessageOptions = { explanation?: string; type?: Exclude<TypeMessage, "warning"> } | { explanation?: string; type: "warning"; asConfirm?: boolean }
 }
 
 export {}

@@ -1,15 +1,24 @@
-import { Commands } from "./commands.js";
-import { Config } from "./config.js";
-import { Writing } from "./writing.js";
-export class Checks {
-    static isValidText = (value) => Checks.#isText(value) && value.trim().length > 0;
-    static isFiniteNumber = (value) => (Checks.#isNumeric(value) || Checks.isValidText(value)) && Number.isFinite(Number(value));
-    static isValidValue = (value) => Checks.isValidText(value) || Checks.isFiniteNumber(value);
-    static isValidCommand = (value) => Checks.isValidText(value) && Checks.#isCommand(value);
-    static isConfigKey = (value) => Checks.isValidValue(value) && Object.hasOwn(Config, value);
-    static isTrKey = (value) => Checks.isValidText(value);
-    static numericPoint = (points, index) => Writing.decimalOptions(points.at(index) ?? 0, { invert: true });
-    static #isText = (value) => typeof value == "string";
-    static #isNumeric = (value) => typeof value == "number";
-    static #isCommand = (value) => Commands.names.includes(value);
+function isFiniteNumber(value) {
+    return (isNumeric(value) || isValidText(value)) && Number.isFinite(Number(value));
 }
+function isFinitesNumbers(values) {
+    return values.every(isFiniteNumber);
+}
+function isInInterval(value = 0, interval = [0, 1]) {
+    if (interval.length < 2)
+        return false;
+    const bounds = [...interval];
+    if (bounds.length % 2 === 1)
+        bounds.push(bounds.at(-1) ?? bounds[0] ?? 0);
+    return bounds.some((min, i) => i % 2 === 0 && min <= value && value <= (bounds[i + 1] ?? min));
+}
+function isNumeric(value) {
+    return typeof value === "number";
+}
+function isText(value) {
+    return typeof value === "string";
+}
+function isValidText(value) {
+    return isText(value) && value.trim() !== "";
+}
+export { isFiniteNumber, isFinitesNumbers, isInInterval, isValidText };

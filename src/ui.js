@@ -1,255 +1,190 @@
-import { Algebra } from "./algebra.js"
-import { Checks } from "./checks.js"
-import { Commands } from "./commands.js"
-import { Config } from "./config.js"
-import { Errors } from "./errors.js"
-import { Helpers } from "./helpers.js"
-import { tr } from "./i18n.js"
-import { State } from "./state.js"
-import { Writing } from "./writing.js"
-
-const formatLeadingTerm = (coef, symbol, term) =>
-        String(coef).trim() == String(symbol).trim()
-            ? `${symbol} · ${term}`
-            : Algebra.absoluteOptions(Number(coef)) == 1
-              ? (coef == -1 ? "−" : "") + term
-              : coef == 0
-                ? ""
-                : `${String(coef)} · ${term}`,
-    formatMiddleTerm = (coef, symbol, term) =>
-        String(coef).trim() == String(symbol).trim()
-            ? ` + ${symbol} · ${term}`
-            : coef == 0
-              ? ""
-              : (Number(coef) > 0 ? " + " : " − ") +
-                (Algebra.absoluteOptions(Number(coef)) == 1
-                    ? term
-                    : `${String(Algebra.absoluteOptions(Number(coef)))} · ${term}`),
-    formatConstantTerm = (coef, symbol) =>
-        String(coef).trim() == String(symbol).trim()
-            ? ` + ${symbol}`
-            : coef == 0
-              ? ""
-              : Number(coef) > 0
-                ? ` + ${String(coef)}`
-                : ` − ${String(-coef)}`,
-    formatMultiplier = (coef, symbol) =>
-        String(coef).trim() == String(symbol).trim()
-            ? `${symbol} × `
-            : coef !== 0 && coef !== 1
-              ? `${String(coef)} × `
-              : "",
-    buildConstantFunction = (/** @type {Partial<Coefficients>} */ { c = State.current.c } = {}) =>
-        tr("ui.theFunction") + (c == "c" ? "c" : String(c)) + tr("ui.constant") + (c == 0 ? tr("ui.constantNull") : ""),
-    buildAffineFunction = (/** @type {Partial<Coefficients>} */ { b = State.current.b, c = State.current.c } = {}) =>
-        tr("ui.theFunction") +
+import { round } from "./algebra.js";
+import { isFiniteNumber, isInInterval } from "./checks.js";
+import { isValidCommand, processCommand } from "./commands.js";
+import { Config } from "./config.js";
+import { INPUT_FAILED } from "./consts.js";
+import { input, notify } from "./display.js";
+import { errorRange } from "./errors.js";
+import { exceededLimit } from "./helpers.js";
+import { tr } from "./i18n.js";
+import { State } from "./state.js";
+import { decimalOptions, formatMessage, subscript } from "./writing.js";
+function buildAffineFunction({ b = State.current.b, c = State.current.c } = {}) {
+    return (tr("ui.theFunction") +
         formatLeadingTerm(b, "b", "x") +
         formatConstantTerm(c, "c") +
         tr("ui.affine") +
-        (b !== 1 && c == 0
-            ? tr("ui.affineLinear")
-            : b == 1 && c == 0
-              ? tr("ui.affineIdentity")
-              : b == -1
-                ? tr("ui.affineOpposite")
-                : ""),
-    buildQuadraticFunction = (
-        /** @type {Partial<Coefficients>} */ { a = State.current.a, b = State.current.b, c = State.current.c } = {}
-    ) =>
-        tr("ui.theFunction") +
+        (Number(b) !== 1 && Number(c) === 0 ? tr("ui.affineLinear") : Number(b) === 1 && Number(c) === 0 ? tr("ui.affineIdentity") : Number(b) === -1 ? tr("ui.affineOpposite") : ""));
+}
+function buildConstantFunction({ c = State.current.c } = {}) {
+    return tr("ui.theFunction") + (c === "c" ? "c" : String(c)) + tr("ui.constant") + (Number(c) === 0 ? tr("ui.constantNull") : "");
+}
+function buildExponentialFunction({ a = State.current.a, b = State.current.b, c = State.current.c } = {}) {
+    return (tr("ui.theFunction") +
+        formatMultiplier(b, "b") +
+        (a === "a" ? "aˣ" : Number(a) === 0 ? "" : `${a}ˣ`) +
+        formatConstantTerm(c, "c") +
+        tr("ui.exponential") +
+        (Number(b) === 1 && Number(c) === 0 ? tr("ui.pure") : "") +
+        (Number(a) === round(Math.E) ? tr("ui.natural") : ""));
+}
+function buildLogarithmicFunction({ a = State.current.a, b = State.current.b, c = State.current.c } = {}) {
+    return (tr("ui.theFunction") +
+        formatMultiplier(b, "b") +
+        (a === "a" ? "logₐ(x)" : Number(a) === 0 ? "" : `log${subscript(a)}(x)`) +
+        formatConstantTerm(c, "c") +
+        tr("ui.logarithmic") +
+        (Number(b) === 1 && Number(c) === 0 ? tr("ui.pure") : "") +
+        (Number(a) === round(Math.E) ? tr("ui.natural") : Number(a) === 10 ? tr("ui.decimal") : ""));
+}
+function buildQuadraticFunction({ a = State.current.a, b = State.current.b, c = State.current.c } = {}) {
+    return (tr("ui.theFunction") +
         formatLeadingTerm(a, "a", "x²") +
         formatMiddleTerm(b, "b", "x") +
         formatConstantTerm(c, "c") +
         tr("ui.quadratic") +
-        (b == 0 && c == 0
-            ? tr("ui.pure")
-            : b == 0
-              ? tr("ui.quadraticIncompleteLinear")
-              : c == 0
-                ? tr("ui.quadraticIncompleteConstant")
-                : ""),
-    buildExponentialFunction = (
-        /** @type {Partial<Coefficients>} */ { a = State.current.a, b = State.current.b, c = State.current.c } = {}
-    ) =>
-        tr("ui.theFunction") +
-        formatMultiplier(b, "b") +
-        (a == "a" ? "aˣ" : a == 0 ? "" : `${String(a)}ˣ`) +
-        formatConstantTerm(c, "c") +
-        tr("ui.exponential") +
-        (b == 1 && c == 0 ? tr("ui.pure") : "") +
-        (a == Algebra.round(Math.E) ? tr("ui.natural") : ""),
-    buildLogarithmicFunction = (
-        /** @type {Partial<Coefficients>} */ { a = State.current.a, b = State.current.b, c = State.current.c } = {}
-    ) =>
-        tr("ui.theFunction") +
-        formatMultiplier(b, "b") +
-        (a == "a" ? "logₐ(x)" : a == 0 ? "" : `log${Writing.subscript(a)}(x)`) +
-        formatConstantTerm(c, "c") +
-        tr("ui.logarithmic") +
-        (b == 1 && c == 0 ? tr("ui.pure") : "") +
-        (a == Algebra.round(Math.E) ? tr("ui.natural") : a == 10 ? tr("ui.decimal") : ""),
-    buildTrigFunction = (
-        /** @type {Partial<Coefficients>} */ { a = State.current.a, b = State.current.b, c = State.current.c } = {},
-        funcType = ""
-    ) =>
-        tr("ui.theFunction") +
-        formatMultiplier(b, "b") +
-        (a == "a" ? `${funcType}(a · x)` : a == 0 ? "" : `${funcType}(${String(a)} · x)`) +
-        formatConstantTerm(c, "c")
-
-export const Ui = {
-    notifyOptions: (message = "", { explanation = "", type = "display", asConfirm = false } = {}) =>
-        type == "display"
-            ? Ui.notify(message, explanation)
-            : type == "confirm"
-              ? Ui.notify(message, explanation, true)
-              : type == "error" && Config.errors
-                ? Ui.notify(`=== ${tr("ui.error")} ===\n${message}`, explanation)
-                : type == "warning"
-                  ? Ui.notify(`=== ${tr("ui.warning")} ===\n${message}`, explanation, asConfirm)
-                  : console.warn(message, explanation),
-    notify: (message = "", explanation = "", asConfirm = false) =>
-        asConfirm
-            ? confirm(Writing.format(message, `${explanation}\n\n${tr("ui.confirm")}`))
-            : alert(Writing.format(message, explanation)),
-
-    menu: (options = ["---"], page = 1) => {
-        let answer,
-            option = 1,
-            limit = 0
-        const total = Math.max(1, Math.ceil(options.length / 5)),
-            list = [...options, ...Array.from({ length: total * 5 - options.length }, () => "---")],
-            hasAnswer = a => {
-                switch (a) {
-                    case 0: {
-                        State.askCoeffs = false
-                        State.loop = true
-                        break
-                    }
-                    case 7: {
-                        State.askCoeffs = true
-                        State.loop = true
-                        answer = 0
-                        break
-                    }
-                    case 8: {
-                        page--
-                        break
-                    }
-                    case 9: {
-                        page++
-                        break
-                    }
-                    default: {
-                        if (Checks.isValidCommand(answer)) {
-                            State.loop = true
-                            State.keepType = true
-                        }
-                    }
-                }
-            }
-
-        do {
-            if (page < 1) page = 1
-            if (page > total) page = total
-
-            let menu = `=== ${tr("ui.menu")} ===\n${tr("ui.page", { page, total })}\n${tr("main.whatWant")}`
-
-            for (; option <= 5; option++) menu += `\n${option} = ${list[option - 1 + 5 * (page - 1)]}`
-
-            option = 1
-            menu +=
-                `\n----------------\n` +
-                `6 = ${tr("main.review")} | 7 = ${tr("main.change")} | 8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`
-
-            answer = Ui.rangeOptions(menu, { max: 9, commands: true })
-
-            hasAnswer(answer)
-
-            limit++
-            if (Helpers.exceededLimit(limit)) {
-                State.loop = true
-                break
-            }
-        } while ((Checks.isFiniteNumber(answer) && !(answer >= 0 && answer <= 7)) || Checks.isValidCommand(answer))
-
-        return [answer, page]
-    },
-
-    inputOptions: (
-        message = "",
-        { explanation = "", number = false, places = Config.decimalPlaces, commands = false, placeholder = "" } = {}
-    ) => {
-        let limit = 0
-
-        do {
-            const raw = prompt(Writing.format(message, explanation), placeholder)
-            if (raw == null) continue
-
-            const text = String(raw).trim()
-            if (text == "") continue
-
-            if (commands && raw[0] == "/") {
-                const action = Commands.process(raw)
-                if (action == null) continue
-                return action
-            }
-
-            if (number && !Checks.isFiniteNumber(Writing.decimalOptions(text, { invert: true }))) continue
-
-            if (
-                Config.inputConfirm &&
-                !Ui.notifyOptions(tr("ui.inputConfirm", { input: number ? Writing.decimalOptions(raw) : text }), {
-                    explanation: tr("ui.inputConfirmNote"),
-                    type: "warning",
-                    asConfirm: true,
-                })
-            )
-                continue
-
-            limit++
-            return number ? Algebra.round(raw, places) : text
-        } while (!Helpers.exceededLimit(limit))
-
-        return number ? 0 : ""
-    },
-
-    resolveFunction: (
-        { a = State.current.a, b = State.current.b, c = State.current.c } = {},
-        funcType = "poly",
-        show = Config.showFunction
-    ) => {
-        if (!show) return
-        const coefs = { a, b, c },
-            funcStr =
-                funcType == "poly"
-                    ? coefs.a == 0 && coefs.b == 0
-                        ? buildConstantFunction(coefs)
-                        : coefs.a == 0
-                          ? buildAffineFunction(coefs)
-                          : buildQuadraticFunction(coefs)
-                    : funcType == "exp"
-                      ? buildExponentialFunction(coefs)
-                      : funcType == "log"
-                        ? buildLogarithmicFunction(coefs)
-                        : buildTrigFunction(coefs, funcType)
-
-        Ui.notifyOptions(`=== ${tr("ui.currentFunction")} ===\n${Writing.decimalOptions(funcStr)}`)
-    },
-
-    rangeOptions: (message = "", { explanation = "", min = 0, max = 1, places = 0, commands = false } = {}) => {
-        /** @type {Value} */ let value
-
-        if (max < min) [max, min] = [min, max]
-
-        do {
-            value = Ui.inputOptions(message, { placeholder: String(min), number: true, places, commands, explanation })
-
-            if (Checks.isValidCommand(value)) return value
-            if (value == "end") return 0
-            if (Checks.isFiniteNumber(value) && !(min <= value && value <= max)) Errors.range(min, max)
-        } while (Checks.isFiniteNumber(value) && !(min <= value && value <= max))
-
-        return value
-    },
+        (Number(b) === 0 && Number(c) === 0 ? tr("ui.pure") : Number(b) === 0 ? tr("ui.quadraticIncompleteLinear") : Number(c) === 0 ? tr("ui.quadraticIncompleteConstant") : ""));
 }
+function buildTrigFunction({ a = State.current.a, b = State.current.b, c = State.current.c } = {}, funcType = "") {
+    return tr("ui.theFunction") + formatMultiplier(b, "b") + (a === "a" ? `${funcType}(a · x)` : Number(a) === 0 ? "" : `${funcType}(${a} · x)`) + formatConstantTerm(c, "c");
+}
+function formatCoefficient(coef, symbol, hasTerm = true) {
+    if (String(coef).trim() === symbol.trim())
+        return { hidden: false, text: symbol, negative: false };
+    const n = Number(coef), abs = Math.abs(n), showZero = Config.explicitMulti === "zero" || Config.explicitMulti === "always";
+    if (abs === 0 && !showZero)
+        return { hidden: true, text: "", negative: false };
+    const negative = n < 0, showOne = Config.explicitMulti === "one" || Config.explicitMulti === "always";
+    return { hidden: false, text: abs === 1 && hasTerm && !showOne ? "" : String(abs), negative };
+}
+function formatConstantTerm(coef, symbol) {
+    const { hidden, text, negative } = formatCoefficient(coef, symbol, false);
+    if (hidden)
+        return "";
+    return negative ? ` − ${text}` : ` + ${text}`;
+}
+function formatLeadingTerm(coef, symbol, term) {
+    const { hidden, text, negative } = formatCoefficient(coef, symbol);
+    if (hidden)
+        return "";
+    if (text === symbol)
+        return `${symbol} · ${term}`;
+    const sign = negative ? "−" : "";
+    return text === "" ? `${sign}${term}` : `${sign}${text} · ${term}`;
+}
+function formatMiddleTerm(coef, symbol, term) {
+    const { hidden, text, negative } = formatCoefficient(coef, symbol);
+    if (hidden)
+        return "";
+    if (text === symbol)
+        return ` + ${symbol} · ${term}`;
+    const sign = negative ? " − " : " + ";
+    return text === "" ? `${sign}${term}` : `${sign}${text} · ${term}`;
+}
+function formatMultiplier(coef, symbol) {
+    const { hidden, text, negative } = formatCoefficient(coef, symbol);
+    if (hidden)
+        return "";
+    if (text === symbol)
+        return `${symbol} × `;
+    if (text === "")
+        return negative ? "−" : "";
+    return `${negative ? "−" : ""}${text} × `;
+}
+function inputCommands(message = "", { explanation = "", number = false, places = Config.decimalPlaces, placeholder = "" } = {}) {
+    let limit = 0;
+    do {
+        limit++;
+        const raw = prompt(formatMessage(message, explanation), placeholder);
+        if (raw == null)
+            continue;
+        const text = raw.trim();
+        if (text === "")
+            continue;
+        if (text.startsWith("/")) {
+            const action = processCommand(text);
+            if (action == null)
+                continue;
+            return action;
+        }
+        if (number && !isFiniteNumber(decimalOptions(text, { invert: true })))
+            continue;
+        if (Config.inputConfirm && !notify(tr("ui.inputConfirm", { input: number ? decimalOptions(text) : text }), { explanation: tr("ui.inputConfirmNote"), type: "warning", asConfirm: true }))
+            continue;
+        return number ? round(Number(text), places) : text;
+    } while (!exceededLimit(limit));
+    return INPUT_FAILED;
+}
+function menu(options = ["---"], page = 1) {
+    let answer = 1, limit = 0;
+    const total = Math.max(1, Math.ceil(options.length / 5)), list = [...options, ...Array(total * 5 - options.length).fill("---")], hasAnswer = (a) => {
+        switch (a) {
+            case 0:
+                State.askCoeffs = false;
+                State.loop = true;
+                break;
+            case 7:
+                State.askCoeffs = true;
+                State.loop = true;
+                answer = 0;
+                break;
+            case 8:
+                page--;
+                break;
+            case 9:
+                page++;
+                break;
+            default:
+                if (isValidCommand(answer)) {
+                    State.loop = true;
+                    State.keepType = true;
+                }
+        }
+    };
+    do {
+        page = Math.min(Math.max(page, 1), total);
+        const currentPage = page, menuText = `=== ${tr("ui.menu")} ===\n${tr("ui.page", { page, total })}\n${tr("main.whatWant")}${Array.from({ length: 5 }, (_, i) => `\n${i + 1} = ${list[i + 5 * (currentPage - 1)]}`).join("")}` +
+            `\n----------------\n` +
+            `6 = ${tr("main.review")} | 7 = ${tr("main.change")} | 8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`;
+        answer = rangeOptions(menuText, { max: 9, commands: true });
+        hasAnswer(Number(answer));
+        limit++;
+        if (exceededLimit(limit)) {
+            State.loop = true;
+            break;
+        }
+    } while (isFiniteNumber(answer) && !isInInterval(answer, [0, 7]));
+    return [answer, page];
+}
+function rangeOptions(message = "", { explanation = "", min = 0, max = 1, places = 0, commands = false } = {}) {
+    let value;
+    if (max < min)
+        [max, min] = [min, max];
+    do {
+        value = commands ? inputCommands(message, { placeholder: String(min), number: true, places, explanation }) : input(message, { placeholder: String(min), number: true, places, explanation });
+        if (isValidCommand(value))
+            return value;
+        if (isFiniteNumber(value) && !isInInterval(value, [min, max]))
+            errorRange(min, max);
+    } while (isFiniteNumber(value) && !isInInterval(value, [min, max]));
+    return value;
+}
+function resolveFunction({ a = State.current.a, b = State.current.b, c = State.current.c } = {}, funcType = "poly", show = true) {
+    if (!show || Config.showFunction === "never")
+        return;
+    if (Config.showFunction === "onChange" && !State.funcChanged)
+        return;
+    const coefs = { a, b, c }, funcStr = funcType === "poly"
+        ? Number(coefs.a) === 0 && Number(coefs.b) === 0
+            ? buildConstantFunction(coefs)
+            : Number(coefs.a) === 0
+                ? buildAffineFunction(coefs)
+                : buildQuadraticFunction(coefs)
+        : funcType === "exp"
+            ? buildExponentialFunction(coefs)
+            : funcType === "log"
+                ? buildLogarithmicFunction(coefs)
+                : buildTrigFunction(coefs, funcType);
+    notify(`=== ${tr("ui.currentFunction")} ===\n${decimalOptions(funcStr)}`);
+}
+export { inputCommands, menu, rangeOptions, resolveFunction };

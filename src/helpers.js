@@ -1,398 +1,221 @@
-import { Algebra } from "./algebra.js"
-import { Checks } from "./checks.js"
-import { Config } from "./config.js"
-import { Errors } from "./errors.js"
-import { tr } from "./i18n.js"
-import { State } from "./state.js"
-import { Ui } from "./ui.js"
-import { Writing } from "./writing.js"
-
-const Helpers = {
-    domain: (belongs = "∈ ℝ", explanation = tr("helpers.functionTakeX")) =>
-        Ui.notifyOptions(`${tr("helpers.domain")} x ${belongs}`, { explanation }),
-
-    range: (belongs = "∈ ℝ", interval = "", explanation = tr("helpers.functionTakeY")) =>
-        Ui.notifyOptions(`${tr("helpers.range")} y ${belongs}`, { explanation: `${explanation} ${interval}` }),
-
-    xAxis: (root = 0, explanation = "c", noHave = tr("helpers.noRoots")) => {
-        const intersection = tr("helpers.intersectionXAxis")
-
-        if (root == 0)
-            if (explanation == "0") Ui.notifyOptions(`${intersection} ∃∞ x ∈ ℝ`, { explanation: "y = 0 ⇒ ∀ x ∈ ℝ" })
-            else Ui.notifyOptions(`${intersection} ∄! x ∈ ℝ`, { explanation: "y = c ∧ c ≠ 0 ⇒ ∄ x" })
-        else if (Checks.isFiniteNumber(root))
-            Ui.notifyOptions(`${intersection} (${Writing.decimalOptions(root)}, 0)`, {
-                explanation: `${tr("helpers.rootPoint")} (${explanation}, 0)`,
-            })
-        else Ui.notifyOptions(`${intersection} ∄`, { explanation: noHave })
-    },
-
-    yAxis: (point = 0, func = "c", explanation = "c") => {
-        const pointText = String(point) == "∄" ? "∄" : `(0, ${Writing.decimalOptions(point)})`,
-            explanationText = String(point) == "∄" ? explanation : `⇒ (0, ${explanation})`
-
-        Ui.notifyOptions(`${tr("helpers.intersectionYAxis")} ${pointText}`, {
-            explanation: `${tr("helpers.sinceY")} ${func} ${explanationText}`,
-        })
-    },
-
-    resolveXValues: (
-        { a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {},
-        funcType = "poly"
-    ) => {
-        const coefs = { a, b, c },
-            x = Ui.inputOptions("x = ", { number: true, placeholder: 0 }),
-            message = `${tr("helpers.sinceX") + Writing.decimalOptions(x)}, `
-
-        switch (funcType) {
-            case "poly": {
-                Ui.notifyOptions(`${message} y = ${Writing.decimalOptions(coefs.a * x ** 2 + coefs.b * x + coefs.c)}`, {
-                    explanation: `y = ${coefs.a == 0 ? "" : "a · x² + "}${coefs.b == 0 ? "" : "b · x + "}c`,
-                })
-                break
-            }
-            case "exp": {
-                Ui.notifyOptions(`${message} y = ${Writing.decimalOptions(coefs.b * coefs.a ** x + coefs.c)}`, {
-                    explanation: "y = b × aˣ + c",
-                })
-                break
-            }
-            case "log": {
-                if (x > 0)
-                    Ui.notifyOptions(
-                        `${message} y = ${Writing.decimalOptions(coefs.b * Algebra.logOptions(x, coefs.a) + coefs.c)}`,
-                        { explanation: "y = b × logₐ(x) + c" }
-                    )
-                else Ui.notifyOptions(`${message} ∄! y ∈ ℝ`, { explanation: "x ≤ 0 ⇒ logₐ(x) ∉ ℝ" })
-                break
-            }
-            default: {
-                Ui.notifyOptions(
-                    `${message} y = ${Writing.decimalOptions(
-                        coefs.b *
-                            (funcType == "sin"
-                                ? Math.sin(x)
-                                : funcType == "cos"
-                                  ? Math.cos(x)
-                                  : funcType == "tan"
-                                    ? Math.tan(x)
-                                    : 0) +
-                            coefs.c
-                    )}`,
-                    { explanation: `y = b × ${funcType}(x) + c` }
-                )
-            }
-        }
-    },
-
-    resolveYValues: (
-        { a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {},
-        funcType = "poly"
-    ) => {
-        const coefs = { a, b, c },
-            y = Ui.inputOptions("y = ", { number: true, placeholder: 0 }),
-            message = `${tr("helpers.sinceY2") + Writing.decimalOptions(y)},`
-
-        if (funcType == "poly")
-            if (coefs.a == 0 && coefs.b == 0)
-                if (y == coefs.c) Ui.notifyOptions(`${message} ∃∞ x ∈ ℝ`, { explanation: "y = c ⇒ ∀ x ∈ ℝ" })
-                else Ui.notifyOptions(`${message} ∄! x ∈ ℝ`, { explanation: "y ≠ c ⇒ ∄ x" })
-            else if (coefs.a == 0 && coefs.b !== 0)
-                Ui.notifyOptions(
-                    `${message} x = ${Writing.decimalOptions(Algebra.divisionOptions(y - coefs.c, coefs.b))}`,
-                    { explanation: "x = (y − c) / b" }
-                )
-            else {
-                const delta = Helpers.calcDelta(coefs.a, coefs.b, coefs.c - y)
-                Helpers.showDelta(
-                    delta[0],
-                    `${message} ∄! x ∈ ℝ`,
-                    `${message} x = ${Writing.decimalOptions(delta[1])}`,
-                    `${message} x₁ = ${Writing.decimalOptions(delta[1])}, x₂ = ${Writing.decimalOptions(delta[2])}`,
-                    true
-                )
-            }
-        else if (funcType == "exp" || funcType == "log") {
-            const exponent = Algebra.divisionOptions(y - coefs.c, coefs.b, { round: false })
-            if (funcType == "exp")
-                if (exponent > 0)
-                    Ui.notifyOptions(
-                        `${message} x = ${Writing.decimalOptions(Algebra.divisionOptions(Algebra.lnOptions(exponent), Algebra.lnOptions(coefs.a)))}`,
-                        { explanation: "x = ln((y − c) / b) / ln(a)" }
-                    )
-                else Ui.notifyOptions(`${message} ∄! x ∈ ℝ`, { explanation: "(y − c) / b ≤ 0 ⇒ ∄ x ∈ ℝ" })
-            else
-                Ui.notifyOptions(`${message} x = ${Writing.decimalOptions(coefs.a ** exponent)}`, {
-                    explanation: "x = a⁽⁽ʸ⁻ᶜ⁾⁄ᵇ⁾",
-                })
-        } else Ui.notifyOptions(tr("helpers.notTrigonometric"), { explanation: tr("algebra.underConstruction") })
-    },
-
-    resolveSign: (
-        { a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {},
-        funcType = "poly"
-    ) => {
-        const coefs = { a, b, c }
-        switch (funcType) {
-            case "poly": {
-                if (coefs.a == 0 && coefs.b == 0) signConstant(coefs)
-                else if (coefs.a == 0) signAffine(coefs)
-                else signQuadratic(coefs)
-                break
-            }
-            case "exp": {
-                signExponential(coefs)
-                break
-            }
-            case "log": {
-                signLogarithmic(coefs)
-                break
-            }
-            default: {
-                signTrig()
-            }
-        }
-    },
-
-    equations: (polynomial = true, coefA = 0, coefB = 0, coefC = 0) => {
-        if (!polynomial) {
-            Ui.notifyOptions(tr("helpers.equationsNonPolynomial"), {
-                explanation: tr("algebra.underConstruction"),
-                type: "warning",
-            })
-            return 0
-        }
-
-        const coefs = { a: coefA, b: coefB, c: coefC }
-
-        if (State.baseFunc == null) {
-            State.baseFunc = coefs
-            State.askCoeffs = true
-            State.loop = true
-            Ui.notifyOptions(`ƒ₁(x) ${tr("helpers.saved")}`, {
-                explanation: tr("helpers.typeSecondFunction"),
-                type: "warning",
-            })
-            return 0
-        }
-
-        Algebra.resolveEquations(State.baseFunc, coefs)
-        State.baseFunc = null
-        return 1
-    },
-
-    curve: (coefA = 0, coefB = 0, polynomial = true) => {
-        if (!polynomial) {
-            if ((coefA < 1 && coefB < 0) || (coefA > 1 && coefB > 0))
-                Ui.notifyOptions(tr("helpers.increasingUpper"), { explanation: "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)" })
-            else if ((coefA > 1 && coefB < 0) || (coefA < 1 && coefB > 0))
-                Ui.notifyOptions(tr("helpers.decreasing"), { explanation: "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)" })
-        } else if (coefB !== 0)
-            if (coefB > 0)
-                Ui.notifyOptions(tr("helpers.increasingUpper"), { explanation: `${tr("helpers.pointsUpward")}b > 0` })
-            else Ui.notifyOptions(tr("helpers.decreasing"), { explanation: `${tr("helpers.pointsDownward")}b < 0` })
-        else if (coefA !== 0)
-            if (coefA > 0) Ui.notifyOptions(tr("helpers.upwardConcavity"), { explanation: "a > 0" })
-            else Ui.notifyOptions(tr("helpers.downwardConcavity"), { explanation: "a < 0" })
-    },
-
-    calcRoot: (coefA = 0, coefB = 0, coefC = 0, funcExp = false, funcLog = false) => {
-        if (!funcExp && !funcLog) {
-            if (coefA == 0 && coefB == 0) return NaN
-            return coefA == 0 ? Algebra.divisionOptions(-coefC, coefB) : Helpers.calcDelta(coefA, coefB, coefC)
-        }
-
-        const exponent = Algebra.divisionOptions(-coefC, coefB, { round: false })
-        if (funcExp)
-            return exponent > 0 ? Algebra.divisionOptions(Algebra.lnOptions(exponent), Algebra.lnOptions(coefA)) : NaN
-        return funcLog ? Algebra.round(coefA ** exponent) : NaN
-    },
-
-    showRoot: (root = 0, explanation = "c", noHave = "") => {
-        const intersection = tr("helpers.realRoot")
-        if (Checks.isFiniteNumber(root))
-            Ui.notifyOptions(`${intersection} x = ${Writing.decimalOptions(root)}`, {
-                explanation: tr("helpers.theRootIs") + explanation,
-            })
-        else Ui.notifyOptions(`${intersection} ∄! x ∈ ℝ`, { explanation: noHave })
-    },
-
-    /**
-     * Calcula o Delta.
-     * @returns {[Numeric, Numeric, Numeric]} Delta da Função.
-     */
-    calcDelta: (coefA = 0, coefB = 0, coefC = 0) => {
-        const delta = coefB ** 2 - 4 * coefA * coefC
-        if (delta < 0) return [delta, NaN, NaN]
-        if (delta == 0) {
-            const x = Algebra.divisionOptions(-coefB, 2 * coefA)
-            return [delta, x, x]
-        }
-
-        const sqrtDelta = Math.sqrt(delta),
-            q = coefB >= 0 ? -0.5 * (coefB + sqrtDelta) : -0.5 * (coefB - sqrtDelta),
-            raw1 = Algebra.divisionOptions(q, coefA),
-            raw2 = Algebra.divisionOptions(coefC, q),
-            x1 = Math.min(raw1, raw2),
-            x2 = Math.max(raw1, raw2)
-        return [delta, x1, x2]
-    },
-
-    showDelta: (delta = 0, lower = "", equal = "", higher = "", hasY = false) =>
-        delta < 0
-            ? Ui.notifyOptions(lower, { explanation: `Δ = b² − 4 · a · ${hasY ? "(c − y)" : "c"} ⇒ Δ < 0 ⇒ x ∉ ℝ` })
-            : delta == 0
-              ? Ui.notifyOptions(equal, {
-                    explanation: `Δ = b² − 4 · a · ${hasY ? "(c − y)" : "c"} ⇒ Δ = 0 ⇒ x = (−b) / (2 · a)`,
-                })
-              : Ui.notifyOptions(higher, {
-                    explanation: `Δ = b² − 4 · a · ${hasY ? "(c − y)" : "c"} ⇒ Δ > 0 ⇒ x₁, x₂ = (−b ± √Δ) / (2 · a)`,
-                }),
-
-    vertex: (coefA = 0, coefB = 0, delta = 0) => [
-        Algebra.divisionOptions(-coefB, 2 * coefA),
-        Algebra.divisionOptions(-delta, 4 * coefA),
-    ],
-
-    exceededLimit: (limit = Config.iterationLimit) => {
-        const exceeded = limit >= Config.iterationLimit
-
-        if (exceeded) Errors.limitExceeded()
-
-        return exceeded
-    },
-
-    calcPeriod: (coefA = 0, funcTan = false) =>
-        Writing.decimalOptions((funcTan ? Math.PI : 2 * Math.PI) / Algebra.absoluteOptions(coefA)),
-
-    showPeriod: (coefA = 0, funcTan = false) =>
-        coefA == 0
-            ? Ui.notifyOptions(tr("helpers.periodInfinity"), { explanation: tr("helpers.constantPeriod") })
-            : Ui.notifyOptions(tr("helpers.period") + Helpers.calcPeriod(coefA, funcTan), {
-                  explanation: `${tr("helpers.periodEquals") + (funcTan ? "π" : "2π")} / |a|`,
-              }),
-
-    amplitude: (coefB = 0) =>
-        Ui.notifyOptions(`Amplitude: ${Writing.decimalOptions(Algebra.absoluteOptions(coefB))}`, {
-            explanation: "Amplitude = |b|",
-        }),
-
-    verticalAsymptote: (coefA = 0) =>
-        coefA == 0
-            ? Ui.notifyOptions(`${tr("helpers.verticalAsymptote")} ∄`, { explanation: tr("helpers.noAsymptote") })
-            : Ui.notifyOptions(`${tr("helpers.verticalAsymptote")} x = (π / 2 + n · π) / a, n ∈ ℤ`, {
-                  explanation: `tan(a · x) ${tr("helpers.undefinedAsymptote")} cos(a · x) = 0, ${tr("helpers.ie")} a · x = π / 2 + n · π`,
-              }),
+import { absoluteOptions, divisionOptions, lnOptions, logOptions, resolveEquations, round } from "./algebra.js";
+import { isFiniteNumber } from "./checks.js";
+import { Config } from "./config.js";
+import { input, notify } from "./display.js";
+import { errorLimitExceeded } from "./errors.js";
+import { tr } from "./i18n.js";
+import { State } from "./state.js";
+import { decimalOptions } from "./writing.js";
+function domain(belongs = "∈ ℝ", explanation = tr("helpers.functionTakeX")) {
+    notify(`${tr("helpers.domain")} x ${belongs}`, { explanation });
 }
-
-function signTrig() {
-    Ui.notifyOptions(tr("helpers.singNotTrigonometric"), {
-        explanation: tr("algebra.underConstruction"),
-        type: "warning",
-    })
+function range(belongs = "∈ ℝ", interval = "", explanation = tr("helpers.functionTakeY")) {
+    notify(`${tr("helpers.range")} y ${belongs}`, { explanation: `${explanation} ${interval}` });
 }
-
-function signConstant({ c = State.current.numericC } = {}) {
-    const coefs = { c },
-        operations = { positive: ">", negative: "<" },
-        operation = coefs.c > 0 ? "positive" : "negative",
-        symbol = coefs.c == 0 ? "=" : operations[operation]
-    Ui.notifyOptions(`ƒ(x) ${symbol} 0, ∀ x ∈ ℝ`, { explanation: `c ${symbol} 0 ⇒ ƒ(x) ${symbol} 0 ⇒ ∀ x ∈ ℝ` })
-}
-
-function signAffine({ b = State.current.numericB, c = State.current.numericC } = {}) {
-    const coefs = { b, c },
-        operations = { positive: ">", negative: "<" },
-        affineRoot = Helpers.calcRoot(0, coefs.b, coefs.c),
-        operation = coefs.b > 0 ? "positive" : "negative",
-        opposite = operation == "positive" ? "negative" : "positive"
-    Ui.notifyOptions(
-        `ƒ(x) ${operations[operation]} 0 ${tr("helpers.if")} x ${operations[opposite]} ${affineRoot}\n` +
-            `ƒ(x) = 0 ${tr("helpers.in")} x = ${affineRoot}\n` +
-            `ƒ(x) ${operations[opposite]} 0 ${tr("helpers.if")} x ${operations[operation]} ${affineRoot}`,
-        { explanation: `b ${operations[operation]} 0 ⇒ ƒ(x) ${tr("helpers.increasing")}` }
-    )
-}
-
-function signQuadratic({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) {
-    const coefs = { a, b, c },
-        operations = { positive: ">", negative: "<" },
-        operation = coefs.a > 0 ? "positive" : "negative",
-        quadRoot = Helpers.calcDelta(coefs.a, coefs.b, coefs.c)
-
-    if (quadRoot[1] > quadRoot[2]) {
-        const smallerRoot = quadRoot[2]
-        quadRoot[2] = quadRoot[1]
-        quadRoot[1] = smallerRoot
-    }
-
-    if (quadRoot[0] < 0)
-        Ui.notifyOptions(`ƒ(x) ${operations[operation]} 0, ∀ x ∈ ℝ`, {
-            explanation: `a ${operations[operation]} 0 ∧ Δ < 0 ⇒ ƒ(x) ${operations[operation]} 0, ∀ x ∈ ℝ`,
-        })
-    else if (quadRoot[0] == 0)
-        Ui.notifyOptions(
-            `ƒ(x) ${operations[operation]} 0, ${tr("helpers.exceptIn")} x = ${Writing.decimalOptions(quadRoot[1])}`,
-            {
-                explanation: `a ${operations[operation]} 0 ∧ Δ = 0 ⇒ ƒ(x) ${operations[operation]} 0, x ≠ ${Writing.decimalOptions(quadRoot[1])}`,
-            }
-        )
-    else if (coefs.a < 0)
-        Ui.notifyOptions(
-            `ƒ(x) > 0 ${tr("helpers.if")} ${Writing.decimalOptions(quadRoot[1])} < x < ${Writing.decimalOptions(quadRoot[2])}\n` +
-                `ƒ(x) = 0 ${tr("helpers.in")} x = ${Writing.decimalOptions(quadRoot[1])} ∨ x = ${Writing.decimalOptions(quadRoot[2])}\n` +
-                `ƒ(x) < 0 ${tr("helpers.if")} x < ${Writing.decimalOptions(quadRoot[1])} ∨ x > ${Writing.decimalOptions(quadRoot[2])}`,
-            { explanation: "a < 0 ∧ Δ > 0" }
-        )
-    else
-        Ui.notifyOptions(
-            `ƒ(x) > 0 ${tr("helpers.if")} x < ${Writing.decimalOptions(quadRoot[1])} ∨ x > ${Writing.decimalOptions(quadRoot[2])}\n` +
-                `ƒ(x) = 0 ${tr("helpers.in")} x = ${Writing.decimalOptions(quadRoot[1])} ∨ x = ${Writing.decimalOptions(quadRoot[2])}\n` +
-                `ƒ(x) < 0 ${tr("helpers.if")} ${Writing.decimalOptions(quadRoot[1])} < x < ${Writing.decimalOptions(quadRoot[2])}`,
-            { explanation: "a > 0 ∧ Δ > 0." }
-        )
-}
-
-function signExponential({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) {
-    const coefs = { a, b, c }
-    if (Algebra.divisionOptions(-coefs.c, coefs.b, { round: false }) > 0) {
-        const expRoot = Number(Helpers.calcRoot(coefs.a, coefs.b, coefs.c, true))
-        if ((coefs.a < 1 && coefs.b < 0) || (coefs.a > 1 && coefs.b > 0))
-            Ui.notifyOptions(
-                `ƒ(x) > 0 ${tr("helpers.if")} x > ${Writing.decimalOptions(expRoot)}\n` +
-                    `ƒ(x) = 0 ${tr("helpers.in")} x = ${Writing.decimalOptions(expRoot)}\n` +
-                    `ƒ(x) < 0 ${tr("helpers.if")} x < ${Writing.decimalOptions(expRoot)}`,
-                { explanation: "a > 0 ∧ (−c) / b > 0." }
-            )
+function xAxis(root = 0, explanation = "c", noHave = tr("helpers.noRoots")) {
+    const intersection = tr("helpers.intersectionXAxis");
+    if (root === 0)
+        if (explanation === "0")
+            notify(`${intersection} ∃∞ x ∈ ℝ`, { explanation: "y = 0 ⇒ ∀ x ∈ ℝ" });
         else
-            Ui.notifyOptions(
-                `ƒ(x) > 0 ${tr("helpers.if")} x < ${Writing.decimalOptions(expRoot)}\n` +
-                    `ƒ(x) = 0 ${tr("helpers.in")} x = ${Writing.decimalOptions(expRoot)}\n` +
-                    `ƒ(x) < 0 ${tr("helpers.if")} x > ${Writing.decimalOptions(expRoot)}`,
-                { explanation: "a < 0 ∧ (−c) / b > 0." }
-            )
-    } else if (coefs.b > 0)
-        Ui.notifyOptions("ƒ(x) > 0, ∀ x ∈ ℝ", { explanation: `${tr("helpers.accordingTo")} b > 0 ∧ (−c) / b ≤ 0.` })
-    else Ui.notifyOptions("ƒ(x) < 0, ∀ x ∈ ℝ", { explanation: `${tr("helpers.accordingTo")} b < 0 ∧ (−c) / b ≤ 0.` })
-}
-
-function signLogarithmic({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) {
-    const coefs = { a, b, c },
-        logRoot = Number(Helpers.calcRoot(coefs.a, coefs.b, coefs.c, false, true))
-    if ((coefs.a < 1 && coefs.b < 0) || (coefs.a > 1 && coefs.b > 0))
-        Ui.notifyOptions(
-            `ƒ(x) > 0 ${tr("helpers.if")} x > ${Writing.decimalOptions(logRoot)}\n` +
-                `ƒ(x) = 0 ${tr("helpers.in")} x = ${Writing.decimalOptions(logRoot)}\n` +
-                `ƒ(x) < 0 ${tr("helpers.if")} x < ${Writing.decimalOptions(logRoot)}`,
-            { explanation: "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)" }
-        )
+            notify(`${intersection} ∄! x ∈ ℝ`, { explanation: "y = c ∧ c ≠ 0 ⇒ ∄ x" });
+    else if (isFiniteNumber(root))
+        notify(`${intersection} (${decimalOptions(root)}, 0)`, { explanation: `${tr("helpers.rootPoint")} (${explanation}, 0)` });
     else
-        Ui.notifyOptions(
-            `ƒ(x) > 0 ${tr("helpers.if")} x < ${Writing.decimalOptions(logRoot)}\n` +
-                `ƒ(x) = 0 ${tr("helpers.in")} x = ${Writing.decimalOptions(logRoot)}\n` +
-                `ƒ(x) < 0 ${tr("helpers.if")} x > ${Writing.decimalOptions(logRoot)}`,
-            { explanation: "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)" }
-        )
+        notify(`${intersection} ∄`, { explanation: noHave });
 }
-
-export { Helpers }
+function yAxis(point = 0, func = "c", explanation = "c") {
+    const pointText = point === "∄" ? "∄" : `(0, ${decimalOptions(point)})`, explanationText = point === "∄" ? explanation : `⇒ (0, ${explanation})`;
+    notify(`${tr("helpers.intersectionYAxis")} ${pointText}`, { explanation: `${tr("helpers.sinceY")} ${func} ${explanationText}` });
+}
+function resolveXValues({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}, funcType = "poly") {
+    const coefs = { a, b, c }, x = input("x = ", { number: true, placeholder: "0" }), message = `${tr("helpers.sinceX") + decimalOptions(x)}, y = `;
+    switch (funcType) {
+        case "poly":
+            notify(`${message}${decimalOptions(coefs.a * x ** 2 + coefs.b * x + coefs.c)}`, { explanation: `y = ${coefs.a === 0 ? "" : "a · x² + "}${coefs.b === 0 ? "" : "b · x + "}c` });
+            break;
+        case "exp":
+            notify(`${message}${decimalOptions(coefs.b * coefs.a ** x + coefs.c)}`, { explanation: "y = b × aˣ + c" });
+            break;
+        case "log":
+            x > 0 ? notify(`${message}${decimalOptions(coefs.b * logOptions(x, coefs.a) + coefs.c)}`, { explanation: "y = b × logₐ(x) + c" }) : notify(`${message} ∄! y ∈ ℝ`, { explanation: "x ≤ 0 ⇒ logₐ(x) ∉ ℝ" });
+            break;
+        default:
+            notify(`${message}${decimalOptions(coefs.b * (funcType === "sin" ? Math.sin(x) : funcType === "cos" ? Math.cos(x) : funcType === "tan" ? Math.tan(x) : 0) + coefs.c)}`, { explanation: `y = b × ${funcType}(x) + c` });
+    }
+}
+function resolveYValues({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}, funcType = "poly") {
+    const coefs = { a, b, c }, y = input("y = ", { number: true, placeholder: "0" }), message = `${tr("helpers.sinceY2") + decimalOptions(y)},`;
+    if (funcType === "poly")
+        if (coefs.a === 0 && coefs.b === 0)
+            if (y === coefs.c)
+                notify(`${message} ∃∞ x ∈ ℝ`, { explanation: "y = c ⇒ ∀ x ∈ ℝ" });
+            else
+                notify(`${message} ∄! x ∈ ℝ`, { explanation: "y ≠ c ⇒ ∄ x" });
+        else if (coefs.a === 0 && coefs.b !== 0)
+            notify(`${message} x = ${decimalOptions(divisionOptions(y - coefs.c, coefs.b))}`, { explanation: "x = (y − c) / b" });
+        else {
+            const [delta, root1, root2] = calculateDelta({ a: coefs.a, b: coefs.b, c: coefs.c - y }), [x1, x2] = [decimalOptions(root1), decimalOptions(root2)];
+            showDelta(delta, `${message} ∄! x ∈ ℝ`, `${message} x = ${x1}`, `${message} x₁ = ${x1}, x₂ = ${x2}`, true);
+        }
+    else if (funcType === "exp" || funcType === "log") {
+        const exponent = divisionOptions(y - coefs.c, coefs.b, { shouldRound: false });
+        funcType === "exp"
+            ? exponent > 0
+                ? notify(`${message} x = ${decimalOptions(divisionOptions(lnOptions(exponent), lnOptions(coefs.a)))}`, { explanation: "x = ln((y − c) / b) / ln(a)" })
+                : notify(`${message} ∄! x ∈ ℝ`, { explanation: "(y − c) / b ≤ 0 ⇒ ∄ x ∈ ℝ" })
+            : notify(`${message} x = ${decimalOptions(coefs.a ** exponent)}`, { explanation: "x = a⁽⁽ʸ⁻ᶜ⁾⁄ᵇ⁾" });
+    }
+    else
+        notify(tr("helpers.notTrigonometric"), { explanation: tr("algebra.underConstruction") });
+}
+function resolveSign({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}, funcType = "poly") {
+    const coefs = { a, b, c };
+    switch (funcType) {
+        case "poly":
+            coefs.a === 0 && coefs.b === 0 ? signConstant(coefs) : coefs.a === 0 ? signAffine(coefs) : signQuadratic(coefs);
+            break;
+        case "exp":
+            signExponential(coefs);
+            break;
+        case "log":
+            signLogarithmic(coefs);
+            break;
+        default:
+            signTrig();
+    }
+}
+function saveEquations({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}, funcType = "poly") {
+    if (funcType !== "poly") {
+        notify(tr("helpers.equationsNonPolynomial"), { explanation: tr("algebra.underConstruction"), type: "warning" });
+        return "nonPoly";
+    }
+    const coefs = { a, b, c };
+    if (State.baseFunc == null) {
+        State.baseFunc = coefs;
+        State.askCoeffs = true;
+        State.loop = true;
+        notify(`ƒ₁(x) ${tr("helpers.saved")}`, { explanation: tr("helpers.typeSecondFunction"), type: "warning" });
+        return "saved";
+    }
+    resolveEquations({ a1: Number(State.baseFunc.a), b1: Number(State.baseFunc.b), c1: Number(State.baseFunc.c) }, { a2: coefs.a, b2: coefs.b, c2: coefs.c });
+    State.baseFunc = null;
+    return "result";
+}
+function curve(coefA = 0, coefB = 0, polynomial = true) {
+    if (!polynomial) {
+        if ((coefA < 1 && coefB < 0) || (coefA > 1 && coefB > 0))
+            notify(tr("helpers.increasingUpper"), { explanation: "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)" });
+        else if ((coefA > 1 && coefB < 0) || (coefA < 1 && coefB > 0))
+            notify(tr("helpers.decreasing"), { explanation: "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)" });
+    }
+    else if (coefB !== 0)
+        if (coefB > 0)
+            notify(tr("helpers.increasingUpper"), { explanation: `${tr("helpers.pointsUpward")}b > 0` });
+        else
+            notify(tr("helpers.decreasing"), { explanation: `${tr("helpers.pointsDownward")}b < 0` });
+    else if (coefA !== 0)
+        if (coefA > 0)
+            notify(tr("helpers.upwardConcavity"), { explanation: "a > 0" });
+        else
+            notify(tr("helpers.downwardConcavity"), { explanation: "a < 0" });
+}
+function calculateRoot({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}, funcType = "poly") {
+    if (funcType === "poly") {
+        if (a === 0 && b === 0)
+            return NaN;
+        return a === 0 ? divisionOptions(-c, b) : NaN;
+    }
+    const exponent = divisionOptions(-c, b, { shouldRound: false });
+    if (funcType === "exp")
+        return exponent > 0 ? divisionOptions(lnOptions(exponent), lnOptions(a)) : NaN;
+    return funcType === "log" ? round(a ** exponent) : NaN;
+}
+function showRoot(root = 0, explanation = "c", noHave = "") {
+    const intersection = tr("helpers.realRoot");
+    if (isFiniteNumber(root))
+        notify(`${intersection} x = ${decimalOptions(root)}`, { explanation: tr("helpers.theRootIs") + explanation });
+    else
+        notify(`${intersection} ∄! x ∈ ℝ`, { explanation: noHave });
+}
+function calculateDelta({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) {
+    const delta = b ** 2 - 4 * a * c;
+    if (delta <= 0)
+        return [delta, delta === 0 ? divisionOptions(-b, 2 * a) : NaN, NaN];
+    const sqrtDelta = Math.sqrt(delta), q = b >= 0 ? -0.5 * (b + sqrtDelta) : -0.5 * (b - sqrtDelta), raw1 = divisionOptions(q, a), raw2 = divisionOptions(c, q);
+    return [delta, Math.min(raw1, raw2), Math.max(raw1, raw2)];
+}
+function showDelta(delta = 0, lower = "", equal = "", higher = "", hasY = false) {
+    const base = `Δ = b² − 4 · a · ${hasY ? "(c − y)" : "c"} ⇒ Δ`, [message, suffix] = delta < 0 ? [lower, "< 0 ⇒ x ∉ ℝ"] : delta === 0 ? [equal, "= 0 ⇒ x = (−b) / (2 · a)"] : [higher, "> 0 ⇒ x₁, x₂ = (−b ± √Δ) / (2 · a)"];
+    notify(message, { explanation: `${base} ${suffix}` });
+}
+function vertex(coefA = 0, coefB = 0, delta = 0) {
+    const a = Number(coefA);
+    return [divisionOptions(-a, 2 * Number(coefB)), divisionOptions(-delta, 4 * a)];
+}
+function exceededLimit(limit = Config.iterationLimit) {
+    if (limit < Config.iterationLimit)
+        return false;
+    errorLimitExceeded();
+    return true;
+}
+function calcPeriod(coefA = 0, funcTan = false) {
+    return decimalOptions((funcTan ? Math.PI : 2 * Math.PI) / absoluteOptions(Number(coefA)));
+}
+function showPeriod(coefA = 0, funcTan = false) {
+    if (coefA === 0)
+        notify(tr("helpers.periodInfinity"), { explanation: tr("helpers.constantPeriod") });
+    else
+        notify(tr("helpers.period") + calcPeriod(coefA, funcTan), { explanation: `${tr("helpers.periodEquals") + (funcTan ? "π" : "2π")} / |a|` });
+}
+function amplitude(coefB = 0) {
+    notify(`Amplitude: ${decimalOptions(absoluteOptions(Number(coefB)))}`, { explanation: "Amplitude = |b|" });
+}
+function verticalAsymptote(coefA = 0) {
+    const label = tr("helpers.verticalAsymptote");
+    if (coefA === 0)
+        notify(`${label} ∄`, { explanation: tr("helpers.noAsymptote") });
+    else
+        notify(`${label} x = (π / 2 + n · π) / a, n ∈ ℤ`, { explanation: `tan(a · x) ${tr("helpers.undefinedAsymptote")} cos(a · x) = 0, ${tr("helpers.ie")} a · x = π / 2 + n · π` });
+}
+function signTrig() {
+    notify(tr("helpers.singNotTrigonometric"), { explanation: tr("algebra.underConstruction"), type: "warning" });
+}
+function signConstant({ c = State.current.numericC } = {}) {
+    const symbol = c === 0 ? "=" : c > 0 ? ">" : "<";
+    notify(`ƒ(x) ${symbol} 0, ∀ x ∈ ℝ`, { explanation: `c ${symbol} 0 ⇒ ƒ(x) ${symbol} 0 ⇒ ∀ x ∈ ℝ` });
+}
+function signAffine({ b = State.current.numericB, c = State.current.numericC } = {}) {
+    const affineRoot = calculateRoot({ b, c }), symbol = b > 0 ? ">" : "<", opposite = symbol === ">" ? "<" : ">";
+    notify(`ƒ(x) ${symbol} 0 ${tr("helpers.if")} x ${opposite} ${affineRoot}\nƒ(x) = 0 ${tr("helpers.in")} x = ${affineRoot}\nƒ(x) ${opposite} 0 ${tr("helpers.if")} x ${symbol} ${affineRoot}`, {
+        explanation: `b ${symbol} 0 ⇒ ƒ(x) ${tr("helpers.increasing")}`,
+    });
+}
+function signQuadratic({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) {
+    const symbol = a > 0 ? ">" : "<", [delta, root1, root2] = calculateDelta({ a, b, c }), [x1, x2] = [decimalOptions(root1), decimalOptions(root2)];
+    if (delta < 0)
+        notify(`ƒ(x) ${symbol} 0, ∀ x ∈ ℝ`, { explanation: `a ${symbol} 0 ∧ Δ < 0 ⇒ ƒ(x) ${symbol} 0, ∀ x ∈ ℝ` });
+    else if (delta === 0)
+        notify(`ƒ(x) ${symbol} 0, ${tr("helpers.exceptIn")} x = ${x1}`, { explanation: `a ${symbol} 0 ∧ Δ = 0 ⇒ ƒ(x) ${symbol} 0, x ≠ ${x1}` });
+    else if (a < 0)
+        notify(`ƒ(x) > 0 ${tr("helpers.if")} ${x1} < x < ${x2}\nƒ(x) = 0 ${tr("helpers.in")} x = ${x1} ∨ x = ${x2}\nƒ(x) < 0 ${tr("helpers.if")} x < ${x1} ∨ x > ${x2}`, { explanation: "a < 0 ∧ Δ > 0" });
+    else
+        notify(`ƒ(x) > 0 ${tr("helpers.if")} x < ${x1} ∨ x > ${x2}\nƒ(x) = 0 ${tr("helpers.in")} x = ${x1} ∨ x = ${x2}\nƒ(x) < 0 ${tr("helpers.if")} ${x1} < x < ${x2}`, { explanation: "a > 0 ∧ Δ > 0." });
+}
+function signExponential({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) {
+    if (divisionOptions(-c, b, { shouldRound: false }) > 0) {
+        const root = decimalOptions(calculateRoot({ a, b, c }, "exp")), symbol = (a < 1 && b < 0) || (a > 1 && b > 0) ? ">" : "<", opposite = symbol === ">" ? "<" : ">";
+        notify(`ƒ(x) > 0 ${tr("helpers.if")} x ${symbol} ${root}\nƒ(x) = 0 ${tr("helpers.in")} x = ${root}\nƒ(x) < 0 ${tr("helpers.if")} x ${opposite} ${root}`, { explanation: `a ${symbol} 0 ∧ (−c) / b > 0.` });
+    }
+    else if (b > 0)
+        notify("ƒ(x) > 0, ∀ x ∈ ℝ", { explanation: `${tr("helpers.accordingTo")} b > 0 ∧ (−c) / b ≤ 0.` });
+    else
+        notify("ƒ(x) < 0, ∀ x ∈ ℝ", { explanation: `${tr("helpers.accordingTo")} b < 0 ∧ (−c) / b ≤ 0.` });
+}
+function signLogarithmic({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) {
+    const root = decimalOptions(calculateRoot({ a, b, c }, "log")), increasing = (a < 1 && b < 0) || (a > 1 && b > 0), symbol = increasing ? ">" : "<", opposite = increasing ? "<" : ">";
+    notify(`ƒ(x) > 0 ${tr("helpers.if")} x ${symbol} ${root}\nƒ(x) = 0 ${tr("helpers.in")} x = ${root}\nƒ(x) < 0 ${tr("helpers.if")} x ${opposite} ${root}`, {
+        explanation: increasing ? "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)" : "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)",
+    });
+}
+export { amplitude, calculateDelta, calculateRoot, curve, domain, exceededLimit, range, resolveSign, resolveXValues, resolveYValues, saveEquations, showDelta, showPeriod, showRoot, vertex, verticalAsymptote, xAxis, yAxis };

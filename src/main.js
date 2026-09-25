@@ -1,555 +1,355 @@
-/**
- * @import * as config from './config.js';
- */
-import { Algebra } from "./algebra.js"
-import { Analyze } from "./analyze.js"
-import { Checks } from "./checks.js"
-import { Config, DEFAULT_CONFIG } from "./config.js"
-import { Errors } from "./errors.js"
-import { changeLanguage, tr } from "./i18n.js"
-import { State } from "./state.js"
-import { Ui } from "./ui.js"
-import { VERSION } from "./version.js"
-import { Writing } from "./writing.js"
-
-Ui.notifyOptions(
-    `==================================================\n` +
-        `${tr("commands.title")} — ${VERSION}\n${tr("commands.copyright")} © Adriano Lima 2025 — 2026\n` +
-        `==================================================`,
-    { type: "console" }
-)
-
-Config.load()
-
-Ui.notifyOptions(tr("main.welcomeTitle"), { explanation: tr("main.welcomeDescription") })
-
-const setMeta = (name = "", content = "") =>
-        document.querySelector(`meta[name="${CSS.escape(name)}"]`)?.setAttribute("content", content),
-    setProperty = (property = "", content = "") =>
-        document.querySelector(`meta[property="${CSS.escape(property)}"]`)?.setAttribute("content", content),
-    locales = {
-        "pt-br": "pt_BR",
-        "pt-pt": "pt_PT",
-        "en-us": "en_US",
-        "en-gb": "en_GB",
-        "es-419": "es_419",
-        "es-es": "es_ES",
-    },
-    changeHTML = () => {
-        const title = tr("commands.title"),
-            description = tr("main.documentDescription")
-
-        document.documentElement.lang = Config.language
-        setProperty("og:locale", locales[Config.language])
-        document.title = title
-
-        const h1 = document.querySelector("h1")
-        if (h1) h1.textContent = tr("main.h1")
-
-        setMeta("title", title)
-        setMeta("description", description)
-        setProperty("og:title", title)
-        setProperty("og:description", description)
-        setMeta("twitter:title", title)
-        setMeta("twitter:description", description)
-    },
-    handleSubmenu = subtype => {
-        if (Checks.isFiniteNumber(subtype) && subtype >= 6 && subtype <= 9) {
-            State.type = subtype
-            State.loop = true
-            State.keepType = true
-            return true
-        }
-
-        if (Checks.isValidCommand(subtype)) {
-            State.type = subtype
-            State.loop = true
-            if (subtype !== "exit") State.keepType = true
-            return true
-        }
-
-        if (subtype == 0) {
-            State.loop = true
-            return true
-        }
-
-        return false
-    },
-    isValidSubtype = (subtype, maxOption) =>
-        (Checks.isFiniteNumber(subtype) &&
-            ((subtype >= 0 && subtype <= maxOption) || (subtype >= 6 && subtype <= 9))) ||
-        Checks.isValidCommand(subtype),
-    runSubmenu = (buildMenuText, maxOption, handlers) => {
-        let subLoop
-
-        do {
-            const subtype = Ui.inputOptions(buildMenuText(), { number: true, places: 0, commands: true })
-            subLoop = !isValidSubtype(subtype, maxOption)
-
-            if (!subLoop && !handleSubmenu(subtype)) handlers[subtype]?.()
-        } while (subLoop)
-    },
-    handlePolynomial = () => {
-        State.current.type = "poly"
-
-        if (!State.current.numericCoefs) State.current.resolveCoefs()
-        if (!State.current.numericCoefs) return
-        if (State.current.isConstant) Analyze.resolveConstant()
-        else if (State.current.isAffine) Analyze.resolveAffine()
-        else Analyze.resolveQuadratic()
-    },
-    handleExpOrLog = (kind, label, resolveFn) => {
-        State.current.type = /** @type {FunctionType} */ (kind)
-
-        if (State.current.variableCoefs) State.current.resolveCoefs()
-        if (State.current.variableCoefs) return
-
-        if (State.current.isValidExpLog) {
-            resolveFn(State.current.toCoefficients())
-            return
-        }
-
-        if (State.current.isConstantExpLog) {
-            Errors.constantFunction(label)
-
-            if (State.current.numericA == 1 && Checks.isFiniteNumber(State.current.numericC))
-                State.current.c = State.current.numericC + State.current.numericB
-
-            State.current.a = 0
-            State.current.b = 0
-            State.type = 1
-            State.keepType = true
-            State.loop = true
-            return
-        }
-
-        if (!State.current.isInvalidExpLog) return
-
-        Errors.invalidFunction(label)
-        State.askCoeffs = true
-        State.loop = true
-    },
-    handleNonPolynomial = () => {
-        runSubmenu(
-            () =>
-                `=== Menu ===\n${tr("main.whatWant")}\n` +
-                `1 = ${tr("main.exponentialFunction")}\n` +
-                `2 = ${tr("main.logarithmicFunction")}\n` +
-                `----------------\n` +
-                `6 = ${tr("main.history")} | 7 = ${tr("main.settings")} | 8 = ${tr("main.review")} | 9 = ${tr(
-                    "main.change"
-                )} | 0 = ${tr("commands.back")}`,
-            2,
-            {
-                1: () => handleExpOrLog("exp", tr("main.exponential"), coefs => Analyze.resolveExponential(coefs)),
-                2: () => handleExpOrLog("log", tr("main.logarithmic"), coefs => Analyze.resolveLogarithmic(coefs)),
-            }
-        )
-    },
-    handleTrig = (kind, label, resolveFn, mergeOnZeroA = false) => {
-        State.current.type = /** @type {FunctionType} */ (kind)
-
-        if (State.current.variableCoefs) State.current.resolveCoefs()
-        if (State.current.variableCoefs) return
-
-        if (State.current.isValidTrig) {
-            resolveFn(State.current.toCoefficients())
-            return
-        }
-
-        if (!State.current.isConstantTrig) return
-
-        Errors.constantFunction(label)
-
-        if (mergeOnZeroA && State.current.numericA == 0 && Checks.isFiniteNumber(State.current.numericC))
-            State.current.c = State.current.numericC + State.current.numericB
-
-        State.current.a = 0
-        State.current.b = 0
-        State.type = 1
-        State.keepType = true
-        State.loop = true
-    },
-    handleTrigonometric = () => {
-        runSubmenu(
-            () =>
-                `=== Menu ===\n${tr("main.whatWant")}\n` +
-                `1 = ${tr("main.sineFunction")}\n` +
-                `2 = ${tr("main.cosineFunction")}\n` +
-                `3 = ${tr("main.tangentFunction")}\n` +
-                `----------------\n` +
-                `6 = ${tr("main.history")} | 7 = ${tr("main.settings")} | 8 = ${tr("main.review")} | 9 = ${tr(
-                    "main.change"
-                )} | 0 = ${tr("commands.back")}`,
-            3,
-            {
-                1: () => handleTrig("sin", tr("main.sine"), coefs => Analyze.resolveSine(coefs)),
-                2: () => handleTrig("cos", tr("main.cosine"), coefs => Analyze.resolveCosine(coefs), true),
-                3: () => handleTrig("tan", tr("main.tangent"), coefs => Analyze.resolveTangent(coefs)),
-            }
-        )
-    },
-    handleHistory = () => {
-        State.loop = true
-
-        if (State.history.length <= 1) {
-            Ui.notifyOptions(tr("main.noHistory"), { explanation: tr("main.noHistoryExp") })
-            return
-        }
-
-        const message = `=== ${tr("main.history")} ===\n${tr("main.whatWant")}\n${State.history
-                .filter(Boolean)
-                .toReversed()
-                .map(
-                    (stored, i) =>
-                        `${i + 1} ⇒ “a” = ${Writing.decimalOptions(stored.a)}; “b” = ${Writing.decimalOptions(stored.b)}; “c” = ${Writing.decimalOptions(stored.c)}`
-                )
-                .join("")}`,
-            answer = Ui.rangeOptions(message, { max: State.history.length })
-        if (answer == 0) return
-
-        const stored = State.history.at(-answer)
-        if (!stored) return
-
-        State.current.a = stored.a
-        State.current.b = stored.b
-        State.current.c = stored.c
-
-        if (State.funcChanged) State.lastSaved = State.current.toCoefficients()
-    },
-    buildConfigOptions = () => [
-        // Página 1
-        Writing.configItem(tr("main.language"), "language"),
-        Writing.configItem(tr("main.unicode"), "unicode"),
-        Writing.configItem(tr("main.accents"), "accents"),
-        Writing.configItem(tr("main.textCase"), "textCase"),
-        Writing.configItem(tr("main.decimalSeparator"), "decimalSeparator"),
-        "---",
-
-        // Página 2
-        Writing.configItem(tr("main.explanations"), "explanations"),
-        Writing.configItem(tr("main.errors"), "errors"),
-        Writing.configItem(tr("main.showFunction"), "showFunction"),
-        Writing.configItem(tr("main.inputConfirm"), "inputConfirm"),
-        Writing.configItem(tr("main.outputConfirm"), "outputConfirm"),
-        Writing.configItem(tr("main.simpleMulti"), "simpleMulti"),
-
-        // Página 3
-        Writing.configItem(tr("main.decimalPlaces"), "decimalPlaces"),
-        Writing.configItem(tr("main.logPrecision"), "logPrecision"),
-        Writing.configItem(tr("main.divisionPrecision"), "divPrecision"),
-        Writing.configItem(tr("main.iterationLimit"), "iterationLimit"),
-        Writing.configItem(tr("main.degrees"), "degrees"),
-        "---",
-    ],
-    buildSettingsMenu = (page, total, configOptions) => {
-        let text = `=== ${tr("main.settings")} ===\n${tr("commands.page")}${String(page)}/${String(
-            total
-        )}\n${tr("main.settingsNote")}`
-
-        for (let option = 1; option <= 6; option++)
-            text += `\n${String(option)} = ${String(configOptions[option - 1 + 6 * (page - 1)])}`
-
-        text +=
-            `\n----------------\n` +
-            `7 = ${tr("main.restoreDefault")} | 8 = ${tr("commands.previous")} | 9 = ${tr(
-                "commands.next"
-            )} | 0 = ${tr("commands.back")}`
-
-        return text
-    },
-    restoreDefaults = () => {
-        if (JSON.stringify(Config) == JSON.stringify(DEFAULT_CONFIG)) {
-            Ui.notifyOptions(tr("main.allSettingsDefault"), {
-                explanation: tr("main.allSettingsDefaultExp"),
-                type: "warning",
-            })
-            return
-        }
-
-        const changedKeys = /** @type {(config.ConfigKey)[]} */ (Object.keys(Config)).filter(
-            key => Config[key] !== DEFAULT_CONFIG[key]
-        )
-        if (
-            Ui.notifyOptions(tr("main.wantRestoreDefault") + changedKeys.join(", "), {
-                explanation: tr("main.noteRestoreDefault"),
-                type: "warning",
-                asConfirm: true,
-            })
-        )
-            Config.reset()
-    },
-    settingsPageActions = {
-        1: {
-            1: () => {
-                /** @type {Language[]} */ const LANGUAGES = ["pt-br", "pt-pt", "en-us", "en-gb", "es-419", "es-es"],
-                    displayLocale = Config.language.replace(/-\w+$/v, m => Writing.uppercase(m)),
-                    languageNames = new Intl.DisplayNames([displayLocale], { type: "language" }),
-                    optionLines = LANGUAGES.map((lang, index) => `${index + 1} = ${languageNames.of(lang)}`),
-                    question = Ui.rangeOptions(
-                        `${Writing.configItem(tr("main.whatLanguage"), "language")}\n${optionLines.join("\n")}`,
-                        { explanation: tr("main.noteLanguage"), min: 1, max: 6 }
-                    ),
-                    /** @type {Language} */ language = LANGUAGES[question - 1] ?? "pt-br"
-
-                if (language == Config.language) return
-
-                changeLanguage(language)
-                changeHTML()
-            },
-            2: () => {
-                Config.unicode = Ui.notifyOptions(Writing.configItem(tr("main.enableUnicode"), "unicode"), {
-                    type: "confirm",
-                    explanation: tr("main.noteUnicode"),
-                })
-            },
-            3: () => {
-                Config.accents = Ui.notifyOptions(Writing.configItem(tr("main.enableAccents"), "accents"), {
-                    type: "confirm",
-                    explanation: tr("main.noteAccents"),
-                })
-            },
-            4: () => {
-                /** @type {TextCase[]} */ const cases = ["capitalized", "uppercase", "lowercase", "normal"]
-                Config.textCase =
-                    cases[
-                        Ui.rangeOptions(
-                            `${Writing.configItem(tr("main.changeTextCase"), "textCase")}\n${[
-                                tr("main.textCaseCapitalized"),
-                                tr("main.textCaseUppercase"),
-                                tr("main.textCaseLowercase"),
-                                tr("main.textCaseNormal"),
-                            ]
-                                .map((label, index) => `${index + 1} = ${label}`)
-                                .join("\n")}`,
-                            { explanation: tr("main.noteTextCase"), min: 1, max: 4 }
-                        ) - 1
-                    ] ?? "normal"
-            },
-            5: () => {
-                Config.decimalSeparator = Ui.notifyOptions(
-                    Writing.configItem(tr("main.changeDecimalSeparator"), "decimalSeparator"),
-                    {
-                        type: "confirm",
-                        explanation:
-                            tr("main.noteDecimalSeparator") +
-                            Writing.decimalOptions(123.456) +
-                            tr("main.noteDecimalSeparator2"),
-                    }
-                )
-            },
-        },
-
-        2: {
-            1: () => {
-                Config.explanations = Ui.notifyOptions(
-                    Writing.configItem(tr("main.enableExplanations"), "explanations"),
-                    { type: "confirm", explanation: tr("main.noteExplanations") }
-                )
-            },
-            2: () => {
-                Config.errors = Ui.notifyOptions(Writing.configItem(tr("main.enableErrors"), "errors"), {
-                    type: "confirm",
-                    explanation: tr("main.noteErrors"),
-                })
-            },
-            3: () => {
-                Config.showFunction = Ui.notifyOptions(
-                    Writing.configItem(tr("main.enableShowFunction"), "showFunction"),
-                    { type: "confirm", explanation: tr("main.noteShowFunction") }
-                )
-            },
-            4: () => {
-                Config.inputConfirm = Ui.notifyOptions(
-                    Writing.configItem(tr("main.enableInputConfirm"), "inputConfirm"),
-                    { type: "confirm", explanation: tr("main.noteInputConfirm") }
-                )
-            },
-            5: () => {
-                Config.outputConfirm = Ui.notifyOptions(
-                    Writing.configItem(tr("main.enableOutputConfirm"), "outputConfirm"),
-                    { type: "confirm", explanation: tr("main.noteOutputConfirm") }
-                )
-            },
-            6: () => {
-                Config.simpleMulti = Ui.notifyOptions(Writing.configItem(tr("main.changeSimpleMulti"), "simpleMulti"), {
-                    type: "confirm",
-                    explanation: tr("main.noteSimpleMulti"),
-                })
-            },
-        },
-
-        3: {
-            1: () => {
-                Config.decimalPlaces = Ui.rangeOptions(
-                    Writing.configItem(tr("main.howManyDecimalPlaces"), "decimalPlaces"),
-                    { explanation: tr("main.noteDecimalPlaces"), min: 3, max: 10 }
-                )
-
-                if (!State.current.variableA) State.current.a = Algebra.round(State.current.numericA)
-                if (!State.current.variableB) State.current.b = Algebra.round(State.current.numericB)
-                if (!State.current.variableC) State.current.c = Algebra.round(State.current.numericC)
-            },
-            2: () => {
-                Config.logPrecision = /** @type {Precision} */ (
-                    Ui.rangeOptions(Writing.configItem(tr("main.whatLogPrecision"), "logPrecision"), {
-                        explanation: tr("main.noteLogPrecision"),
-                        min: 1e-12,
-                        max: 1e-6,
-                        places: 20,
-                    })
-                )
-            },
-            3: () => {
-                Config.divPrecision = /** @type {Precision} */ (
-                    Ui.rangeOptions(Writing.configItem(tr("main.whatDivisionPrecision"), "divPrecision"), {
-                        explanation: tr("main.noteDivisionPrecision"),
-                        min: 1e-12,
-                        max: 1e-6,
-                        places: 20,
-                    })
-                )
-            },
-            4: () => {
-                Config.iterationLimit = Ui.rangeOptions(
-                    Writing.configItem(tr("main.whatIterationLimit"), "iterationLimit"),
-                    { explanation: tr("main.noteIterationLimit"), min: 100, max: 10_000 }
-                )
-            },
-            5: () => {
-                Config.degrees = Ui.notifyOptions(Writing.configItem(tr("main.changeDegrees"), "degrees"), {
-                    type: "confirm",
-                    explanation: tr("main.noteDegrees"),
-                })
-                    ? "deg"
-                    : "rad"
-            },
-        },
-    },
-    handleSettings = () => {
-        let page = 1,
-            choice
-
-        const hasChoice = c => {
-            switch (c) {
-                case 7: {
-                    restoreDefaults()
-                    break
-                }
-                case 8: {
-                    choice = -1
-                    page--
-                    break
-                }
-                case 9: {
-                    choice = -1
-                    page++
-                    break
-                }
-                case "config": {
-                    choice = -1
-                    break
-                }
-                case "exit": {
-                    choice = 0
-                    State.type = "exit"
-                    break
-                }
-                default: {
-                    if (Checks.isFiniteNumber(choice)) {
-                        /** @type {Record<Numeric, Record<Numeric, () => void> | undefined>} */ const pageActions =
-                            settingsPageActions
-                        pageActions[page]?.[choice]?.()
-                    }
-                }
-            }
-        }
-        do {
-            State.type = -1
-            State.loop = true
-
-            const configOptions = buildConfigOptions(),
-                total = Math.ceil(configOptions.length / 6)
-
-            if (page < 1) page = 1
-            if (page > total) page = total
-
-            choice = Ui.rangeOptions(buildSettingsMenu(page, total, configOptions), { max: 9, commands: true })
-
-            hasChoice(choice)
-
-            if (Checks.isFiniteNumber(choice) && choice >= 1 && choice <= 6) Config.save()
-        } while (choice !== 0)
-    },
-    handleReview = () => {
-        Ui.notifyOptions(
-            `${tr("main.values")}\n` +
-                `“a” = ${Writing.decimalOptions(State.current.a)}\n` +
-                `“b” = ${Writing.decimalOptions(State.current.b)}\n` +
-                `“c” = ${Writing.decimalOptions(State.current.c)}\n`
-        )
-        State.loop = true
-    },
-    handleChange = () => {
-        State.loop = true
-        State.askCoeffs = true
-    },
-    handleExit = () => {
-        State.loop = Config.outputConfirm
-            ? !Ui.notifyOptions(tr("main.exitConfirm"), { type: "confirm", explanation: tr("main.noteSettingsExit") })
-            : false
-    },
-    TYPE_ALIASES = { history: 6, config: 7, review: 8, change: 9, exit: 0 },
-    /** @type {Record<Numeric, () => void>} */ typeActions = {
-        1: handlePolynomial,
-        2: handleNonPolynomial,
-        3: handleTrigonometric,
-        6: handleHistory,
-        7: handleSettings,
-        8: handleReview,
-        9: handleChange,
-        0: handleExit,
-    },
-    resolveTypeKey = type => (Checks.isValidCommand(type) ? TYPE_ALIASES[type] : type),
-    askMainMenu = () =>
-        Ui.inputOptions(
-            `=== ${tr("main.start")} ===\n${tr("main.whatWant")}\n` +
-                `1 = ${tr("main.polynomialFunctions")}\n` +
-                `2 = ${tr("main.nonPolynomialFunctions")}\n` +
-                `3 = ${tr("main.trigonometricFunctions")}\n` +
-                `----------------\n` +
-                `6 = ${tr("main.history")} | 7 = ${tr("main.settings")} | 8 = ${tr("main.review")} | 9 = ${tr("main.change")} | 0 = ${tr("main.exit")}`,
-            { number: true, places: 0, commands: true }
-        ),
-    saveHistory = () => {
-        if (!State.funcChanged) return
-
-        State.lastSaved = State.current.toCoefficients()
-        State.history.push(State.lastSaved)
-
-        if (State.history.length > 9) State.history = State.history.slice(1)
+import { round } from "./algebra.js";
+import { resolveAffine, resolveConstant, resolveCosine, resolveExponential, resolveLogarithmic, resolveQuadratic, resolveSine, resolveTangent } from "./analyze.js";
+import { isFiniteNumber, isInInterval } from "./checks.js";
+import { isValidCommand } from "./commands.js";
+import { Config, DEFAULT_CONFIG } from "./config.js";
+import { notify } from "./display.js";
+import { errorConstantFunction, errorInvalidFunction } from "./errors.js";
+import { changeLanguage, tr } from "./i18n.js";
+import { State } from "./state.js";
+import { inputCommands, rangeOptions } from "./ui.js";
+import { VERSION } from "./version.js";
+import { configItem, decimalOptions, uppercase } from "./writing.js";
+notify(`==================================================\n${tr("commands.title")} — ${VERSION}\n${tr("commands.copyright")} © Adriano Lima 2025 — 2026\n==================================================`, { type: "console" });
+Config.load();
+function setMeta(name = "", content = "") {
+    document.querySelector(`meta[name="${CSS.escape(name)}"]`)?.setAttribute("content", content);
+}
+function setProperty(property = "", content = "") {
+    document.querySelector(`meta[property="${CSS.escape(property)}"]`)?.setAttribute("content", content);
+}
+const locales = { "pt-br": "pt_BR", "pt-pt": "pt_PT", "en-us": "en_US", "en-gb": "en_GB", "es-419": "es_419", "es-es": "es_ES" };
+function changeHTML() {
+    const title = tr("commands.title"), description = tr("main.documentDescription");
+    document.documentElement.lang = Config.language;
+    setProperty("og:locale", locales[Config.language]);
+    document.title = title;
+    const h1 = document.querySelector("h1");
+    if (h1)
+        h1.textContent = tr("main.h1");
+    setMeta("title", title);
+    setMeta("description", description);
+    setProperty("og:title", title);
+    setProperty("og:description", description);
+    setMeta("twitter:title", title);
+    setMeta("twitter:description", description);
+}
+changeHTML();
+notify(tr("main.welcomeTitle"), { explanation: tr("main.welcomeDescription") });
+function submenuFooter(backLabel) {
+    return `\n----------------\n6 = ${tr("main.history")} | 7 = ${tr("main.settings")} | 8 = ${tr("main.review")} | 9 = ${tr("main.change")} | 0 = ${backLabel}`;
+}
+function handleSubmenu(subtype) {
+    if (isFiniteNumber(subtype) && isInInterval(subtype, [6, 9])) {
+        State.type = subtype;
+        State.loop = true;
+        State.keepType = true;
+        return true;
     }
-
-State.current.refreshCoefs()
-
+    if (isValidCommand(subtype)) {
+        State.type = subtype;
+        State.loop = true;
+        if (subtype !== "exit")
+            State.keepType = true;
+        return true;
+    }
+    if (subtype === 0) {
+        State.loop = true;
+        return true;
+    }
+    return false;
+}
+function isValidSubtype(subtype, maxOption) {
+    return (isFiniteNumber(subtype) && isInInterval(subtype, [0, maxOption, 6, 9])) || isValidCommand(subtype);
+}
+function runSubmenu(buildMenuText, maxOption, handlers) {
+    let subLoop;
+    do {
+        const subtype = inputCommands(buildMenuText(), { number: true, places: 0, placeholder: "0" });
+        subLoop = !isValidSubtype(subtype, maxOption);
+        if (!subLoop && !handleSubmenu(subtype))
+            handlers[subtype]?.();
+    } while (subLoop);
+}
+function handlePolynomial() {
+    State.current.type = "poly";
+    if (!State.current.numericCoefs)
+        State.current.resolveCoefs();
+    if (!State.current.numericCoefs)
+        return;
+    if (State.current.isConstant)
+        resolveConstant();
+    else if (State.current.isAffine)
+        resolveAffine();
+    else
+        resolveQuadratic();
+}
+function handleExpOrLog(kind, label, resolveFn) {
+    State.current.type = kind;
+    if (State.current.variableCoefs)
+        State.current.resolveCoefs();
+    if (State.current.variableCoefs)
+        return;
+    if (State.current.isValidExpLog) {
+        resolveFn(State.current.toNumericCoefficients());
+        return;
+    }
+    if (State.current.isConstantExpLog) {
+        errorConstantFunction(label);
+        if (State.current.numericA === 1)
+            State.current.c = State.current.numericC + State.current.numericB;
+        State.current.a = 0;
+        State.current.b = 0;
+        State.type = 1;
+        State.keepType = true;
+        State.loop = true;
+        return;
+    }
+    if (!State.current.isInvalidExpLog)
+        return;
+    errorInvalidFunction(label);
+    State.askCoeffs = true;
+    State.loop = true;
+}
+function handleNonPolynomial() {
+    runSubmenu(() => `=== Menu ===\n${tr("main.whatWant")}\n1 = ${tr("main.exponentialFunction")}\n2 = ${tr("main.logarithmicFunction")}\n${submenuFooter(tr("commands.back"))}`, 2, {
+        1: () => handleExpOrLog("exp", tr("main.exponential"), coefs => resolveExponential(coefs)),
+        2: () => handleExpOrLog("log", tr("main.logarithmic"), coefs => resolveLogarithmic(coefs)),
+    });
+}
+function handleTrig(kind, label, resolveFn, mergeOnZeroA = false) {
+    State.current.type = kind;
+    if (State.current.variableCoefs)
+        State.current.resolveCoefs();
+    if (State.current.variableCoefs)
+        return;
+    if (State.current.isValidTrig) {
+        resolveFn(State.current.toNumericCoefficients());
+        return;
+    }
+    if (!State.current.isConstantTrig)
+        return;
+    errorConstantFunction(label);
+    if (mergeOnZeroA && State.current.numericA === 0)
+        State.current.c = State.current.numericC + State.current.numericB;
+    State.current.a = 0;
+    State.current.b = 0;
+    State.type = 1;
+    State.keepType = true;
+    State.loop = true;
+}
+function handleTrigonometric() {
+    runSubmenu(() => `=== Menu ===\n${tr("main.whatWant")}\n1 = ${tr("main.sineFunction")}\n2 = ${tr("main.cosineFunction")}\n3 = ${tr("main.tangentFunction")}\n${submenuFooter(tr("commands.back"))}`, 3, {
+        1: () => handleTrig("sin", tr("main.sine"), coefs => resolveSine(coefs)),
+        2: () => handleTrig("cos", tr("main.cosine"), coefs => resolveCosine(coefs), true),
+        3: () => handleTrig("tan", tr("main.tangent"), coefs => resolveTangent(coefs)),
+    });
+}
+function handleHistory() {
+    State.loop = true;
+    const filtered = State.history.filter(Boolean).toReversed();
+    if (filtered.length <= 1) {
+        notify(tr("main.noHistory"), { explanation: tr("main.noHistoryExp") });
+        return;
+    }
+    const message = `=== ${tr("main.history")} ===\n${tr("main.whatWant")}\n${filtered.map((stored, i) => `${i + 1} ⇒ "a" = ${decimalOptions(stored.a)}; "b" = ${decimalOptions(stored.b)}; "c" = ${decimalOptions(stored.c)}`).join("")}`, answer = rangeOptions(message, { max: filtered.length });
+    if (answer === 0)
+        return;
+    const stored = filtered[answer - 1];
+    if (!stored)
+        return;
+    State.currentCoefs = stored;
+    if (State.funcChanged)
+        State.lastSaved = State.current.toCoefficients();
+}
+function buildConfigOptions() {
+    return [
+        configItem(tr("main.language"), "language"),
+        configItem(tr("main.unicode"), "unicode"),
+        configItem(tr("main.accents"), "accents"),
+        configItem(tr("main.textCase"), "textCase"),
+        configItem(tr("main.decimalSeparator"), "decimalSeparator"),
+        "---",
+        configItem(tr("main.explanations"), "explanations"),
+        configItem(tr("main.errors"), "errors"),
+        configItem(tr("main.showFunction"), "showFunction"),
+        configItem(tr("main.inputConfirm"), "inputConfirm"),
+        configItem(tr("main.outputConfirm"), "outputConfirm"),
+        configItem(tr("main.simpleMulti"), "simpleMulti"),
+        configItem(tr("main.decimalPlaces"), "decimalPlaces"),
+        configItem(tr("main.logPrecision"), "logPrecision"),
+        configItem(tr("main.divisionPrecision"), "divPrecision"),
+        configItem(tr("main.iterationLimit"), "iterationLimit"),
+        configItem(tr("main.degrees"), "degrees"),
+        "---",
+    ];
+}
+function buildSettingsMenu(page, total, configOptions) {
+    const start = 6 * (page - 1);
+    return [
+        `=== ${tr("main.settings")} ===\n${tr("commands.page")}${page}/${total}\n${tr("main.settingsNote")}`,
+        ...configOptions.slice(start, start + 6).map((option, i) => `\n${i + 1} = ${option}`),
+        `\n----------------\n7 = ${tr("main.restoreDefault")} | 8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`,
+    ].join("");
+}
+function restoreDefaults() {
+    if (JSON.stringify(Config) === JSON.stringify(DEFAULT_CONFIG)) {
+        notify(tr("main.allSettingsDefault"), { explanation: tr("main.allSettingsDefaultExp"), type: "warning" });
+        return;
+    }
+    const changedKeys = Object.keys(Config).filter(key => Config[key] !== DEFAULT_CONFIG[key]);
+    if (notify(`${tr("main.wantRestoreDefault")}${changedKeys.join(", ")}`, { explanation: tr("main.noteRestoreDefault"), type: "warning", asConfirm: true }))
+        Config.reset();
+}
+const settingsPageActions = {
+    1: {
+        1: () => {
+            const LANGUAGES = ["pt-br", "pt-pt", "en-us", "en-gb", "es-419", "es-es"], displayLocale = Config.language.replace(/-\w+$/v, m => uppercase(m)), languageNames = new Intl.DisplayNames([displayLocale], { type: "language" }), optionLines = LANGUAGES.map((lang, i) => `${i + 1} = ${languageNames.of(lang)}`), question = rangeOptions(`${configItem(tr("main.whatLanguage"), "language")}\n${optionLines.join("\n")}`, { explanation: tr("main.noteLanguage"), min: 1, max: 6 }), language = LANGUAGES[question - 1] ?? "pt-br";
+            if (language === Config.language)
+                return;
+            if (changeLanguage(language) === "same")
+                notify(tr("commands.languageAlready"), { type: "warning" });
+            changeHTML();
+        },
+        2: () => {
+            Config.unicode = notify(configItem(tr("main.enableUnicode"), "unicode"), { type: "confirm", explanation: tr("main.noteUnicode") });
+        },
+        3: () => {
+            Config.accents = notify(configItem(tr("main.enableAccents"), "accents"), { type: "confirm", explanation: tr("main.noteAccents") });
+        },
+        4: () => {
+            const cases = ["capitalized", "uppercase", "lowercase", "default"];
+            Config.textCase =
+                cases[rangeOptions(`${configItem(tr("main.changeTextCase"), "textCase")}\n${[tr("main.textCaseCapitalized"), tr("main.textCaseUppercase"), tr("main.textCaseLowercase"), tr("main.textCaseNormal")]
+                    .map((label, i) => `${i + 1} = ${label}`)
+                    .join("\n")}`, { explanation: tr("main.noteTextCase"), min: 1, max: 4 }) - 1] ?? "default";
+        },
+        5: () => {
+            Config.decimalSeparator = notify(configItem(tr("main.changeDecimalSeparator"), "decimalSeparator"), {
+                type: "confirm",
+                explanation: `${tr("main.noteDecimalSeparator")}${decimalOptions(123.456)}${tr("main.noteDecimalSeparator2")}`,
+            });
+        },
+    },
+    2: {
+        1: () => {
+            Config.explanations = notify(configItem(tr("main.enableExplanations"), "explanations"), { type: "confirm", explanation: tr("main.noteExplanations") });
+        },
+        2: () => {
+            Config.errors = notify(configItem(tr("main.enableErrors"), "errors"), { type: "confirm", explanation: tr("main.noteErrors") });
+        },
+        3: () => {
+            Config.showFunction = notify(configItem(tr("main.enableShowFunction"), "showFunction"), { type: "confirm", explanation: tr("main.noteShowFunction") }) ? "always" : "never";
+        },
+        4: () => {
+            Config.inputConfirm = notify(configItem(tr("main.enableInputConfirm"), "inputConfirm"), { type: "confirm", explanation: tr("main.noteInputConfirm") });
+        },
+        5: () => {
+            Config.outputConfirm = notify(configItem(tr("main.enableOutputConfirm"), "outputConfirm"), { type: "confirm", explanation: tr("main.noteOutputConfirm") });
+        },
+        6: () => {
+            Config.simpleMulti = notify(configItem(tr("main.changeSimpleMulti"), "simpleMulti"), { type: "confirm", explanation: tr("main.noteSimpleMulti") });
+        },
+    },
+    3: {
+        1: () => {
+            Config.decimalPlaces = rangeOptions(configItem(tr("main.howManyDecimalPlaces"), "decimalPlaces"), { explanation: tr("main.noteDecimalPlaces"), min: 3, max: 10 });
+            if (!State.current.variableA)
+                State.current.a = round(State.current.numericA);
+            if (!State.current.variableB)
+                State.current.b = round(State.current.numericB);
+            if (!State.current.variableC)
+                State.current.c = round(State.current.numericC);
+        },
+        2: () => {
+            Config.logPrecision = rangeOptions(configItem(tr("main.whatLogPrecision"), "logPrecision"), { explanation: tr("main.noteLogPrecision"), min: 1e-12, max: 1e-6, places: 20 });
+        },
+        3: () => {
+            Config.divPrecision = rangeOptions(configItem(tr("main.whatDivisionPrecision"), "divPrecision"), { explanation: tr("main.noteDivisionPrecision"), min: 1e-12, max: 1e-6, places: 20 });
+        },
+        4: () => {
+            Config.iterationLimit = rangeOptions(configItem(tr("main.whatIterationLimit"), "iterationLimit"), { explanation: tr("main.noteIterationLimit"), min: 100, max: 10_000 });
+        },
+        5: () => {
+            Config.degrees = notify(configItem(tr("main.changeDegrees"), "degrees"), { type: "confirm", explanation: tr("main.noteDegrees") }) ? "deg" : "rad";
+        },
+    },
+};
+function handleSettings() {
+    let page = 1, choice;
+    function hasChoice(c) {
+        switch (c) {
+            case 7:
+                restoreDefaults();
+                break;
+            case 8:
+                page--;
+                break;
+            case 9:
+                page++;
+                break;
+            case "exit":
+                choice = 0;
+                State.type = "exit";
+                break;
+            default:
+                if (isFiniteNumber(choice))
+                    settingsPageActions[page]?.[choice]?.();
+        }
+    }
+    do {
+        State.type = -1;
+        State.loop = true;
+        const configOptions = buildConfigOptions(), total = Math.ceil(configOptions.length / 6);
+        page = Math.min(Math.max(page, 1), total);
+        choice = rangeOptions(buildSettingsMenu(page, total, configOptions), { max: 9, commands: true });
+        hasChoice(choice);
+        if (isFiniteNumber(choice) && isInInterval(choice, [1, 6]))
+            Config.save();
+    } while (choice !== 0);
+}
+function handleReview() {
+    notify(`${tr("main.values")}\n"a" = ${decimalOptions(State.current.a)}\n"b" = ${decimalOptions(State.current.b)}\n"c" = ${decimalOptions(State.current.c)}\n`);
+    State.loop = true;
+}
+function handleChange() {
+    State.loop = true;
+    State.askCoeffs = true;
+}
+function handleExit() {
+    State.loop = Config.outputConfirm && !notify(tr("main.exitConfirm"), { type: "confirm", explanation: tr("main.noteSettingsExit") });
+}
+const TYPE_ALIASES = { history: 6, config: 7, review: 8, change: 9, exit: 0, start: -1 }, typeActions = { 1: handlePolynomial, 2: handleNonPolynomial, 3: handleTrigonometric, 6: handleHistory, 7: handleSettings, 8: handleReview, 9: handleChange, 0: handleExit };
+function resolveTypeKey(type) {
+    return isValidCommand(type) ? TYPE_ALIASES[type] : type;
+}
+function askMainMenu() {
+    return inputCommands(`=== ${tr("main.start")} ===\n${tr("main.whatWant")}\n1 = ${tr("main.polynomialFunctions")}\n2 = ${tr("main.nonPolynomialFunctions")}\n3 = ${tr("main.trigonometricFunctions")}\n${submenuFooter(tr("main.exit"))}`, {
+        number: true,
+        places: 0,
+        placeholder: "0",
+    });
+}
+function saveHistory() {
+    if (!State.funcChanged)
+        return;
+    State.lastSaved = State.current.toCoefficients();
+    State.history.push(State.lastSaved);
+    if (State.history.length > 9)
+        State.history = State.history.slice(1);
+}
+State.current.refreshCoefs();
 do {
-    if (State.askCoeffs) State.current.refreshCoefs()
-
-    saveHistory()
-
-    if (!State.keepType || State.type == "start") State.type = askMainMenu()
-
-    State.keepType = false
-    State.askCoeffs = false
-    State.loop = false
-
-    if (
-        (Checks.isFiniteNumber(State.type) &&
-            ((State.type >= 0 && State.type <= 3) || (State.type >= 6 && State.type <= 9))) ||
-        Checks.isValidCommand(State.type)
-    )
-        typeActions[resolveTypeKey(State.type)]?.()
-    else State.loop = true
-} while (State.loop)
-
-changeHTML()
+    if (State.askCoeffs)
+        State.current.refreshCoefs();
+    saveHistory();
+    if (!State.keepType || State.type === "start")
+        State.type = askMainMenu();
+    State.keepType = false;
+    State.askCoeffs = false;
+    State.loop = false;
+    if ((isFiniteNumber(State.type) && isInInterval(State.type, [0, 3, 6, 9])) || isValidCommand(State.type))
+        typeActions[resolveTypeKey(State.type)]?.();
+    else
+        State.loop = true;
+} while (State.loop);

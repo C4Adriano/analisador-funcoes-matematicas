@@ -1,3 +1,4 @@
+/* stylelint-disable plugin/no-low-performance-animation-properties */
 body {
     background-color: #000;
     display: flex;
@@ -20,9 +21,24 @@ h1 {
 
 @keyframes rgb-colors {
     0% {
-        filter: hue-rotate(0deg);
+        color: rgb(255, 0, 0);
+    }
+    16% {
+        color: rgb(255, 255, 0);
+    }
+    33% {
+        color: rgb(0, 255, 0);
+    }
+    50% {
+        color: rgb(0, 255, 255);
+    }
+    66% {
+        color: rgb(0, 0, 255);
+    }
+    83% {
+        color: rgb(255, 0, 255);
     }
     100% {
-        filter: hue-rotate(360deg);
+        color: rgb(255, 0, 0);
     }
 }

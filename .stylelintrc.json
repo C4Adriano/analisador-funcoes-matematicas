@@ -1,14 +1,7 @@
 {
     "extends": ["stylelint-config-standard-scss"],
-    "overrides": [
-        { "files": ["**/*.css"], "rules": { "color-function-notation": null, "rule-empty-line-before": null } }
-    ],
-    "plugins": [
-        "stylelint-order",
-        "stylelint-declaration-strict-value",
-        "stylelint-high-performance-animation",
-        "@ivuorinen/stylelint-a11y"
-    ],
+    "overrides": [{ "files": ["**/*.css"], "rules": { "color-function-notation": null, "rule-empty-line-before": null } }],
+    "plugins": ["stylelint-order", "stylelint-declaration-strict-value", "stylelint-high-performance-animation", "@ivuorinen/stylelint-a11y"],
     "rules": {
         "a11y/no-outline-none": true,
         "color-named": "never",

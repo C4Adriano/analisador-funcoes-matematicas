@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process"
 import { closeSync, fstatSync, openSync, readSync, writeFileSync } from "node:fs"
 import pkg from "../package.json" with { type: "json" }
 
-const gitPath = process.platform == "win32" ? String.raw`C:\Program Files\Git\cmd\git.exe` : "/usr/bin/git",
+const gitPath = process.platform === "win32" ? String.raw`C:\Program Files\Git\cmd\git.exe` : "/usr/bin/git",
     msgFile = process.argv[2],
     message = msgFile
         ? (() => {

@@ -1,193 +1,102 @@
 import defaultConfigJson from "./JSON/config.json" with { type: "json" }
-import { Ui } from "./ui.js"
 import { VERSION } from "./version.js"
 
-/**
- * Tipo de configuração baseado no `JSON`.
- * @since ~v6.1.0
- */
 interface ConfigType {
-    language: Language
-
-    unicode: boolean
     accents: boolean
-    textCase: TextCase
-    decimalSeparator: boolean
-
-    explanations: boolean
-    errors: boolean
-    showFunction: boolean
-    inputConfirm: boolean
-    outputConfirm: boolean
-    simpleMulti: boolean
-
     decimalPlaces: Places
-    logPrecision: Precision
-    divPrecision: Precision
-    iterationLimit: Numeric
+    decimalSeparator: boolean
     degrees: Degrees
+    divPrecision: Precision
+    errors: boolean
+    explanations: boolean
+    explicitMulti: ExplicitMulti
+    inputConfirm: boolean
+    iterationLimit: number
+    language: Language
+    logPrecision: Precision
+    outputConfirm: boolean
+    showFunction: ShowFunction
+    simpleMulti: boolean
+    textCase: TextCase
+    unicode: boolean
 }
 
 type ConfigKey = keyof ConfigType
 
-/**
- * Configurações padrões do programa.
- * @since ~v6.1.0
- */
-const DEFAULT_CONFIG: ConfigType = structuredClone(defaultConfigJson) as ConfigType
+const DEFAULT_CONFIG: ConfigType = structuredClone(defaultConfigJson as ConfigType)
 
-/**
- * Classe das configurações ativas do programa.
- * @since ~v6.7.0
- */
 class ConfigStore implements ConfigType {
-    /**
-     * Idioma do sistema.
-     */
-    public language!: Language
-
-    /**
-     * Se terá caracteres Unicode?
-     */
-    public unicode!: boolean
-
-    /**
-     * Se terá acentos gráficos?
-     */
     public accents!: boolean
-
-    /**
-     * O estilo do texto.
-     */
-    public textCase!: TextCase
-
-    /**
-     * Separador decimal ("," / ".").
-     */
-    public decimalSeparator!: boolean
-
-    /**
-     * Se terá explicações?
-     */
-    public explanations!: boolean
-
-    /**
-     * Se terá erros?
-     */
-    public errors!: boolean
-
-    /**
-     * Se irá mostrar a função?
-     */
-    public showFunction!: boolean
-
-    /**
-     * Se terá que confirmar as entradas?
-     */
-    public inputConfirm!: boolean
-
-    /**
-     * Se terá que confirmar as saidas?
-     */
-    public outputConfirm!: boolean
-
-    /**
-     * Se irá simplificar a multiplicação?
-     */
-    public simpleMulti!: boolean
-
-    /**
-     * Quantidade de casas decimais.
-     */
     public decimalPlaces!: Places
-
-    /**
-     * Qual a precisão do Logaritmo?
-     */
-    public logPrecision!: Precision
-
-    /**
-     * Qual a precisão da divisão?
-     */
-    public divPrecision!: Precision
-
-    /**
-     * Qual o limite de iterações?
-     */
-    public iterationLimit!: Numeric
-
-    /**
-     * Qual o tipo do ângulo?
-     */
+    public decimalSeparator!: boolean
     public degrees!: Degrees
+    public divPrecision!: Precision
+    public errors!: boolean
+    public explanations!: boolean
+    public explicitMulti!: ExplicitMulti
+    public inputConfirm!: boolean
+    public iterationLimit!: number
+    public language!: Language
+    public logPrecision!: Precision
+    public outputConfirm!: boolean
+    public showFunction!: ShowFunction
+    public simpleMulti!: boolean
+    public textCase!: TextCase
+    public unicode!: boolean
 
     public constructor() {
         Object.assign(this, structuredClone(defaultConfigJson))
     }
 
-    /**
-     * Carrega configurações salvas no `localStorage`.
-     * @since ~v6.1.0
-     */
-    public load(): void {
-        const saved: Str | null = localStorage.getItem("config")
-
-        if (saved == null || saved.trim() == "") return
+    public load(): "empty" | "corrupted" | "loaded" {
+        const saved = localStorage.getItem("config")
+        if (saved == null || saved.trim() === "") return "empty"
 
         let parsed: Partial<ConfigType>
-
         try {
             parsed = JSON.parse(saved) as Partial<ConfigType>
-        } catch (e) {
-            Ui.notifyOptions("[Config.load] Config corrompida no localStorage. Ignorando.", {
-                explanation: String(e),
-                type: "console",
-            })
+        } catch {
             localStorage.removeItem("config")
-            return
+            return "corrupted"
         }
 
         const keys = Object.keys(defaultConfigJson) as ConfigKey[],
-            updates: Partial<ConfigType> = {}
+            updates: Partial<ConfigType> = {},
+            VALID_VALUES: Partial<Record<ConfigKey, ReadonlySet<unknown>>> = {
+                degrees: new Set(["deg", "rad"]),
+                language: new Set(["pt-br", "pt-pt", "en-us", "en-gb", "es-419", "es-es"]),
+                textCase: new Set(["uppercase", "capitalized", "lowercase", "default"]),
+                divPrecision: new Set([1e-6, 1e-7, 1e-8, 1e-9, 1e-10, 1e-11, 1e-12]),
+                logPrecision: new Set([1e-6, 1e-7, 1e-8, 1e-9, 1e-10, 1e-11, 1e-12]),
+                explicitMulti: new Set(["never", "zero", "one", "always"]),
+                showFunction: new Set(["always", "never", "onChange"]),
+            }
 
         for (const key of keys) {
             const value = parsed[key]
-
             if (value == null) continue
-
             const defaultValue = (defaultConfigJson as Record<string, unknown>)[key]
+            if (typeof value !== typeof defaultValue) continue
 
-            if (typeof value == typeof defaultValue) (updates as Record<string, unknown>)[key] = value
-            else
-                Ui.notifyOptions(`[Config.load] Tipo inválido para '${key}'. Mantendo padrão da versão atual.`, {
-                    explanation: `Esperado: ${typeof defaultValue} | Recebido: ${typeof value}`,
-                    type: "console",
-                })
+            const allowed = VALID_VALUES[key]
+            if (allowed && !allowed.has(value)) continue
+
+            ;(updates as Record<string, unknown>)[key] = value
         }
 
         Object.assign(this, updates)
+        return "loaded"
     }
 
-    /**
-     * Salva configurações atuais no `localStorage`.
-     * @since ~v6.1.0
-     */
     public save(): void {
         try {
             localStorage.setItem("config", JSON.stringify(this))
             localStorage.setItem("configVersion", VERSION)
-        } catch (e) {
-            Ui.notifyOptions("[Config.save] Não foi possível salvar as configurações.", {
-                explanation: String(e),
-                type: "console",
-            })
+        } catch {
+            // Sem storage disponível (modo privado, quota excedida, etc.) — ignora silenciosamente
         }
     }
 
-    /**
-     * Reseta para os valores padrão do `JSON`.
-     * @since ~v6.1.0
-     */
     public reset(): void {
         localStorage.removeItem("config")
         localStorage.removeItem("configVersion")
@@ -195,11 +104,11 @@ class ConfigStore implements ConfigType {
     }
 }
 
-/**
- * Configurações ativas do programa.
- * @since ~v6.1.0
- */
 const Config = new ConfigStore()
 
-export { Config, DEFAULT_CONFIG }
+function isConfigKey(value: unknown): value is ConfigKey {
+    return typeof value === "string" && Object.hasOwn(Config, value)
+}
+
+export { Config, DEFAULT_CONFIG, isConfigKey }
 export type { ConfigKey, ConfigType }

@@ -1,6 +1,1 @@
-{
-    "compilerOptions": { "checkJs": true },
-    "exclude": ["pessoal"],
-    "extends": "./tsconfig.base.json",
-    "include": ["src"]
-}
+{ "compilerOptions": { "checkJs": true }, "exclude": ["pessoal"], "extends": "./tsconfig.base.json", "include": ["src"] }
