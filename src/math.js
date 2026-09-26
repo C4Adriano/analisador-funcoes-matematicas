@@ -61,9 +61,9 @@ export class MathFunction {
     }
     resolveCoefs = () => {
         const solved = resolveUnknown({ a: this.a, b: this.b, c: this.c }, this.type);
-        this.a = round(Number(solved.a));
-        this.b = round(Number(solved.b));
-        this.c = round(Number(solved.c));
+        this.a = solved.a === "a" ? solved.a : round(Number(solved.a));
+        this.b = solved.b === "b" ? solved.b : round(Number(solved.b));
+        this.c = solved.c === "c" ? solved.c : round(Number(solved.c));
     };
     refreshCoefs = () => {
         this.a = variables("a");

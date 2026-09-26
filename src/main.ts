@@ -49,7 +49,7 @@ changeHTML()
 notify(tr("main.welcomeTitle"), { explanation: tr("main.welcomeDescription") })
 
 function submenuFooter(backLabel: string): string {
-    return `\n----------------\n6 = ${tr("main.history")} | 7 = ${tr("main.settings")} | 8 = ${tr("main.review")} | 9 = ${tr("main.change")} | 0 = ${backLabel}`
+    return `----------------\n6 = ${tr("main.history")} | 7 = ${tr("main.settings")} | 8 = ${tr("main.review")} | 9 = ${tr("main.change")} | 0 = ${backLabel}`
 }
 
 function handleSubmenu(subtype: number | CommandsNames): boolean {
@@ -263,22 +263,12 @@ const settingsPageActions: Record<number, Record<number, () => void>> = {
             Config.accents = notify(configItem(tr("main.enableAccents"), "accents"), { type: "confirm", explanation: tr("main.noteAccents") })
         },
         4: () => {
-            const cases: TextCase[] = ["capitalized", "uppercase", "lowercase", "default"]
-            Config.textCase =
-                cases[
-                    rangeOptions(
-                        `${configItem(tr("main.changeTextCase"), "textCase")}\n${[tr("main.textCaseCapitalized"), tr("main.textCaseUppercase"), tr("main.textCaseLowercase"), tr("main.textCaseNormal")]
-                            .map((label, i) => `${i + 1} = ${label}`)
-                            .join("\n")}`,
-                        { explanation: tr("main.noteTextCase"), min: 1, max: 4 }
-                    ) - 1
-                ] ?? "default"
+            const cases: TextCase[] = ["capitalized", "uppercase", "lowercase", "default"],
+                message = [tr("main.textCaseCapitalized"), tr("main.textCaseUppercase"), tr("main.textCaseLowercase"), tr("main.textCaseNormal")].map((label, i) => `${i + 1} = ${label}`).join("\n")
+            Config.textCase = cases[rangeOptions(`${configItem(tr("main.changeTextCase"), "textCase")}\n${message}`, { explanation: tr("main.noteTextCase"), min: 1, max: 4 }) - 1] ?? "default"
         },
         5: () => {
-            Config.decimalSeparator = notify(configItem(tr("main.changeDecimalSeparator"), "decimalSeparator"), {
-                type: "confirm",
-                explanation: `${tr("main.noteDecimalSeparator")}${decimalOptions(123.456)}${tr("main.noteDecimalSeparator2")}`,
-            })
+            Config.decimalSeparator = notify(configItem(tr("main.changeDecimalSeparator"), "decimalSeparator"), { type: "confirm", explanation: `${tr("main.noteDecimalSeparator")}${decimalOptions(123.456)}${tr("main.noteDecimalSeparator2")}` })
         },
     },
     2: {
@@ -388,11 +378,7 @@ function resolveTypeKey(type: number | CommandsNames): number {
 }
 
 function askMainMenu(): number | CommandsNames {
-    return inputCommands(`=== ${tr("main.start")} ===\n${tr("main.whatWant")}\n1 = ${tr("main.polynomialFunctions")}\n2 = ${tr("main.nonPolynomialFunctions")}\n3 = ${tr("main.trigonometricFunctions")}\n${submenuFooter(tr("main.exit"))}`, {
-        number: true,
-        places: 0,
-        placeholder: "0",
-    })
+    return inputCommands(`=== ${tr("main.start")} ===\n${tr("main.whatWant")}\n1 = ${tr("main.polynomialFunctions")}\n2 = ${tr("main.nonPolynomialFunctions")}\n3 = ${tr("main.trigonometricFunctions")}\n${submenuFooter(tr("main.exit"))}`, { number: true, places: 0, placeholder: "0" })
 }
 
 function saveHistory(): void {

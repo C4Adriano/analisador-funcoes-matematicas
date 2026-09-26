@@ -15,6 +15,7 @@ PROPAGATION: list[tuple[str, str, bool]] = [
 
 TODO_MARKER = "[//TODO] "
 SCHEMA_FILENAME = "i18n.schema.json"
+DTS_FILENAME = "pt-BR.d.ts"
 
 
 def load(path: Path) -> dict:
@@ -125,6 +126,16 @@ def generate_schema(directory: Path, master_data: dict) -> Path:
     return schema_path
 
 
+def generate_dts(directory: Path, master_data: dict) -> Path:
+    literal = json.dumps(master_data, ensure_ascii=False, indent=4)
+    dts_path = directory / DTS_FILENAME
+
+    with open(dts_path, "w", encoding="utf-8") as file:
+        file.write(f"declare const ptBR: {literal}\n\nexport default ptBR\n")
+
+    return dts_path
+
+
 def main() -> None:
     default_dir = Path(__file__).resolve().parent
     directory = Path(sys.argv[1]) if len(sys.argv) > 1 else default_dir
@@ -233,6 +244,19 @@ def main() -> None:
         schema_display = schema_path
 
     print(f"[OK] Schema atualizado: {schema_display}")
+
+    print()
+    print("Gerando .d.ts...")
+    print("-" * 60)
+
+    dts_path = generate_dts(directory, pt_br)
+
+    try:
+        dts_display = dts_path.relative_to(Path.cwd())
+    except ValueError:
+        dts_display = dts_path
+
+    print(f"[OK] .d.ts atualizado: {dts_display}")
 
     print()
     print("=" * 60)

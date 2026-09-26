@@ -2,41 +2,13 @@ import { absoluteOptions, divisionOptions, round } from "./algebra.js"
 import { isFiniteNumber, isValidText } from "./checks.js"
 import { isValidCommand } from "./commands.js"
 import { notify } from "./display.js"
-import {
-    amplitude,
-    calculateDelta,
-    calculateRoot,
-    curve,
-    domain,
-    exceededLimit,
-    range,
-    resolveSign,
-    resolveXValues,
-    resolveYValues,
-    saveEquations,
-    showDelta,
-    showPeriod,
-    showRoot,
-    vertex,
-    verticalAsymptote,
-    xAxis,
-    yAxis,
-} from "./helpers.js"
-import { tr, trArr, type TranslationKey } from "./i18n.js"
+import { amplitude, calculateDelta, calculateRoot, curve, domain, exceededLimit, range, resolveSign, resolveXValues, resolveYValues, saveEquations, showDelta, showPeriod, showRoot, vertex, verticalAsymptote, xAxis, yAxis } from "./helpers.js"
+import { tr, trArr } from "./i18n.js"
 import { State } from "./state.js"
 import { menu, resolveFunction } from "./ui.js"
 import { decimalOptions } from "./writing.js"
 
-const BASE_OPTIONS: TranslationKey[] = [
-    "analyze.options.domain",
-    "analyze.options.range",
-    "analyze.options.xIntersection",
-    "analyze.options.yIntersection",
-    "analyze.options.xValues",
-    "analyze.options.yValues",
-    "analyze.options.signAnalysis",
-    "analyze.options.functionEquations",
-]
+const BASE_OPTIONS: TranslationKey[] = ["analyze.options.domain", "analyze.options.range", "analyze.options.xIntersection", "analyze.options.yIntersection", "analyze.options.xValues", "analyze.options.yValues", "analyze.options.signAnalysis", "analyze.options.functionEquations"]
 
 function resolveConstant({ c = State.current.numericC } = {}): void {
     const coefs = { a: 0, b: 0, c },
@@ -107,13 +79,7 @@ function resolveExponential({ a = State.current.numericA, b = State.current.nume
                 else range(`∈ (-∞, ${showC})`, tr("analyze.betweenInfinityC"))
             },
         },
-        2: {
-            1: () => xAxis(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"),
-            2: () => yAxis(coefs.b + coefs.c, "b × aˣ + c", "b + c"),
-            3: () => resolveXValues(coefs, "exp"),
-            4: () => resolveYValues(coefs, "exp"),
-            5: () => resolveSign(coefs, "exp"),
-        },
+        2: { 1: () => xAxis(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"), 2: () => yAxis(coefs.b + coefs.c, "b × aˣ + c", "b + c"), 3: () => resolveXValues(coefs, "exp"), 4: () => resolveYValues(coefs, "exp"), 5: () => resolveSign(coefs, "exp") },
         3: { 1: () => saveEquations(coefs, "exp") },
     })
 }

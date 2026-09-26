@@ -47,9 +47,9 @@ function input(message = "", { explanation = "", number = false, places = Config
 
         if (number && !isFiniteNumber(decimalOptions(text, { invert: true }))) continue
 
-        if (Config.inputConfirm && !notify(tr("ui.inputConfirm", { input: number ? decimalOptions(raw) : text }), { explanation: tr("ui.inputConfirmNote"), type: "warning", asConfirm: true })) continue
+        if (Config.inputConfirm && !notify(tr("ui.inputConfirm", { input: number ? decimalOptions(text) : text }), { explanation: tr("ui.inputConfirmNote"), type: "warning", asConfirm: true })) continue
 
-        return number ? round(Number(raw), places) : text
+        return number ? round(Number(text), places) : text
     } while (limit < Config.iterationLimit)
 
     return INPUT_FAILED

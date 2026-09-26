@@ -23,6 +23,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 -
 
+## \[7.1.1] - 2026-09-26
+
+### Fixed
+
+- Fixed the `NaN` in `Current Function`
+
 ## \[7.1.0] - 2026-09-25
 
 ### Changed

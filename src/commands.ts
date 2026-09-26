@@ -26,7 +26,7 @@ function about(): null {
             `${tr("commands.author")}Adriano Lima\n` +
             `${tr("commands.repository")}github.com/C4Adriano/analisador-funcoes-matematicas\n` +
             `${tr("commands.copyright")} © Adriano Lima 2025 — 2026\n` +
-            `==================================================`
+            `==================================================`,
     )
     return null
 }
@@ -51,7 +51,7 @@ function help(specific: string): null {
         const canonical = resolveCmd(specific)
 
         if (canonical == null) {
-            notify(tr("commands.unknownCommand"), { explanation: `“/${specific}” ${tr("commands.invalidCommandExp")}`, type: "error" })
+            notify(tr("commands.unknownCommand"), { explanation: tr("commands.invalidCommandExp", { command: specific }), type: "error" })
             return null
         }
 
@@ -71,18 +71,15 @@ function help(specific: string): null {
     do {
         page = Math.min(Math.max(page, 1), total)
 
-        const start = (page - 1) * 5,
-            end = Math.min(start + 5, key.length),
-            menuText = [
-                `=== ${tr("commands.help")} ===\n${tr("commands.page")} ${page}/${total}`,
-                ...key.slice(start, end).map(name => `\n/${name} — ${cmds[name]!.short}\n ↳ ${[name, ...cmds[name]!.variations].join(", ")}`),
-                `\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`,
-            ].join("")
+        answer = rangeOptions(
+            `=== ${tr("commands.help")} ===\n${tr("commands.page")} ${page}/${total}${key
+                .slice((page - 1) * 5, Math.min(page * 5, key.length))
+                .map(name => `\n/${name} — ${cmds[name]!.short}\n ↳ ${[name, ...cmds[name]!.variations].join(", ")}`)
+                .join("")}\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`,
+            { max: 9, commands: true },
+        )
 
-        answer = rangeOptions(menuText, { max: 9, commands: true })
-
-        if (answer === 8) page--
-        else if (answer === 9) page++
+        page += answer === 8 ? -1 : answer === 9 ? 1 : 0
     } while (answer !== 0)
 
     return null
@@ -191,26 +188,7 @@ function listCmds(): CommandRegistry {
         textcase: {
             short: tr("commands.shortTextCase"),
             long: tr("commands.longTextCase"),
-            variations: [
-                "textcase",
-                "capitalizacao",
-                "capitalizar",
-                "capitalize",
-                "capitalized",
-                "capitalise",
-                "capitalised",
-                "cap",
-                "maiuscula",
-                "maiusculas",
-                "uppercase",
-                "upper",
-                "minuscula",
-                "minusculas",
-                "lowercase",
-                "lower",
-                "normal",
-                "default",
-            ],
+            variations: ["textcase", "capitalizacao", "capitalizar", "capitalize", "capitalized", "capitalise", "capitalised", "cap", "maiuscula", "maiusculas", "uppercase", "upper", "minuscula", "minusculas", "lowercase", "lower", "normal", "default"],
             action: (_, [, argRaw]): null => {
                 const TEXT_CASES: TextCase[] = ["capitalized", "uppercase", "lowercase", "default"],
                     hasArg = argRaw.trim() !== "",
@@ -240,12 +218,7 @@ function listCmds(): CommandRegistry {
         separator: { short: tr("commands.shortSeparator"), long: tr("commands.longSeparator"), variations: ["decimal", "separador", "separator", "sep"], action: arg => change("decimalSeparator", arg) },
         multiples: { short: tr("commands.shortMultiples"), long: tr("commands.longMultiples"), variations: ["multiplos", "multiplo", "multiples", "multi"], action: arg => change("simpleMulti", arg) },
         confirm: { short: tr("commands.shortConfirm"), long: tr("commands.longConfirm"), variations: ["confirmacoes", "confirm", "confirmations", "confent", "confinp"], action: arg => change("inputConfirm", arg) },
-        confirmExit: {
-            short: tr("commands.shortConfirmExit"),
-            long: tr("commands.longConfirmExit"),
-            variations: ["confirmarSaida", "confirmExit", "confirmarsaida", "confirmsaida", "confirmexit", "confsaida", "confexit"],
-            action: arg => change("outputConfirm", arg),
-        },
+        confirmExit: { short: tr("commands.shortConfirmExit"), long: tr("commands.longConfirmExit"), variations: ["confirmarSaida", "confirmExit", "confirmarsaida", "confirmsaida", "confirmexit", "confsaida", "confexit"], action: arg => change("outputConfirm", arg) },
         errors: { short: tr("commands.shortErrors"), long: tr("commands.longErrors"), variations: ["erros", "erro", "errors", "error", "err"], action: arg => change("errors", arg) },
         function: {
             short: tr("commands.shortFunction"),
@@ -280,34 +253,7 @@ function listCmds(): CommandRegistry {
         language: {
             short: tr("commands.shortLanguage"),
             long: tr("commands.longLanguage"),
-            variations: [
-                "lingua",
-                "language",
-                "lang",
-                "idioma",
-                "pt",
-                "pt-br",
-                "pt-pt",
-                "portugues",
-                "portuguese",
-                "brasileiro",
-                "brazilian",
-                "br",
-                "ptbr",
-                "en",
-                "en-us",
-                "en-gb",
-                "ingles",
-                "english",
-                "anglo",
-                "eua",
-                "usa",
-                "uk",
-                "es",
-                "es-es",
-                "es-419",
-                "espanol",
-            ],
+            variations: ["lingua", "language", "lang", "idioma", "pt", "pt-br", "pt-pt", "portugues", "portuguese", "brasileiro", "brazilian", "br", "ptbr", "en", "en-us", "en-gb", "ingles", "english", "anglo", "eua", "usa", "uk", "es", "es-es", "es-419", "espanol"],
             action: (_, [cmd, argRaw]): null => {
                 const LANGUAGE_ALIASES: Record<Language, string[]> = {
                         "pt-br": ["br", "pt-br", "ptbr", "brasileiro", "brazilian", "brasil", "brazil"],
@@ -362,12 +308,7 @@ function processCommand(raw: string): CommandsNames | null {
             const suggestion = suggestCmd(cmd)
 
             if (suggestion.type === "suggestion") {
-                if (
-                    notify(tr("commands.commandSuggestion", { suggestion: suggestion.canonical }), {
-                        explanation: tr("commands.commandSuggestionExp", { command: cmd, suggestion: suggestion.canonical, distance: suggestion.distance }),
-                        type: "confirm",
-                    })
-                ) {
+                if (notify(tr("commands.commandSuggestion", { suggestion: suggestion.canonical }), { explanation: tr("commands.commandSuggestionExp", { command: cmd, suggestion: suggestion.canonical, distance: suggestion.distance }), type: "confirm" })) {
                     input = `/${suggestion.canonical} ${argRaw}`
                     continue
                 }
@@ -424,21 +365,15 @@ function searchHelp(term: string): null {
     do {
         page = Math.min(Math.max(page, 1), total)
 
-        const start = (page - 1) * 5,
-            end = Math.min(start + 5, results.length)
-        let menuText = `=== ${tr("commands.search")}"${term}" ===\n${results.length} ${tr("commands.resultsSearch")}${page}/${total}\n`
+        answer = rangeOptions(
+            `=== ${tr("commands.search")}"${term}" ===\n${results.length} ${tr("commands.resultsSearch")}${page}/${total}\n${results
+                .slice((page - 1) * 5, Math.min(page * 5, results.length))
+                .map(name => `\n/${name} — ${cmds[name]!.short}`)
+                .join("")}\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`,
+            { max: 9, commands: true },
+        )
 
-        menuText += results
-            .slice(start, end)
-            .map(name => `\n/${name} — ${cmds[name]!.short}`)
-            .join("")
-
-        menuText += `\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`
-
-        answer = rangeOptions(menuText, { max: 9, commands: true })
-
-        if (answer === 8) page--
-        else if (answer === 9) page++
+        page += answer === 8 ? -1 : answer === 9 ? 1 : 0
     } while (answer !== 0)
 
     return null
@@ -453,7 +388,7 @@ function shortcuts(specific: string): null {
     const canonical = resolveCmd(specific)
 
     if (canonical == null) {
-        notify(tr("commands.unknownCommand"), { explanation: `“/${specific}” ${tr("commands.invalidCommandExp")}`, type: "error" })
+        notify(tr("commands.unknownCommand"), { explanation: tr("commands.invalidCommandExp", { command: specific }), type: "error" })
         return null
     }
 

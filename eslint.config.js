@@ -22,6 +22,9 @@ const commonRules = {
         "no-constant-condition": ["warn", { checkLoops: false }],
         "one-var": ["warn", { const: "consecutive", let: "consecutive" }],
         "prefer-destructuring": ["warn", { object: true, array: true }],
+        "@typescript-eslint/no-unused-expressions": ["warn", { allowTernary: true }],
+        "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+        "@typescript-eslint/no-use-before-define": ["warn", { functions: false, classes: true, variables: true }],
     },
     offGeral = Object.fromEntries(
         [
@@ -57,15 +60,22 @@ const commonRules = {
             "sort-keys",
             "sort-vars",
             "@typescript-eslint/max-params",
+            "@typescript-eslint/member-ordering",
             "@typescript-eslint/naming-convention",
             "@typescript-eslint/no-confusing-void-expression",
+            "@typescript-eslint/no-deprecated",
             "@typescript-eslint/no-extraneous-class",
             "@typescript-eslint/no-magic-numbers",
             "@typescript-eslint/no-non-null-assertion",
+            "@typescript-eslint/no-unsafe-argument",
+            "@typescript-eslint/no-unsafe-assignment",
+            "@typescript-eslint/no-unsafe-call",
             "@typescript-eslint/no-unsafe-return",
             "@typescript-eslint/no-unsafe-type-assertion",
             "@typescript-eslint/only-throw-error",
             "@typescript-eslint/prefer-readonly-parameter-types",
+            "@typescript-eslint/strict-boolean-expressions",
+            "@typescript-eslint/switch-exhaustiveness-check",
             "jsdoc/check-examples",
             "jsdoc/check-param-names",
             "jsdoc/check-values",
@@ -214,6 +224,7 @@ const commonRules = {
             "unicorn/consistent-class-member-order",
             "unicorn/max-nested-calls",
             "unicorn/name-replacements",
+            "unicorn/new-for-builtins",
             "unicorn/no-array-callback-reference",
             "unicorn/no-array-reduce",
             "unicorn/no-asterisk-prefix-in-documentation-comments",
@@ -221,16 +232,8 @@ const commonRules = {
             "unicorn/no-null",
             "unicorn/no-unreadable-array-destructuring",
             "unicorn/prevent-abbreviations",
-            "@typescript-eslint/no-deprecated",
-            "@typescript-eslint/switch-exhaustiveness-check",
-            "@typescript-eslint/no-unsafe-assignment",
-            "@typescript-eslint/no-unsafe-argument",
-            "@typescript-eslint/no-unsafe-call",
-            "@typescript-eslint/strict-boolean-expressions",
-            "unicorn/new-for-builtins",
             "unicorn/switch-case-braces",
-            "@typescript-eslint/member-ordering",
-        ].map(ruleName => [ruleName, "off"])
+        ].map(ruleName => [ruleName, "off"]),
     )
 
 export default defineConfig([
@@ -239,20 +242,12 @@ export default defineConfig([
     { ignores: ["./package.json", "./package-lock.json", "**/schemas/**"], files: ["**/*.jsonc"], language: "json/jsonc", extends: [json.configs.recommended] },
     { ignores: ["./package.json", "./package-lock.json", "**/schemas/**"], files: ["**/*.json5"], language: "json/json5", extends: [json.configs.recommended] },
     { files: ["./package.json"], plugins: { "package-json": packageJson }, extends: [packageJsonConfigs.recommended] },
-
     {
-        files: ["**/*.{ts,tsx,mts,cts}"],
+        files: ["src/*.ts"],
         extends: [js.configs.all, tseslint.configs.all, unicorn.configs.all, jsdoc.configs["flat/recommended-typescript"], regexp.configs.all, promise.configs["flat/recommended"], security.configs.recommended],
         plugins: { "no-unsanitized": noUnsanitized, "@eslint-community/eslint-comments": eslintComments, regexp, sonarjs, tsdoc, unicorn, promise, security },
         languageOptions: { ecmaVersion: "latest", sourceType: "module", globals: { ...globals.browser, ...globals.node, ...globals.es2027 }, parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname } },
-        rules: {
-            ...commonRules,
-            ...offGeral,
-            "@typescript-eslint/no-unused-expressions": ["warn", { allowTernary: true }],
-            "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
-            "@typescript-eslint/no-use-before-define": ["warn", { functions: false, classes: true, variables: true }],
-        },
+        rules: { ...commonRules, ...offGeral },
     },
-
     prettierConfig,
 ])

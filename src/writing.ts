@@ -1,4 +1,5 @@
 import { round } from "./algebra.js"
+import { isFiniteNumber } from "./checks.js"
 import { Config, DEFAULT_CONFIG, type ConfigKey } from "./config.js"
 import { tr } from "./i18n.js"
 
@@ -15,9 +16,11 @@ function decimalOptions(number: Value, options: Options & { invert: true }): num
 function decimalOptions(number: Value = 0, { invert = false, shouldRound = true, places = Config.decimalPlaces }: Options & { invert?: boolean } = {}): Value {
     let result = String(number)
 
-    if (invert) return Number(replace(result, ",", "."))
+    if (invert) return replace(result, ",", ".")
 
-    if (shouldRound) result = String(round(Number(result), places))
+    const num = Number(result)
+
+    if (shouldRound && isFiniteNumber(num)) result = String(round(num, places))
     if (Config.decimalSeparator) result = replace(result, ".", ",")
 
     return result

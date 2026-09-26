@@ -35,9 +35,7 @@ function evaluateExpression(expression = ""): number | null {
     }
 
     function consume(): Value | undefined {
-        const token = tokens[pos]
-        pos++
-        return token
+        return tokens[pos++]
     }
 
     function parsePrimary(): number {
@@ -214,6 +212,7 @@ function resolveUnknownLoop(coefs: Coefficients, functionType: FunctionType): Co
 
         if (!solved) {
             errorDivZero(tr("algebra.invalidValues"))
+            limit++
             continue
         }
 
@@ -230,7 +229,7 @@ function resolveUnknownLoop(coefs: Coefficients, functionType: FunctionType): Co
         limit++
     } while (!exceededLimit(limit))
 
-    return COEF_KEYS.every(key => isFiniteNumber(current[key])) ? current : { a: NaN, b: NaN, c: NaN }
+    return current
 }
 
 function round(number = 0, places: Places = Config.decimalPlaces): number {

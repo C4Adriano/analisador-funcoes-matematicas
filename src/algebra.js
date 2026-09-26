@@ -25,9 +25,7 @@ function evaluateExpression(expression = "") {
         return tokens[pos];
     }
     function consume() {
-        const token = tokens[pos];
-        pos++;
-        return token;
+        return tokens[pos++];
     }
     function parsePrimary() {
         const token = peek();
@@ -176,6 +174,7 @@ function resolveUnknownLoop(coefs, functionType) {
         const solved = solver(current);
         if (!solved) {
             errorDivZero(tr("algebra.invalidValues"));
+            limit++;
             continue;
         }
         if (COEF_KEYS.every(key => isFiniteNumber(solved[key])))
@@ -189,7 +188,7 @@ function resolveUnknownLoop(coefs, functionType) {
         current = Object.fromEntries(COEF_KEYS.map(key => [key, isFiniteNumber(solved[key]) ? solved[key] : key]));
         limit++;
     } while (!exceededLimit(limit));
-    return COEF_KEYS.every(key => isFiniteNumber(current[key])) ? current : { a: NaN, b: NaN, c: NaN };
+    return current;
 }
 function round(number = 0, places = Config.decimalPlaces) {
     if (!isFiniteNumber(places) || places < 0)

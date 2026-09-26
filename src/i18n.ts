@@ -9,9 +9,6 @@ import esES from "./JSON/i18n/es-ES.json" with { type: "json" }
 import ptBR from "./JSON/i18n/pt-BR.json" with { type: "json" }
 import ptPT from "./JSON/i18n/pt-PT.json" with { type: "json" }
 
-type PathsOf<T> = T extends string ? never : { [K in keyof T & string]: T[K] extends string ? K : T[K] extends readonly unknown[] ? never : PathsOf<T[K]> extends never ? never : `${K}.${PathsOf<T[K]>}` }[keyof T & string]
-type TranslationKey = PathsOf<typeof ptBR>
-
 const dictionaries = Object.freeze({ "pt-br": ptBR, "pt-pt": ptPT, "en-us": enUS, "en-gb": enGB, "es-419": es419, "es-es": esES }) satisfies Record<Language, typeof ptBR>,
     COMMA_DECIMAL_LANGUAGES = new Set<Language>(["pt-br", "pt-pt", "es-419", "es-es"])
 
@@ -39,6 +36,8 @@ function resolveKey(dict: Record<string, unknown>, key: string): string | typeof
 
 const trCache = new Map<string, string>()
 
+function tr(...args: TrArgs): string
+function tr(key: TranslationKey, params?: Record<string, Value>): string
 function tr(key: TranslationKey, params?: Record<string, Value>): string {
     const cacheKey = `${Config.language}:${key}`
     let raw = trCache.get(cacheKey)
@@ -58,4 +57,3 @@ function trArr(keys: TranslationKey[] = []): string[] {
 }
 
 export { changeLanguage, isTrKey, tr, trArr }
-export type { TranslationKey }

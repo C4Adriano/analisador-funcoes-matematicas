@@ -23,6 +23,12 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 -
 
+## \[7.1.1] - 2026-09-26
+
+### Corrigido
+
+- Corrigido o `NaN` em `Função Atual`
+
 ## \[7.1.0] - 2026-09-25
 
 ### Modificado

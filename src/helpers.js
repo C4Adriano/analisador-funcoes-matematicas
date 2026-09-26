@@ -187,9 +187,7 @@ function signConstant({ c = State.current.numericC } = {}) {
 }
 function signAffine({ b = State.current.numericB, c = State.current.numericC } = {}) {
     const affineRoot = calculateRoot({ b, c }), symbol = b > 0 ? ">" : "<", opposite = symbol === ">" ? "<" : ">";
-    notify(`ƒ(x) ${symbol} 0 ${tr("helpers.if")} x ${opposite} ${affineRoot}\nƒ(x) = 0 ${tr("helpers.in")} x = ${affineRoot}\nƒ(x) ${opposite} 0 ${tr("helpers.if")} x ${symbol} ${affineRoot}`, {
-        explanation: `b ${symbol} 0 ⇒ ƒ(x) ${tr("helpers.increasing")}`,
-    });
+    notify(`ƒ(x) ${symbol} 0 ${tr("helpers.if")} x ${opposite} ${affineRoot}\nƒ(x) = 0 ${tr("helpers.in")} x = ${affineRoot}\nƒ(x) ${opposite} 0 ${tr("helpers.if")} x ${symbol} ${affineRoot}`, { explanation: `b ${symbol} 0 ⇒ ƒ(x) ${tr("helpers.increasing")}` });
 }
 function signQuadratic({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) {
     const symbol = a > 0 ? ">" : "<", [delta, root1, root2] = calculateDelta({ a, b, c }), [x1, x2] = [decimalOptions(root1), decimalOptions(root2)];
@@ -214,8 +212,6 @@ function signExponential({ a = State.current.numericA, b = State.current.numeric
 }
 function signLogarithmic({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC } = {}) {
     const root = decimalOptions(calculateRoot({ a, b, c }, "log")), increasing = (a < 1 && b < 0) || (a > 1 && b > 0), symbol = increasing ? ">" : "<", opposite = increasing ? "<" : ">";
-    notify(`ƒ(x) > 0 ${tr("helpers.if")} x ${symbol} ${root}\nƒ(x) = 0 ${tr("helpers.in")} x = ${root}\nƒ(x) < 0 ${tr("helpers.if")} x ${opposite} ${root}`, {
-        explanation: increasing ? "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)" : "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)",
-    });
+    notify(`ƒ(x) > 0 ${tr("helpers.if")} x ${symbol} ${root}\nƒ(x) = 0 ${tr("helpers.in")} x = ${root}\nƒ(x) < 0 ${tr("helpers.if")} x ${opposite} ${root}`, { explanation: increasing ? "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)" : "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)" });
 }
 export { amplitude, calculateDelta, calculateRoot, curve, domain, exceededLimit, range, resolveSign, resolveXValues, resolveYValues, saveEquations, showDelta, showPeriod, showRoot, vertex, verticalAsymptote, xAxis, yAxis };

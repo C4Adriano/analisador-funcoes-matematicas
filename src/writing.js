@@ -1,4 +1,5 @@
 import { round } from "./algebra.js";
+import { isFiniteNumber } from "./checks.js";
 import { Config, DEFAULT_CONFIG } from "./config.js";
 import { tr } from "./i18n.js";
 function capitalize(text = "") {
@@ -10,9 +11,10 @@ function configItem(message, name) {
 function decimalOptions(number = 0, { invert = false, shouldRound = true, places = Config.decimalPlaces } = {}) {
     let result = String(number);
     if (invert)
-        return Number(replace(result, ",", "."));
-    if (shouldRound)
-        result = String(round(Number(result), places));
+        return replace(result, ",", ".");
+    const num = Number(result);
+    if (shouldRound && isFiniteNumber(num))
+        result = String(round(num, places));
     if (Config.decimalSeparator)
         result = replace(result, ".", ",");
     return result;
