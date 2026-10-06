@@ -1,12 +1,16 @@
 <div align="center">
-    <h1><b>Mathematical Function Analyzer</b></h1>
-    <h2>Contributors</h2>
-    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - present</em></p>
+
+# Mathematical Function Analyzer
+
+## Contributors
+
+<sub>All rights reserved © Adriano Lima 2025–present</sub>
+
 </div>
 
 ---
 
-🌐 [Back to Documentation][Docs] | 🌐 [Back to Main][Main] | 🇧🇷 [Português][PT]
+🌐 [Back to Documentation](/README.md) | 🌐 [Back to Main][Main] | 🇧🇷 [Português][PT]
 
 ---
 
@@ -26,7 +30,6 @@ Thanks to everyone who contributed to this project.
 
 ---
 
-[Docs]: /README.md
-[License]: /LICENSE.md#english-en
+[License]: /LICENSE.md#en-us
 [Main]: ../CONTRIBUTORS.md
 [PT]: CONTRIBUTORS_PT.md

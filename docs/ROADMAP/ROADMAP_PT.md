@@ -1,12 +1,16 @@
 <div align="center">
-    <h1><b>Analisador de Funções Matemáticas</b></h1>
-    <h2>Próximas Atualizações <em>(Roadmap)</em></h2>
-    <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - presente</em></p>
+
+# Analisador de Funções Matemáticas
+
+## Próximas Atualizações _(Roadmap)_
+
+<sub>Todos os direitos reservados © Adriano Lima 2025–presente</sub>
+
 </div>
 
 ---
 
-🌐 [Voltar à Documentação][Docs] | 🌐 [Voltar ao Geral][Main] | 🇺🇸 [English][EN]
+🌐 [Voltar à Documentação](/README.md) | 🌐 [Voltar ao Geral][Main] | 🇺🇸 [English][EN]
 
 ---
 
@@ -30,11 +34,10 @@ O status de cada item é atualizado conforme o desenvolvimento avança.
 - [x] Lançamento público no **GitHub** com **GitHub Pages**
 - [x] Melhorias internas de código, como a passagem para **_TS_**
 - [x] Sistema de configurações
-- [x] Tradução completa para inglês _(PT-BR / EN)_
+- [x] Tradução completa para inglês _(EN)_
 - [x] Traduções em _Espanhol_ e outros idiomas
 
 ---
 
-[Docs]: /README.md
 [EN]: ROADMAP_EN.md
 [Main]: ../ROADMAP.md

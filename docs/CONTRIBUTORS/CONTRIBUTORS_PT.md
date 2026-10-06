@@ -1,12 +1,16 @@
 <div align="center">
-    <h1><b>Analisador de Funções Matemáticas</b></h1>
-    <h2>Contribuidores <em>(Contributors)</em></h2>
-    <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - presente</em></p>
+
+# Analisador de Funções Matemáticas
+
+## Contribuidores _(Contributors)_
+
+<sub>Todos os direitos reservados © Adriano Lima 2025–presente</sub>
+
 </div>
 
 ---
 
-🌐 [Voltar à Documentação][Docs] | 🌐 [Voltar ao Geral][Main] | 🇺🇸 [English][EN]
+🌐 [Voltar à Documentação](/README.md) | 🌐 [Voltar ao Geral][Main] | 🇺🇸 [English][EN]
 
 ---
 
@@ -26,7 +30,6 @@ Obrigado a todos que contribuíram com este projeto.
 
 ---
 
-[Docs]: /README.md
 [EN]: CONTRIBUTORS_EN.md
-[Licença]: /LICENSE.md#português-pt-br
+[Licença]: /LICENSE.md#pt-br
 [Main]: ../CONTRIBUTORS.md

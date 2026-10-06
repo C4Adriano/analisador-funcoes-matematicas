@@ -1,12 +1,16 @@
 <div align="center">
-    <h1><b>Mathematical Function Analyzer</b></h1>
-    <h2>Roadmap</h2>
-    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - present</em></p>
+
+# Mathematical Function Analyzer
+
+## Roadmap
+
+<sub>All rights reserved © Adriano Lima 2025–present</sub>
+
 </div>
 
 ---
 
-🌐 [Back to Documentation][Docs] | 🌐 [Back to Main][Main] | 🇧🇷 [Português][PT]
+🌐 [Back to Documentation](/README.md) | 🌐 [Back to Main][Main] | 🇧🇷 [Português][PT]
 
 ---
 
@@ -25,7 +29,7 @@ The status of each item is updated as development progresses.
 - [x] **Logarithmic Functions**
 - [x] **Trigonometric Functions** _(Sine, Cosine, Tangent)_
 - [x] Coefficients as unknowns (calculated from known points)
-- [x] Full English translation _(PT-BR / EN)_
+- [x] Full English translation _(EN)_
 - [x] Function history during the session
 - [x] Internal code improvements, such as the migration to **TS**
 - [x] Public release on **GitHub** with **GitHub Pages**
@@ -35,6 +39,5 @@ The status of each item is updated as development progresses.
 
 ---
 
-[Docs]: /README.md
 [Main]: ../ROADMAP.md
 [PT]: ROADMAP_PT.md

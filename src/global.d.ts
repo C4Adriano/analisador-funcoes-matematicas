@@ -1,84 +1,125 @@
-declare global {
-    type NumericArray = number[]
-    type NumericMatrix = number[][]
+import type PtBR from "./Lang/i18n/pt-BR.js"
 
+declare global {
+    type List<T> = T[]
+    type Matrix<T> = T[][]
     type Value = string | number
-    type ValueArray = Value[]
-    type ValueMatrix = Value[][]
 
     type Variable = "a" | "b" | "c"
     type MathValue = Variable | number
 
-    type Precision = 1e-6 | 1e-7 | 1e-8 | 1e-9 | 1e-10 | 1e-11 | 1e-12
-    type Places = number
+    type TrigonometricName = "sin" | "cos" | "tan" | "csc" | "sec" | "cot"
+    type TrigonometricFunction = TrigonometricName | ""
+    type FunctionType = "poly" | "exp" | "log" | TrigonometricName
 
-    type TrigonometricFunction = "sin" | "cos" | "tan" | "csc" | "sec" | "cot" | ""
-    type FunctionType = "poly" | "exp" | "log" | Exclude<TrigonometricFunction, "">
-    interface Coefficients {
-        a: MathValue
-        b: MathValue
-        c: MathValue
-    }
-    type NamedCoefficients = { [Name in Variable]: number | Name }
-    interface NumericCoefficients {
-        a: number
-        b: number
-        c: number
-    }
+    type Coefficients = Record<Variable, MathValue>
+    type NamedCoefficient<Name extends Variable = Variable> = number | Name
+    type NamedCoefficients = { [Name in Variable]: NamedCoefficient<Name> }
+    type NamedCoefficientsFor<K extends Variable> = Partial<Pick<NamedCoefficients, K>>
+    type NumericCoefficients = Record<Variable, number>
+    type NumericCoefficientsFor<K extends Variable> = Partial<Pick<NumericCoefficients, K>>
 
-    interface PointPair {
+    interface Point {
         x: number
         y: number
     }
+    type PointPairReturn<T extends 1 | 2 | 3 = 1> = T extends 1 ? [{ x: number; y: number }] : T extends 2 ? [{ x: number; y: number }, { x: number; y: number }] : [{ x: number; y: number }, { x: number; y: number }, { x: number; y: number }]
     type LinearBasis = Record<string, (x: number) => number>
 
-    type Degrees = "deg" | "rad"
+    type Toggle = "on" | "off"
+    type AngleUnit = "deg" | "rad"
+    type CommandNames = "change" | "config" | "exit" | "history" | "review" | "start"
+    type DecimalSeparator = "comma" | "dot"
+    type ExplicitMulti = Toggle | "zero" | "one"
     type Language = "pt-br" | "pt-pt" | "en-us" | "en-gb" | "es-419" | "es-es"
-    type TypeMessage = "confirm" | "console" | "display" | "error" | "warning"
-    type TextCase = "uppercase" | "capitalized" | "lowercase" | "default"
-    type CommandsNames = "change" | "config" | "exit" | "history" | "review" | "start"
-    type ExplicitMulti = "never" | "zero" | "one" | "always"
-    type ShowFunction = "always" | "never" | "onChange"
+    type MessageType = "confirm" | "console" | "display" | "error" | "warning"
+    type Places = 0 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 20
+    type Precision = 1e-6 | 1e-7 | 1e-8 | 1e-9 | 1e-10 | 1e-11 | 1e-12
+    type ShowFunction = Toggle | "changed"
+    type TextCase = "default" | "uppercase" | "capitalized" | "lowercase"
 
-    interface Options {
-        invert?: boolean
+    interface ValueTypeMap {
+        string: string
+        number: number
+    }
+    type ValueTypeName = keyof ValueTypeMap
+
+    interface BaseOptions {
+        explanation?: string
         places?: Places
+    }
+
+    interface TypedOptions<T extends ValueTypeName = ValueTypeName> extends BaseOptions {
+        type?: T
+    }
+
+    interface NumericOptions<T extends ValueTypeName = ValueTypeName> extends TypedOptions<T> {
         precision?: Precision
         shouldRound?: boolean
     }
-    interface InputOptions {
-        explanation?: string
-        number?: boolean
+
+    interface InputOptions<T extends ValueTypeName = ValueTypeName> extends TypedOptions<T> {
         placeholder?: string
-        places?: Places
     }
-    interface RangeOptions {
+
+    interface RangeOptions extends BaseOptions {
         commands?: boolean
-        explanation?: string
         max?: number
         min?: number
-        places?: Places
     }
-    type MessageOptions = { explanation?: string; type?: Exclude<TypeMessage, "warning"> } | { explanation?: string; type: "warning"; asConfirm?: boolean }
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-    type PtBRShape = (typeof import("../src/JSON/i18n/pt-BR.d.ts"))["default"]
-    type PathsOf<T> = T extends string ? never : { [K in keyof T & string]: T[K] extends string ? K : T[K] extends readonly unknown[] ? never : PathsOf<T[K]> extends never ? never : `${K}.${PathsOf<T[K]>}` }[keyof T & string]
+    interface DefaultMessageOptions extends BaseOptions {
+        type?: Exclude<MessageType, "warning">
+    }
+
+    interface WarningMessageOptions extends BaseOptions {
+        type: "warning"
+        asConfirm?: boolean
+    }
+
+    type MessageOptions = DefaultMessageOptions | WarningMessageOptions
+
+    type PtBRShape = typeof PtBR
+    type PathsOf<T> = T extends string ? never : { [K in keyof T & string]: T[K] extends string ? K : T[K] extends readonly unknown[] ? never : `${K}.${PathsOf<T[K]>}` }[keyof T & string]
     type TranslationKey = PathsOf<PtBRShape>
     type ResolveValue<T, P extends string> = P extends `${infer Head}.${infer Rest}` ? (Head extends keyof T ? ResolveValue<T[Head], Rest> : never) : P extends keyof T ? T[P] : never
     type ExtractPlaceholders<S extends string> = S extends `${string}{${infer Param}}${infer Rest}` ? Param | ExtractPlaceholders<Rest> : never
     type PlaceholdersOf<K extends TranslationKey> = ExtractPlaceholders<ResolveValue<PtBRShape, K> & string>
     type ParamsOf<K extends TranslationKey> = [PlaceholdersOf<K>] extends [never] ? undefined : Record<PlaceholdersOf<K>, Value>
-    type TrArgs = { [K in TranslationKey]: ParamsOf<K> extends undefined ? [key: K] : [key: K, params: ParamsOf<K>] }[TranslationKey]
-
+    type TrArgs<K extends TranslationKey = TranslationKey> = K extends TranslationKey ? (ParamsOf<K> extends undefined ? [key: K] : [key: K, params: ParamsOf<K>]) : never
     type ErrorCode = Extract<TranslationKey, `errors.${string}`>
 
-    type DomainResult<TValue = unknown, TError = ErrorCode, TSymbol = string> = { kind: "valid"; value: TValue } | { kind: "symbol"; name: TSymbol } | { kind: "note"; value: TValue; note: ErrorCode } | { kind: "invalid"; value?: number | null } | { kind: "error"; error: TError }
+    interface ValidResult<TValue> {
+        kind: "valid"
+        value: TValue
+    }
+    interface SymbolResult<TSymbol> {
+        kind: "symbol"
+        name: TSymbol
+    }
+    interface NoteResult<TValue, TError> {
+        kind: "note"
+        value: TValue
+        note: TError
+    }
+    interface InvalidResult {
+        kind: "invalid"
+        value?: number | null
+    }
+    interface ErrorResult<TError> {
+        kind: "error"
+        error: TError
+    }
 
-    type SimpleResult<TValue = unknown> = Extract<DomainResult<TValue>, { kind: "valid" | "invalid" }>
-    type SymbolicResult<TValue = unknown, TSymbol = string> = Extract<DomainResult<TValue, ErrorCode, TSymbol>, { kind: "valid" | "invalid" | "symbol" }>
-    type NotedResult<TValue = unknown> = Extract<DomainResult<TValue>, { kind: "valid" | "invalid" | "note" }>
-    type FallibleResult<TValue = unknown, TError = ErrorCode> = Extract<DomainResult<TValue, TError>, { kind: "valid" | "invalid" | "error" }>
+    type DomainResult<TValue = unknown, TError = ErrorCode, TSymbol = string> = ValidResult<TValue> | SymbolResult<TSymbol> | NoteResult<TValue, TError> | InvalidResult | ErrorResult<TError>
+    type SimpleResult<TValue = unknown> = ValidResult<TValue> | InvalidResult
+    type SymbolicResult<TValue = unknown, TSymbol = string> = SimpleResult<TValue> | SymbolResult<TSymbol>
+    type NotedResult<TValue = unknown, TError = ErrorCode> = SimpleResult<TValue> | NoteResult<TValue, TError>
+    type FallibleResult<TValue = unknown, TError = ErrorCode> = SimpleResult<TValue> | ErrorResult<TError>
+
+    interface Pager {
+        page: number
+    }
+
+    type Sign = "<" | ">"
 }
-
-export {}

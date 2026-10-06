@@ -1,15 +1,20 @@
 <div align="center">
-    <h1><b>Mathematical Function Analyzer / Analisador de Funções Matemáticas</b></h1>
-    <h2>CHANGELOG</h2>
-    <p>All rights reserved / Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - present / presente</em></p>
+
+# Analisador de Funções Matemáticas
+
+### Mathematical Function Analyzer
+
+## Registro de Alterações / Changelog
+
+<sub>Todos os direitos reservados / All rights reserved © Adriano Lima 2025–presente / present</sub>
+
 </div>
 
 ---
 
-🌐 [Back to Documentation / Voltar à Documentação][Docs] | 🇺🇸 [English][EN] | 🇧🇷 [Português][PT]
+🌐 [Voltar à Documentação / Back to Documentation](/README.md) | 🇧🇷 [Português][PT] | 🇺🇸 [English][EN]
 
 ---
 
-[Docs]: README.md
 [EN]: docs/CHANGELOG/CHANGELOG_EN.md
 [PT]: docs/CHANGELOG/CHANGELOG_PT.md

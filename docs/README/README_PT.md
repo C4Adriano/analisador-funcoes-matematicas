@@ -1,12 +1,16 @@
 <div align="center">
-    <h1><b>Analisador de Funções Matemáticas</b></h1>
-    <h2>LEIA-ME <em>(README)</em></h2>
-    <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - presente</em></p>
+
+# Analisador de Funções Matemáticas
+
+## LEIA-ME _(README)_
+
+<sub>Todos os direitos reservados © Adriano Lima 2025–presente</sub>
+
 </div>
 
 ---
 
-🌐 [Voltar à Documentação][Docs] | 🌐 [Voltar ao Geral][Docs] | 🇺🇸 [English][EN]
+🌐 [Voltar à Documentação](/README.md) | 🌐 [Voltar ao Geral](/README.md) | 🇺🇸 [English][EN]
 
 ---
 
@@ -94,11 +98,10 @@ Acesse: [![GitHub Pages](https://img.shields.io/badge/Access%20here-GitHub%20Pag
 [6.x]: ../CHANGELOG/CHANGELOG_PT.md#6x
 [CHANGELOG]: ../CHANGELOG/CHANGELOG_PT.md
 [Contributors]: ../CONTRIBUTORS/CONTRIBUTORS_PT.md
-[Docs]: /README.md
 [EN]: README_EN.md
-[Licença]: /LICENSE.md#português-pt-br
+[Licença]: /LICENSE.md#pt-br
 [ROADMAP]: ../ROADMAP/ROADMAP_PT.md
-[SECURITY]: ../SECURITY.md#português-pt-br
+[SECURITY]: ../SECURITY.md#pt-br
 [algebra]: /src/algebra.js
 [analyze]: /src/analyze.js
 [checks]: /src/checks.js

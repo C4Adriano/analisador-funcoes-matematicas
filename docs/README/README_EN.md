@@ -1,12 +1,16 @@
 <div align="center">
-    <h1><b>Mathematical Function Analyzer</b></h1>
-    <h2>README</h2>
-    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - present</em></p>
+
+# Mathematical Function Analyzer
+
+## README
+
+<sub>All rights reserved © Adriano Lima 2025–present</sub>
+
 </div>
 
 ---
 
-🌐 [Back to Documentation][Docs] | 🌐 [Back to Main][Docs] | 🇧🇷 [Português][PT]
+🌐 [Back to Documentation](/README.md) | 🌐 [Back to Main](/README.md) | 🇧🇷 [Português][PT]
 
 ---
 
@@ -94,11 +98,10 @@ Full **Roadmap [`here`][ROADMAP]**
 [6.x]: ../CHANGELOG/CHANGELOG_EN.md#6x
 [CHANGELOG]: ../CHANGELOG/CHANGELOG_EN.md
 [Contributors]: ../CONTRIBUTORS/CONTRIBUTORS_EN.md
-[Docs]: /README.md
-[LICENSE]: /LICENSE.md#english-en
+[LICENSE]: /LICENSE.md#en-us
 [PT]: README_PT.md
 [ROADMAP]: ../ROADMAP/ROADMAP_EN.md
-[SECURITY]: ../SECURITY.md#english-en
+[SECURITY]: ../SECURITY.md#en-us
 [algebra]: /src/algebra.js
 [analyze]: /src/analyze.js
 [checks]: /src/checks.js

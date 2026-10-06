@@ -1,12 +1,16 @@
 <div align="center">
-    <h1><b>Analisador de Funções Matemáticas</b></h1>
-    <h2>Registro de Alterações <em>(Changelog)</em></h2>
-    <p>Todos os direitos reservados © <strong>Adriano Lima</strong> <em>2025 - presente</em></p>
+
+# Analisador de Funções Matemáticas
+
+## Registro de Alterações _(Changelog)_
+
+<sub>Todos os direitos reservados © Adriano Lima 2025–presente</sub>
+
 </div>
 
 ---
 
-🌐 [Voltar à Documentação][Docs] | 🌐 [Voltar ao geral][Main] | 🇺🇸 [English][EN]
+🌐 [Voltar à Documentação](/README.md) | 🌐 [Voltar ao geral][Main] | 🇺🇸 [English][EN]
 
 ---
 
@@ -23,17 +27,23 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 -
 
+## \[7.2.0] - 2026-10-05
+
+### Modificado
+
+- Os arquivos de `src` foram agrupados em pastas apropriadas.
+
 ## \[7.1.1] - 2026-09-26
 
 ### Corrigido
 
-- Corrigido o `NaN` em `Função Atual`
+- O `NaN` em `Função Atual`.
 
 ## \[7.1.0] - 2026-09-25
 
 ### Modificado
 
-- Todos os arquivos agora são `.ts`
+- Todos os arquivos agora são `.ts`.
 
 ## \[7.0.0] - 2026-09-20
 
@@ -42,7 +52,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - `MathFunction` para uma **Função Matemática** qualquer.
 - Vários arquivos `.ts`.
 
-## Corrigido
+### Corrigido
 
 - Praticamente todos os _bugs_ atuais do código.
 
@@ -60,36 +70,36 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ### Corrigido
 
-- O _bug_ que deixava `ax² + bx + c` em **Funções Consates ou Afins** sendo exibido como `undefined x² - 0x`.
+- O _bug_ que deixava `ax² + bx + c` em **Funções Constantes ou Afins** sendo exibido como `undefined x² - 0x`.
 
 ## \[6.x]
 
 ### Adicionado
 
 - **Funções Trigonométricas**.
-- Comandos `/` em PT/EN/ES.
 - Lançamento oficial no **GitHub**.
-- Tradução para Espanhol (_ES_)
+- Tradução para espanhol (_ES_).
+- Comandos `/` em PT/EN/ES.
 
 ## \[5.x]
-
-### Modificado
-
-- Reestruturação em objetos `Algebra`/`Helpers`/`Ui`/`Writing`/`Error`.
 
 ### Adicionado
 
 - **Funções Logarítmicas**.
 - Histórico de **Funções**.
-- Tradução para Inglês (_EN_).
+- Tradução para inglês (_EN_).
+
+### Modificado
+
+- Reestruturação em objetos `Algebra`/`Helpers`/`Ui`/`Writing`/`Error`.
 
 ## \[4.x]
 
 ### Adicionado
 
+- Suporte a **Funções JS**.
 - Equações entre **Funções**.
 - Lançamento oficial do projeto.
-- Suporte a **Funções JS**.
 
 ## \[3.x]
 
@@ -102,7 +112,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ### Adicionado
 
-- **Funções Exponencial**.
+- **Funções Exponenciais**.
 - Cálculos de x/y.
 
 ## \[1.x]
@@ -113,7 +123,6 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
-[Docs]: /README.md
 [EN]: CHANGELOG_EN.md
 [Main]: /CHANGELOG.md
 [OLD_CHANGELOG]: OLD/OLD_CHANGELOG_PT.md

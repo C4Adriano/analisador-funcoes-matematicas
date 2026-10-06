@@ -1,1 +1,0 @@
-{ "compilerOptions": { "isolatedModules": true, "noEmitOnError": true, "outDir": "src", "removeComments": true, "rootDir": "src" }, "exclude": ["src/**/*.d.ts", "pessoal"], "extends": "./tsconfig.base.json", "files": ["src/global.d.ts"], "include": ["src/**/*.ts"] }

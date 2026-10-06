@@ -1,5 +1,4 @@
 node_modules/
-pessoal/
 package-lock.json
 package.json
-src/*.js
+src/**/*.js

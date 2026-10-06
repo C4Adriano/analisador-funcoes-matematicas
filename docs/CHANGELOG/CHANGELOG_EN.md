@@ -1,18 +1,22 @@
 <div align="center">
-    <h1><b>Mathematical Function Analyzer</b></h1>
-    <h2>Changelog</h2>
-    <p>All rights reserved © <strong>Adriano Lima</strong> <em>2025 - present</em></p>
+
+# Mathematical Function Analyzer
+
+## Changelog
+
+<sub>All rights reserved © Adriano Lima 2025–present</sub>
+
 </div>
 
 ---
 
-🌐 [Back to Documentation][Docs] | 🌐 [Back to main][Main] | 🇧🇷 [Português][PT]
+🌐 [Back to Documentation](/README.md) | 🌐 [Back to main][Main] | 🇧🇷 [Português][PT]
 
 ---
 
 All notable changes to this project will be documented in this file.
 
-> **Note:** the Changelog prior to this point contained incorrect or outdated information and has been discontinued. The previous history can be consulted (at our own risk) in [OLD_CHANGELOG].
+> **Note:** the Changelog prior to this point contained incorrect or outdated information and has been discontinued. The previous history can be consulted (at your own risk) in [OLD_CHANGELOG].
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
@@ -23,17 +27,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 -
 
+## \[7.2.0] - 2026-10-05
+
+### Changed
+
+- The `src` files were grouped into appropriate folders.
+
 ## \[7.1.1] - 2026-09-26
 
 ### Fixed
 
-- Fixed the `NaN` in `Current Function`
+- The `NaN` in `Current Function`.
 
 ## \[7.1.0] - 2026-09-25
 
 ### Changed
 
-- All files are now `.ts` files
+- All files are now `.ts` files.
 
 ## \[7.0.0] - 2026-09-20
 
@@ -42,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - `MathFunction` for any **Mathematical Function**.
 - Multiple `.ts` files.
 
-## Fixed
+### Fixed
 
 - Virtually all current code bugs.
 
@@ -56,11 +66,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- Keep a Changelog
+- Keep a Changelog.
 
 ### Fixed
 
-- The bug that caused `ax² + bx + c` in **Constant or Affine Functions** to be displayed as `undefined x² - 0x`
+- The bug that caused `ax² + bx + c` in **Constant or Affine Functions** to be displayed as `undefined x² - 0x`.
 
 ## \[6.x]
 
@@ -73,15 +83,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## \[5.x]
 
-### Changed
-
-- Restructured into `Algebra`/`Helpers`/`Ui`/`Writing`/`Error` objects.
-
 ### Added
 
 - **Logarithmic Functions**.
 - **Function** history.
 - English translation.
+
+### Changed
+
+- Restructured into `Algebra`/`Helpers`/`Ui`/`Writing`/`Error` objects.
 
 ## \[4.x]
 
@@ -113,7 +123,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
-[Docs]: /README.md
 [Main]: /CHANGELOG.md
 [OLD_CHANGELOG]: OLD/OLD_CHANGELOG_EN.md
 [PT]: CHANGELOG_PT.md
