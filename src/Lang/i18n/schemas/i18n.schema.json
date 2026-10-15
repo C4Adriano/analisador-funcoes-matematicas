@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "i18n schema (gerado automaticamente a partir de pt-BR.json)",
+    "title": "i18n schema (gerado automaticamente a partir de pt-BR.json; todas as chaves são opcionais)",
     "type": "object",
     "additionalProperties": false,
     "properties": {

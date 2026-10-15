@@ -5,18 +5,21 @@ import { absoluteOptions, divisionOptions, lnOptions, logOptions, round } from "
 import { isValidCommand } from "../UI/commands.js"
 import { input, notify } from "../UI/display.js"
 import { rangeOptions, resolveFunction } from "../UI/ui.js"
-import { isFiniteNumber, isValidText } from "./checks.js"
+import { isFiniteNumber } from "./checks.js"
 import { State } from "./state.js"
 
-function domain(belongs = "∈ ℝ", explanation: string = tr("analyze.functionTakeX")): void {
+type EquationsReturn = "result" | "nonPoly" | "saved"
+type Sign = "<" | ">"
+
+function domain(belongs = "∈ ℝ", explanation: string = tr("analyze.functionTakeX")): undefined {
     notify(`${tr("analyze.domain")} x ${belongs}`, { explanation })
 }
 
-function range(belongs = "∈ ℝ", interval = "", explanation: string = tr("analyze.functionTakeY")): void {
+function range(belongs = "∈ ℝ", interval = "", explanation: string = tr("analyze.functionTakeY")): undefined {
     notify(`${tr("analyze.range")} y ${belongs}`, { explanation: `${explanation} ${interval}` })
 }
 
-function xAxis(root = 0, explanation = "c", noHave: string = tr("analyze.noRoot")): void {
+function xAxis(root = 0, explanation = "c", noHave: string = tr("analyze.noRoot")): undefined {
     const intersection = tr("analyze.intersectionXAxis")
 
     if (root === 0) explanation === "0" ? notify(`${intersection} ∃∞ x ∈ ℝ`, { explanation: "y = 0 ⇒ ∀ x ∈ ℝ" }) : notify(`${intersection} ∄! x ∈ ℝ`, { explanation: "y = c ∧ c ≠ 0 ⇒ ∄ x" })
@@ -24,11 +27,11 @@ function xAxis(root = 0, explanation = "c", noHave: string = tr("analyze.noRoot"
     else notify(`${intersection} ∄`, { explanation: noHave })
 }
 
-function yAxis(point: number | "∄" = 0, func = "c", explanation = "c"): void {
+function yAxis(point: number | "∄" = 0, func = "c", explanation = "c"): undefined {
     notify(`${tr("analyze.intersectionYAxis")} ${point === "∄" ? "∄" : `(0, ${decimalOptions(point)})`}`, { explanation: `${tr("analyze.sinceY")} ${func} ${point === "∄" ? explanation : `⇒ (0, ${explanation})`}` })
 }
 
-function resolveXValues({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}, funcType: FunctionType = "poly"): void {
+function resolveXValues({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}, funcType: FunctionType = "poly"): undefined {
     const x = input("x = ", { placeholder: "0", type: "number" }),
         message = `${tr("analyze.sinceX") + decimalOptions(x)}, y = `
 
@@ -38,7 +41,7 @@ function resolveXValues({ a = State.current.numericA, b = State.current.numericB
     else notify(`${message}${decimalOptions(b * (funcType === "sin" ? Math.sin(x) : funcType === "cos" ? Math.cos(x) : funcType === "tan" ? Math.tan(x) : 0) + c)}`, { explanation: `y = b × ${funcType}(x) + c` })
 }
 
-function resolveYValues({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}, funcType: FunctionType = "poly"): void {
+function resolveYValues({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}, funcType: FunctionType = "poly"): undefined {
     const y = input("y = ", { placeholder: "0", type: "number" }),
         message = `${tr("analyze.sinceY2") + decimalOptions(y)},`
 
@@ -46,8 +49,8 @@ function resolveYValues({ a = State.current.numericA, b = State.current.numericB
         if (a === 0 && b === 0) y === c ? notify(`${message} ∃∞ x ∈ ℝ`, { explanation: "y = c ⇒ ∀ x ∈ ℝ" }) : notify(`${message} ∄! x ∈ ℝ`, { explanation: "y ≠ c ⇒ ∄ x" })
         else if (a === 0 && b !== 0) notify(`${message} x = ${decimalOptions(divisionOptions(y - c, b))}`, { explanation: "x = (y − c) / b" })
         else {
-            const [Δ, root1, root2] = calculateDelta({ a, b, c: c - y }),
-                [x1, x2] = [decimalOptions(root1), decimalOptions(root2)]
+            const [Δ, r1, r2] = calculateDelta({ a, b, c: c - y }),
+                [x1, x2] = [decimalOptions(r1), decimalOptions(r2)]
             showDelta(Δ, `${message} ∄! x ∈ ℝ`, `${message} x = ${x1}`, `${message} x₁ = ${x1}, x₂ = ${x2}`, true)
         }
     else if (funcType === "exp" || funcType === "log") {
@@ -57,7 +60,7 @@ function resolveYValues({ a = State.current.numericA, b = State.current.numericB
     } else notify(tr("analyze.notTrigonometric"), { explanation: tr("algebra.underConstruction") })
 }
 
-function resolveSign({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}, funcType: FunctionType = "poly"): void {
+function resolveSign({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}, funcType: FunctionType = "poly"): undefined {
     const coefs: NumericCoefficients = { a, b, c }
     if (funcType === "poly") coefs.a === 0 && coefs.b === 0 ? signConstant(coefs) : coefs.a === 0 ? signAffine(coefs) : signQuadratic(coefs)
     else if (funcType === "exp") signExponential(coefs)
@@ -65,18 +68,19 @@ function resolveSign({ a = State.current.numericA, b = State.current.numericB, c
     else signTrig()
 }
 
-function resolveEquations({ a1 = 0, b1 = 0, c1 = 0 } = {}, { a2 = 0, b2 = 0, c2 = 0 } = {}): void {
+function resolveEquations({ a1 = 0, b1 = 0, c1 = 0 } = {}, { a2 = 0, b2 = 0, c2 = 0 } = {}): undefined {
     const [a, b, c] = [a1 - a2, b1 - b2, c1 - c2]
 
-    if (a === 0 && b === 0) return c === 0 ? notify(tr("algebra.constantCoincide"), { explanation: tr("algebra.constantCoincideExp") }) : notify(tr("algebra.constantDistinct"), { explanation: tr("algebra.constantDistinctExp") })
-    if (a === 0) return notify(tr("algebra.oneRoot", { x: decimalOptions(divisionOptions(-c, b)) }), { explanation: "x = −c / b" })
-
-    const [Δ, root1, root2] = calculateDelta({ a, b, c }),
-        [x1, x2] = [decimalOptions(root1), decimalOptions(root2)]
-    return showDelta(Δ, tr("algebra.quadraticDistinct"), tr("algebra.oneRoot", { x: x1 }), tr("algebra.twoRoots", { x1, x2 }))
+    if (a === 0 && b === 0) c === 0 ? notify(tr("algebra.constantCoincide"), { explanation: tr("algebra.constantCoincideExp") }) : notify(tr("algebra.constantDistinct"), { explanation: tr("algebra.constantDistinctExp") })
+    else if (a === 0) notify(tr("algebra.oneRoot", { x: decimalOptions(divisionOptions(-c, b)) }), { explanation: "x = −c / b" })
+    else {
+        const [Δ, r1, r2] = calculateDelta({ a, b, c }),
+            [x1, x2] = [decimalOptions(r1), decimalOptions(r2)]
+        showDelta(Δ, tr("algebra.quadraticDistinct"), tr("algebra.oneRoot", { x: x1 }), tr("algebra.twoRoots", { x1, x2 }))
+    }
 }
 
-function saveEquations({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}, funcType: FunctionType = "poly"): "nonPoly" | "saved" | "result" {
+function saveEquations({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}, funcType: FunctionType = "poly"): EquationsReturn {
     if (funcType !== "poly") {
         notify(tr("analyze.equationsNonPolynomial"), { explanation: tr("algebra.underConstruction"), type: "warning" })
         return "nonPoly"
@@ -96,7 +100,7 @@ function saveEquations({ a = State.current.numericA, b = State.current.numericB,
     return "result"
 }
 
-function curve(a = 0, b = 0, polynomial = true): void {
+function curve(a = 0, b = 0, polynomial = true): undefined {
     if (!polynomial) (a < 1 && b < 0) || (a > 1 && b > 0) ? notify(tr("analyze.increasingUpper"), { explanation: "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)" }) : notify(tr("analyze.decreasing"), { explanation: "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)" })
     else if (b !== 0) b > 0 ? notify(tr("analyze.increasingUpper"), { explanation: `${tr("analyze.pointsUpward")}b > 0` }) : notify(tr("analyze.decreasing"), { explanation: `${tr("analyze.pointsDownward")}b < 0` })
     else if (a !== 0) a > 0 ? notify(tr("analyze.upwardConcavity"), { explanation: "a > 0" }) : notify(tr("analyze.downwardConcavity"), { explanation: "a < 0" })
@@ -109,13 +113,16 @@ function calculateRoot({ a = State.current.numericA, b = State.current.numericB,
     return funcType === "exp" && exponent > 0 ? divisionOptions(lnOptions(exponent), lnOptions(a)) : funcType === "log" ? round(a ** exponent) : NaN
 }
 
-function showRoot(root = 0, explanation = "c", noHave = ""): void {
+function showRoot(root = 0, explanation = "c", noHave = ""): undefined {
     const found = isFiniteNumber(root)
     notify(`${tr("analyze.realRoot")} ${found ? `x = ${decimalOptions(root)}` : "∄! x ∈ ℝ"}`, { explanation: found ? tr("analyze.theRootIs") + explanation : noHave })
 }
 
-function calculateDelta({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}): [Δ: number, root1: number, root2: number] {
-    const Δ = b ** 2 - 4 * a * c
+function calculateDelta({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}): [Δ: number, r1: number, r2: number] {
+    const bSquared = b ** 2,
+        fourAC = 4 * a * c,
+        difference = bSquared - fourAC,
+        Δ = Math.abs(difference) <= 8 * Number.EPSILON * Math.max(bSquared, Math.abs(fourAC)) ? 0 : difference
     if (Δ <= 0) return [Δ, Δ === 0 ? divisionOptions(-b, 2 * a) : NaN, NaN]
 
     const sqrtDelta = Math.sqrt(Δ),
@@ -125,7 +132,7 @@ function calculateDelta({ a = State.current.numericA, b = State.current.numericB
     return [Δ, Math.min(raw1, raw2), Math.max(raw1, raw2)]
 }
 
-function showDelta(Δ = 0, lower = "", equal = "", higher = "", hasY = false): void {
+function showDelta(Δ = 0, lower = "", equal = "", higher = "", hasY = false): undefined {
     const [message, suffix] = Δ < 0 ? [lower, "< 0 ⇒ x ∉ ℝ"] : Δ === 0 ? [equal, "= 0 ⇒ x = (−b) / (2 · a)"] : [higher, "> 0 ⇒ x₁, x₂ = (−b ± √Δ) / (2 · a)"]
     notify(message, { explanation: `Δ = b² − 4 · a · ${hasY ? "(c − y)" : "c"} ⇒ Δ ${suffix}` })
 }
@@ -144,15 +151,15 @@ function calcPeriod(a = 0, funcTan = false): string {
     return decimalOptions((funcTan ? Math.PI : 2 * Math.PI) / absoluteOptions(a))
 }
 
-function showPeriod(a = 0, funcTan = false): void {
+function showPeriod(a = 0, funcTan = false): undefined {
     a === 0 ? notify(tr("analyze.periodInfinity"), { explanation: tr("analyze.constantPeriod") }) : notify(tr("analyze.period") + calcPeriod(a, funcTan), { explanation: `${tr("analyze.periodEquals") + (funcTan ? "π" : "2π")} / |a|` })
 }
 
-function amplitude(b = 0): void {
+function amplitude(b = 0): undefined {
     notify(`Amplitude: ${decimalOptions(absoluteOptions(b))}`, { explanation: "Amplitude = |b|" })
 }
 
-function verticalAsymptote(a = 0): void {
+function verticalAsymptote(a = 0): undefined {
     const label = tr("analyze.verticalAsymptote")
     a === 0 ? notify(`${label} ∄`, { explanation: tr("analyze.noAsymptote") }) : notify(`${label} x = (π / 2 + n · π) / a, n ∈ ℤ`, { explanation: `tan(a · x) ${tr("analyze.undefinedAsymptote")} cos(a · x) = 0, ${tr("analyze.ie")} a · x = π / 2 + n · π` })
 }
@@ -177,8 +184,8 @@ function rootSigns(sign: Sign, root: string): string {
 
 function signQuadratic({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}): void {
     const sign: Sign = a > 0 ? ">" : "<",
-        [Δ, root1, root2] = calculateDelta({ a, b, c }),
-        [x1, x2] = [decimalOptions(root1), decimalOptions(root2)]
+        [Δ, r1, r2] = calculateDelta({ a, b, c }),
+        [x1, x2] = [decimalOptions(r1), decimalOptions(r2)]
 
     if (Δ < 0) notify(`ƒ(x) ${sign} 0, ∀ x ∈ ℝ`, { explanation: `a ${sign} 0 ∧ Δ < 0 ⇒ ƒ(x) ${sign} 0, ∀ x ∈ ℝ` })
     else if (Δ === 0) notify(`ƒ(x) ${sign} 0, ${tr("analyze.exceptIn")} x = ${x1}`, { explanation: `a ${sign} 0 ∧ Δ = 0 ⇒ ƒ(x) ${sign} 0, x ≠ ${x1}` })
@@ -233,18 +240,17 @@ export function resolveQuadratic({ a = State.current.numericA, b = State.current
     const coefs = { a, b, c }
     resolveFunction(coefs)
 
-    const [Δ, root1, root2] = calculateDelta(coefs),
-        [x1, x2] = [decimalOptions(root1), decimalOptions(root2)],
-        [vertexX, vertexY] = vertex(coefs.a, coefs.b, Δ),
-        [p1, p2] = [decimalOptions(vertexX), decimalOptions(vertexY)]
+    const [Δ, r1, r2] = calculateDelta(coefs),
+        [x1, x2] = [decimalOptions(r1), decimalOptions(r2)],
+        [xV, yV] = vertex(coefs.a, coefs.b, Δ).map(value => decimalOptions(value)) as [xV: string, yV: string]
 
     runAnalysisMenu(coefs, "poly", ["analyze.options.concavity", "analyze.options.root", "analyze.options.vertex"], {
         1: {
             1: () => curve(coefs.a),
             2: () => showDelta(Δ, tr("analyze.noRoots"), tr("analyze.oneRoot", { x: x1 }), tr("analyze.twoRoots", { x1, x2 })),
-            3: () => notify(tr("analyze.vertexPoint", { p1, p2 }), { explanation: tr("analyze.vertexExp") }),
+            3: () => notify(tr("analyze.vertexPoint", { p1: xV, p2: yV }), { explanation: tr("analyze.vertexExp") }) as undefined,
             4: () => domain(),
-            5: () => (coefs.a > 0 ? range(`∈ [${p2}, ∞)`, tr("analyze.betweenVertexInfinity")) : range(`∈ (−∞, ${p2}]`, tr("analyze.betweenInfinityVertex"))),
+            5: () => (coefs.a > 0 ? range(`∈ [${yV}, ∞)`, tr("analyze.betweenVertexInfinity")) : range(`∈ (−∞, ${yV}]`, tr("analyze.betweenInfinityVertex"))),
         },
         2: {
             1: () => showDelta(Δ, tr("analyze.noIntersectionXAxis"), tr("analyze.oneIntersectionXAxis", { p: x1 }), tr("analyze.twoIntersectionsXAxis", { p1: x1, p2: x2 })),
@@ -267,7 +273,7 @@ export function resolveExponential({ a = State.current.numericA, b = State.curre
         1: {
             1: () => curve(coefs.a, coefs.b, false),
             2: () => showRoot(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"),
-            3: () => notify(tr("analyze.options.horizontalAsymptote", { y: decimalOptions(coefs.c) }), { explanation: "y = c" }),
+            3: () => notify(tr("analyze.options.horizontalAsymptote", { y: decimalOptions(coefs.c) }), { explanation: "y = c" }) as undefined,
             4: () => domain(),
             5: () => {
                 if (coefs.b > 0) range(`∈ (${decimalOptions(coefs.c)}, ∞)`, tr("analyze.betweenCInfinity"))
@@ -333,7 +339,7 @@ export function resolveTangent({ a = State.current.numericA, b = State.current.n
     })
 }
 
-function runAnalysisMenu(coefs: NumericCoefficients, funcType: FunctionType, extraOptions: TranslationKey[], pageActions: Record<number, Record<number, () => unknown>>): void {
+function runAnalysisMenu(coefs: NumericCoefficients, funcType: FunctionType, extraOptions: TranslationKey[], pageActions: Record<number, Record<number, () => undefined | EquationsReturn>>): void {
     const options: List<string> = [...extraOptions, ...BASE_OPTIONS].map(key => tr(key)),
         total = Math.max(1, Math.ceil(options.length / 5)),
         list: List<string> = [...options, ...Array(total * 5 - options.length).fill("---")]
@@ -368,7 +374,7 @@ function runAnalysisMenu(coefs: NumericCoefficients, funcType: FunctionType, ext
         }
 
         const result = pageActions[currentPage]?.[answer]?.()
-        if (result !== "result" && isValidText(result)) return
+        if (result !== "result" && result != null) return
         if (answer === 6) resolveFunction(coefs, funcType, true)
     } while (!exceededLimit(limit++))
 

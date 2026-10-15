@@ -120,6 +120,4 @@ declare global {
     interface Pager {
         page: number
     }
-
-    type Sign = "<" | ">"
 }

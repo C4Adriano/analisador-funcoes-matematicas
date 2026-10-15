@@ -1,18 +1,14 @@
 {
     "compilerOptions": {
-        "allowUnreachableCode": false,
-        "allowUnusedLabels": false,
         "erasableSyntaxOnly": true,
         "exactOptionalPropertyTypes": true,
         "incremental": true,
-        "isolatedModules": true,
-        "lib": ["ES2025", "DOM"],
+        "lib": ["ESNext", "DOM"],
         "module": "nodenext",
         "moduleDetection": "force",
         "noEmitOnError": true,
         "noErrorTruncation": true,
         "noFallthroughCasesInSwitch": true,
-        "noImplicitAny": false,
         "noImplicitOverride": true,
         "noImplicitReturns": true,
         "noPropertyAccessFromIndexSignature": true,
@@ -23,11 +19,9 @@
         "removeComments": true,
         "resolveJsonModule": true,
         "rootDir": "src",
-        "skipLibCheck": true,
-        "tsBuildInfoFile": "./.tsbuildinfo",
         "verbatimModuleSyntax": true
     },
-    "exclude": ["src/**/*.d.ts", "pessoal"],
+    "exclude": ["pessoal", "**/node_modules"],
     "files": ["src/global.d.ts"],
     "include": ["src/**/*.ts"],
     "watchOptions": { "excludeDirectories": ["**/node_modules", "pessoal"] }

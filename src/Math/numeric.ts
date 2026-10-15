@@ -59,44 +59,16 @@ export function round(number = 0, places: Places = Config.decimalPlaces): number
     return sign === "-" ? -result : result
 }
 
-export function lnOptions(x = 1, { shouldRound = false, places = Config.decimalPlaces, precision = Config.logPrecision }: NumericOptions = {}): number {
-    if (x === 1) return 0
+export function lnOptions(x = 1, { shouldRound = false, places = Config.decimalPlaces }: NumericOptions = {}): number {
     if (x <= 0 || !isFiniteNumber(x)) return NaN
 
-    let exponent = 0
-
-    while (x >= 2) {
-        x /= 2
-        exponent++
-    }
-
-    while (x < 1) {
-        x *= 2
-        exponent--
-    }
-
-    const z = (x - 1) / (x + 1)
-    let term = z,
-        sum = z,
-        denominator = 1,
-        limit = 0
-
-    while (absoluteOptions(term, { shouldRound: false }) > precision) {
-        term *= z ** 2
-        denominator += 2
-        sum += term / denominator
-
-        if (limit++ >= Config.iterationLimit) return NaN
-    }
-
-    const result = 2 * sum + exponent * Math.LN2
+    const result = Math.log(x)
     return shouldRound ? round(result, places) : result
 }
 
-export function logOptions(x = 1, base = Math.E, { shouldRound = false, places = Config.decimalPlaces, precision = Config.logPrecision }: NumericOptions = {}): number {
-    if (base === Math.E) return lnOptions(x, { shouldRound, places, precision })
+export function logOptions(x = 1, base = Math.E, { shouldRound = false, places = Config.decimalPlaces }: NumericOptions = {}): number {
     if (base === 1 || base <= 0 || x <= 0 || !isFiniteNumber(x) || !isFiniteNumber(base)) return NaN
 
-    const result = divisionOptions(lnOptions(x, { precision }), lnOptions(base, { precision }), { shouldRound: false, places })
+    const result = base === 10 ? Math.log10(x) : base === 2 ? Math.log2(x) : Math.log(x) / Math.log(base)
     return shouldRound ? round(result, places) : result
 }

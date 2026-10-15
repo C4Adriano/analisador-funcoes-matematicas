@@ -13,23 +13,23 @@ function buildConstantFunction({ c = State.current.c }: NamedCoefficientsFor<"c"
 }
 
 function buildAffineFunction({ b = State.current.b, c = State.current.c }: NamedCoefficientsFor<"b" | "c"> = {}): string {
-    return tr("ui.theFunction") + formatLeadingTerm(b, "b", "x") + formatConstantTerm(c, "c") + tr("ui.affine") + (c === 0 ? tr(b === 1 ? "ui.affineIdentity" : b === -1 ? "ui.affineOpposite" : "ui.affineLinear") + tr("ui.pure") : "")
+    return tr("ui.theFunction") + formatLeadingTerm(b, "b", "x") + formatConstantTerm(c) + tr("ui.affine") + (c === 0 ? tr(b === 1 ? "ui.affineIdentity" : b === -1 ? "ui.affineOpposite" : "ui.affineLinear") + tr("ui.pure") : "")
 }
 
 function buildQuadraticFunction({ a = State.current.a, b = State.current.b, c = State.current.c }: NamedCoefficientsFor<Variable> = {}): string {
-    return tr("ui.theFunction") + formatLeadingTerm(a, "a", "x²") + formatMiddleTerm(b, "b", "x") + formatConstantTerm(c, "c") + tr("ui.quadratic") + (b === 0 ? tr(c === 0 ? "ui.pure" : "ui.quadraticIncompleteLinear") : c === 0 ? tr("ui.quadraticIncompleteConstant") : "")
+    return tr("ui.theFunction") + formatLeadingTerm(a, "a", "x²") + formatMiddleTerm(b, "b", "x") + formatConstantTerm(c) + tr("ui.quadratic") + (b === 0 ? tr(c === 0 ? "ui.pure" : "ui.quadraticIncompleteLinear") : c === 0 ? tr("ui.quadraticIncompleteConstant") : "")
 }
 
 function buildExponentialFunction({ a = State.current.a, b = State.current.b, c = State.current.c }: NamedCoefficientsFor<Variable> = {}): string {
-    return tr("ui.theFunction") + formatMultiplier(b, "b") + (a === "a" ? "aˣ" : a === 0 ? "" : `${a}ˣ`) + formatConstantTerm(c, "c") + tr("ui.exponential") + (a === round(Math.E) ? tr("ui.natural") : "") + (b === 1 && c === 0 ? tr("ui.pure") : "")
+    return tr("ui.theFunction") + formatMultiplier(b) + (a === "a" ? "aˣ" : a === 0 ? "" : `${a}ˣ`) + formatConstantTerm(c) + tr("ui.exponential") + (a === round(Math.E) ? tr("ui.natural") : "") + (b === 1 && c === 0 ? tr("ui.pure") : "")
 }
 
 function buildLogarithmicFunction({ a = State.current.a, b = State.current.b, c = State.current.c }: NamedCoefficientsFor<Variable> = {}): string {
-    return tr("ui.theFunction") + formatMultiplier(b, "b") + (a === "a" ? "logₐ(x)" : a === 0 ? "" : `log${subscript(a)}(x)`) + formatConstantTerm(c, "c") + tr("ui.logarithmic") + (a === round(Math.E) ? tr("ui.natural") : a === 10 ? tr("ui.decimal") : "") + (b === 1 && c === 0 ? tr("ui.pure") : "")
+    return tr("ui.theFunction") + formatMultiplier(b) + (a === "a" ? "logₐ(x)" : a === 0 ? "" : `log${subscript(a)}(x)`) + formatConstantTerm(c) + tr("ui.logarithmic") + (a === round(Math.E) ? tr("ui.natural") : a === 10 ? tr("ui.decimal") : "") + (b === 1 && c === 0 ? tr("ui.pure") : "")
 }
 
 function buildTrigFunction({ a = State.current.a, b = State.current.b, c = State.current.c }: NamedCoefficientsFor<Variable> = {}, funcType: TrigonometricFunction = ""): string {
-    return tr("ui.theFunction") + formatMultiplier(b, "b") + (a === "a" ? `${funcType}(a · x)` : a === 0 ? "" : `${funcType}(${a} · x)`) + formatConstantTerm(c, "c")
+    return tr("ui.theFunction") + formatMultiplier(b) + (a === "a" ? `${funcType}(a · x)` : a === 0 ? "" : `${funcType}(${a} · x)`) + formatConstantTerm(c)
 }
 
 function formatCoefficient<S extends Variable>(coef: NamedCoefficient<NoInfer<S>>, symbol: S, hasTerm = true): { hidden: boolean; text: string; negative: boolean } {
@@ -43,8 +43,8 @@ function formatCoefficient<S extends Variable>(coef: NamedCoefficient<NoInfer<S>
     return { hidden: false, text: abs === 1 && hasTerm && !(Config.showTrivialFactors === "one" || Config.showTrivialFactors === "on") ? "" : String(abs), negative: n < 0 }
 }
 
-function formatConstantTerm<S extends Variable>(coef: NamedCoefficient<NoInfer<S>>, symbol: S): string {
-    const { hidden, text, negative } = formatCoefficient(coef, symbol, false)
+function formatConstantTerm(coef: NamedCoefficient<"c">): string {
+    const { hidden, text, negative } = formatCoefficient(coef, "c", false)
     if (hidden) return ""
     return negative ? ` − ${text}` : ` + ${text}`
 }
@@ -65,10 +65,10 @@ function formatMiddleTerm<S extends Variable>(coef: NamedCoefficient<NoInfer<S>>
     return text === "" ? `${sign}${term}` : `${sign}${text} · ${term}`
 }
 
-function formatMultiplier<S extends Variable>(coef: NamedCoefficient<NoInfer<S>>, symbol: S): string {
-    const { hidden, text, negative } = formatCoefficient(coef, symbol)
+function formatMultiplier(coef: NamedCoefficient<"b">): string {
+    const { hidden, text, negative } = formatCoefficient(coef, "b")
     if (hidden) return ""
-    if (text === symbol) return `${symbol} × `
+    if (text === "b") return "b × "
     if (text === "") return negative ? "−" : ""
     return `${negative ? "−" : ""}${text} × `
 }

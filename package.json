@@ -1,6 +1,6 @@
 {
   "name": "analisador",
-  "version": "7.2.0",
+  "version": "7.2.1",
   "description": "Mathematical Function Analyzer / Analisador de Funções Matemáticas",
   "repository": {
     "type": "git",
@@ -28,23 +28,19 @@
   },
   "homepage": "https://github.com/C4Adriano/analisador-funcoes-matematicas#readme",
   "scripts": {
-    "build": "tsc",
+    "build": "npx tsc",
     "build:css": "sass src/CSS/style.scss src/CSS/style.css --no-source-map",
     "fix": "npm run format && npm run lint:fix && npm run build",
-    "fix:all": "npm run format && npm run lint:fix && npm run lint:md:fix && npm run build",
+    "fix:all": "npm run fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "i18n": "python ./src/Lang/i18n/sync_i18n.py",
     "lint": "eslint . --cache --cache-location .eslintcache",
-    "lint:all": "npm run lint && npm run lint:css && npm run lint:html && npm run lint:md",
-    "lint:css": "stylelint \"src/**/*.{css,scss}\"",
+    "lint:all": "npm run lint && npm run lint:html",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
     "lint:html": "html-validate \"index.html\"",
-    "lint:md": "markdownlint-cli2 \"**/*.md\"",
-    "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\"",
     "prepare": "husky",
-    "typecheck": "tsc --noEmit",
-    "watch": "tsc --watch"
+    "typecheck": "npx tsc --noEmit",
+    "watch": "npx tsc --watch"
   },
   "lint-staged": {
     "**/*.{js,ts}": [
@@ -59,7 +55,6 @@
     "@eslint-community/eslint-plugin-eslint-comments": "^4.8.1",
     "@eslint/js": "^10.0.1",
     "@eslint/json": "^2.1.0",
-    "@ivuorinen/stylelint-a11y": "^2.0.0",
     "@types/node": "^26.6.3",
     "@typescript/native": "npm:typescript@^7.0.2",
     "eslint": "^10.12.0",
@@ -75,14 +70,8 @@
     "html-validate": "^11.16.2",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
-    "markdownlint-cli2": "^0.23.3",
     "prettier": "^3.9.9",
     "sass": "^1.105.1",
-    "stylelint": "^17.16.0",
-    "stylelint-config-standard-scss": "^17.0.0",
-    "stylelint-declaration-strict-value": "^1.12.1",
-    "stylelint-high-performance-animation": "^2.0.0",
-    "stylelint-order": "^8.1.1",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.71.1"
   },

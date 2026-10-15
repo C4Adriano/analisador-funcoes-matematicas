@@ -1,113 +1,120 @@
-import { isFiniteNumber } from "../Core/checks.js"
-import { Config, DEFAULT_CONFIG } from "../Core/config.js"
-import { round } from "../Math/numeric.js"
-import { tr } from "./i18n.js"
+import { isFiniteNumber } from "../Core/checks.js";
+import { Config, DEFAULT_CONFIG } from "../Core/config.js";
+import { round } from "../Math/numeric.js";
+import { tr } from "./i18n.js";
 function capitalize(text = "") {
-    return lowercase(text).replaceAll(/\p{L}+/gv, word => uppercase(word[0]) + word.slice(1))
+    return lowercase(text).replaceAll(/\p{L}+/gv, word => uppercase(word[0]) + word.slice(1));
 }
 function formatValue(value = true) {
-    return typeof value === "boolean" ? tr(value ? "writing.yes" : "writing.no") : String(value)
+    return typeof value === "boolean" ? tr(value ? "writing.yes" : "writing.no") : String(value);
 }
 export function configItem(message, name) {
-    return tr("writing.currentDefault", { message, current: formatValue(Config[name]), default: formatValue(DEFAULT_CONFIG[name]) })
+    return tr("writing.currentDefault", { message, current: formatValue(Config[name]), default: formatValue(DEFAULT_CONFIG[name]) });
 }
 export function decimalOptions(number = 0, { type = "string", shouldRound = true, places = Config.decimalPlaces } = {}) {
-    let result = String(number)
-    if (type === "number") return replace(result, ",", ".")
-    const num = Number(result)
-    if (shouldRound && isFiniteNumber(num)) result = String(round(num, places))
-    if (Config.decimalSeparator === "comma") result = replace(result, ".", ",")
-    return result
+    let result = String(number);
+    if (type === "number")
+        return replace(result, ",", ".");
+    const num = Number(result);
+    if (shouldRound && isFiniteNumber(num))
+        result = String(round(num, places));
+    if (Config.decimalSeparator === "comma")
+        result = replace(result, ".", ",");
+    return result;
 }
-const textCaseFormatters = { capitalized: capitalize, lowercase, uppercase }
+const textCaseFormatters = { capitalized: capitalize, lowercase, uppercase };
 export function formatMessage(message = "", explanation = "") {
-    if (Config.showExplanations === "on" && explanation.trim() !== "") message += `\n\n${explanation}`
-    if (Config.implicitMulti === "on") message = simplifyMultiplication(message)
-    if (Config.showUnicode === "off") message = noUnicode(message)
-    if (Config.showAccents === "off") message = noAccents(message)
-    return textCaseFormatters[Config.textCase]?.(message) ?? message
+    if (Config.showExplanations === "on" && explanation.trim() !== "")
+        message += `\n\n${explanation}`;
+    if (Config.implicitMulti === "on")
+        message = simplifyMultiplication(message);
+    if (Config.showUnicode === "off")
+        message = noUnicode(message);
+    if (Config.showAccents === "off")
+        message = noAccents(message);
+    return textCaseFormatters[Config.textCase]?.(message) ?? message;
 }
 export function lowercase(text = "") {
-    return replace(text.toLowerCase(), "δ", "Δ")
+    return replace(text.toLowerCase(), "δ", "Δ");
 }
 export function noAccents(text = "") {
-    return text.normalize("NFD").replaceAll(/\p{M}/gv, "")
+    return text.normalize("NFD").replaceAll(/\p{M}/gv, "");
 }
-const localizedReplacementsCache = new Map(),
-    STATIC_REPLACEMENTS = Object.freeze([
-        ["©", "(c)"],
-        ["«", "<"],
-        ["±", "+/-"],
-        ["²", "^2"],
-        ["³", "^3"],
-        ["·", "*"],
-        ["»", ">"],
-        ["×", "*"],
-        ["÷", "/"],
-        ["ƒ", "f"],
-        ["ʸ", "y"],
-        ["ˣ", "^x"],
-        ["ᵇ", "b"],
-        ["ᶜ", "c"],
-        ["–", "-"],
-        ["—", "-"],
-        ["‘", "'"],
-        ["’", "'"],
-        ["“", '"'],
-        ["”", '"'],
-        ["•", "*"],
-        ["…", "..."],
-        ["⁄", "/"],
-        ["⁺", "+"],
-        ["⁻", "-"],
-        ["⁼", "="],
-        ["⁽", "^("],
-        ["⁾", ")"],
-        ["₁", "1"],
-        ["₂", "2"],
-        ["₃", "3"],
-        ["₊", "+"],
-        ["₋", "-"],
-        ["₌", "="],
-        ["₍", "_("],
-        ["₎", ")"],
-        ["ₐ", "_a"],
-        ["ₑ", "_e"],
-        ["ₒ", "_o"],
-        ["ₓ", "_x"],
-        ["←", "<-"],
-        ["↑", "^"],
-        ["→", "->"],
-        ["↓", "v"],
-        ["↔", "<->"],
-        ["↕", "^v"],
-        ["↖", "\\"],
-        ["↗", "/"],
-        ["↘", "\\"],
-        ["↙", "/"],
-        ["↳", "->"],
-        ["⇐", "<="],
-        ["⇑", "^^"],
-        ["⇒", "=>"],
-        ["⇓", "vv"],
-        ["⇔", "<=>"],
-        ["⇕", "^^vv"],
-        ["⇖", "\\"],
-        ["⇗", "//"],
-        ["⇘", "\\"],
-        ["⇙", "//"],
-        ["−", "-"],
-        ["∓", "-/+"],
-        ["∖", "-"],
-        ["≠", "!="],
-        ["≤", "<="],
-        ["≥", ">="],
-        ["≪", "<<"],
-        ["≫", ">>"],
-    ])
+const localizedReplacementsCache = new Map(), STATIC_REPLACEMENTS = Object.freeze([
+    ["©", "(c)"],
+    ["«", "<"],
+    ["±", "+/-"],
+    ["²", "^2"],
+    ["³", "^3"],
+    ["·", "*"],
+    ["»", ">"],
+    ["×", "*"],
+    ["÷", "/"],
+    ["ƒ", "f"],
+    ["ʸ", "y"],
+    ["ˣ", "^x"],
+    ["ᵇ", "b"],
+    ["ᶜ", "c"],
+    ["–", "-"],
+    ["—", "-"],
+    ["‘", "'"],
+    ["’", "'"],
+    ["“", '"'],
+    ["”", '"'],
+    ["•", "*"],
+    ["…", "..."],
+    ["⁄", "/"],
+    ["⁺", "+"],
+    ["⁻", "-"],
+    ["⁼", "="],
+    ["⁽", "^("],
+    ["⁾", ")"],
+    ["₁", "1"],
+    ["₂", "2"],
+    ["₃", "3"],
+    ["₊", "+"],
+    ["₋", "-"],
+    ["₌", "="],
+    ["₍", "_("],
+    ["₎", ")"],
+    ["ₐ", "_a"],
+    ["ₑ", "_e"],
+    ["ₒ", "_o"],
+    ["ₓ", "_x"],
+    ["←", "<-"],
+    ["↑", "^"],
+    ["→", "->"],
+    ["↓", "v"],
+    ["↔", "<->"],
+    ["↕", "^v"],
+    ["↖", "\\"],
+    ["↗", "/"],
+    ["↘", "\\"],
+    ["↙", "/"],
+    ["↳", "->"],
+    ["⇐", "<="],
+    ["⇑", "^^"],
+    ["⇒", "=>"],
+    ["⇓", "vv"],
+    ["⇔", "<=>"],
+    ["⇕", "^^vv"],
+    ["⇖", "\\"],
+    ["⇗", "//"],
+    ["⇘", "\\"],
+    ["⇙", "//"],
+    ["−", "-"],
+    ["∓", "-/+"],
+    ["∖", "-"],
+    ["≠", "!="],
+    ["≤", "<="],
+    ["≥", ">="],
+    ["≪", "<<"],
+    ["≫", ">>"],
+]);
 function getLocalizedReplacements() {
-    const cached = localizedReplacementsCache.get(Config.language)
-    if (cached != null) return cached
+    const cached = localizedReplacementsCache.get(Config.language);
+    if (cached != null)
+        return cached;
     const computed = [
         ["-∞", tr("symbols.negativeInfinity")],
         ["¬", tr("symbols.notWord")],
@@ -182,40 +189,40 @@ function getLocalizedReplacements() {
         ["⊉", tr("symbols.notSupersetOf")],
         ["⊕", tr("symbols.exclusiveOr")],
         ["⊗", tr("symbols.inclusiveOr")],
-    ]
-    localizedReplacementsCache.set(Config.language, computed)
-    return computed
+    ];
+    localizedReplacementsCache.set(Config.language, computed);
+    return computed;
 }
 function noUnicode(text = "") {
-    return replaceGroup(text, [...getLocalizedReplacements(), ...STATIC_REPLACEMENTS])
+    return replaceGroup(text, [...getLocalizedReplacements(), ...STATIC_REPLACEMENTS]);
 }
 function replace(text = "", from = "", to = "") {
-    return text.replaceAll(from, () => to)
+    return text.replaceAll(from, () => to);
 }
 function replaceGroup(text = "", list = [["", ""]]) {
-    return list.reduce((acc, [from, to]) => replace(acc, from, to), text)
+    return list.reduce((acc, [from, to]) => replace(acc, from, to), text);
 }
 function simplifyMultiplication(text = "") {
-    return replace(text, " · ", "")
+    return replace(text, " · ", "");
 }
 export function subscript(value = "") {
     return Config.showUnicode === "on"
         ? replaceGroup(String(value), [
-              ["-", "₋"],
-              [".", "․"],
-              ["0", "₀"],
-              ["1", "₁"],
-              ["2", "₂"],
-              ["3", "₃"],
-              ["4", "₄"],
-              ["5", "₅"],
-              ["6", "₆"],
-              ["7", "₇"],
-              ["8", "₈"],
-              ["9", "₉"],
-          ])
-        : `_${value}`
+            ["-", "₋"],
+            [".", "․"],
+            ["0", "₀"],
+            ["1", "₁"],
+            ["2", "₂"],
+            ["3", "₃"],
+            ["4", "₄"],
+            ["5", "₅"],
+            ["6", "₆"],
+            ["7", "₇"],
+            ["8", "₈"],
+            ["9", "₉"],
+        ])
+        : `_${value}`;
 }
 export function uppercase(text = "") {
-    return replace(text.toUpperCase(), "Ƒ", "ƒ")
+    return replace(text.toUpperCase(), "Ƒ", "ƒ");
 }

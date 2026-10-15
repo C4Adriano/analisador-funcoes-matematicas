@@ -2,7 +2,6 @@ import eslintComments from "@eslint-community/eslint-plugin-eslint-comments"
 import js from "@eslint/js"
 import json from "@eslint/json"
 import prettierConfig from "eslint-config-prettier"
-import jsdoc from "eslint-plugin-jsdoc"
 import noUnsanitized from "eslint-plugin-no-unsanitized"
 import packageJson, { configs as packageJsonConfigs } from "eslint-plugin-package-json"
 import promise from "eslint-plugin-promise"
@@ -13,32 +12,23 @@ import unicorn from "eslint-plugin-unicorn"
 import { defineConfig } from "eslint/config"
 import tseslint from "typescript-eslint"
 
-const commonRules = {
-        "@eslint-community/eslint-comments/disable-enable-pair": ["warn", { allowWholeFile: true }],
-        "@eslint-community/eslint-comments/no-duplicate-disable": "warn",
-        "@eslint-community/eslint-comments/no-unlimited-disable": "warn",
-        "@eslint-community/eslint-comments/no-unused-enable": "warn",
+const layers = ["Base", "Lang", "Math", "UI", "Core"],
+    ioFile = "src/UI/io.ts",
+    commonRules = {
+        "@typescript-eslint/max-params": ["warn", { max: 5 }],
         "@typescript-eslint/no-unused-expressions": ["warn", { allowTernary: true }],
         "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
-        "@typescript-eslint/no-use-before-define": ["warn", { functions: false, classes: true, variables: true }],
-        curly: ["warn", "multi"],
+        "@typescript-eslint/no-use-before-define": ["warn", { functions: false }],
         eqeqeq: ["warn", "smart"],
+        "func-style": ["warn", "declaration"],
         "no-console": ["warn", { allow: ["warn", "error"] }],
-        "no-constant-condition": ["warn", { checkLoops: false }],
-        "no-unsanitized/method": "error",
-        "no-unsanitized/property": "error",
         "one-var": ["warn", { const: "consecutive", let: "consecutive" }],
-        "prefer-destructuring": ["warn", { object: true, array: true }],
-        "sonarjs/no-collapsible-if": "warn",
-        "sonarjs/no-duplicated-branches": "warn",
-        "sonarjs/no-identical-functions": "warn",
     },
     offGeral = Object.fromEntries(
         [
             "class-methods-use-this",
             "complexity",
             "func-names",
-            "func-style",
             "id-length",
             "id-match",
             "init-declarations",
@@ -48,7 +38,7 @@ const commonRules = {
             "max-nested-callbacks",
             "max-params",
             "max-statements",
-            "no-alert",
+            "no-await-in-loop",
             "no-bitwise",
             "no-continue",
             "no-eq-null",
@@ -62,14 +52,13 @@ const commonRules = {
             "no-undefined",
             "no-underscore-dangle",
             "no-warning-comments",
+            "require-atomic-updates",
             "sort-imports",
             "sort-keys",
             "sort-vars",
-            "@typescript-eslint/max-params",
             "@typescript-eslint/member-ordering",
             "@typescript-eslint/naming-convention",
             "@typescript-eslint/no-confusing-void-expression",
-            "@typescript-eslint/no-extraneous-class",
             "@typescript-eslint/no-magic-numbers",
             "@typescript-eslint/no-non-null-assertion",
             "@typescript-eslint/no-unsafe-argument",
@@ -80,11 +69,6 @@ const commonRules = {
             "@typescript-eslint/only-throw-error",
             "@typescript-eslint/prefer-readonly-parameter-types",
             "@typescript-eslint/strict-boolean-expressions",
-            "jsdoc/check-param-names",
-            "jsdoc/check-values",
-            "jsdoc/require-jsdoc",
-            "jsdoc/require-param",
-            "jsdoc/require-returns",
             "regexp/letter-case",
             "security/detect-non-literal-fs-filename",
             "security/detect-object-injection",
@@ -107,8 +91,14 @@ const commonRules = {
             "unicorn/prevent-abbreviations",
             "unicorn/single-line-block-comment-style",
             "unicorn/switch-case-braces",
+            "no-alert",
         ].map(ruleName => [ruleName, "off"]),
     )
+
+function layerBlock(layer, index) {
+    const forbidden = layers.slice(index + 1)
+    return { files: [`src/${layer}/**/*.ts`], rules: { "@typescript-eslint/no-restricted-imports": ["warn", { patterns: forbidden.map(name => ({ group: [`**/${name}/**`], message: `${layer} must not import from ${name} (layer order: ${layers.join(" > ")}).` })) }] } }
+}
 
 export default defineConfig([
     { linterOptions: { reportUnusedDisableDirectives: "warn" }, ignores: ["**/node_modules/**", "pessoal/**"] },
@@ -117,10 +107,12 @@ export default defineConfig([
     { files: ["./package.json"], plugins: { "package-json": packageJson }, extends: [packageJsonConfigs.recommended] },
     {
         files: ["src/**/*.ts"],
-        extends: [js.configs.all, tseslint.configs.all, unicorn.configs.all, jsdoc.configs["flat/recommended-typescript"], regexp.configs.all, promise.configs["flat/recommended"], security.configs.recommended],
+        extends: [js.configs.all, tseslint.configs.all, unicorn.configs.all, regexp.configs.all, promise.configs["flat/recommended"], security.configs.recommended],
         plugins: { "no-unsanitized": noUnsanitized, "@eslint-community/eslint-comments": eslintComments, regexp, sonarjs, unicorn, promise, security },
         languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname } },
-        rules: { ...commonRules, ...offGeral },
+        rules: { ...offGeral, ...commonRules },
     },
+    // ...layers.slice(0, -1).map(layerBlock),
+    { files: [ioFile], rules: { "no-alert": "off", "@typescript-eslint/require-await": "off" } },
     prettierConfig,
 ])

@@ -1,108 +1,123 @@
-import { isFiniteNumber, isInInterval } from "../Core/checks.js"
-import { Config } from "../Core/config.js"
-import { INPUT_FAILED } from "../Core/consts.js"
-import { State } from "../Core/state.js"
-import { tr } from "../Lang/i18n.js"
-import { decimalOptions, formatMessage, subscript } from "../Lang/writing.js"
-import { round } from "../Math/numeric.js"
-import { isValidCommand, processCmd } from "./commands.js"
-import { input, notify } from "./display.js"
+import { isFiniteNumber, isInInterval } from "../Core/checks.js";
+import { Config } from "../Core/config.js";
+import { INPUT_FAILED } from "../Core/consts.js";
+import { State } from "../Core/state.js";
+import { tr } from "../Lang/i18n.js";
+import { decimalOptions, formatMessage, subscript } from "../Lang/writing.js";
+import { round } from "../Math/numeric.js";
+import { isValidCommand, processCmd } from "./commands.js";
+import { input, notify } from "./display.js";
 function buildConstantFunction({ c = State.current.c } = {}) {
-    return tr("ui.theFunction") + String(c) + tr("ui.constant") + (c === 0 ? tr("ui.constantNull") : "")
+    return tr("ui.theFunction") + String(c) + tr("ui.constant") + (c === 0 ? tr("ui.constantNull") : "");
 }
 function buildAffineFunction({ b = State.current.b, c = State.current.c } = {}) {
-    return tr("ui.theFunction") + formatLeadingTerm(b, "b", "x") + formatConstantTerm(c, "c") + tr("ui.affine") + (c === 0 ? tr(b === 1 ? "ui.affineIdentity" : b === -1 ? "ui.affineOpposite" : "ui.affineLinear") + tr("ui.pure") : "")
+    return tr("ui.theFunction") + formatLeadingTerm(b, "b", "x") + formatConstantTerm(c) + tr("ui.affine") + (c === 0 ? tr(b === 1 ? "ui.affineIdentity" : b === -1 ? "ui.affineOpposite" : "ui.affineLinear") + tr("ui.pure") : "");
 }
 function buildQuadraticFunction({ a = State.current.a, b = State.current.b, c = State.current.c } = {}) {
-    return tr("ui.theFunction") + formatLeadingTerm(a, "a", "x²") + formatMiddleTerm(b, "b", "x") + formatConstantTerm(c, "c") + tr("ui.quadratic") + (b === 0 ? tr(c === 0 ? "ui.pure" : "ui.quadraticIncompleteLinear") : c === 0 ? tr("ui.quadraticIncompleteConstant") : "")
+    return tr("ui.theFunction") + formatLeadingTerm(a, "a", "x²") + formatMiddleTerm(b, "b", "x") + formatConstantTerm(c) + tr("ui.quadratic") + (b === 0 ? tr(c === 0 ? "ui.pure" : "ui.quadraticIncompleteLinear") : c === 0 ? tr("ui.quadraticIncompleteConstant") : "");
 }
 function buildExponentialFunction({ a = State.current.a, b = State.current.b, c = State.current.c } = {}) {
-    return tr("ui.theFunction") + formatMultiplier(b, "b") + (a === "a" ? "aˣ" : a === 0 ? "" : `${a}ˣ`) + formatConstantTerm(c, "c") + tr("ui.exponential") + (a === round(Math.E) ? tr("ui.natural") : "") + (b === 1 && c === 0 ? tr("ui.pure") : "")
+    return tr("ui.theFunction") + formatMultiplier(b) + (a === "a" ? "aˣ" : a === 0 ? "" : `${a}ˣ`) + formatConstantTerm(c) + tr("ui.exponential") + (a === round(Math.E) ? tr("ui.natural") : "") + (b === 1 && c === 0 ? tr("ui.pure") : "");
 }
 function buildLogarithmicFunction({ a = State.current.a, b = State.current.b, c = State.current.c } = {}) {
-    return tr("ui.theFunction") + formatMultiplier(b, "b") + (a === "a" ? "logₐ(x)" : a === 0 ? "" : `log${subscript(a)}(x)`) + formatConstantTerm(c, "c") + tr("ui.logarithmic") + (a === round(Math.E) ? tr("ui.natural") : a === 10 ? tr("ui.decimal") : "") + (b === 1 && c === 0 ? tr("ui.pure") : "")
+    return tr("ui.theFunction") + formatMultiplier(b) + (a === "a" ? "logₐ(x)" : a === 0 ? "" : `log${subscript(a)}(x)`) + formatConstantTerm(c) + tr("ui.logarithmic") + (a === round(Math.E) ? tr("ui.natural") : a === 10 ? tr("ui.decimal") : "") + (b === 1 && c === 0 ? tr("ui.pure") : "");
 }
 function buildTrigFunction({ a = State.current.a, b = State.current.b, c = State.current.c } = {}, funcType = "") {
-    return tr("ui.theFunction") + formatMultiplier(b, "b") + (a === "a" ? `${funcType}(a · x)` : a === 0 ? "" : `${funcType}(${a} · x)`) + formatConstantTerm(c, "c")
+    return tr("ui.theFunction") + formatMultiplier(b) + (a === "a" ? `${funcType}(a · x)` : a === 0 ? "" : `${funcType}(${a} · x)`) + formatConstantTerm(c);
 }
 function formatCoefficient(coef, symbol, hasTerm = true) {
-    if (coef === symbol) return { hidden: false, text: symbol, negative: false }
-    const n = Number(coef),
-        abs = Math.abs(n)
-    if (abs === 0 && !(Config.showTrivialFactors === "zero" || Config.showTrivialFactors === "on")) return { hidden: true, text: "", negative: false }
-    return { hidden: false, text: abs === 1 && hasTerm && !(Config.showTrivialFactors === "one" || Config.showTrivialFactors === "on") ? "" : String(abs), negative: n < 0 }
+    if (coef === symbol)
+        return { hidden: false, text: symbol, negative: false };
+    const n = Number(coef), abs = Math.abs(n);
+    if (abs === 0 && !(Config.showTrivialFactors === "zero" || Config.showTrivialFactors === "on"))
+        return { hidden: true, text: "", negative: false };
+    return { hidden: false, text: abs === 1 && hasTerm && !(Config.showTrivialFactors === "one" || Config.showTrivialFactors === "on") ? "" : String(abs), negative: n < 0 };
 }
-function formatConstantTerm(coef, symbol) {
-    const { hidden, text, negative } = formatCoefficient(coef, symbol, false)
-    if (hidden) return ""
-    return negative ? ` − ${text}` : ` + ${text}`
+function formatConstantTerm(coef) {
+    const { hidden, text, negative } = formatCoefficient(coef, "c", false);
+    if (hidden)
+        return "";
+    return negative ? ` − ${text}` : ` + ${text}`;
 }
 function formatLeadingTerm(coef, symbol, term) {
-    const { hidden, text, negative } = formatCoefficient(coef, symbol)
-    if (hidden) return ""
-    if (text === symbol) return `${symbol} · ${term}`
-    const sign = negative ? "−" : ""
-    return text === "" ? `${sign}${term}` : `${sign}${text} · ${term}`
+    const { hidden, text, negative } = formatCoefficient(coef, symbol);
+    if (hidden)
+        return "";
+    if (text === symbol)
+        return `${symbol} · ${term}`;
+    const sign = negative ? "−" : "";
+    return text === "" ? `${sign}${term}` : `${sign}${text} · ${term}`;
 }
 function formatMiddleTerm(coef, symbol, term) {
-    const { hidden, text, negative } = formatCoefficient(coef, symbol)
-    if (hidden) return ""
-    if (text === symbol) return ` + ${symbol} · ${term}`
-    const sign = negative ? " − " : " + "
-    return text === "" ? `${sign}${term}` : `${sign}${text} · ${term}`
+    const { hidden, text, negative } = formatCoefficient(coef, symbol);
+    if (hidden)
+        return "";
+    if (text === symbol)
+        return ` + ${symbol} · ${term}`;
+    const sign = negative ? " − " : " + ";
+    return text === "" ? `${sign}${term}` : `${sign}${text} · ${term}`;
 }
-function formatMultiplier(coef, symbol) {
-    const { hidden, text, negative } = formatCoefficient(coef, symbol)
-    if (hidden) return ""
-    if (text === symbol) return `${symbol} × `
-    if (text === "") return negative ? "−" : ""
-    return `${negative ? "−" : ""}${text} × `
+function formatMultiplier(coef) {
+    const { hidden, text, negative } = formatCoefficient(coef, "b");
+    if (hidden)
+        return "";
+    if (text === "b")
+        return "b × ";
+    if (text === "")
+        return negative ? "−" : "";
+    return `${negative ? "−" : ""}${text} × `;
 }
 export function inputCommands(message = "", { explanation = "", type = "string", places = Config.decimalPlaces, placeholder = "" } = {}) {
-    let limit = 0
+    let limit = 0;
     do {
-        const raw = prompt(formatMessage(message, explanation), placeholder)
-        if (raw == null) continue
-        const text = raw.trim()
-        if (text === "") continue
+        const raw = prompt(formatMessage(message, explanation), placeholder);
+        if (raw == null)
+            continue;
+        const text = raw.trim();
+        if (text === "")
+            continue;
         if (text.startsWith("/")) {
-            const action = processCmd(text)
-            if (action == null) continue
-            return action
+            const action = processCmd(text);
+            if (action == null)
+                continue;
+            return action;
         }
-        if (type === "number" && !isFiniteNumber(decimalOptions(text, { type: "number" }))) continue
-        if (Config.inputConfirm === "on" && !notify(tr("ui.inputConfirm", { input: type === "number" ? decimalOptions(text) : text }), { explanation: tr("ui.inputConfirmNote"), type: "warning", asConfirm: true })) continue
-        return type === "number" ? round(Number(decimalOptions(text, { type: "number" })), places) : text
-    } while (limit++ < Config.iterationLimit)
-    return INPUT_FAILED
+        if (type === "number" && !isFiniteNumber(decimalOptions(text, { type: "number" })))
+            continue;
+        if (Config.inputConfirm === "on" && !notify(tr("ui.inputConfirm", { input: type === "number" ? decimalOptions(text) : text }), { explanation: tr("ui.inputConfirmNote"), type: "warning", asConfirm: true }))
+            continue;
+        return type === "number" ? round(Number(decimalOptions(text, { type: "number" })), places) : text;
+    } while (limit++ < Config.iterationLimit);
+    return INPUT_FAILED;
 }
 export function rangeOptions(message = "", { explanation = "", min = 0, max = 1, places = 0, commands = false } = {}) {
-    let value
-    if (max < min) [max, min] = [min, max]
+    let value;
+    if (max < min)
+        [max, min] = [min, max];
     do {
-        value = commands ? inputCommands(message, { placeholder: String(min), type: "number", places, explanation }) : input(message, { placeholder: String(min), type: "number", places, explanation })
-        if (isValidCommand(value)) return value
-        if (isFiniteNumber(value) && !isInInterval(value, [min, max])) notify(`${tr("errors.error001", { firstValue: min + (min === 0 ? 1 : 0), max })} ${min === 0 ? tr("errors.zeroToBack") : ""}`, { explanation: tr("errors.error001Exp"), type: "error" })
-    } while (isFiniteNumber(value) && !isInInterval(value, [min, max]))
-    return value
+        value = commands ? inputCommands(message, { placeholder: String(min), type: "number", places, explanation }) : input(message, { placeholder: String(min), type: "number", places, explanation });
+        if (isValidCommand(value))
+            return value;
+        if (isFiniteNumber(value) && !isInInterval(value, [min, max]))
+            notify(`${tr("errors.error001", { firstValue: min + (min === 0 ? 1 : 0), max })} ${min === 0 ? tr("errors.zeroToBack") : ""}`, { explanation: tr("errors.error001Exp"), type: "error" });
+    } while (isFiniteNumber(value) && !isInInterval(value, [min, max]));
+    return value;
 }
 export function resolveFunction({ a = State.current.a, b = State.current.b, c = State.current.c } = {}, funcType = "poly", show = true) {
-    if (!show || Config.showFunction === "off") return
-    if (Config.showFunction === "changed" && !State.funcChanged) return
-    const coefs = { a, b, c }
-    notify(
-        `=== ${tr("ui.currentFunction")} ===\n${
-            funcType === "poly"
-                ? coefs.a === 0 && coefs.b === 0
-                    ? buildConstantFunction(coefs)
-                    : coefs.a === 0
-                      ? buildAffineFunction(coefs)
-                      : buildQuadraticFunction(coefs)
-                : funcType === "exp"
-                  ? buildExponentialFunction(coefs)
-                  : funcType === "log"
-                    ? buildLogarithmicFunction(coefs)
-                    : buildTrigFunction(coefs, funcType)
-        }`,
-    )
+    if (!show || Config.showFunction === "off")
+        return;
+    if (Config.showFunction === "changed" && !State.funcChanged)
+        return;
+    const coefs = { a, b, c };
+    notify(`=== ${tr("ui.currentFunction")} ===\n${funcType === "poly"
+        ? coefs.a === 0 && coefs.b === 0
+            ? buildConstantFunction(coefs)
+            : coefs.a === 0
+                ? buildAffineFunction(coefs)
+                : buildQuadraticFunction(coefs)
+        : funcType === "exp"
+            ? buildExponentialFunction(coefs)
+            : funcType === "log"
+                ? buildLogarithmicFunction(coefs)
+                : buildTrigFunction(coefs, funcType)}`);
 }

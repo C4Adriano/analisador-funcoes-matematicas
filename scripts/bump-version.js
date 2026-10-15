@@ -48,7 +48,7 @@ const version = `${major}.${minor}.${patch}`
 pkg.version = version
 writeFileSync(new URL("../package.json", import.meta.url), `${JSON.stringify(pkg, null, 2)}\n`)
 
-const versionFileContent = `export const VERSION = "${version}"\n`
-writeFileSync(new URL("../src/version.js", import.meta.url), versionFileContent)
+const versionFileContent = `export const VERSION = "${version}" as const\n`
+writeFileSync(new URL("../src/version.ts", import.meta.url), versionFileContent)
 
 console.warn(`[version-bump] ${pkg.version} <- "${firstLine}"`)

@@ -6,9 +6,10 @@
 *.txt
 .VSCodeCounter/
 .eslintcache
-.tsbuildinfo
+*.tsbuildinfo
 .vscode/
 TODO.md
+i18n.lock.json
 node_modules/
 notes.md
 pessoal/

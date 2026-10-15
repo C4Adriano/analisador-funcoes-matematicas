@@ -1,49 +1,48 @@
-import { Config, isConfigKey } from "../Core/config.js"
-import { State } from "../Core/state.js"
-import { changeLanguage, tr } from "../Lang/i18n.js"
-import { configItem, lowercase, noAccents } from "../Lang/writing.js"
-import { VERSION } from "../version.js"
-import { notify } from "./display.js"
-import { rangeOptions } from "./ui.js"
+import { Config, isConfigKey } from "../Core/config.js";
+import { State } from "../Core/state.js";
+import { changeLanguage, tr } from "../Lang/i18n.js";
+import { configItem, lowercase, noAccents } from "../Lang/writing.js";
+import { VERSION } from "../version.js";
+import { notify } from "./display.js";
+import { rangeOptions } from "./ui.js";
 function change(name, value) {
-    const currentValue = Config[name]
-    if (value == null && typeof currentValue === "boolean") Object.assign(Config, { [name]: !currentValue })
-    else if (value != null && typeof currentValue === typeof value) Object.assign(Config, { [name]: value })
-    else return null
-    Config.save()
-    notify(configItem(`${tr("commands.changed")} "${name}"`, name), { type: "warning" })
-    return null
+    const currentValue = Config[name];
+    if (value == null && typeof currentValue === "boolean")
+        Object.assign(Config, { [name]: !currentValue });
+    else if (value != null && typeof currentValue === typeof value)
+        Object.assign(Config, { [name]: value });
+    else
+        return null;
+    Config.save();
+    notify(configItem(`${tr("commands.changed")} "${name}"`, name), { type: "warning" });
+    return null;
 }
 function help(specific) {
-    const cmds = listCmds()
+    const cmds = listCmds();
     if (specific.trim() !== "") {
-        const canonical = resolveCmd(specific, cmds)
+        const canonical = resolveCmd(specific, cmds);
         if (canonical == null) {
-            notify(tr("commands.unknownCommand"), { explanation: tr("commands.invalidCommandExp", { command: specific }), type: "error" })
-            return null
+            notify(tr("commands.unknownCommand"), { explanation: tr("commands.invalidCommandExp", { command: specific }), type: "error" });
+            return null;
         }
-        const cmd = cmds[canonical]
-        if (cmd == null) return null
-        const shortList = [canonical, ...cmd.variations].join(", ")
-        notify(`“/${canonical}” — ${cmd.long}\n${tr("commands.variations")}${shortList}`)
-        return null
+        const cmd = cmds[canonical];
+        if (cmd == null)
+            return null;
+        const shortList = [canonical, ...cmd.variations].join(", ");
+        notify(`“/${canonical}” — ${cmd.long}\n${tr("commands.variations")}${shortList}`);
+        return null;
     }
-    const key = Object.keys(cmds),
-        total = Math.ceil(key.length / 5)
-    let page = 1,
-        answer
+    const key = Object.keys(cmds), total = Math.ceil(key.length / 5);
+    let page = 1, answer;
     do {
-        page = Math.min(Math.max(page, 1), total)
-        answer = rangeOptions(
-            `=== ${tr("commands.help")} ===\n${tr("commands.page")} ${page}/${total}${key
-                .slice((page - 1) * 5, Math.min(page * 5, key.length))
-                .map(name => `\n/${name} — ${cmds[name].short}\n ↳ ${[name, ...cmds[name].variations].join(", ")}`)
-                .join("")}\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`,
-            { max: 9, commands: true },
-        )
-        page += answer === 8 ? -1 : answer === 9 ? 1 : 0
-    } while (answer !== 0)
-    return null
+        page = Math.min(Math.max(page, 1), total);
+        answer = rangeOptions(`=== ${tr("commands.help")} ===\n${tr("commands.page")} ${page}/${total}${key
+            .slice((page - 1) * 5, Math.min(page * 5, key.length))
+            .map(name => `\n/${name} — ${cmds[name].short}\n ↳ ${[name, ...cmds[name].variations].join(", ")}`)
+            .join("")}\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`, { max: 9, commands: true });
+        page += answer === 8 ? -1 : answer === 9 ? 1 : 0;
+    } while (answer !== 0);
+    return null;
 }
 function listCmds() {
     return {
@@ -54,34 +53,28 @@ function listCmds() {
             variations: ["pesquisa", "pesquisar", "search", "buscar", "find", "procurar", "seek", "s"],
             action: (_, [, argRaw]) => {
                 if (argRaw.trim() === "") {
-                    notify(tr("commands.emptySearch"), { explanation: tr("commands.usageSearch"), type: "error" })
-                    return null
+                    notify(tr("commands.emptySearch"), { explanation: tr("commands.usageSearch"), type: "error" });
+                    return null;
                 }
-                const term = noAccents(lowercase(argRaw)),
-                    cmds = listCmds(),
-                    results = Object.keys(cmds).filter(key => {
-                        const cmd = cmds[key]
-                        return cmd != null && [key, cmd.short, cmd.long, ...cmd.variations].some(candidate => noAccents(lowercase(candidate)).includes(term))
-                    })
+                const term = noAccents(lowercase(argRaw)), cmds = listCmds(), results = Object.keys(cmds).filter(key => {
+                    const cmd = cmds[key];
+                    return cmd != null && [key, cmd.short, cmd.long, ...cmd.variations].some(candidate => noAccents(lowercase(candidate)).includes(term));
+                });
                 if (results.length === 0) {
-                    notify(`${tr("commands.noCommand")}"${term}"`, { type: "warning" })
-                    return null
+                    notify(`${tr("commands.noCommand")}"${term}"`, { type: "warning" });
+                    return null;
                 }
-                const total = Math.ceil(results.length / 5)
-                let page = 1,
-                    answer
+                const total = Math.ceil(results.length / 5);
+                let page = 1, answer;
                 do {
-                    page = Math.min(Math.max(page, 1), total)
-                    answer = rangeOptions(
-                        `=== ${tr("commands.search")}"${term}" ===\n${results.length} ${tr("commands.resultsSearch")}${page}/${total}\n${results
-                            .slice((page - 1) * 5, Math.min(page * 5, results.length))
-                            .map(name => `\n/${name} — ${cmds[name].short}`)
-                            .join("")}\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`,
-                        { max: 9, commands: true },
-                    )
-                    page += answer === 8 ? -1 : answer === 9 ? 1 : 0
-                } while (answer !== 0)
-                return null
+                    page = Math.min(Math.max(page, 1), total);
+                    answer = rangeOptions(`=== ${tr("commands.search")}"${term}" ===\n${results.length} ${tr("commands.resultsSearch")}${page}/${total}\n${results
+                        .slice((page - 1) * 5, Math.min(page * 5, results.length))
+                        .map(name => `\n/${name} — ${cmds[name].short}`)
+                        .join("")}\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`, { max: 9, commands: true });
+                    page += answer === 8 ? -1 : answer === 9 ? 1 : 0;
+                } while (answer !== 0);
+                return null;
             },
         },
         shortcuts: { short: tr("commands.shortShortcuts"), long: tr("commands.longShortcuts"), variations: ["atalhos", "shortcuts", "variacoes", "variacao", "aliases", "alias", "sc"], action: (_, [, argRaw]) => shortcuts(argRaw) },
@@ -90,15 +83,13 @@ function listCmds() {
             long: tr("commands.longAbout"),
             variations: ["sobre", "about", "info", "informacoes", "informacao", "projeto"],
             action: () => {
-                notify(
-                    `==================================================\n` +
-                        `${tr("commands.title")} — ${VERSION}\n` +
-                        `${tr("commands.author")}Adriano Lima\n` +
-                        `${tr("commands.repository")}github.com/C4Adriano/analisador-funcoes-matematicas\n` +
-                        `${tr("commands.copyright")} © Adriano Lima 2025 — 2026\n` +
-                        `==================================================`,
-                )
-                return null
+                notify(`==================================================\n` +
+                    `${tr("commands.title")} — ${VERSION}\n` +
+                    `${tr("commands.author")}Adriano Lima\n` +
+                    `${tr("commands.repository")}github.com/C4Adriano/analisador-funcoes-matematicas\n` +
+                    `${tr("commands.copyright")} © Adriano Lima 2025 — 2026\n` +
+                    `==================================================`);
+                return null;
             },
         },
         config: {
@@ -107,12 +98,13 @@ function listCmds() {
             variations: ["config", "configuracoes", "conf", "settings", "cfg"],
             action: (arg, [, argRaw]) => {
                 if (argRaw.trim() === "") {
-                    State.menuChoice = "config"
-                    return "config"
+                    State.menuChoice = "config";
+                    return "config";
                 }
-                if (isConfigKey(argRaw)) return change(argRaw, arg ? "on" : "off")
-                notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: argRaw }), type: "error" })
-                return null
+                if (isConfigKey(argRaw))
+                    return change(argRaw, arg ? "on" : "off");
+                notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: argRaw }), type: "error" });
+                return null;
             },
         },
         reset: {
@@ -120,9 +112,9 @@ function listCmds() {
             long: tr("commands.longReset"),
             variations: ["resetar", "reset", "restaurar", "restore"],
             action: () => {
-                Config.reset()
-                notify(tr("commands.resetConfirm"), { type: "warning" })
-                return null
+                Config.reset();
+                notify(tr("commands.resetConfirm"), { type: "warning" });
+                return null;
             },
         },
         start: {
@@ -130,8 +122,8 @@ function listCmds() {
             long: tr("commands.longStart"),
             variations: ["inicio", "start", "home", "menu", "voltar", "back"],
             action: () => {
-                State.menuChoice = "start"
-                return "start"
+                State.menuChoice = "start";
+                return "start";
             },
         },
         review: {
@@ -139,8 +131,8 @@ function listCmds() {
             long: tr("commands.longReview"),
             variations: ["rever", "review", "rev", "rver", "coefs", "coeficientes", "ver"],
             action: () => {
-                State.menuChoice = "review"
-                return "review"
+                State.menuChoice = "review";
+                return "review";
             },
         },
         change: {
@@ -148,8 +140,8 @@ function listCmds() {
             long: tr("commands.longChange"),
             variations: ["alterar", "change", "editar", "edit", "modificar", "modify"],
             action: () => {
-                State.menuChoice = "change"
-                return "change"
+                State.menuChoice = "change";
+                return "change";
             },
         },
         history: {
@@ -157,8 +149,8 @@ function listCmds() {
             long: tr("commands.longHistory"),
             variations: ["historico", "history", "hist"],
             action: () => {
-                State.menuChoice = "history"
-                return "history"
+                State.menuChoice = "history";
+                return "history";
             },
         },
         version: {
@@ -166,8 +158,8 @@ function listCmds() {
             long: tr("commands.longVersion"),
             variations: ["versao", "version", "vers", "v"],
             action: () => {
-                notify(`==================================================\n${tr("commands.title")} — ${VERSION}\n${tr("commands.copyright")} © Adriano Lima 2025 — 2026\n==================================================`)
-                return null
+                notify(`==================================================\n${tr("commands.title")} — ${VERSION}\n${tr("commands.copyright")} © Adriano Lima 2025 — 2026\n==================================================`);
+                return null;
             },
         },
         unicode: { short: tr("commands.shortUnicode"), long: tr("commands.longUnicode"), variations: ["unicode", "uni"], action: arg => change("showUnicode", arg ? "on" : "off") },
@@ -178,25 +170,24 @@ function listCmds() {
             long: tr("commands.longTextCase"),
             variations: ["textcase", "capitalizacao", "capitalizar", "capitalize", "capitalized", "capitalise", "capitalised", "cap", "maiuscula", "maiusculas", "uppercase", "upper", "minuscula", "minusculas", "lowercase", "lower", "normal", "default"],
             action: (_, [, argRaw]) => {
-                const TEXT_CASES = ["capitalized", "uppercase", "lowercase", "default"],
-                    hasArg = argRaw.trim() !== "",
-                    target = hasArg ? noAccents(lowercase(argRaw)) : "",
-                    TEXT_CASE_ALIASES = {
-                        capitalized: ["capitalizado", "capitalizada", "capitalize", "capitalized", "capitalise", "capitalised", "cap"],
-                        uppercase: ["maiuscula", "maiusculas", "uppercase", "upper"],
-                        lowercase: ["minuscula", "minusculas", "lowercase", "lower"],
-                        default: ["normal", "default"],
-                    }
-                let value
+                const TEXT_CASES = ["capitalized", "uppercase", "lowercase", "default"], hasArg = argRaw.trim() !== "", target = hasArg ? noAccents(lowercase(argRaw)) : "", TEXT_CASE_ALIASES = {
+                    capitalized: ["capitalizado", "capitalizada", "capitalize", "capitalized", "capitalise", "capitalised", "cap"],
+                    uppercase: ["maiuscula", "maiusculas", "uppercase", "upper"],
+                    lowercase: ["minuscula", "minusculas", "lowercase", "lower"],
+                    default: ["normal", "default"],
+                };
+                let value;
                 if (hasArg) {
-                    const match = Object.entries(TEXT_CASE_ALIASES).find(([, aliases]) => aliases.includes(target))?.[0]
+                    const match = Object.entries(TEXT_CASE_ALIASES).find(([, aliases]) => aliases.includes(target))?.[0];
                     if (match == null) {
-                        notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: target }), type: "error" })
-                        return null
+                        notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: target }), type: "error" });
+                        return null;
                     }
-                    value = match
-                } else value = TEXT_CASES[(TEXT_CASES.indexOf(Config.textCase) + 1) % TEXT_CASES.length] ?? "default"
-                return change("textCase", value)
+                    value = match;
+                }
+                else
+                    value = TEXT_CASES[(TEXT_CASES.indexOf(Config.textCase) + 1) % TEXT_CASES.length] ?? "default";
+                return change("textCase", value);
             },
         },
         separator: { short: tr("commands.shortSeparator"), long: tr("commands.longSeparator"), variations: ["decimal", "separador", "separator", "sep"], action: arg => change("decimalSeparator", arg ? "comma" : "dot") },
@@ -215,19 +206,19 @@ function listCmds() {
             long: tr("commands.longDegrees"),
             variations: ["graus", "grau", "degrees", "degree", "deg", "rad", "radianos", "radians"],
             action: (_, [, argRaw]) => {
-                const hasArg = argRaw.trim() !== "",
-                    target = hasArg ? noAccents(lowercase(argRaw)) : "",
-                    DEGREES_ALIASES = { deg: ["graus", "grau", "degrees", "degree", "deg"], rad: ["radianos", "radians", "rad"] }
-                let value
+                const hasArg = argRaw.trim() !== "", target = hasArg ? noAccents(lowercase(argRaw)) : "", DEGREES_ALIASES = { deg: ["graus", "grau", "degrees", "degree", "deg"], rad: ["radianos", "radians", "rad"] };
+                let value;
                 if (hasArg) {
-                    const match = Object.entries(DEGREES_ALIASES).find(([, aliases]) => aliases.includes(target))?.[0]
+                    const match = Object.entries(DEGREES_ALIASES).find(([, aliases]) => aliases.includes(target))?.[0];
                     if (match == null) {
-                        notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: target }), type: "error" })
-                        return null
+                        notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: target }), type: "error" });
+                        return null;
                     }
-                    value = match
-                } else value = Config.angleUnit === "deg" ? "rad" : "deg"
-                return change("angleUnit", value)
+                    value = match;
+                }
+                else
+                    value = Config.angleUnit === "deg" ? "rad" : "deg";
+                return change("angleUnit", value);
             },
         },
         language: {
@@ -236,23 +227,21 @@ function listCmds() {
             variations: ["lingua", "language", "lang", "idioma", "pt", "pt-br", "pt-pt", "portugues", "portuguese", "brasileiro", "brazilian", "br", "ptbr", "en", "en-us", "en-gb", "ingles", "english", "anglo", "eua", "usa", "uk", "es", "es-es", "es-419", "espanol"],
             action: (_, [cmd, argRaw]) => {
                 const LANGUAGE_ALIASES = {
-                        "pt-br": ["br", "pt-br", "ptbr", "brasileiro", "brazilian", "brasil", "brazil"],
-                        "pt-pt": ["pt", "pt-pt", "ptpt", "portugues", "portuguese", "portugal"],
-                        "en-us": ["en", "en-us", "enus", "americano", "american", "eua", "usa"],
-                        "en-gb": ["gb", "en-gb", "engb", "ingles", "english", "britanico", "british", "uk"],
-                        "es-419": ["es", "es-419", "espanol"],
-                        "es-es": ["es-es"],
-                    },
-                    hasArg = argRaw.trim() !== "",
-                    target = noAccents(lowercase(hasArg ? argRaw : cmd)),
-                    entries = Object.entries(LANGUAGE_ALIASES),
-                    match = entries.find(([, aliases]) => aliases.includes(target))?.[0]
+                    "pt-br": ["br", "pt-br", "ptbr", "brasileiro", "brazilian", "brasil", "brazil"],
+                    "pt-pt": ["pt", "pt-pt", "ptpt", "portugues", "portuguese", "portugal"],
+                    "en-us": ["en", "en-us", "enus", "americano", "american", "eua", "usa"],
+                    "en-gb": ["gb", "en-gb", "engb", "ingles", "english", "britanico", "british", "uk"],
+                    "es-419": ["es", "es-419", "espanol"],
+                    "es-es": ["es-es"],
+                }, hasArg = argRaw.trim() !== "", target = noAccents(lowercase(hasArg ? argRaw : cmd)), entries = Object.entries(LANGUAGE_ALIASES), match = entries.find(([, aliases]) => aliases.includes(target))?.[0];
                 if (match != null) {
-                    if (changeLanguage(match) === "same") notify(tr("commands.languageAlready"), { type: "warning" })
-                    return null
+                    if (changeLanguage(match) === "same")
+                        notify(tr("commands.languageAlready"), { type: "warning" });
+                    return null;
                 }
-                if (hasArg) notify(tr("commands.invalidLanguage"), { explanation: `"${target}" ${tr("commands.noteInvalidLanguage")}`, type: "error" })
-                return null
+                if (hasArg)
+                    notify(tr("commands.invalidLanguage"), { explanation: `"${target}" ${tr("commands.noteInvalidLanguage")}`, type: "error" });
+                return null;
             },
         },
         exit: {
@@ -260,95 +249,96 @@ function listCmds() {
             long: tr("commands.longExit"),
             variations: ["sair", "exit", "//", "ex", "out", "quit", "q", "fechar", "close"],
             action: () => {
-                State.menuChoice = "exit"
-                return "exit"
+                State.menuChoice = "exit";
+                return "exit";
             },
         },
-    }
+    };
 }
 function levenshteinDistance(left, right, limit) {
-    const cols = left.length + 1
-    let previousRow = Array.from({ length: cols }, (_, col) => col),
-        currentRow = Array(cols).fill(0)
+    const cols = left.length + 1;
+    let previousRow = Array.from({ length: cols }, (_, col) => col), currentRow = Array(cols).fill(0);
     for (let row = 1; row <= right.length; row++) {
-        currentRow[0] = row
-        let rowMin = row
+        currentRow[0] = row;
+        let rowMin = row;
         for (let col = 1; col < cols; col++) {
-            const cost = left[col - 1] === right[row - 1] ? 0 : 1,
-                deletion = previousRow[col] + 1,
-                insertion = currentRow[col - 1] + 1,
-                substitution = previousRow[col - 1] + cost
-            currentRow[col] = Math.min(deletion, insertion, substitution)
-            rowMin = Math.min(rowMin, currentRow[col])
+            const cost = left[col - 1] === right[row - 1] ? 0 : 1, deletion = previousRow[col] + 1, insertion = currentRow[col - 1] + 1, substitution = previousRow[col - 1] + cost;
+            currentRow[col] = Math.min(deletion, insertion, substitution);
+            rowMin = Math.min(rowMin, currentRow[col]);
         }
-        if (rowMin > limit) return limit + 1
-        ;[previousRow, currentRow] = [currentRow, previousRow]
+        if (rowMin > limit)
+            return limit + 1;
+        [previousRow, currentRow] = [currentRow, previousRow];
     }
-    return previousRow[cols - 1]
+    return previousRow[cols - 1];
 }
 function suggestCmd(cmd) {
-    const cmds = listCmds()
-    let best = "",
-        lowerDist = 4
+    const cmds = listCmds();
+    let best = "", lowerDist = 4;
     for (const [key, command] of Object.entries(cmds)) {
         for (const candidate of [key, ...command.variations]) {
-            if (Math.abs(cmd.length - candidate.length) > lowerDist) continue
-            if (cmd === candidate) return { best: key, distance: 0 }
-            const distance = levenshteinDistance(cmd, candidate, lowerDist)
-            if (distance >= lowerDist) continue
-            lowerDist = distance
-            best = key
-            if (distance === 0) return { best, distance }
+            if (Math.abs(cmd.length - candidate.length) > lowerDist)
+                continue;
+            if (cmd === candidate)
+                return { best: key, distance: 0 };
+            const distance = levenshteinDistance(cmd, candidate, lowerDist);
+            if (distance >= lowerDist)
+                continue;
+            lowerDist = distance;
+            best = key;
+            if (distance === 0)
+                return { best, distance };
         }
     }
-    return best === "" ? null : { best, distance: lowerDist }
+    return best === "" ? null : { best, distance: lowerDist };
 }
 export function processCmd(raw) {
-    let input = raw
+    let input = raw;
     for (;;) {
-        if (input.length === 0 || !input.startsWith("/")) return null
-        const [cmd = "", argRaw = ""] = noAccents(input.slice(1).toLowerCase()).split(" ", 2),
-            cmds = listCmds(),
-            canonical = resolveCmd(cmd, cmds)
-        let arg = null
-        if (["true", "1", "sim", "yes", "on", "enable", "enabled", "ligar", "ativar"].includes(argRaw)) arg = true
-        else if (["false", "0", "nao", "no", "off", "disable", "disabled", "desligar", "desativar"].includes(argRaw)) arg = false
+        if (input.length === 0 || !input.startsWith("/"))
+            return null;
+        const [cmd = "", argRaw = ""] = noAccents(input.slice(1).toLowerCase()).split(" ", 2), cmds = listCmds(), canonical = resolveCmd(cmd, cmds);
+        let arg = null;
+        if (["true", "1", "sim", "yes", "on", "enable", "enabled", "ligar", "ativar"].includes(argRaw))
+            arg = true;
+        else if (["false", "0", "nao", "no", "off", "disable", "disabled", "desligar", "desativar"].includes(argRaw))
+            arg = false;
         if (canonical == null) {
-            const suggestion = suggestCmd(cmd)
+            const suggestion = suggestCmd(cmd);
             if (suggestion != null) {
-                const { best, distance } = suggestion
+                const { best, distance } = suggestion;
                 if (notify(tr("commands.commandSuggestion", { suggestion: best }), { explanation: tr("commands.commandSuggestionExp", { command: cmd, suggestion: best, distance }), type: "confirm" })) {
-                    input = `/${best} ${argRaw}`
-                    continue
+                    input = `/${best} ${argRaw}`;
+                    continue;
                 }
-                return null
+                return null;
             }
-            notify(tr("commands.invalidCommand"), { explanation: tr("commands.invalidCommandExp", { command: cmd }), type: "error" })
-            return null
+            notify(tr("commands.invalidCommand"), { explanation: tr("commands.invalidCommandExp", { command: cmd }), type: "error" });
+            return null;
         }
-        return cmds[canonical]?.action(arg, [cmd, argRaw]) ?? null
+        return cmds[canonical]?.action(arg, [cmd, argRaw]) ?? null;
     }
 }
 function resolveCmd(specific, cmds) {
-    if (specific.trim() === "") return null
-    const found = Object.entries(cmds).find(([, cmd]) => cmd.variations.includes(specific))
-    return found?.[0] ?? (Object.hasOwn(cmds, specific) ? specific : null)
+    if (specific.trim() === "")
+        return null;
+    const found = Object.entries(cmds).find(([, cmd]) => cmd.variations.includes(specific));
+    return found?.[0] ?? (Object.hasOwn(cmds, specific) ? specific : null);
 }
 function shortcuts(specific) {
     if (specific.trim() === "") {
-        notify(tr("commands.commandNotProvided"), { explanation: tr("commands.usageShortcuts"), type: "error" })
-        return null
+        notify(tr("commands.commandNotProvided"), { explanation: tr("commands.usageShortcuts"), type: "error" });
+        return null;
     }
-    const cmds = listCmds(),
-        canonical = resolveCmd(specific, cmds)
+    const cmds = listCmds(), canonical = resolveCmd(specific, cmds);
     if (canonical == null) {
-        notify(tr("commands.unknownCommand"), { explanation: tr("commands.invalidCommandExp", { command: specific }), type: "error" })
-        return null
+        notify(tr("commands.unknownCommand"), { explanation: tr("commands.invalidCommandExp", { command: specific }), type: "error" });
+        return null;
     }
-    const variations = cmds[canonical].variations.map(v => `/${v}`).join("\n")
-    notify(`${tr("commands.commandVariations")}“/${canonical}”:\n${variations}`)
-    return null
+    const variations = cmds[canonical].variations.map(v => `/${v}`).join("\n");
+    notify(`${tr("commands.commandVariations")}“/${canonical}”:\n${variations}`);
+    return null;
 }
 export function isValidCommand(value) {
-    return typeof value === "string" && ["config", "exit", "start", "review", "history", "change"].includes(value)
+    return typeof value === "string" && ["config", "exit", "start", "review", "history", "change"].includes(value);
 }
