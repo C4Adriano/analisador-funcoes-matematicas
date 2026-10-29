@@ -221,7 +221,7 @@ const OPERATIONS: OperationTable = {
     }
 
 export function operate(operator: Operator, left: Quantity, right: Quantity): QuantityResult {
-    const handler: Handler | null = (OPERATIONS[operator][left.kind]?.[right.kind] as Handler | undefined) ?? null
+    const handler: Handler | null = (OPERATIONS[operator][left.kind]?.[right.kind] as Handler | null) ?? null
     if (handler == null) return { kind: "invalid", reason: "incompatible", operator, left: left.kind, right: right.kind }
     const outcome: Outcome = handler(left, right)
     return outcome === "divZero" ? { kind: "invalid", reason: "divZero", operator, left: left.kind, right: right.kind } : { kind: "valid", value: outcome }

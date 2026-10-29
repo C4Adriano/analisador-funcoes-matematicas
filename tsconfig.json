@@ -21,6 +21,6 @@
     },
     "exclude": ["**/node_modules", "dist"],
     "files": ["src/global.d.ts"],
-    "include": ["**/*.ts", "pessoal/run.js", "pessoal/node-shim.js"],
+    "include": ["**/*.ts", "pessoal/run.js", "pessoal/node-shim.js", "pessoal/experimento.js"],
     "watchOptions": { "excludeDirectories": ["**/node_modules", "dist"] }
 }

@@ -1,90 +1,90 @@
 {
-    "name": "analisador",
-    "version": "7.2.1",
-    "description": "Mathematical Function Analyzer / Analisador de Funções Matemáticas",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/C4Adriano/analisador-funcoes-matematicas.git"
-    },
-    "keywords": [
-        "analisador",
-        "analyzer",
-        "function",
-        "função",
-        "i18n",
-        "matemática",
-        "math",
-        "mathematics",
-        "trigonometria",
-        "trigonometry",
-        "typescript"
+  "name": "analisador",
+  "version": "7.2.3",
+  "description": "Mathematical Function Analyzer / Analisador de Funções Matemáticas",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/C4Adriano/analisador-funcoes-matematicas.git"
+  },
+  "keywords": [
+    "analisador",
+    "analyzer",
+    "function",
+    "função",
+    "i18n",
+    "matemática",
+    "math",
+    "mathematics",
+    "trigonometria",
+    "trigonometry",
+    "typescript"
+  ],
+  "author": "Adriano Lima",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/C4Adriano/analisador-funcoes-matematicas/issues"
+  },
+  "homepage": "https://github.com/C4Adriano/analisador-funcoes-matematicas#readme",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "build:css": "sass src/CSS/style.scss dist/CSS/style.css --no-source-map",
+    "fix": "npm run format && npm run lint:fix && npm run build",
+    "fix:all": "npm run fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "i18n": "python ./src/Lang/i18n/sync_i18n.py",
+    "lint": "eslint . --cache --cache-location .eslintcache",
+    "lint:all": "npm run lint && npm run lint:html",
+    "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
+    "lint:html": "html-validate \"index.html\"",
+    "prepare": "husky",
+    "typecheck": "tsc",
+    "watch": "tsc -p tsconfig.build.json --watch",
+    "watch:css": "sass src/CSS/style.scss dist/CSS/style.css --no-source-map --watch"
+  },
+  "lint-staged": {
+    "**/*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
     ],
-    "author": "Adriano Lima",
-    "license": "UNLICENSED",
-    "private": true,
-    "type": "module",
-    "bugs": {
-        "url": "https://github.com/C4Adriano/analisador-funcoes-matematicas/issues"
-    },
-    "homepage": "https://github.com/C4Adriano/analisador-funcoes-matematicas#readme",
-    "scripts": {
-        "build": "tsc -p tsconfig.build.json",
-        "build:css": "sass src/CSS/style.scss dist/CSS/style.css --no-source-map",
-        "fix": "npm run format && npm run lint:fix && npm run build",
-        "fix:all": "npm run fix",
-        "format": "prettier --write .",
-        "format:check": "prettier --check .",
-        "i18n": "python ./src/Lang/i18n/sync_i18n.py",
-        "lint": "eslint . --cache --cache-location .eslintcache",
-        "lint:all": "npm run lint && npm run lint:html",
-        "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
-        "lint:html": "html-validate \"index.html\"",
-        "prepare": "husky",
-        "typecheck": "tsc",
-        "watch": "tsc -p tsconfig.build.json --watch",
-        "watch:css": "sass src/CSS/style.scss dist/CSS/style.css --no-source-map --watch"
-    },
-    "lint-staged": {
-        "**/*.{js,ts}": [
-            "eslint --fix",
-            "prettier --write"
-        ],
-        "**/*.{json,jsonc,json5,html,css,scss,md,yaml,yml}": [
-            "prettier --write"
-        ]
-    },
-    "devDependencies": {
-        "@eslint-community/eslint-plugin-eslint-comments": "^4.8.1",
-        "@eslint/js": "^10.0.1",
-        "@eslint/json": "^2.1.0",
-        "@types/node": "^26.6.5",
-        "@typescript/native": "npm:typescript@^7.0.2",
-        "esbuild": "^0.28.2",
-        "eslint": "^10.12.0",
-        "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-jsdoc": "^65.1.0",
-        "eslint-plugin-no-unsanitized": "^4.1.5",
-        "eslint-plugin-package-json": "^1.10.1",
-        "eslint-plugin-promise": "^7.3.0",
-        "eslint-plugin-regexp": "^3.3.1",
-        "eslint-plugin-security": "^4.2.0",
-        "eslint-plugin-sonarjs": "^4.2.2",
-        "eslint-plugin-unicorn": "^77.0.0",
-        "html-validate": "^11.16.2",
-        "husky": "^9.1.7",
-        "lint-staged": "^17.6.0",
-        "prettier": "^3.9.9",
-        "sass": "^1.105.1",
-        "tsx": "^4.23.15",
-        "typescript": "npm:@typescript/typescript6@^6.0.2",
-        "typescript-eslint": "^8.71.1"
-    },
-    "engines": {
-        "node": ">=24.0.0"
-    },
-    "packageManager": "npm@12.2.0",
-    "allowScripts": {
-        "@parcel/watcher@2.6.0": true,
-        "unrs-resolver@1.12.2": true
-    }
+    "**/*.{json,jsonc,json5,html,css,scss,md,yaml,yml}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.8.1",
+    "@eslint/js": "^10.0.1",
+    "@eslint/json": "^2.1.0",
+    "@types/node": "^26.6.5",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-jsdoc": "^65.1.0",
+    "eslint-plugin-no-unsanitized": "^4.1.5",
+    "eslint-plugin-package-json": "^1.10.1",
+    "eslint-plugin-promise": "^7.3.0",
+    "eslint-plugin-regexp": "^3.3.1",
+    "eslint-plugin-security": "^4.2.0",
+    "eslint-plugin-sonarjs": "^4.2.2",
+    "eslint-plugin-unicorn": "^77.0.0",
+    "html-validate": "^11.16.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.9",
+    "sass": "^1.105.1",
+    "tsx": "^4.23.15",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript-eslint": "^8.71.1"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "packageManager": "npm@12.2.0",
+  "allowScripts": {
+    "@parcel/watcher@2.6.0": true,
+    "unrs-resolver@1.12.2": true
+  }
 }

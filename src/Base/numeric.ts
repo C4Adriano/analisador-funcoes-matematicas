@@ -9,10 +9,10 @@ export function round(value: Raw | null, places: Places = Config.decimalPlaces):
     if (finite === ZERO) return ZERO
 
     let numberText = String(finite),
-        sign: "" | "-" = ""
+        sign: "positive" | "negative" = "positive"
 
     if (numberText.startsWith("-")) {
-        sign = "-"
+        sign = "negative"
         numberText = numberText.slice(1)
     }
 
@@ -43,12 +43,12 @@ export function round(value: Raw | null, places: Places = Config.decimalPlaces):
 
     let rounded = integer
 
-    if (sign === "-" ? remainder > half : remainder >= half) rounded++
+    if (sign === "negative" ? remainder > half : remainder >= half) rounded++
 
     if (rounded === 0n) return ZERO
 
     const result = Number(`${rounded}e-${places}`)
-    return ensureReal(sign === "-" ? -result : result)
+    return ensureReal(sign === "negative" ? -result : result)
 }
 
 export function add(left: Natural, right: Natural): Natural

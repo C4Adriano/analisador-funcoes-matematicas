@@ -3,6 +3,7 @@ name: Pages
 on:
     push:
         branches: [main]
+    workflow_dispatch:
 
 permissions:
     contents: read
@@ -14,16 +15,20 @@ jobs:
         runs-on: ubuntu-latest
         environment:
             name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
               with:
                   node-version: 24
+                  cache: npm
             - run: npm ci
             - run: npm run build
             - run: npm run build:css
-            - run: rsync -a --exclude=node_modules --exclude=.git --exclude=.github ./ _site/
+            - run: mkdir _site
+            - run: rsync -a --exclude=node_modules --exclude=.git --exclude=.github --exclude=_site ./ _site/
             - uses: actions/upload-pages-artifact@v3
               with:
                   path: _site
-            - uses: actions/deploy-pages@v4
+            - id: deployment
+              uses: actions/deploy-pages@v4
