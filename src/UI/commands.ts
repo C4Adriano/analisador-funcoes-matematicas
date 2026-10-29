@@ -1,118 +1,122 @@
-import { Config, isConfigKey, type ConfigKey, type ConfigType } from "../Core/config.js"
-import { State } from "../Core/state.js"
-import { changeLanguage, tr } from "../Lang/i18n.js"
+import { Config, type ConfigKey, type ConfigType, isConfigKey } from "../Base/config.js"
+import { isZero, num, toNatural, ZERO } from "../Base/quantity.js"
+import { tr } from "../Lang/i18n.js"
 import { configItem, lowercase, noAccents } from "../Lang/writing.js"
+import { State } from "../Math/state.js"
 import { VERSION } from "../version.js"
-import { notify } from "./display.js"
+import { confirmLanguageChange, isActionConfirmed, notify } from "./display.js"
 import { rangeOptions } from "./ui.js"
 
-function change<K extends ConfigKey>(name: K, value?: ConfigType[K] | null): null {
+type CommandAction = (argument: boolean | null, parts: [cmd: string, raw: string]) => CommandNames | Promise<CommandNames | null> | Promise<void>
+
+function toggle(argument: boolean | null, key: ConfigKey): Toggle
+function toggle<const Values extends readonly [string, string]>(argument: boolean | null, key: ConfigKey, values: Values): Values[Real]
+function toggle(argument: boolean | null, key: ConfigKey, values: readonly [string, string] = ["on", "off"]): string {
+    const [first, second] = values
+    return argument === null ? (Config[key] === first ? second : first) : argument ? first : second
+}
+
+async function change<K extends ConfigKey>(name: K, value?: ConfigType[K] | null): Promise<void> {
     const currentValue = Config[name]
 
     if (value == null && typeof currentValue === "boolean") Object.assign(Config, { [name]: !currentValue })
     else if (value != null && typeof currentValue === typeof value) Object.assign(Config, { [name]: value })
-    else return null
+    else return
 
     Config.save()
-    notify(configItem(`${tr("commands.changed")} "${name}"`, name), { type: "warning" })
-
-    return null
+    await notify(configItem(`${tr("commands.changed")} "${name}"`, name), { type: "warning" })
 }
 
-function help(specific: string): null {
+async function help(specific: string): Promise<void> {
     const cmds = listCmds()
 
     if (specific.trim() !== "") {
-        const canonical = resolveCmd(specific, cmds)
+        const canonical = resolveCommand(specific, cmds)
 
         if (canonical == null) {
-            notify(tr("commands.unknownCommand"), { explanation: tr("commands.invalidCommandExp", { command: specific }), type: "error" })
-            return null
+            await notify(tr("commands.unknownCommand"), { explanation: tr("commands.invalidCommandExp", { command: specific }), type: "error" })
+            return
         }
 
-        const cmd = cmds[canonical]
-        if (cmd == null) return null
+        const command = cmds[canonical]
+        if (command == null) return
 
-        const shortList = [canonical, ...cmd.variations].join(", ")
-        notify(`“/${canonical}” — ${cmd.long}\n${tr("commands.variations")}${shortList}`)
-        return null
+        const shortList = [canonical, ...command.variations].join(", ")
+        await notify(`“/${canonical}” — ${command.long}\n${tr("commands.variations")}${shortList}`)
+        return
     }
 
     const key = Object.keys(cmds),
         total = Math.ceil(key.length / 5)
     let page = 1,
-        answer: number | CommandNames
+        answer: Raw | CommandNames
 
     do {
         page = Math.min(Math.max(page, 1), total)
 
-        answer = rangeOptions(
+        answer = await rangeOptions(
             `=== ${tr("commands.help")} ===\n${tr("commands.page")} ${page}/${total}${key
                 .slice((page - 1) * 5, Math.min(page * 5, key.length))
                 .map(name => `\n/${name} — ${cmds[name]!.short}\n ↳ ${[name, ...cmds[name]!.variations].join(", ")}`)
                 .join("")}\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`,
-            { max: 9, commands: true },
+            { max: 9 as Integer, commands: true },
         )
 
         page += answer === 8 ? -1 : answer === 9 ? 1 : 0
     } while (answer !== 0)
-
-    return null
 }
 
-function listCmds(): Record<string, { short: string; long: string; variations: List<string>; action: (arg: boolean | null, parts: [cmd: string, argRaw: string]) => CommandNames | null }> {
+function listCmds(): Record<string, { short: string; long: string; variations: List<string>; action: CommandAction }> {
     return {
-        help: { short: tr("commands.shortHelp"), long: tr("commands.longHelp"), variations: ["ajuda", "help", "a", "h", "cmd", "cmds", "c", "comandos", "?"], action: (_, [, argRaw]) => help(argRaw) },
+        help: { short: tr("commands.shortHelp"), long: tr("commands.longHelp"), variations: ["ajuda", "help", "a", "h", "cmd", "cmds", "c", "comandos", "?"], action: async (_, [, raw]) => help(raw) },
         search: {
             short: tr("commands.shortSearch"),
             long: tr("commands.longSearch"),
             variations: ["pesquisa", "pesquisar", "search", "buscar", "find", "procurar", "seek", "s"],
-            action: (_, [, argRaw]): null => {
-                if (argRaw.trim() === "") {
-                    notify(tr("commands.emptySearch"), { explanation: tr("commands.usageSearch"), type: "error" })
-                    return null
+            action: async (_, [, raw]): Promise<void> => {
+                if (raw.trim() === "") {
+                    await notify(tr("commands.emptySearch"), { explanation: tr("commands.usageSearch"), type: "error" })
+                    return
                 }
 
-                const term = noAccents(lowercase(argRaw)),
+                const term = noAccents(lowercase(raw)),
                     cmds = listCmds(),
                     results = Object.keys(cmds).filter(key => {
-                        const cmd = cmds[key]
-                        return cmd != null && [key, cmd.short, cmd.long, ...cmd.variations].some(candidate => noAccents(lowercase(candidate)).includes(term))
+                        const command = cmds[key]
+                        return command != null && [key, command.short, command.long, ...command.variations].some(candidate => noAccents(lowercase(candidate)).includes(term))
                     })
 
                 if (results.length === 0) {
-                    notify(`${tr("commands.noCommand")}"${term}"`, { type: "warning" })
-                    return null
+                    await notify(`${tr("commands.noCommand")}"${term}"`, { type: "warning" })
+                    return
                 }
 
                 const total = Math.ceil(results.length / 5)
                 let page = 1,
-                    answer: number | CommandNames
+                    answer: Raw | CommandNames
 
                 do {
                     page = Math.min(Math.max(page, 1), total)
 
-                    answer = rangeOptions(
+                    answer = await rangeOptions(
                         `=== ${tr("commands.search")}"${term}" ===\n${results.length} ${tr("commands.resultsSearch")}${page}/${total}\n${results
                             .slice((page - 1) * 5, Math.min(page * 5, results.length))
                             .map(name => `\n/${name} — ${cmds[name]!.short}`)
                             .join("")}\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`,
-                        { max: 9, commands: true },
+                        { max: 9 as Integer, commands: true },
                     )
 
                     page += answer === 8 ? -1 : answer === 9 ? 1 : 0
                 } while (answer !== 0)
-
-                return null
             },
         },
-        shortcuts: { short: tr("commands.shortShortcuts"), long: tr("commands.longShortcuts"), variations: ["atalhos", "shortcuts", "variacoes", "variacao", "aliases", "alias", "sc"], action: (_, [, argRaw]) => shortcuts(argRaw) },
+        shortcuts: { short: tr("commands.shortShortcuts"), long: tr("commands.longShortcuts"), variations: ["atalhos", "shortcuts", "variacoes", "variacao", "aliases", "alias", "sc"], action: async (_, [, raw]) => shortcuts(raw) },
         about: {
             short: tr("commands.shortAbout"),
             long: tr("commands.longAbout"),
             variations: ["sobre", "about", "info", "informacoes", "informacao", "projeto"],
-            action: (): null => {
-                notify(
+            action: async (): Promise<void> => {
+                await notify(
                     `==================================================\n` +
                         `${tr("commands.title")} — ${VERSION}\n` +
                         `${tr("commands.author")}Adriano Lima\n` +
@@ -120,22 +124,21 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
                         `${tr("commands.copyright")} © Adriano Lima 2025 — 2026\n` +
                         `==================================================`,
                 )
-                return null
             },
         },
         config: {
             short: tr("commands.shortConfig"),
             long: tr("commands.longConfig"),
             variations: ["config", "configuracoes", "conf", "settings", "cfg"],
-            action: (arg, [, argRaw]): "config" | null => {
-                if (argRaw.trim() === "") {
+            action: async (argument, [, raw]): Promise<"config" | null> => {
+                if (raw.trim() === "") {
                     State.menuChoice = "config"
                     return "config"
                 }
 
-                if (isConfigKey(argRaw)) return change(argRaw, arg ? "on" : "off")
+                if (isConfigKey(raw)) await change(raw, toggle(argument, raw))
+                else await notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: raw }), type: "error" })
 
-                notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: argRaw }), type: "error" })
                 return null
             },
         },
@@ -143,10 +146,9 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
             short: tr("commands.shortReset"),
             long: tr("commands.longReset"),
             variations: ["resetar", "reset", "restaurar", "restore"],
-            action: (): null => {
+            action: async (): Promise<void> => {
                 Config.reset()
-                notify(tr("commands.resetConfirm"), { type: "warning" })
-                return null
+                await notify(tr("commands.resetConfirm"), { type: "warning" })
             },
         },
         start: {
@@ -189,22 +191,21 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
             short: tr("commands.shortVersion"),
             long: tr("commands.longVersion"),
             variations: ["versao", "version", "vers", "v"],
-            action: (): null => {
-                notify(`==================================================\n${tr("commands.title")} — ${VERSION}\n${tr("commands.copyright")} © Adriano Lima 2025 — 2026\n==================================================`)
-                return null
+            action: async (): Promise<void> => {
+                await notify(`==================================================\n${tr("commands.title")} — ${VERSION}\n${tr("commands.copyright")} © Adriano Lima 2025 — 2026\n==================================================`)
             },
         },
-        unicode: { short: tr("commands.shortUnicode"), long: tr("commands.longUnicode"), variations: ["unicode", "uni"], action: arg => change("showUnicode", arg ? "on" : "off") },
-        accents: { short: tr("commands.shortAccents"), long: tr("commands.longAccents"), variations: ["acentos", "accents", "acento", "accent"], action: arg => change("showAccents", arg ? "on" : "off") },
-        explain: { short: tr("commands.shortExplain"), long: tr("commands.longExplain"), variations: ["explicar", "explicacoes", "explain", "explicacao", "exp"], action: arg => change("showExplanations", arg ? "on" : "off") },
+        unicode: { short: tr("commands.shortUnicode"), long: tr("commands.longUnicode"), variations: ["unicode", "uni"], action: async argument => change("showUnicode", toggle(argument, "showUnicode")) },
+        accents: { short: tr("commands.shortAccents"), long: tr("commands.longAccents"), variations: ["acentos", "accents", "acento", "accent"], action: async argument => change("showAccents", toggle(argument, "showAccents")) },
+        explain: { short: tr("commands.shortExplain"), long: tr("commands.longExplain"), variations: ["explicar", "explicacoes", "explain", "explicacao", "exp"], action: async argument => change("showExplanations", toggle(argument, "showExplanations")) },
         textcase: {
             short: tr("commands.shortTextCase"),
             long: tr("commands.longTextCase"),
             variations: ["textcase", "capitalizacao", "capitalizar", "capitalize", "capitalized", "capitalise", "capitalised", "cap", "maiuscula", "maiusculas", "uppercase", "upper", "minuscula", "minusculas", "lowercase", "lower", "normal", "default"],
-            action: (_, [, argRaw]): null => {
+            action: async (_, [, raw]): Promise<void> => {
                 const TEXT_CASES: TextCase[] = ["capitalized", "uppercase", "lowercase", "default"],
-                    hasArg = argRaw.trim() !== "",
-                    target = hasArg ? noAccents(lowercase(argRaw)) : "",
+                    hasArgument = raw.trim() !== "",
+                    target = hasArgument ? noAccents(lowercase(raw)) : "",
                     TEXT_CASE_ALIASES: Record<TextCase, List<string>> = {
                         capitalized: ["capitalizado", "capitalizada", "capitalize", "capitalized", "capitalise", "capitalised", "cap"],
                         uppercase: ["maiuscula", "maiusculas", "uppercase", "upper"],
@@ -213,60 +214,60 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
                     }
                 let value: TextCase
 
-                if (hasArg) {
+                if (hasArgument) {
                     const match = (Object.entries(TEXT_CASE_ALIASES) as [TextCase, List<string>][]).find(([, aliases]) => aliases.includes(target))?.[0]
 
                     if (match == null) {
-                        notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: target }), type: "error" })
-                        return null
+                        await notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: target }), type: "error" })
+                        return
                     }
 
                     value = match
                 } else value = TEXT_CASES[(TEXT_CASES.indexOf(Config.textCase) + 1) % TEXT_CASES.length] ?? "default"
 
-                return change("textCase", value)
+                await change("textCase", value)
             },
         },
-        separator: { short: tr("commands.shortSeparator"), long: tr("commands.longSeparator"), variations: ["decimal", "separador", "separator", "sep"], action: arg => change("decimalSeparator", arg ? "comma" : "dot") },
-        multiples: { short: tr("commands.shortMultiples"), long: tr("commands.longMultiples"), variations: ["multiplos", "multiplo", "multiples", "multi"], action: arg => change("implicitMulti", arg ? "on" : "off") },
-        confirm: { short: tr("commands.shortConfirm"), long: tr("commands.longConfirm"), variations: ["confirmacoes", "confirm", "confirmations", "confent", "confinp"], action: arg => change("inputConfirm", arg ? "on" : "off") },
-        confirmExit: { short: tr("commands.shortConfirmExit"), long: tr("commands.longConfirmExit"), variations: ["confirmarSaida", "confirmExit", "confirmarsaida", "confirmsaida", "confirmexit", "confsaida", "confexit"], action: arg => change("exitConfirm", arg ? "on" : "off") },
-        errors: { short: tr("commands.shortErrors"), long: tr("commands.longErrors"), variations: ["erros", "erro", "errors", "error", "err"], action: arg => change("showErrors", arg ? "on" : "off") },
-        function: {
-            short: tr("commands.shortFunction"),
-            long: tr("commands.longFunction"),
-            variations: ["funcao", "mostrarfuncao", "mostrarFuncao", "function", "showfunction", "showFunction", "func", "fn"],
-            action: arg => change("showFunction", arg == null ? (Config.showFunction === "off" ? "on" : "off") : arg ? "on" : "off"),
+        separator: { short: tr("commands.shortSeparator"), long: tr("commands.longSeparator"), variations: ["decimal", "separador", "separator", "sep"], action: async argument => change("decimalSeparator", toggle(argument, "decimalSeparator", ["comma", "dot"])) },
+        multiples: { short: tr("commands.shortMultiples"), long: tr("commands.longMultiples"), variations: ["multiplos", "multiplo", "multiples", "multi"], action: async argument => change("implicitMulti", toggle(argument, "implicitMulti")) },
+        confirm: { short: tr("commands.shortConfirm"), long: tr("commands.longConfirm"), variations: ["confirmacoes", "confirm", "confirmations", "confent", "confinp"], action: async argument => change("inputConfirm", toggle(argument, "inputConfirm")) },
+        confirmExit: {
+            short: tr("commands.shortConfirmExit"),
+            long: tr("commands.longConfirmExit"),
+            variations: ["confirmarSaida", "confirmExit", "confirmarsaida", "confirmsaida", "confirmexit", "confsaida", "confexit"],
+            action: async argument => change("exitConfirm", toggle(argument, "exitConfirm")),
         },
+        errors: { short: tr("commands.shortErrors"), long: tr("commands.longErrors"), variations: ["erros", "erro", "errors", "error", "err"], action: async argument => change("showErrors", toggle(argument, "showErrors")) },
+        function: { short: tr("commands.shortFunction"), long: tr("commands.longFunction"), variations: ["funcao", "mostrarfuncao", "mostrarFuncao", "function", "showfunction", "showFunction", "func", "fn"], action: async argument => change("showFunction", toggle(argument, "showFunction")) },
         degrees: {
             short: tr("commands.shortDegrees"),
             long: tr("commands.longDegrees"),
             variations: ["graus", "grau", "degrees", "degree", "deg", "rad", "radianos", "radians"],
-            action: (_, [, argRaw]): null => {
-                const hasArg = argRaw.trim() !== "",
-                    target = hasArg ? noAccents(lowercase(argRaw)) : "",
+            action: async (_, [, raw]): Promise<void> => {
+                const hasArgument = raw.trim() !== "",
+                    target = hasArgument ? noAccents(lowercase(raw)) : "",
                     DEGREES_ALIASES: Record<AngleUnit, List<string>> = { deg: ["graus", "grau", "degrees", "degree", "deg"], rad: ["radianos", "radians", "rad"] }
                 let value: AngleUnit
 
-                if (hasArg) {
+                if (hasArgument) {
                     const match = (Object.entries(DEGREES_ALIASES) as [AngleUnit, List<string>][]).find(([, aliases]) => aliases.includes(target))?.[0]
 
                     if (match == null) {
-                        notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: target }), type: "error" })
-                        return null
+                        await notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: target }), type: "error" })
+                        return
                     }
 
                     value = match
                 } else value = Config.angleUnit === "deg" ? "rad" : "deg"
 
-                return change("angleUnit", value)
+                await change("angleUnit", value)
             },
         },
         language: {
             short: tr("commands.shortLanguage"),
             long: tr("commands.longLanguage"),
             variations: ["lingua", "language", "lang", "idioma", "pt", "pt-br", "pt-pt", "portugues", "portuguese", "brasileiro", "brazilian", "br", "ptbr", "en", "en-us", "en-gb", "ingles", "english", "anglo", "eua", "usa", "uk", "es", "es-es", "es-419", "espanol"],
-            action: (_, [cmd, argRaw]): null => {
+            action: async (_, [command, raw]): Promise<void> => {
                 const LANGUAGE_ALIASES: Record<Language, List<string>> = {
                         "pt-br": ["br", "pt-br", "ptbr", "brasileiro", "brazilian", "brasil", "brazil"],
                         "pt-pt": ["pt", "pt-pt", "ptpt", "portugues", "portuguese", "portugal"],
@@ -275,19 +276,17 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
                         "es-419": ["es", "es-419", "espanol"],
                         "es-es": ["es-es"],
                     },
-                    hasArg = argRaw.trim() !== "",
-                    target = noAccents(lowercase(hasArg ? argRaw : cmd)),
+                    hasArgument = raw.trim() !== "",
+                    target = noAccents(lowercase(hasArgument ? raw : command)),
                     entries = Object.entries(LANGUAGE_ALIASES) as [Language, List<string>][],
                     match = entries.find(([, aliases]) => aliases.includes(target))?.[0]
 
                 if (match != null) {
-                    if (changeLanguage(match) === "same") notify(tr("commands.languageAlready"), { type: "warning" })
-                    return null
+                    if ((await confirmLanguageChange(match)) === "same") await notify(tr("commands.languageAlready"), { type: "warning" })
+                    return
                 }
 
-                if (hasArg) notify(tr("commands.invalidLanguage"), { explanation: `"${target}" ${tr("commands.noteInvalidLanguage")}`, type: "error" })
-
-                return null
+                if (hasArgument) await notify(tr("commands.invalidLanguage"), { explanation: `"${target}" ${tr("commands.noteInvalidLanguage")}`, type: "error" })
             },
         },
         exit: {
@@ -302,119 +301,119 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
     }
 }
 
-function levenshteinDistance(left: string, right: string, limit: number): number {
-    const cols = left.length + 1
+function levenshteinDistance(left: string, right: string, limit: Raw): Natural {
+    const cols: Raw = left.length + 1
 
-    let previousRow = Array.from({ length: cols }, (_, col) => col),
-        currentRow = Array(cols).fill(0)
+    let previousRow: Raw[] = Array.from({ length: cols }, (_, col) => col),
+        currentRow: Raw[] = Array.from({ length: cols }, () => 0)
 
     for (let row = 1; row <= right.length; row++) {
         currentRow[0] = row
-        let rowMin = row
+        let rowMin: Raw = row
 
         for (let col = 1; col < cols; col++) {
-            const cost = left[col - 1] === right[row - 1] ? 0 : 1,
-                deletion = previousRow[col]! + 1,
-                insertion = currentRow[col - 1]! + 1,
-                substitution = previousRow[col - 1]! + cost
+            const cost: Raw = left[col - 1] === right[row - 1] ? 0 : 1,
+                distance: Raw = Math.min(previousRow[col]! + 1, currentRow[col - 1]! + 1, previousRow[col - 1]! + cost)
 
-            currentRow[col] = Math.min(deletion, insertion, substitution)
-            rowMin = Math.min(rowMin, currentRow[col])
+            currentRow[col] = distance
+            rowMin = Math.min(rowMin, distance)
         }
 
-        if (rowMin > limit) return limit + 1
+        if (rowMin > limit) return toNatural(limit + 1)!
 
-        ;[previousRow, currentRow] = [currentRow, previousRow]
+        const nextRow = previousRow
+        previousRow = currentRow
+        currentRow = nextRow
     }
 
-    return previousRow[cols - 1]!
+    return toNatural(previousRow[cols - 1]!)!
 }
 
-function suggestCmd(cmd: string): { best: string; distance: number } | null {
+function suggestCommand(raw: string): { best: string; distance: Natural } | null {
     const cmds = listCmds()
     let best = "",
-        lowerDist = 4
+        lowerDistance: Natural = num(4)
 
     for (const [key, command] of Object.entries(cmds)) {
         for (const candidate of [key, ...command.variations]) {
-            if (Math.abs(cmd.length - candidate.length) > lowerDist) continue
-            if (cmd === candidate) return { best: key, distance: 0 }
+            if (Math.abs(raw.length - candidate.length) > lowerDistance) continue
+            if (raw === candidate) return { best: key, distance: ZERO }
 
-            const distance = levenshteinDistance(cmd, candidate, lowerDist)
-            if (distance >= lowerDist) continue
+            const distance = levenshteinDistance(raw, candidate, lowerDistance)
+            if (distance >= lowerDistance) continue
 
-            lowerDist = distance
+            lowerDistance = distance
             best = key
-            if (distance === 0) return { best, distance }
+            if (isZero(distance)) return { best, distance }
         }
     }
 
-    return best === "" ? null : { best, distance: lowerDist }
+    return best === "" ? null : { best, distance: lowerDistance }
 }
 
-export function processCmd(raw: string): CommandNames | null {
-    let input = raw
+export async function processCommand(text: string): Promise<CommandNames | null> {
+    let input = text
 
     for (;;) {
         if (input.length === 0 || !input.startsWith("/")) return null
 
-        const [cmd = "", argRaw = ""] = noAccents(input.slice(1).toLowerCase()).split(" ", 2),
+        const [command = "", raw = ""] = noAccents(input.slice(1).toLowerCase()).split(" ", 2),
             cmds = listCmds(),
-            canonical = resolveCmd(cmd, cmds)
+            canonical = resolveCommand(command, cmds)
 
-        let arg: boolean | null = null
+        let argument: boolean | null = null
 
-        if (["true", "1", "sim", "yes", "on", "enable", "enabled", "ligar", "ativar"].includes(argRaw)) arg = true
-        else if (["false", "0", "nao", "no", "off", "disable", "disabled", "desligar", "desativar"].includes(argRaw)) arg = false
+        if (["true", "1", "sim", "yes", "on", "enable", "enabled", "ligar", "ativar"].includes(raw)) argument = true
+        else if (["false", "0", "nao", "no", "off", "disable", "disabled", "desligar", "desativar"].includes(raw)) argument = false
 
         if (canonical == null) {
-            const suggestion = suggestCmd(cmd)
+            const suggestion = suggestCommand(command)
 
             if (suggestion != null) {
                 const { best, distance } = suggestion
 
-                if (notify(tr("commands.commandSuggestion", { suggestion: best }), { explanation: tr("commands.commandSuggestionExp", { command: cmd, suggestion: best, distance }), type: "confirm" })) {
-                    input = `/${best} ${argRaw}`
+                if (await isActionConfirmed(tr("commands.commandSuggestion", { suggestion: best }), { explanation: tr("commands.commandSuggestionExp", { command, suggestion: best, distance }) })) {
+                    input = `/${best} ${raw}`
                     continue
                 }
 
                 return null
             }
 
-            notify(tr("commands.invalidCommand"), { explanation: tr("commands.invalidCommandExp", { command: cmd }), type: "error" })
+            await notify(tr("commands.invalidCommand"), { explanation: tr("commands.invalidCommandExp", { command }), type: "error" })
             return null
         }
 
-        return cmds[canonical]?.action(arg, [cmd, argRaw]) ?? null
+        const result = await cmds[canonical]?.action(argument, [command, raw])
+        return typeof result === "string" ? result : null
     }
 }
 
-function resolveCmd(specific: string, cmds: ReturnType<typeof listCmds>): string | null {
+function resolveCommand(specific: string, cmds: ReturnType<typeof listCmds>): string | null {
     if (specific.trim() === "") return null
 
-    const found = Object.entries(cmds).find(([, cmd]) => cmd.variations.includes(specific))
+    const found = Object.entries(cmds).find(([, command]) => command.variations.includes(specific))
 
     return found?.[0] ?? (Object.hasOwn(cmds, specific) ? specific : null)
 }
 
-function shortcuts(specific: string): null {
+async function shortcuts(specific: string): Promise<void> {
     if (specific.trim() === "") {
-        notify(tr("commands.commandNotProvided"), { explanation: tr("commands.usageShortcuts"), type: "error" })
-        return null
+        await notify(tr("commands.commandNotProvided"), { explanation: tr("commands.usageShortcuts"), type: "error" })
+        return
     }
 
     const cmds = listCmds(),
-        canonical = resolveCmd(specific, cmds)
+        canonical = resolveCommand(specific, cmds)
 
     if (canonical == null) {
-        notify(tr("commands.unknownCommand"), { explanation: tr("commands.invalidCommandExp", { command: specific }), type: "error" })
-        return null
+        await notify(tr("commands.unknownCommand"), { explanation: tr("commands.invalidCommandExp", { command: specific }), type: "error" })
+        return
     }
 
     const variations = cmds[canonical]!.variations.map(v => `/${v}`).join("\n")
 
-    notify(`${tr("commands.commandVariations")}“/${canonical}”:\n${variations}`)
-    return null
+    await notify(`${tr("commands.commandVariations")}“/${canonical}”:\n${variations}`)
 }
 
 export function isValidCommand(value: unknown): value is CommandNames {

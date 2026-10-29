@@ -1,88 +1,116 @@
-import { Config } from "../Core/config.js"
+import { Config } from "../Base/config.js"
+import { INPUT_FAILED } from "../Base/consts.js"
+import { abs, add, divide, ln, log, max, min, negate, round, subtract } from "../Base/numeric.js"
+import { cos, ensureReal, isLogBase, isNegative, isNonNegative, isNonPositive, isNonZero, isPositive, isZero, num, ONE, PI, radians, sin, tan, toInteger, toReal, ZERO } from "../Base/quantity.js"
 import { tr } from "../Lang/i18n.js"
-import { decimalOptions } from "../Lang/writing.js"
-import { absoluteOptions, divisionOptions, lnOptions, logOptions, round } from "../Math/numeric.js"
+import { decimalOptions, formatReal } from "../Lang/writing.js"
+import { State } from "../Math/state.js"
 import { isValidCommand } from "../UI/commands.js"
 import { input, notify } from "../UI/display.js"
 import { rangeOptions, resolveFunction } from "../UI/ui.js"
-import { isFiniteNumber } from "./checks.js"
-import { State } from "./state.js"
 
 type EquationsReturn = "result" | "nonPoly" | "saved"
+type MenuAction = () => Promise<EquationsReturn> | Promise<void>
 type Sign = "<" | ">"
 
-function domain(belongs = "∈ ℝ", explanation: string = tr("analyze.functionTakeX")): undefined {
-    notify(`${tr("analyze.domain")} x ${belongs}`, { explanation })
+const TRIGONOMETRIC: Partial<Record<FunctionType, (angle: Radians) => Real>> = { sin, cos, tan }
+
+function fromUnit(value: Raw): Radians | null {
+    const converted: Real | null = toReal(Config.angleUnit === "deg" ? (value * PI) / 180 : value)
+    return converted == null ? null : radians(converted)
 }
 
-function range(belongs = "∈ ℝ", interval = "", explanation: string = tr("analyze.functionTakeY")): undefined {
-    notify(`${tr("analyze.range")} y ${belongs}`, { explanation: `${explanation} ${interval}` })
+function toUnit(value: Raw): Raw {
+    return Config.angleUnit === "deg" ? (value * 180) / PI : value
 }
 
-function xAxis(root = 0, explanation = "c", noHave: string = tr("analyze.noRoot")): undefined {
+function current(key: Variable): Real {
+    return State.current.toNumericCoefficients()[key]
+}
+
+async function domain(belongs = "∈ ℝ", explanation: string = tr("analyze.functionTakeX")): Promise<void> {
+    await notify(`${tr("analyze.domain")} x ${belongs}`, { explanation })
+}
+
+async function range(belongs = "∈ ℝ", interval = "", explanation: string = tr("analyze.functionTakeY")): Promise<void> {
+    await notify(`${tr("analyze.range")} y ${belongs}`, { explanation: `${explanation} ${interval}` })
+}
+
+async function xAxis(root: Real | null | "constant", explanation = "c", noHave: string = tr("analyze.noRoot")): Promise<void> {
     const intersection = tr("analyze.intersectionXAxis")
 
-    if (root === 0) explanation === "0" ? notify(`${intersection} ∃∞ x ∈ ℝ`, { explanation: "y = 0 ⇒ ∀ x ∈ ℝ" }) : notify(`${intersection} ∄! x ∈ ℝ`, { explanation: "y = c ∧ c ≠ 0 ⇒ ∄ x" })
-    else if (isFiniteNumber(root)) notify(`${intersection} (${decimalOptions(root)}, 0)`, { explanation: `${tr("analyze.rootPoint")} (${explanation}, 0)` })
-    else notify(`${intersection} ∄`, { explanation: noHave })
+    if (root === "constant") explanation === "0" ? await notify(`${intersection} ∃∞ x ∈ ℝ`, { explanation: "y = 0 ⇒ ∀ x ∈ ℝ" }) : await notify(`${intersection} ∄! x ∈ ℝ`, { explanation: "y = c ∧ c ≠ 0 ⇒ ∄ x" })
+    else if (root == null) await notify(`${intersection} ∄`, { explanation: noHave })
+    else await notify(`${intersection} (${decimalOptions(root)}, 0)`, { explanation: `${tr("analyze.rootPoint")} (${explanation}, 0)` })
 }
 
-function yAxis(point: number | "∄" = 0, func = "c", explanation = "c"): undefined {
-    notify(`${tr("analyze.intersectionYAxis")} ${point === "∄" ? "∄" : `(0, ${decimalOptions(point)})`}`, { explanation: `${tr("analyze.sinceY")} ${func} ${point === "∄" ? explanation : `⇒ (0, ${explanation})`}` })
+async function yAxis(point: Real | "∄" = ZERO, kind = "c", explanation = "c"): Promise<void> {
+    await notify(`${tr("analyze.intersectionYAxis")} ${point === "∄" ? "∄" : `(0, ${decimalOptions(point)})`}`, { explanation: `${tr("analyze.sinceY")} ${kind} ${point === "∄" ? explanation : `⇒ (0, ${explanation})`}` })
 }
 
-function resolveXValues({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}, funcType: FunctionType = "poly"): undefined {
-    const x = input("x = ", { placeholder: "0", type: "number" }),
-        message = `${tr("analyze.sinceX") + decimalOptions(x)}, y = `
+async function resolveXValues({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}, kind: FunctionType = "poly"): Promise<void> {
+    const x: Real | typeof INPUT_FAILED = await input("x = ", { placeholder: "0", type: "number" })
+    if (x === INPUT_FAILED) return
 
-    if (funcType === "poly") notify(`${message}${decimalOptions(a * x ** 2 + b * x + c)}`, { explanation: `y = ${a === 0 ? "" : "a · x² + "}${b === 0 ? "" : "b · x + "}c` })
-    else if (funcType === "exp") notify(`${message}${decimalOptions(b * a ** x + c)}`, { explanation: "y = b × aˣ + c" })
-    else if (funcType === "log") x > 0 ? notify(`${message}${decimalOptions(b * logOptions(x, a) + c)}`, { explanation: "y = b × logₐ(x) + c" }) : notify(`${message} ∄! y ∈ ℝ`, { explanation: "x ≤ 0 ⇒ logₐ(x) ∉ ℝ" })
-    else notify(`${message}${decimalOptions(b * (funcType === "sin" ? Math.sin(x) : funcType === "cos" ? Math.cos(x) : funcType === "tan" ? Math.tan(x) : 0) + c)}`, { explanation: `y = b × ${funcType}(x) + c` })
-}
+    const message = `${tr("analyze.sinceX") + decimalOptions(x)}, y = `
 
-function resolveYValues({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}, funcType: FunctionType = "poly"): undefined {
-    const y = input("y = ", { placeholder: "0", type: "number" }),
-        message = `${tr("analyze.sinceY2") + decimalOptions(y)},`
-
-    if (funcType === "poly")
-        if (a === 0 && b === 0) y === c ? notify(`${message} ∃∞ x ∈ ℝ`, { explanation: "y = c ⇒ ∀ x ∈ ℝ" }) : notify(`${message} ∄! x ∈ ℝ`, { explanation: "y ≠ c ⇒ ∄ x" })
-        else if (a === 0 && b !== 0) notify(`${message} x = ${decimalOptions(divisionOptions(y - c, b))}`, { explanation: "x = (y − c) / b" })
-        else {
-            const [Δ, r1, r2] = calculateDelta({ a, b, c: c - y }),
-                [x1, x2] = [decimalOptions(r1), decimalOptions(r2)]
-            showDelta(Δ, `${message} ∄! x ∈ ℝ`, `${message} x = ${x1}`, `${message} x₁ = ${x1}, x₂ = ${x2}`, true)
-        }
-    else if (funcType === "exp" || funcType === "log") {
-        const exponent = divisionOptions(y - c, b, { shouldRound: false })
-        if (funcType === "exp") exponent > 0 ? notify(`${message} x = ${decimalOptions(divisionOptions(lnOptions(exponent), lnOptions(a)))}`, { explanation: "x = ln((y − c) / b) / ln(a)" }) : notify(`${message} ∄! x ∈ ℝ`, { explanation: "(y − c) / b ≤ 0 ⇒ ∄ x ∈ ℝ" })
-        else notify(`${message} x = ${decimalOptions(a ** exponent)}`, { explanation: "x = a⁽⁽ʸ⁻ᶜ⁾⁄ᵇ⁾" })
-    } else notify(tr("analyze.notTrigonometric"), { explanation: tr("algebra.underConstruction") })
-}
-
-function resolveSign({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}, funcType: FunctionType = "poly"): undefined {
-    const coefs: NumericCoefficients = { a, b, c }
-    if (funcType === "poly") coefs.a === 0 && coefs.b === 0 ? signConstant(coefs) : coefs.a === 0 ? signAffine(coefs) : signQuadratic(coefs)
-    else if (funcType === "exp") signExponential(coefs)
-    else if (funcType === "log") signLogarithmic(coefs)
-    else signTrig()
-}
-
-function resolveEquations({ a1 = 0, b1 = 0, c1 = 0 } = {}, { a2 = 0, b2 = 0, c2 = 0 } = {}): undefined {
-    const [a, b, c] = [a1 - a2, b1 - b2, c1 - c2]
-
-    if (a === 0 && b === 0) c === 0 ? notify(tr("algebra.constantCoincide"), { explanation: tr("algebra.constantCoincideExp") }) : notify(tr("algebra.constantDistinct"), { explanation: tr("algebra.constantDistinctExp") })
-    else if (a === 0) notify(tr("algebra.oneRoot", { x: decimalOptions(divisionOptions(-c, b)) }), { explanation: "x = −c / b" })
+    if (kind === "poly") await notify(`${message}${formatReal(toReal(a * x ** 2 + b * x + c))}`, { explanation: `y = ${a === ZERO ? "" : "a · x² + "}${b === ZERO ? "" : "b · x + "}c` })
+    else if (kind === "exp") await notify(`${message}${formatReal(toReal(b * a ** x + c))}`, { explanation: "y = b × aˣ + c" })
+    else if (kind === "log") isPositive(x) && isLogBase(a) ? await notify(`${message}${formatReal(toReal(b * log(x, a) + c))}`, { explanation: "y = b × logₐ(x) + c" }) : await notify(`${message} ∄! y ∈ ℝ`, { explanation: "x ≤ 0 ⇒ logₐ(x) ∉ ℝ" })
     else {
-        const [Δ, r1, r2] = calculateDelta({ a, b, c }),
-            [x1, x2] = [decimalOptions(r1), decimalOptions(r2)]
-        showDelta(Δ, tr("algebra.quadraticDistinct"), tr("algebra.oneRoot", { x: x1 }), tr("algebra.twoRoots", { x1, x2 }))
+        const trig: ((angle: Radians) => Real) | null = TRIGONOMETRIC[kind] ?? null,
+            angle: Radians | null = fromUnit(a * x)
+
+        if (trig == null) await notify(tr("analyze.notTrigonometric"), { explanation: tr("algebra.underConstruction") })
+        else await notify(`${message}${formatReal(angle == null ? null : toReal(b * trig(angle) + c))}`, { explanation: `y = b × ${kind}(a · x) + c` })
     }
 }
 
-function saveEquations({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}, funcType: FunctionType = "poly"): EquationsReturn {
-    if (funcType !== "poly") {
-        notify(tr("analyze.equationsNonPolynomial"), { explanation: tr("algebra.underConstruction"), type: "warning" })
+async function resolveYValues({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}, kind: FunctionType = "poly"): Promise<void> {
+    const y: Real | typeof INPUT_FAILED = await input("y = ", { placeholder: "0", type: "number" })
+    if (y === INPUT_FAILED) return
+
+    const message = `${tr("analyze.sinceY2") + decimalOptions(y)},`
+
+    if (kind === "poly") {
+        if (isNonZero(a)) {
+            const [Δ, r1, r2] = calculateDelta({ a, b, c: subtract(c, y) }),
+                [x1, x2] = [formatReal(r1), formatReal(r2)]
+            await showDelta(Δ, `${message} ∄! x ∈ ℝ`, `${message} x = ${x1}`, `${message} x₁ = ${x1}, x₂ = ${x2}`, true)
+        } else if (isNonZero(b)) await notify(`${message} x = ${formatReal(round(divide(subtract(y, c), b)))}`, { explanation: "x = (y − c) / b" })
+        else y === c ? await notify(`${message} ∃∞ x ∈ ℝ`, { explanation: "y = c ⇒ ∀ x ∈ ℝ" }) : await notify(`${message} ∄! x ∈ ℝ`, { explanation: "y ≠ c ⇒ ∄ x" })
+    } else if (kind === "exp" || kind === "log") {
+        const exponent: Real | null = toReal(subtract(y, c) / b)
+        if (kind === "exp") exponent != null && isPositive(exponent) && isLogBase(a) ? await notify(`${message} x = ${formatReal(round(divide(ln(exponent), ln(a))))}`, { explanation: "x = ln((y − c) / b) / ln(a)" }) : await notify(`${message} ∄! x ∈ ℝ`, { explanation: "(y − c) / b ≤ 0 ⇒ ∄ x ∈ ℝ" })
+        else await notify(`${message} x = ${formatReal(exponent == null ? null : round(a ** exponent))}`, { explanation: "x = a⁽⁽ʸ⁻ᶜ⁾⁄ᵇ⁾" })
+    } else await notify(tr("analyze.notTrigonometric"), { explanation: tr("algebra.underConstruction") })
+}
+
+async function resolveSign({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}, kind: FunctionType = "poly"): Promise<void> {
+    const coefs: NumericCoefficients = { a, b, c }
+    if (kind === "poly") coefs.a === ZERO && coefs.b === ZERO ? await signConstant(coefs) : coefs.a === ZERO ? await signAffine(coefs) : await signQuadratic(coefs)
+    else if (kind === "exp") await signExponential(coefs)
+    else if (kind === "log") await signLogarithmic(coefs)
+    else await signTrig()
+}
+
+async function resolveEquations(first: NumericCoefficients, second: NumericCoefficients): Promise<void> {
+    const a: Real = subtract(first.a, second.a),
+        b: Real = subtract(first.b, second.b),
+        c: Real = subtract(first.c, second.c)
+
+    if (a === ZERO && b === ZERO) c === ZERO ? await notify(tr("algebra.constantCoincide"), { explanation: tr("algebra.constantCoincideExp") }) : await notify(tr("algebra.constantDistinct"), { explanation: tr("algebra.constantDistinctExp") })
+    else if (a === ZERO) await notify(tr("algebra.oneRoot", { x: formatReal(round(negate(c) / b)) }), { explanation: "x = −c / b" })
+    else {
+        const [Δ, r1, r2] = calculateDelta({ a, b, c }),
+            [x1, x2] = [formatReal(r1), formatReal(r2)]
+        await showDelta(Δ, `${tr("algebra.quadraticDistinct")}\n${complexRoots(a, b, Δ)}`, tr("algebra.oneRoot", { x: x1 }), tr("algebra.twoRoots", { x1, x2 }))
+    }
+}
+
+async function saveEquations({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}, kind: FunctionType = "poly"): Promise<EquationsReturn> {
+    if (kind !== "poly") {
+        await notify(tr("analyze.equationsNonPolynomial"), { explanation: tr("algebra.underConstruction"), type: "warning" })
         return "nonPoly"
     }
 
@@ -90,270 +118,286 @@ function saveEquations({ a = State.current.numericA, b = State.current.numericB,
         State.firstFunction = { a, b, c }
         State.askCoeffs = "on"
         State.loop = "on"
-        notify(`ƒ₁(x) ${tr("analyze.saved")}`, { explanation: tr("analyze.typeSecondFunction"), type: "warning" })
+        await notify(`ƒ₁(x) ${tr("analyze.saved")}`, { explanation: tr("analyze.typeSecondFunction"), type: "warning" })
         return "saved"
     }
 
-    const { a: a1, b: b1, c: c1 } = State.firstFunction
-    resolveEquations({ a1, b1, c1 }, { a2: a, b2: b, c2: c })
+    await resolveEquations(State.firstFunction, { a, b, c })
     State.firstFunction = null
     return "result"
 }
 
-function curve(a = 0, b = 0, polynomial = true): undefined {
-    if (!polynomial) (a < 1 && b < 0) || (a > 1 && b > 0) ? notify(tr("analyze.increasingUpper"), { explanation: "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)" }) : notify(tr("analyze.decreasing"), { explanation: "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)" })
-    else if (b !== 0) b > 0 ? notify(tr("analyze.increasingUpper"), { explanation: `${tr("analyze.pointsUpward")}b > 0` }) : notify(tr("analyze.decreasing"), { explanation: `${tr("analyze.pointsDownward")}b < 0` })
-    else if (a !== 0) a > 0 ? notify(tr("analyze.upwardConcavity"), { explanation: "a > 0" }) : notify(tr("analyze.downwardConcavity"), { explanation: "a < 0" })
+async function curve(a: Real = ZERO, b: Real = ZERO, type: "poly" | "exp" = "poly"): Promise<void> {
+    if (type === "exp") (a < ONE && b < ZERO) || (a > ONE && b > ZERO) ? await notify(tr("analyze.increasingUpper"), { explanation: "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)" }) : await notify(tr("analyze.decreasing"), { explanation: "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)" })
+    else if (isNonZero(b)) isPositive(b) ? await notify(tr("analyze.increasingUpper"), { explanation: `${tr("analyze.pointsUpward")}b > 0` }) : await notify(tr("analyze.decreasing"), { explanation: `${tr("analyze.pointsDownward")}b < 0` })
+    else if (isNonZero(a)) isPositive(a) ? await notify(tr("analyze.upwardConcavity"), { explanation: "a > 0" }) : await notify(tr("analyze.downwardConcavity"), { explanation: "a < 0" })
 }
 
-function calculateRoot({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}, funcType: FunctionType = "poly"): number {
-    if (funcType === "poly") return a === 0 && b !== 0 ? divisionOptions(-c, b) : NaN
+function calculateRoot({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}, kind: FunctionType = "poly"): Real | null {
+    if (kind === "poly") return isZero(a) ? round(negate(c) / b) : null
 
-    const exponent = divisionOptions(-c, b, { shouldRound: false })
-    return funcType === "exp" && exponent > 0 ? divisionOptions(lnOptions(exponent), lnOptions(a)) : funcType === "log" ? round(a ** exponent) : NaN
+    const exponent: Real | null = toReal(negate(c) / b)
+    if (exponent == null) return null
+    if (kind === "exp") return isPositive(exponent) && isLogBase(a) ? round(divide(ln(exponent), ln(a))) : null
+    return kind === "log" ? round(a ** exponent) : null
 }
 
-function showRoot(root = 0, explanation = "c", noHave = ""): undefined {
-    const found = isFiniteNumber(root)
-    notify(`${tr("analyze.realRoot")} ${found ? `x = ${decimalOptions(root)}` : "∄! x ∈ ℝ"}`, { explanation: found ? tr("analyze.theRootIs") + explanation : noHave })
+async function showRoot(root: Real | null, explanation = "c", noHave = ""): Promise<void> {
+    await notify(`${tr("analyze.realRoot")} ${root == null ? "∄! x ∈ ℝ" : `x = ${decimalOptions(root)}`}`, { explanation: root == null ? noHave : tr("analyze.theRootIs") + explanation })
 }
 
-function calculateDelta({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}): [Δ: number, r1: number, r2: number] {
-    const bSquared = b ** 2,
-        fourAC = 4 * a * c,
-        difference = bSquared - fourAC,
-        Δ = Math.abs(difference) <= 8 * Number.EPSILON * Math.max(bSquared, Math.abs(fourAC)) ? 0 : difference
-    if (Δ <= 0) return [Δ, Δ === 0 ? divisionOptions(-b, 2 * a) : NaN, NaN]
-
-    const sqrtDelta = Math.sqrt(Δ),
-        q = -0.5 * (b + (b >= 0 ? sqrtDelta : -sqrtDelta)),
-        raw1 = divisionOptions(q, a),
-        raw2 = divisionOptions(c, q)
-    return [Δ, Math.min(raw1, raw2), Math.max(raw1, raw2)]
+function complexRoots(a: Real, b: Real, Δ: Real): string {
+    if (isNonNegative(Δ)) return ""
+    const re: string = formatReal(round(negate(b) / (2 * a))),
+        im: string = formatReal(round(Math.sqrt(negate(Δ)) / (2 * Math.abs(a))))
+    return `x₁ = ${re} − ${im}i, x₂ = ${re} + ${im}i`
 }
 
-function showDelta(Δ = 0, lower = "", equal = "", higher = "", hasY = false): undefined {
-    const [message, suffix] = Δ < 0 ? [lower, "< 0 ⇒ x ∉ ℝ"] : Δ === 0 ? [equal, "= 0 ⇒ x = (−b) / (2 · a)"] : [higher, "> 0 ⇒ x₁, x₂ = (−b ± √Δ) / (2 · a)"]
-    notify(message, { explanation: `Δ = b² − 4 · a · ${hasY ? "(c − y)" : "c"} ⇒ Δ ${suffix}` })
+function calculateDelta({ a, b, c }: NumericCoefficients): [Δ: Real, r1: Real | null, r2: Real | null] {
+    const bSquared: Raw = b ** 2,
+        fourAC: Raw = 4 * a * c,
+        difference: Raw = bSquared - fourAC,
+        Δ: Real = ensureReal(Math.abs(difference) <= 8 * Number.EPSILON * Math.max(bSquared, Math.abs(fourAC)) ? 0 : difference)
+    if (isNonPositive(Δ)) return [Δ, isZero(Δ) ? round(negate(b) / (2 * a)) : null, null]
+
+    const sqrtDelta: Raw = Math.sqrt(Δ),
+        q: Raw = -0.5 * (b + (isNonNegative(b) ? sqrtDelta : -sqrtDelta)),
+        raw1: Real | null = round(q / a),
+        raw2: Real | null = round(c / q)
+    return raw1 == null || raw2 == null ? [Δ, null, null] : [Δ, min(raw1, raw2), max(raw1, raw2)]
 }
 
-function vertex(a = 0, b = 0, Δ = 0): [x: number, y: number] {
-    return [divisionOptions(-b, 2 * a), divisionOptions(-Δ, 4 * a)]
+async function showDelta(Δ: Real = ZERO, lower = "", equal = "", higher = "", hasY = false): Promise<void> {
+    const [message, suffix] = isNegative(Δ) ? [lower, "< 0 ⇒ x ∉ ℝ"] : isZero(Δ) ? [equal, "= 0 ⇒ x = (−b) / (2 · a)"] : [higher, "> 0 ⇒ x₁, x₂ = (−b ± √Δ) / (2 · a)"]
+    await notify(message, { explanation: `Δ = b² − 4 · a · ${hasY ? "(c − y)" : "c"} ⇒ Δ ${suffix}` })
 }
 
-function exceededLimit(limit: number = Config.iterationLimit): boolean {
+function vertex(a: Real, b: Real, Δ: Real): [x: Real | null, y: Real | null] {
+    return [round(negate(b) / (2 * a)), round(negate(Δ) / (4 * a))]
+}
+
+async function hasExceededLimit(limit: Raw = Config.iterationLimit): Promise<boolean> {
     if (limit < Config.iterationLimit) return false
-    notify(tr("errors.error003"), { explanation: tr("errors.iterationsExceeded"), type: "error" })
+    await notify(tr("errors.error003"), { explanation: tr("errors.iterationsExceeded"), type: "error" })
     return true
 }
 
-function calcPeriod(a = 0, funcTan = false): string {
-    return decimalOptions((funcTan ? Math.PI : 2 * Math.PI) / absoluteOptions(a))
+function calcPeriod(a: Real, isTangent = false): string {
+    return formatReal(round(toUnit(isTangent ? PI : 2 * PI) / Math.abs(a)))
 }
 
-function showPeriod(a = 0, funcTan = false): undefined {
-    a === 0 ? notify(tr("analyze.periodInfinity"), { explanation: tr("analyze.constantPeriod") }) : notify(tr("analyze.period") + calcPeriod(a, funcTan), { explanation: `${tr("analyze.periodEquals") + (funcTan ? "π" : "2π")} / |a|` })
+async function showPeriod(a: Real = ZERO, isTangent = false): Promise<void> {
+    isZero(a) ? await notify(tr("analyze.periodInfinity"), { explanation: tr("analyze.constantPeriod") }) : await notify(tr("analyze.period") + calcPeriod(a, isTangent), { explanation: `${tr("analyze.periodEquals") + (isTangent ? "π" : "2π")} / |a|` })
 }
 
-function amplitude(b = 0): undefined {
-    notify(`Amplitude: ${decimalOptions(absoluteOptions(b))}`, { explanation: "Amplitude = |b|" })
+async function amplitude(b: Real = ZERO): Promise<void> {
+    await notify(`Amplitude: ${formatReal(abs(b))}`, { explanation: "Amplitude = |b|" })
 }
 
-function verticalAsymptote(a = 0): undefined {
+function amplitudeRange(b: Real, c: Real): string {
+    const radius: NonNegative = abs(b)
+    return `∈ [${decimalOptions(subtract(c, radius))}, ${decimalOptions(add(c, radius))}]`
+}
+
+async function verticalAsymptote(a: Real = ZERO): Promise<void> {
     const label = tr("analyze.verticalAsymptote")
-    a === 0 ? notify(`${label} ∄`, { explanation: tr("analyze.noAsymptote") }) : notify(`${label} x = (π / 2 + n · π) / a, n ∈ ℤ`, { explanation: `tan(a · x) ${tr("analyze.undefinedAsymptote")} cos(a · x) = 0, ${tr("analyze.ie")} a · x = π / 2 + n · π` })
+    isZero(a) ? await notify(`${label} ∄`, { explanation: tr("analyze.noAsymptote") }) : await notify(`${label} x = (π / 2 + n · π) / a, n ∈ ℤ`, { explanation: `tan(a · x) ${tr("analyze.undefinedAsymptote")} cos(a · x) = 0, ${tr("analyze.ie")} a · x = π / 2 + n · π` })
 }
 
-function signTrig(): void {
-    notify(tr("analyze.singNotTrigonometric"), { explanation: tr("algebra.underConstruction"), type: "warning" })
+async function signTrig(): Promise<void> {
+    await notify(tr("analyze.singNotTrigonometric"), { explanation: tr("algebra.underConstruction"), type: "warning" })
 }
 
-function signConstant({ c = State.current.numericC }: NumericCoefficientsFor<"c"> = {}): void {
-    const sign: Sign | "=" = c === 0 ? "=" : c > 0 ? ">" : "<"
-    notify(`ƒ(x) ${sign} 0, ∀ x ∈ ℝ`, { explanation: `c ${sign} 0 ⇒ ƒ(x) ${sign} 0 ⇒ ∀ x ∈ ℝ` })
+async function signConstant({ c = current("c") }: NumericCoefficientsFor<"c"> = {}): Promise<void> {
+    const sign: Sign | "=" = isZero(c) ? "=" : isPositive(c) ? ">" : "<"
+    await notify(`ƒ(x) ${sign} 0, ∀ x ∈ ℝ`, { explanation: `c ${sign} 0 ⇒ ƒ(x) ${sign} 0 ⇒ ∀ x ∈ ℝ` })
 }
 
-function signAffine({ b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<"b" | "c"> = {}): void {
-    const sign: Sign = b > 0 ? ">" : "<"
-    notify(rootSigns(sign, String(calculateRoot({ b, c }))), { explanation: `b ${sign} 0 ⇒ ƒ(x) ${tr(b > 0 ? "analyze.increasing" : "analyze.decreasing")}` })
+async function signAffine({ b = current("b"), c = current("c") }: NumericCoefficientsFor<"b" | "c"> = {}): Promise<void> {
+    const sign: Sign = isPositive(b) ? ">" : "<"
+    await notify(rootSigns(sign, formatReal(calculateRoot({ a: ZERO, b, c }))), { explanation: `b ${sign} 0 ⇒ ƒ(x) ${tr(b > 0 ? "analyze.increasing" : "analyze.decreasing")}` })
 }
 
 function rootSigns(sign: Sign, root: string): string {
     return `ƒ(x) > 0 ${tr("analyze.if")} x ${sign} ${root}\nƒ(x) = 0 ${tr("analyze.in")} x = ${root}\nƒ(x) < 0 ${tr("analyze.if")} x ${sign === ">" ? "<" : ">"} ${root}`
 }
 
-function signQuadratic({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}): void {
-    const sign: Sign = a > 0 ? ">" : "<",
+async function signQuadratic({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}): Promise<void> {
+    const sign: Sign = isPositive(a) ? ">" : "<",
         [Δ, r1, r2] = calculateDelta({ a, b, c }),
-        [x1, x2] = [decimalOptions(r1), decimalOptions(r2)]
+        [x1, x2] = [formatReal(r1), formatReal(r2)]
 
-    if (Δ < 0) notify(`ƒ(x) ${sign} 0, ∀ x ∈ ℝ`, { explanation: `a ${sign} 0 ∧ Δ < 0 ⇒ ƒ(x) ${sign} 0, ∀ x ∈ ℝ` })
-    else if (Δ === 0) notify(`ƒ(x) ${sign} 0, ${tr("analyze.exceptIn")} x = ${x1}`, { explanation: `a ${sign} 0 ∧ Δ = 0 ⇒ ƒ(x) ${sign} 0, x ≠ ${x1}` })
+    if (isNegative(Δ)) await notify(`ƒ(x) ${sign} 0, ∀ x ∈ ℝ`, { explanation: `a ${sign} 0 ∧ Δ < 0 ⇒ ƒ(x) ${sign} 0, ∀ x ∈ ℝ` })
+    else if (isZero(Δ)) await notify(`ƒ(x) ${sign} 0, ${tr("analyze.exceptIn")} x = ${x1}`, { explanation: `a ${sign} 0 ∧ Δ = 0 ⇒ ƒ(x) ${sign} 0, x ≠ ${x1}` })
     else {
         const inside = `${x1} < x < ${x2}`,
             outside = `x < ${x1} ∨ x > ${x2}`,
-            [positive, negative] = a < 0 ? [inside, outside] : [outside, inside]
-        notify(`ƒ(x) > 0 ${tr("analyze.if")} ${positive}\nƒ(x) = 0 ${tr("analyze.in")} x = ${x1} ∨ x = ${x2}\nƒ(x) < 0 ${tr("analyze.if")} ${negative}`, { explanation: `a ${sign} 0 ∧ Δ > 0` })
+            [positive, negative] = isNegative(a) ? [inside, outside] : [outside, inside]
+        await notify(`ƒ(x) > 0 ${tr("analyze.if")} ${positive}\nƒ(x) = 0 ${tr("analyze.in")} x = ${x1} ∨ x = ${x2}\nƒ(x) < 0 ${tr("analyze.if")} ${negative}`, { explanation: `a ${sign} 0 ∧ Δ > 0` })
     }
 }
 
-function signExponential({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}): void {
-    if (divisionOptions(-c, b, { shouldRound: false }) > 0) {
-        const sign: Sign = (a < 1 && b < 0) || (a > 1 && b > 0) ? ">" : "<"
-        notify(rootSigns(sign, decimalOptions(calculateRoot({ a, b, c }, "exp"))), { explanation: `${sign === ">" ? "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)" : "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)"} ∧ (−c) / b > 0` })
+async function signExponential({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}): Promise<void> {
+    const exponent: Real | null = toReal(negate(c) / b)
+
+    if (exponent != null && isPositive(exponent)) {
+        const sign: Sign = (a < ONE && b < ZERO) || (a > ONE && b > ZERO) ? ">" : "<"
+        await notify(rootSigns(sign, formatReal(calculateRoot({ a, b, c }, "exp"))), { explanation: `${sign === ">" ? "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)" : "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)"} ∧ (−c) / b > 0` })
     } else {
-        const sign: Sign = b > 0 ? ">" : "<"
-        notify(`ƒ(x) ${sign} 0, ∀ x ∈ ℝ`, { explanation: `${tr("analyze.accordingTo")} b ${sign} 0 ∧ (−c) / b ≤ 0` })
+        const sign: Sign = isPositive(b) ? ">" : "<"
+        await notify(`ƒ(x) ${sign} 0, ∀ x ∈ ℝ`, { explanation: `${tr("analyze.accordingTo")} b ${sign} 0 ∧ (−c) / b ≤ 0` })
     }
 }
 
-function signLogarithmic({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}): void {
-    const sign: Sign = (a < 1 && b < 0) || (a > 1 && b > 0) ? ">" : "<"
-    notify(rootSigns(sign, decimalOptions(calculateRoot({ a, b, c }, "log"))), { explanation: sign === ">" ? "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)" : "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)" })
+async function signLogarithmic({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}): Promise<void> {
+    const sign: Sign = (a < ONE && b < ZERO) || (a > ONE && b > ZERO) ? ">" : "<"
+    await notify(rootSigns(sign, formatReal(calculateRoot({ a, b, c }, "log"))), { explanation: sign === ">" ? "(a < 1 ∧ b < 0) ∨ (a > 1 ∧ b > 0)" : "(a > 1 ∧ b < 0) ∨ (a < 1 ∧ b > 0)" })
 }
 
 const BASE_OPTIONS: TranslationKey[] = ["analyze.options.domain", "analyze.options.range", "analyze.options.xIntersection", "analyze.options.yIntersection", "analyze.options.xValues", "analyze.options.yValues", "analyze.options.signAnalysis", "analyze.options.functionEquations"]
 
-export function resolveConstant({ c = State.current.numericC }: NumericCoefficientsFor<"c"> = {}): void {
-    const coefs = { a: 0, b: 0, c }
-    resolveFunction(coefs)
+export async function resolveConstant({ c = current("c") }: NumericCoefficientsFor<"c"> = {}): Promise<void> {
+    const coefs: NumericCoefficients = { a: ZERO, b: ZERO, c }
+    await resolveFunction(coefs)
 
-    runAnalysisMenu(coefs, "poly", [], {
-        1: { 1: () => domain(), 2: () => range(`= ${decimalOptions(coefs.c)}`, "", tr("analyze.constantValue")), 3: () => xAxis(0, decimalOptions(coefs.c)), 4: () => yAxis(coefs.c, "c", "c"), 5: () => resolveXValues(coefs) },
-        2: { 1: () => resolveYValues(coefs), 2: () => resolveSign(coefs), 3: () => saveEquations(coefs) },
+    await runAnalysisMenu(coefs, "poly", [], {
+        1: { 1: async () => domain(), 2: async () => range(`= ${decimalOptions(coefs.c)}`, "", tr("analyze.constantValue")), 3: async () => xAxis("constant", decimalOptions(coefs.c)), 4: async () => yAxis(coefs.c, "c", "c"), 5: async () => resolveXValues(coefs) },
+        2: { 1: async () => resolveYValues(coefs), 2: async () => resolveSign(coefs), 3: async () => saveEquations(coefs) },
     })
 }
 
-export function resolveAffine({ b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<"b" | "c"> = {}): void {
-    const coefs = { a: 0, b, c }
-    resolveFunction(coefs)
+export async function resolveAffine({ b = current("b"), c = current("c") }: NumericCoefficientsFor<"b" | "c"> = {}): Promise<void> {
+    const coefs: NumericCoefficients = { a: ZERO, b, c }
+    await resolveFunction(coefs)
 
-    const root = calculateRoot(coefs)
+    const root: Real | null = calculateRoot(coefs)
 
-    runAnalysisMenu(coefs, "poly", ["analyze.options.slope", "analyze.options.root"], {
-        1: { 1: () => curve(0, coefs.b), 2: () => showRoot(root, "(−c) / b"), 3: () => domain(), 4: () => range(), 5: () => xAxis(root, "(−c) / b") },
-        2: { 1: () => yAxis(coefs.c, "bx + c", "c"), 2: () => resolveXValues(coefs), 3: () => resolveYValues(coefs), 4: () => resolveSign(coefs), 5: () => saveEquations(coefs) },
+    await runAnalysisMenu(coefs, "poly", ["analyze.options.slope", "analyze.options.root"], {
+        1: { 1: async () => curve(ZERO, coefs.b), 2: async () => showRoot(root, "(−c) / b"), 3: async () => domain(), 4: async () => range(), 5: async () => xAxis(root, "(−c) / b") },
+        2: { 1: async () => yAxis(coefs.c, "bx + c", "c"), 2: async () => resolveXValues(coefs), 3: async () => resolveYValues(coefs), 4: async () => resolveSign(coefs), 5: async () => saveEquations(coefs) },
     })
 }
 
-export function resolveQuadratic({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}): void {
-    const coefs = { a, b, c }
-    resolveFunction(coefs)
+export async function resolveQuadratic({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}): Promise<void> {
+    const coefs: NumericCoefficients = { a, b, c }
+    await resolveFunction(coefs)
 
     const [Δ, r1, r2] = calculateDelta(coefs),
-        [x1, x2] = [decimalOptions(r1), decimalOptions(r2)],
-        [xV, yV] = vertex(coefs.a, coefs.b, Δ).map(value => decimalOptions(value)) as [xV: string, yV: string]
+        [x1, x2] = [formatReal(r1), formatReal(r2)],
+        [vx, vy] = vertex(coefs.a, coefs.b, Δ),
+        [xV, yV] = [formatReal(vx), formatReal(vy)]
 
-    runAnalysisMenu(coefs, "poly", ["analyze.options.concavity", "analyze.options.root", "analyze.options.vertex"], {
+    await runAnalysisMenu(coefs, "poly", ["analyze.options.concavity", "analyze.options.root", "analyze.options.vertex"], {
         1: {
-            1: () => curve(coefs.a),
-            2: () => showDelta(Δ, tr("analyze.noRoots"), tr("analyze.oneRoot", { x: x1 }), tr("analyze.twoRoots", { x1, x2 })),
-            3: () => notify(tr("analyze.vertexPoint", { p1: xV, p2: yV }), { explanation: tr("analyze.vertexExp") }) as undefined,
-            4: () => domain(),
-            5: () => (coefs.a > 0 ? range(`∈ [${yV}, ∞)`, tr("analyze.betweenVertexInfinity")) : range(`∈ (−∞, ${yV}]`, tr("analyze.betweenInfinityVertex"))),
+            1: async () => curve(coefs.a),
+            2: async () => showDelta(Δ, `${tr("analyze.noRoots")}\n${complexRoots(coefs.a, coefs.b, Δ)}`, tr("analyze.oneRoot", { x: x1 }), tr("analyze.twoRoots", { x1, x2 })),
+            3: async (): Promise<void> => {
+                await notify(tr("analyze.vertexPoint", { p1: xV, p2: yV }), { explanation: tr("analyze.vertexExp") })
+            },
+            4: async () => domain(),
+            5: async () => (isPositive(coefs.a) ? range(`∈ [${yV}, ∞)`, tr("analyze.betweenVertexInfinity")) : range(`∈ (−∞, ${yV}]`, tr("analyze.betweenInfinityVertex"))),
         },
         2: {
-            1: () => showDelta(Δ, tr("analyze.noIntersectionXAxis"), tr("analyze.oneIntersectionXAxis", { p: x1 }), tr("analyze.twoIntersectionsXAxis", { p1: x1, p2: x2 })),
-            2: () => yAxis(coefs.c, "ax² + bx + c", "c"),
-            3: () => resolveXValues(coefs),
-            4: () => resolveYValues(coefs),
-            5: () => resolveSign(coefs),
+            1: async () => showDelta(Δ, tr("analyze.noIntersectionXAxis"), tr("analyze.oneIntersectionXAxis", { p: x1 }), tr("analyze.twoIntersectionsXAxis", { p1: x1, p2: x2 })),
+            2: async () => yAxis(coefs.c, "ax² + bx + c", "c"),
+            3: async () => resolveXValues(coefs),
+            4: async () => resolveYValues(coefs),
+            5: async () => resolveSign(coefs),
         },
-        3: { 1: () => saveEquations(coefs) },
+        3: { 1: async () => saveEquations(coefs) },
     })
 }
 
-export function resolveExponential({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}): void {
-    const coefs = { a, b, c }
-    resolveFunction(coefs, "exp")
+export async function resolveExponential({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}): Promise<void> {
+    const coefs: NumericCoefficients = { a, b, c }
+    await resolveFunction(coefs, "exp")
 
-    const root = calculateRoot(coefs, "exp")
+    const root: Real | null = calculateRoot(coefs, "exp")
 
-    runAnalysisMenu(coefs, "exp", ["analyze.options.curve", "analyze.options.root", "analyze.options.horizontalAsymptote"], {
+    await runAnalysisMenu(coefs, "exp", ["analyze.options.curve", "analyze.options.root", "analyze.options.horizontalAsymptote"], {
         1: {
-            1: () => curve(coefs.a, coefs.b, false),
-            2: () => showRoot(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"),
-            3: () => notify(tr("analyze.options.horizontalAsymptote", { y: decimalOptions(coefs.c) }), { explanation: "y = c" }) as undefined,
-            4: () => domain(),
-            5: () => {
-                if (coefs.b > 0) range(`∈ (${decimalOptions(coefs.c)}, ∞)`, tr("analyze.betweenCInfinity"))
-                else range(`∈ (-∞, ${decimalOptions(coefs.c)})`, tr("analyze.betweenInfinityC"))
+            1: async () => curve(coefs.a, coefs.b, "exp"),
+            2: async () => showRoot(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"),
+            3: async (): Promise<void> => {
+                await notify(tr("analyze.horizontalAsymptotePoint", { y: decimalOptions(coefs.c) }), { explanation: "y = c" })
             },
+            4: async () => domain(),
+            5: async () => (isPositive(coefs.b) ? range(`∈ (${decimalOptions(coefs.c)}, ∞)`, tr("analyze.betweenCInfinity")) : range(`∈ (-∞, ${decimalOptions(coefs.c)})`, tr("analyze.betweenInfinityC"))),
         },
-        2: { 1: () => xAxis(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"), 2: () => yAxis(coefs.b + coefs.c, "b × aˣ + c", "b + c"), 3: () => resolveXValues(coefs, "exp"), 4: () => resolveYValues(coefs, "exp"), 5: () => resolveSign(coefs, "exp") },
-        3: { 1: () => saveEquations(coefs, "exp") },
+        2: { 1: async () => xAxis(root, "ln((−c) / b) / ln(a)", "(−c) / b ≤ 0"), 2: async () => yAxis(add(coefs.b, coefs.c), "b × aˣ + c", "b + c"), 3: async () => resolveXValues(coefs, "exp"), 4: async () => resolveYValues(coefs, "exp"), 5: async () => resolveSign(coefs, "exp") },
+        3: { 1: async () => saveEquations(coefs, "exp") },
     })
 }
 
-export function resolveLogarithmic({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}): void {
-    const coefs = { a, b, c }
-    resolveFunction(coefs, "log")
+export async function resolveLogarithmic({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}): Promise<void> {
+    const coefs: NumericCoefficients = { a, b, c }
+    await resolveFunction(coefs, "log")
 
-    const root = round(coefs.a ** divisionOptions(-coefs.c, coefs.b, { shouldRound: false }))
+    const root: Real | null = calculateRoot(coefs, "log")
 
-    runAnalysisMenu(coefs, "log", ["analyze.options.curve", "analyze.options.root"], {
-        1: { 1: () => curve(coefs.a, coefs.b, false), 2: () => showRoot(root, "a⁽⁻ᶜ⁄ᵇ⁾"), 3: () => domain("> 0", "x ≤ 0 ⇒ logₐ(x) ∉ ℝ"), 4: () => range(), 5: () => xAxis(root, "a⁽⁻ᶜ⁄ᵇ⁾") },
-        2: { 1: () => yAxis("∄", "b × logₐ(x) + c", "x = 0 ⇒ logₐ(x) ∉ ℝ"), 2: () => resolveXValues(coefs, "log"), 3: () => resolveYValues(coefs, "log"), 4: () => resolveSign(coefs, "log"), 5: () => saveEquations(coefs, "log") },
+    await runAnalysisMenu(coefs, "log", ["analyze.options.curve", "analyze.options.root"], {
+        1: { 1: async () => curve(coefs.a, coefs.b, "exp"), 2: async () => showRoot(root, "a⁽⁻ᶜ⁄ᵇ⁾"), 3: async () => domain("> 0", "x ≤ 0 ⇒ logₐ(x) ∉ ℝ"), 4: async () => range(), 5: async () => xAxis(root, "a⁽⁻ᶜ⁄ᵇ⁾") },
+        2: { 1: async () => yAxis("∄", "b × logₐ(x) + c", "x = 0 ⇒ logₐ(x) ∉ ℝ"), 2: async () => resolveXValues(coefs, "log"), 3: async () => resolveYValues(coefs, "log"), 4: async () => resolveSign(coefs, "log"), 5: async () => saveEquations(coefs, "log") },
     })
 }
 
-export function resolveSine({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}): void {
-    const coefs = { a, b, c }
-    resolveFunction(coefs, "sin")
+export async function resolveSine({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}): Promise<void> {
+    const coefs: NumericCoefficients = { a, b, c }
+    await resolveFunction(coefs, "sin")
 
-    runAnalysisMenu(coefs, "sin", ["analyze.options.amplitude", "analyze.options.period"], {
+    await runAnalysisMenu(coefs, "sin", ["analyze.options.amplitude", "analyze.options.period"], {
         1: {
-            1: () => amplitude(coefs.b),
-            2: () => showPeriod(coefs.a),
-            3: () => domain(),
-            4: () => range(`∈ [${decimalOptions(-absoluteOptions(coefs.b) + coefs.c)}, ${decimalOptions(absoluteOptions(coefs.b) + coefs.c)}]`, "", "−|b| + c ≤ y ≤ |b| + c"),
-            5: () => xAxis(divisionOptions(Math.asin(-coefs.c / coefs.b), coefs.a), "arcsin(−c / b) / a", `|(−c / b)| > 1, ${tr("analyze.withoutRoot")}`),
+            1: async () => amplitude(coefs.b),
+            2: async () => showPeriod(coefs.a),
+            3: async () => domain(),
+            4: async () => range(amplitudeRange(coefs.b, coefs.c), "", "−|b| + c ≤ y ≤ |b| + c"),
+            5: async () => xAxis(round(toUnit(Math.asin(negate(coefs.c) / coefs.b)) / coefs.a), "arcsin(−c / b) / a", `|(−c / b)| > 1, ${tr("analyze.withoutRoot")}`),
         },
-        2: { 1: () => yAxis(coefs.c, "b × sin(a · x) + c", "c"), 2: () => resolveXValues(coefs, "sin"), 3: () => resolveYValues(coefs, "sin"), 4: () => resolveSign(coefs, "sin"), 5: () => saveEquations(coefs, "sin") },
+        2: { 1: async () => yAxis(coefs.c, "b × sin(a · x) + c", "c"), 2: async () => resolveXValues(coefs, "sin"), 3: async () => resolveYValues(coefs, "sin"), 4: async () => resolveSign(coefs, "sin"), 5: async () => saveEquations(coefs, "sin") },
     })
 }
 
-export function resolveCosine({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}): void {
-    const coefs = { a, b, c }
-    resolveFunction(coefs, "cos")
+export async function resolveCosine({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}): Promise<void> {
+    const coefs: NumericCoefficients = { a, b, c }
+    await resolveFunction(coefs, "cos")
 
-    runAnalysisMenu(coefs, "cos", ["analyze.options.amplitude", "analyze.options.period"], {
+    await runAnalysisMenu(coefs, "cos", ["analyze.options.amplitude", "analyze.options.period"], {
         1: {
-            1: () => amplitude(coefs.b),
-            2: () => showPeriod(coefs.a),
-            3: () => domain(),
-            4: () => range(`∈ [${decimalOptions(-absoluteOptions(coefs.b) + coefs.c)}, ${decimalOptions(absoluteOptions(coefs.b) + coefs.c)}]`, "", "−|b| + c ≤ y ≤ |b| + c"),
-            5: () => xAxis(divisionOptions(Math.acos(-coefs.c / coefs.b), coefs.a), "arccos(−c / b) / a", `|(−c / b)| > 1, ${tr("analyze.withoutRoot")}`),
+            1: async () => amplitude(coefs.b),
+            2: async () => showPeriod(coefs.a),
+            3: async () => domain(),
+            4: async () => range(amplitudeRange(coefs.b, coefs.c), "", "−|b| + c ≤ y ≤ |b| + c"),
+            5: async () => xAxis(round(toUnit(Math.acos(negate(coefs.c) / coefs.b)) / coefs.a), "arccos(−c / b) / a", `|(−c / b)| > 1, ${tr("analyze.withoutRoot")}`),
         },
-        2: { 1: () => yAxis(coefs.b + coefs.c, "b × cos(a · x) + c", "b + c"), 2: () => resolveXValues(coefs, "cos"), 3: () => resolveYValues(coefs, "cos"), 4: () => resolveSign(coefs, "cos"), 5: () => saveEquations(coefs, "cos") },
+        2: { 1: async () => yAxis(add(coefs.b, coefs.c), "b × cos(a · x) + c", "b + c"), 2: async () => resolveXValues(coefs, "cos"), 3: async () => resolveYValues(coefs, "cos"), 4: async () => resolveSign(coefs, "cos"), 5: async () => saveEquations(coefs, "cos") },
     })
 }
 
-export function resolveTangent({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: NumericCoefficientsFor<Variable> = {}): void {
-    const coefs = { a, b, c }
-    resolveFunction(coefs, "tan")
+export async function resolveTangent({ a = current("a"), b = current("b"), c = current("c") }: NumericCoefficientsFor<Variable> = {}): Promise<void> {
+    const coefs: NumericCoefficients = { a, b, c }
+    await resolveFunction(coefs, "tan")
 
-    runAnalysisMenu(coefs, "tan", ["analyze.options.verticalAsymptote", "analyze.options.period"], {
-        1: { 1: () => verticalAsymptote(coefs.a), 2: () => showPeriod(coefs.a, true), 3: () => domain(), 4: () => range(), 5: () => xAxis(divisionOptions(Math.atan(-coefs.c / coefs.b), coefs.a), "arctan(−c / b) / a") },
-        2: { 1: () => yAxis(coefs.c, "b × tan(a · x) + c", "c"), 2: () => resolveXValues(coefs, "tan"), 3: () => resolveYValues(coefs, "tan"), 4: () => resolveSign(coefs, "tan"), 5: () => saveEquations(coefs, "tan") },
+    await runAnalysisMenu(coefs, "tan", ["analyze.options.verticalAsymptote", "analyze.options.period"], {
+        1: { 1: async () => verticalAsymptote(coefs.a), 2: async () => showPeriod(coefs.a, true), 3: async () => domain(), 4: async () => range(), 5: async () => xAxis(round(toUnit(Math.atan(negate(coefs.c)) / coefs.b) / coefs.a), "arctan(−c / b) / a") },
+        2: { 1: async () => yAxis(coefs.c, "b × tan(a · x) + c", "c"), 2: async () => resolveXValues(coefs, "tan"), 3: async () => resolveYValues(coefs, "tan"), 4: async () => resolveSign(coefs, "tan"), 5: async () => saveEquations(coefs, "tan") },
     })
 }
 
-function runAnalysisMenu(coefs: NumericCoefficients, funcType: FunctionType, extraOptions: TranslationKey[], pageActions: Record<number, Record<number, () => undefined | EquationsReturn>>): void {
+async function runAnalysisMenu(coefs: NumericCoefficients, kind: FunctionType, extraOptions: TranslationKey[], pageActions: Record<Raw, Record<Raw, MenuAction>>): Promise<void> {
     const options: List<string> = [...extraOptions, ...BASE_OPTIONS].map(key => tr(key)),
-        total = Math.max(1, Math.ceil(options.length / 5)),
-        list: List<string> = [...options, ...Array(total * 5 - options.length).fill("---")]
-    let page = 1,
+        total = toInteger(Math.max(1, Math.ceil(options.length / 5)))!,
+        list: List<string> = [...options, ...Array.from({ length: total * 5 - options.length }, () => "---")]
+    let page: Integer = ONE,
         limit = 0
 
     do {
-        page = Math.min(Math.max(page, 1), total)
+        page = toInteger(Math.min(Math.max(page, 1), total))!
 
         const currentPage = page,
-            answer = rangeOptions(
-                `=== ${tr("ui.menu")} ===\n${tr("ui.page", { page: currentPage, total })}\n${tr("main.whatWant")}${Array.from({ length: 5 }, (_, i) => `\n${i + 1} = ${list.at(i + 5 * (currentPage - 1))}`).join("")}` +
+            answer = await rangeOptions(
+                `=== ${tr("ui.menu")} ===\n${tr("ui.page", { page: currentPage, total })}\n${tr("main.whatWant")}${Array.from({ length: 5 }, (_, index) => `\n${index + 1} = ${list.at(index + 5 * (currentPage - 1))}`).join("")}` +
                     `\n----------------\n6 = ${tr("main.review")} | 7 = ${tr("main.change")} | 8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`,
-                { commands: true, max: 9, min: 0 },
+                { commands: true, max: num(9), min: ZERO },
             )
 
         if (isValidCommand(answer)) {
@@ -369,14 +413,16 @@ function runAnalysisMenu(coefs: NumericCoefficients, funcType: FunctionType, ext
         }
 
         if (answer === 8 || answer === 9) {
-            page += answer === 8 ? -1 : 1
+            page = add(page, num(answer === 8 ? -1 : 1))
             continue
         }
 
-        const result = pageActions[currentPage]?.[answer]?.()
+        const actions = pageActions[currentPage],
+            action = actions?.[answer],
+            result = action ? await action() : null
         if (result !== "result" && result != null) return
-        if (answer === 6) resolveFunction(coefs, funcType, true)
-    } while (!exceededLimit(limit++))
+        if (answer === 6) await resolveFunction(coefs, kind, true)
+    } while (!(await hasExceededLimit(limit++)))
 
     State.loop = "on"
 }

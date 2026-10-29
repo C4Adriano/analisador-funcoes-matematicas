@@ -1,146 +1,178 @@
-import { isFiniteNumber, isValidText } from "../Core/checks.js"
-import { Config } from "../Core/config.js"
-import { UNKNOWN_TOKEN } from "../Core/consts.js"
-import { State } from "../Core/state.js"
-import { tr } from "../Lang/i18n.js"
-import { decimalOptions, subscript } from "../Lang/writing.js"
-import { input, notify } from "../UI/display.js"
-import { resolveFunction } from "../UI/ui.js"
-import { divisionOptions, logOptions, round } from "./numeric.js"
+import { isText } from "../Base/checks.js"
+import { Config } from "../Base/config.js"
+import { INPUT_FAILED, UNKNOWN_TOKEN } from "../Base/consts.js"
+import { log, power, round } from "../Base/numeric.js"
+import { callFunction, complex, isFunctionName, isInvalid, isLogBase, isPositive, num, ONE, operate, parseReal, real, SUFFIXES, toReal, ZERO } from "../Base/quantity.js"
+import { decimalOptions } from "../Lang/writing.js"
+import { State } from "./state.js"
 
 const COEF_KEYS: readonly Variable[] = ["a", "b", "c"]
+type Count = 1 | 2 | 3
+export interface AlgebraIO {
+    readonly askExpression: (name: Variable, placeholder: string) => Promise<string | typeof INPUT_FAILED>
+    readonly askPoints: <C extends Count>(count: C) => Promise<PointPairReturn<C>>
+    readonly showFunction: (coefs: Partial<NamedCoefficients>, kind: FunctionType) => Promise<void>
+    readonly notifyInvalidValues: () => Promise<void>
+    readonly confirmChangeValues: () => Promise<boolean>
+    readonly expressionError: (error: ExpressionError) => Promise<void>
+}
 
-function evaluateExpression(expression = ""): SymbolicResult<number, typeof UNKNOWN_TOKEN> {
-    if (/[^ %\(\)*+\-.\/0-9A-Z^a-z√]/v.test(expression) || !isValidText(expression)) return { kind: "invalid" }
+type PointsReader = AlgebraIO["askPoints"]
+
+function unwrap(result: QuantityResult): Quantity {
+    if (result.kind === "invalid") throw new Error("errors.incompatible", { cause: result })
+    return result.value
+}
+
+function numeric(value: NamedCoefficient): Real {
+    return typeof value === "number" ? value : ZERO
+}
+
+function evaluateExpression(expression = ""): ExpressionResult<typeof UNKNOWN_TOKEN> {
+    if (/[^ %\(\)*+\-.\/0-9A-Z^a-z°√]/v.test(expression) || !isText(expression)) return { kind: "invalid", error: null }
 
     let pos = 0
-    const ROOTS: Record<string, number> = { "√": 2, sqrt: 2, raiz: 2, raizQ: 2, cbrt: 3, raizC: 3 },
-        tokens: List<Value> = expression
+    const ROOT_ALIASES = new Map<string, string>([
+            ["√", "sqrt"],
+            ["raiz", "sqrt"],
+            ["raizQ", "sqrt"],
+            ["raizC", "cbrt"],
+        ]),
+        tokens: List<Token> = expression
             .matchAll(/\d+\.?\d*|\.\d+|\*\*|√|[A-Za-z]+|\S/gv)
-            .map((match): Value => (/^\d/v.test(match[0]) || /^\.\d/v.test(match[0]) ? Number(match[0]) : match[0]))
+            .map((match): Token => (/^\d/v.test(match[0]) || /^\.\d/v.test(match[0]) ? (parseReal(match[0]) ?? match[0]) : match[0]))
             .toArray()
 
-    function peek(): Value | undefined {
+    function peek(): Token | undefined {
         return tokens.at(pos)
     }
 
-    function consume(): Value | undefined {
+    function consume(): Token | undefined {
         return tokens.at(pos++)
     }
 
-    function parsePrimary(): number {
-        const token = peek()
-        let value: number
-
-        if (token === "(") {
-            consume()
-            value = parseExpression()
-            if (peek() !== ")") throw "errors.error007"
-            consume()
-            return value
-        }
-
-        if (isFiniteNumber(token)) return Number(consume())
-
-        if (isValidText(token) && Object.hasOwn(ROOTS, token)) {
-            const degree = ROOTS[token]
-            consume()
-            if (peek() !== "(") throw "errors.error008"
-            consume()
-            value = parseExpression()
-            if (peek() !== ")") throw "errors.error007"
-            consume()
-            return degree === 3 ? Math.cbrt(value) : Math.sqrt(value)
-        }
-
-        if (isValidText(token) && /^[A-Za-z√]+$/v.test(token)) throw UNKNOWN_TOKEN
-
-        throw "errors.error009"
+    function parseGroup(): Quantity {
+        consume()
+        const value: Quantity = parseExpression()
+        if (consume() === ")") return value
+        throw new Error("errors.error007")
     }
 
-    function parsePercent(): number {
-        let value = parsePrimary()
+    function parsePrimary(): Quantity {
+        const token = peek()
+
+        if (token === "(") return parseGroup()
+
+        if (typeof token === "number") {
+            consume()
+            const suffix = peek(),
+                build: Builder | null = (typeof suffix === "string" ? SUFFIXES.get(suffix) : null) ?? null
+            if (build == null) return real(token)
+            consume()
+            return build(token)
+        }
+
+        if (token === "i") {
+            consume()
+            return complex(0, 1)
+        }
+
+        if (isText(token)) {
+            const name: string = ROOT_ALIASES.get(token) ?? token
+            if (isFunctionName(name)) {
+                consume()
+                if (peek() !== "(") throw new Error("errors.error008")
+                return unwrap(callFunction(name, parseGroup()))
+            }
+        }
+
+        if (isText(token) && /^[A-Za-z√]+$/v.test(token)) throw new Error("unknown token", { cause: UNKNOWN_TOKEN })
+
+        throw new Error("errors.error009")
+    }
+
+    function parsePercent(): Quantity {
+        let value: Quantity = parsePrimary()
         while (peek() === "%") {
             consume()
-            value /= 100
+            value = unwrap(operate("/", value, real(100)))
         }
         return value
     }
 
-    function parsePower(): number {
-        const base = parsePercent()
+    function parsePower(): Quantity {
+        const base: Quantity = parsePercent()
         if (peek() !== "^" && peek() !== "**") return base
 
         consume()
-        return base ** parseUnary()
+        return unwrap(operate("^", base, parseUnary()))
     }
 
-    function parseUnary(): number {
+    function parseUnary(): Quantity {
         const token = peek()
         if (token === "-" || token === "+") {
             consume()
-            return token === "-" ? -parseUnary() : parseUnary()
+            return token === "-" ? unwrap(operate("*", real(-1), parseUnary())) : parseUnary()
         }
         return parsePower()
     }
 
-    function parseBinaryLeft(next: () => number, ops: Record<string, (a: number, b: number) => number>): number {
-        let value = next()
-        while (isValidText(peek()) && Object.hasOwn(ops, peek() as string)) {
-            value = ops[consume() as string]!(value, next())
+    function parseBinaryLeft(next: () => Quantity, ops: Operator[]): Quantity {
+        let value: Quantity = next()
+        while (isText(peek()) && ops.includes(peek() as Operator)) {
+            value = unwrap(operate(consume() as Operator, value, next()))
         }
         return value
     }
 
-    function parseTerm(): number {
-        return parseBinaryLeft(parseUnary, { "*": (a, b) => a * b, "/": (a, b) => a / b })
+    function parseTerm(): Quantity {
+        return parseBinaryLeft(parseUnary, ["*", "/"])
     }
 
-    function parseExpression(): number {
-        return parseBinaryLeft(parseTerm, { "+": (a, b) => a + b, "-": (a, b) => a - b })
+    function parseExpression(): Quantity {
+        return parseBinaryLeft(parseTerm, ["+", "-"])
     }
 
-    let error: unknown,
-        result = NaN
+    let result: Quantity
     try {
         result = parseExpression()
-    } catch (e) {
-        error = e
+    } catch (error) {
+        if (!Error.isError(error)) return { kind: "invalid", error: null }
+        if (error.cause === UNKNOWN_TOKEN) return { kind: "symbol", name: UNKNOWN_TOKEN }
+        return { kind: "invalid", error: isInvalid(error.cause) ? error.cause : null }
     }
 
-    if (error === UNKNOWN_TOKEN) return { kind: "symbol", name: UNKNOWN_TOKEN }
-    return error != null || pos !== tokens.length || !isFiniteNumber(result) ? { kind: "invalid" } : { kind: "valid", value: result }
+    return pos === tokens.length ? { kind: "valid", value: result } : { kind: "invalid", error: null }
 }
 
-export function variables<Name extends Variable>(name: Name, placeholder: string = name): number | Name {
+export async function variables<Name extends Variable>(io: AlgebraIO, name: Name, placeholder: string = name): Promise<Real | Name> {
     for (;;) {
-        const raw = decimalOptions(input(`${name} = `, { explanation: tr("algebra.variableAsk", { name }), placeholder }), { type: "number" }),
-            result = evaluateExpression(raw)
+        const asked: string | typeof INPUT_FAILED = await io.askExpression(name, placeholder)
+        if (asked === INPUT_FAILED) return name
+
+        const raw: string = decimalOptions(asked, { type: "number" }),
+            result: ExpressionResult<typeof UNKNOWN_TOKEN> = evaluateExpression(raw)
+
+        if (result.kind === "symbol") return name
 
         if (result.kind === "invalid") {
+            if (result.error != null) await io.expressionError(result.error)
             placeholder = decimalOptions(raw)
             continue
         }
 
-        return result.kind === "symbol" ? name : round(result.value)
+        if (result.value.kind !== "real") {
+            await io.expressionError({ kind: "notReal", actual: result.value.kind })
+            placeholder = decimalOptions(raw)
+            continue
+        }
+
+        return round(result.value.value)
     }
-}
-
-function getPointPairs<T extends 1 | 2 | 3>(count: T): PointPairReturn<T> {
-    const pairs: Point[] = []
-
-    for (let i = 1; i <= count; i++) {
-        const x = input(`x${subscript(i)} = `, { type: "number", placeholder: String(i) }),
-            y = input(`y${subscript(i)} = `, { type: "number", placeholder: String(i) })
-
-        pairs.push({ x: isFiniteNumber(x) ? x : NaN, y: isFiniteNumber(y) ? y : NaN })
-    }
-
-    return pairs as PointPairReturn<T>
 }
 
 function uniquePoints(points: Point[]): Point[] | null {
-    const unique = new Map<number, number>()
+    const unique = new Map<Real, Real>()
 
     for (const { x, y } of points) {
         if (unique.has(x) && unique.get(x) !== y) return null
@@ -150,11 +182,36 @@ function uniquePoints(points: Point[]): Point[] | null {
     return Array.from(unique, ([x, y]) => ({ x, y }))
 }
 
-function solveLinearCoefs(basis: LinearBasis, known: Coefficients, unknownKeys: Variable[], points: Point[]): Coefficients | null {
+function evaluateBasis(basis: LinearBasis, key: Variable, x: Real): Real | null {
+    return basis[key]?.(x) ?? null
+}
+
+function solveLinearCoefs(basis: LinearBasis, known: NamedCoefficients, unknownKeys: Variable[], points: Point[]): NamedCoefficients | null {
     const knownKeys = (Object.keys(basis) as Variable[]).filter(key => !unknownKeys.includes(key)),
-        m: Matrix<number> = points.map(({ x }) => unknownKeys.map(key => basis[key]!(x))),
-        v: List<number> = points.map(({ x, y }) => y - knownKeys.reduce((sum, key) => sum + Number(known[key]) * basis[key]!(x), 0)),
-        n = v.length,
+        m: Matrix<Raw> = [],
+        v: List<Raw> = []
+
+    for (const { x, y } of points) {
+        const row: List<Raw> = []
+        let rhs: Raw = y
+
+        for (const key of unknownKeys) {
+            const value: Real | null = evaluateBasis(basis, key, x)
+            if (value == null) return null
+            row.push(value)
+        }
+
+        for (const key of knownKeys) {
+            const value: Real | null = evaluateBasis(basis, key, x)
+            if (value == null) return null
+            rhs -= numeric(known[key]) * value
+        }
+
+        m.push(row)
+        v.push(rhs)
+    }
+
+    const n = v.length,
         tolerance = 1e-12 * Math.max(...m.flat().map(value => Math.abs(value)))
 
     for (let col = 0; col < n; col++) {
@@ -163,8 +220,12 @@ function solveLinearCoefs(basis: LinearBasis, known: Coefficients, unknownKeys: 
 
         if (Math.abs(m[pivotRow]![col]!) <= tolerance) return null
 
-        ;[m[col], m[pivotRow]] = [m[pivotRow]!, m[col]!]
-        ;[v[col], v[pivotRow]] = [v[pivotRow]!, v[col]!]
+        const pivotM = m[pivotRow]!,
+            pivotV = v[pivotRow]!
+        m[pivotRow] = m[col]!
+        m[col] = pivotM
+        v[pivotRow] = v[col]!
+        v[col] = pivotV
 
         for (let row = col + 1; row < n; row++) {
             const factor = m[row]![col]! / m[col]![col]!
@@ -173,133 +234,128 @@ function solveLinearCoefs(basis: LinearBasis, known: Coefficients, unknownKeys: 
         }
     }
 
-    const solved: List<number> = Array.from({ length: n })
+    const solved: List<Raw> = Array.from({ length: n })
     for (let row = n - 1; row >= 0; row--) {
         let sum = v[row]!
         for (let k = row + 1; k < n; k++) sum -= m[row]![k]! * solved[k]!
         solved[row] = sum / m[row]![row]!
     }
 
-    const result = { ...known }
-    for (const [i, key] of unknownKeys.entries()) result[key] = round(solved[i])
+    const result: NamedCoefficients = { ...known }
+    for (const [index, key] of unknownKeys.entries()) {
+        const value: Real | null = round(solved[index] ?? null)
+        if (value == null) return null
+        result[key] = value
+    }
 
     return result
 }
 
-function solvePolynomial({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: Partial<Coefficients> = {}): SimpleResult<Coefficients> {
-    const coefs = { a, b, c },
-        degree: "constant" | "affine" | "quadratic" = coefs.a === 0 && coefs.b === 0 ? "constant" : coefs.a === 0 ? "affine" : "quadratic",
-        unknownKeys = degree === "constant" ? (["c"] as Variable[]) : COEF_KEYS.filter(key => coefs[key] === key)
+async function solvePolynomial(coefs: NamedCoefficients, askPoints: PointsReader): Promise<SimpleResult<NamedCoefficients>> {
+    const degree: "constant" | "affine" | "quadratic" = coefs.a === ZERO && coefs.b === ZERO ? "constant" : coefs.a === ZERO ? "affine" : "quadratic",
+        unknownKeys: Variable[] = degree === "constant" ? ["c"] : COEF_KEYS.filter(key => coefs[key] === key)
 
     if (unknownKeys.length === 0) return { kind: "valid", value: coefs }
 
-    const basis: Record<Variable, (x: number) => number> = { a: x => x * x, b: x => x, c: () => 1 },
+    const basis: LinearBasis = { a: x => toReal(x * x), b: x => x, c: () => ONE },
         eligible: Record<"constant" | "affine" | "quadratic", Variable[]> = { constant: ["c"], affine: ["b", "c"], quadratic: ["a", "b", "c"] }
     if (degree !== "constant") unknownKeys.splice(0, unknownKeys.length, ...eligible[degree].filter(key => coefs[key] === key))
 
-    const points = uniquePoints(getPointPairs(unknownKeys.length as 1 | 2 | 3))
+    const points: Point[] | null = uniquePoints(await askPoints(unknownKeys.length as Count))
     if (points == null) return { kind: "invalid" }
 
-    const dropped = unknownKeys.splice(0, unknownKeys.length - points.length),
-        known = { ...coefs },
-        linear = ((): Coefficients | null => {
-            for (const key of dropped) known[key] = 0
-            return solveLinearCoefs(basis, known, unknownKeys, points)
-        })()
+    const dropped: Variable[] = unknownKeys.splice(0, unknownKeys.length - points.length),
+        known: NamedCoefficients = { ...coefs }
+    for (const key of dropped) known[key] = ZERO
 
+    const linear: NamedCoefficients | null = solveLinearCoefs(basis, known, unknownKeys, points)
     return linear == null ? { kind: "invalid" } : { kind: "valid", value: linear }
 }
 
-function solveExponential({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: Partial<Coefficients> = {}): NotedResult<Coefficients, { v1: "a"; v2: "c"; v3: "b" }> {
-    const coefs = { a, b, c },
-        unknownKeys: Variable[] = COEF_KEYS.filter(key => coefs[key] === key)
+async function solveExponential(coefs: NamedCoefficients, askPoints: PointsReader): Promise<NotedResult<NamedCoefficients, { v1: "a"; v2: "c"; v3: "b" }>> {
+    const unknownKeys: Variable[] = COEF_KEYS.filter(key => coefs[key] === key)
     if (unknownKeys.length === 0) return { kind: "valid", value: coefs }
 
     const linearKeys = new Set<Variable>(["b", "c"])
     if (unknownKeys.every(key => linearKeys.has(key))) {
-        const linear = solveLinearCoefs({ b: x => Number(coefs.a) ** x, c: () => 1 }, coefs, unknownKeys, getPointPairs(unknownKeys.length as 1 | 2 | 3))
+        const linear: NamedCoefficients | null = solveLinearCoefs({ b: x => power(numeric(coefs.a), x), c: () => ONE }, coefs, unknownKeys, await askPoints(unknownKeys.length as Count))
         return linear == null ? { kind: "invalid" } : { kind: "valid", value: linear }
     }
 
     if (unknownKeys.length === 1 && unknownKeys[0] === "a") {
-        const [point] = getPointPairs(1)
-        coefs.a = round(divisionOptions(point.y - Number(coefs.c), Number(coefs.b), { shouldRound: false }) ** divisionOptions(1, point.x, { shouldRound: false }))
-        return { kind: "valid", value: coefs }
+        const [point] = await askPoints(1),
+            solved: Real | null = round(((point.y - numeric(coefs.c)) / numeric(coefs.b)) ** (1 / point.x))
+        return { kind: "valid", value: { ...coefs, a: solved ?? "a" } }
     }
 
     if (unknownKeys.includes("a") && unknownKeys.includes("b")) {
-        const [p0, p1] = getPointPairs(2),
-            yc0 = p0.y - Number(coefs.c),
-            yc1 = p1.y - Number(coefs.c),
-            _a = divisionOptions(yc0, yc1, { shouldRound: false }) ** divisionOptions(1, p0.x - p1.x, { shouldRound: false })
-        coefs.b = divisionOptions(yc0, _a ** p0.x)
-        coefs.a = round(_a)
-        return { kind: "valid", value: coefs }
+        const [p0, p1] = await askPoints(2),
+            yc0: Raw = p0.y - numeric(coefs.c),
+            yc1: Raw = p1.y - numeric(coefs.c),
+            base: Real | null = toReal((yc0 / yc1) ** (1 / (p0.x - p1.x)))
+        return { kind: "valid", value: base == null ? coefs : { ...coefs, a: round(base), b: round(yc0 / base ** p0.x) ?? "b" } }
     }
 
-    // TODO - "a" e "c" juntos ainda não suportado
-    return { kind: "note", note: { v1: "a", v2: "c", v3: "b" }, value: { ...coefs, a: -1, c: 0 } }
+    return { kind: "note", note: { v1: "a", v2: "c", v3: "b" }, value: { ...coefs, a: num(-1), c: ZERO } }
 }
 
-function solveLogarithmic({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: Partial<Coefficients> = {}): NotedResult<Coefficients, { v1: "a"; v2: "b"; v3: "c" }> {
-    const coefs = { a, b, c },
-        unknownKeys = COEF_KEYS.filter(key => coefs[key] === key)
+async function solveLogarithmic(coefs: NamedCoefficients, askPoints: PointsReader): Promise<NotedResult<NamedCoefficients, { v1: "a"; v2: "b"; v3: "c" }>> {
+    const unknownKeys: Variable[] = COEF_KEYS.filter(key => coefs[key] === key)
     if (unknownKeys.length === 0) return { kind: "valid", value: coefs }
 
     const linearKeys = new Set<Variable>(["b", "c"])
     if (unknownKeys.every(key => linearKeys.has(key))) {
-        const linear = solveLinearCoefs({ b: x => logOptions(x, Number(coefs.a)), c: () => 1 }, coefs, unknownKeys, getPointPairs(unknownKeys.length as 1 | 2 | 3))
+        const base: Real = numeric(coefs.a),
+            linear: NamedCoefficients | null = solveLinearCoefs({ b: x => (isPositive(x) && isLogBase(base) ? log(x, base) : null), c: () => ONE }, coefs, unknownKeys, await askPoints(unknownKeys.length as Count))
         return linear == null ? { kind: "invalid" } : { kind: "valid", value: linear }
     }
 
     if (unknownKeys.length === 1 && unknownKeys[0] === "a") {
-        const [point] = getPointPairs(1)
-        coefs.a = round(point.x ** divisionOptions(Number(coefs.b), point.y - Number(coefs.c), { shouldRound: false }))
-        return { kind: "valid", value: coefs }
+        const [point] = await askPoints(1),
+            solved: Real | null = round(point.x ** (numeric(coefs.b) / (point.y - numeric(coefs.c))))
+        return { kind: "valid", value: { ...coefs, a: solved ?? "a" } }
     }
 
     if (unknownKeys.includes("a") && unknownKeys.includes("c")) {
-        const [p0, p1] = getPointPairs(2),
-            _a = divisionOptions(p0.x, p1.x, { shouldRound: false }) ** divisionOptions(Number(coefs.b), p0.y - p1.y, { shouldRound: false })
-        coefs.c = round(p0.y - Number(coefs.b) * logOptions(p0.x, _a))
-        coefs.a = round(_a)
-        return { kind: "valid", value: coefs }
+        const [p0, p1] = await askPoints(2),
+            base: Real | null = toReal((p0.x / p1.x) ** (numeric(coefs.b) / (p0.y - p1.y)))
+        return { kind: "valid", value: base == null || !isPositive(p0.x) || !isLogBase(base) ? coefs : { ...coefs, a: round(base), c: round(p0.y - numeric(coefs.b) * log(p0.x, base)) ?? "c" } }
     }
 
-    // TODO - "a" e "b" juntos ainda não suportado
-    return { kind: "note", note: { v1: "a", v2: "b", v3: "c" }, value: { ...coefs, a: -1, b: 1, c: 0 } }
+    return { kind: "note", note: { v1: "a", v2: "b", v3: "c" }, value: { ...coefs, a: num(-1), b: ONE, c: ZERO } }
 }
 
-export function resolveUnknown({ a = State.current.numericA, b = State.current.numericB, c = State.current.numericC }: Partial<NamedCoefficients> = {}, funcType: FunctionType = "poly"): Coefficients {
-    const coefs = { a, b, c }
+export async function resolveUnknown(io: AlgebraIO, { a = State.current.numericA ?? "a", b = State.current.numericB ?? "b", c = State.current.numericC ?? "c" }: Partial<NamedCoefficients> = {}, kind: FunctionType = "poly"): Promise<NamedCoefficients> {
+    const coefs: NamedCoefficients = { a, b, c }
 
-    if (funcType !== "poly" && (coefs.a === 0 || coefs.a === 1 || coefs.b === 0)) return { a: isFiniteNumber(coefs.a) ? coefs.a : 0, b: isFiniteNumber(coefs.b) ? coefs.b : 0, c: isFiniteNumber(coefs.c) ? coefs.c : 0 }
+    if (kind !== "poly" && (coefs.a === 0 || coefs.a === 1 || coefs.b === 0)) return { a: numeric(coefs.a), b: numeric(coefs.b), c: numeric(coefs.c) }
 
-    resolveFunction(coefs, funcType)
-    const solvers: Partial<Record<FunctionType, (coefs: Partial<Coefficients>) => NotedResult<Coefficients, { v1: "a"; v2: "b" | "c"; v3: "b" | "c" }>>> = { poly: solvePolynomial, exp: solveExponential, log: solveLogarithmic },
-        solver = solvers[funcType]
+    await io.showFunction(coefs, kind)
+    const solvers: Partial<Record<FunctionType, (coefs: NamedCoefficients, askPoints: PointsReader) => Promise<NotedResult<NamedCoefficients, { v1: "a"; v2: "b" | "c"; v3: "b" | "c" }>>>> = { poly: solvePolynomial, exp: solveExponential, log: solveLogarithmic },
+        solver = solvers[kind]
 
     if (solver == null) return coefs
-    let [current, limit] = [coefs, 0]
+    let current: NamedCoefficients = coefs,
+        limit = 0
 
     do {
-        const solved = solver(current)
+        const solved = await solver(current, io.askPoints)
 
         if (solved.kind === "invalid") {
-            notify(tr("errors.error002"), { explanation: tr("errors.reason", { reason: tr("algebra.invalidValues") }), type: "error" })
+            await io.notifyInvalidValues()
             continue
         }
 
-        if (COEF_KEYS.every(key => isFiniteNumber(solved.value[key]))) return solved.value
+        if (COEF_KEYS.every(key => typeof solved.value[key] === "number")) return solved.value
 
-        notify(tr("errors.error002"), { explanation: tr("errors.reason", { reason: tr("algebra.invalidValues") }), type: "error" })
-        if (notify(tr("algebra.changeValues"), { explanation: tr("algebra.changeValuesExp"), type: "confirm" })) {
+        await io.notifyInvalidValues()
+        if (await io.confirmChangeValues()) {
             State.askCoeffs = "on"
             State.loop = "on"
             return { a: "a", b: "b", c: "c" }
         }
 
-        current = Object.fromEntries(COEF_KEYS.map(key => [key, isFiniteNumber(solved.value[key]) ? solved.value[key] : key])) as unknown as NamedCoefficients
+        current = solved.value
     } while (limit++ < Config.iterationLimit)
 
     return current

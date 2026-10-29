@@ -1,28 +1,48 @@
-import { isFiniteNumber } from "../Core/checks.js"
-import { Config, DEFAULT_CONFIG, type ConfigKey } from "../Core/config.js"
-import { round } from "../Math/numeric.js"
+import { isReal } from "../Base/checks.js"
+import { Config, type ConfigKey, DEFAULT_CONFIG } from "../Base/config.js"
+import { round } from "../Base/numeric.js"
+import { isInfinity, parseReal } from "../Base/quantity.js"
+import { cardinality, complement } from "../Base/sets.js"
 import { tr } from "./i18n.js"
 
 function capitalize(text = ""): string {
-    return lowercase(text).replaceAll(/\p{L}+/gv, word => uppercase(word[0]) + word.slice(1))
+    return lowercase(text).replaceAll(/\p{L}[\p{L}'’]*/gv, word => uppercase(word[0]) + word.slice(1))
 }
 
-function formatValue(value: Value | boolean = true): string {
+function formatValue(value: string | number | boolean = true): string {
     return typeof value === "boolean" ? tr(value ? "writing.yes" : "writing.no") : String(value)
+}
+
+export function formatReal(value: Real | null): string {
+    return value == null ? "∄" : decimalOptions(value)
+}
+
+export function formatExtended(value: ExtendedReal): string {
+    return isInfinity(value) ? (value > 0 ? "∞" : "−∞") : formatReal(value)
+}
+
+export function formatInterval({ lower, upper }: Interval): string {
+    return `${lower.closure === "closed" ? "[" : "("}${formatExtended(lower.value)}, ${formatExtended(upper.value)}${upper.closure === "closed" ? "]" : ")"}`
+}
+
+export function formatSet(set: RealSet): string {
+    if (set.length === 0) return "∅"
+    if (complement(set).length === 0) return "ℝ"
+    return cardinality(set) === "infinite" ? set.map(element => formatInterval(element)).join(" ∪ ") : `{${set.map(({ lower }: Interval): string => formatExtended(lower.value)).join(", ")}}`
 }
 
 export function configItem(message: string, name: ConfigKey): string {
     return tr("writing.currentDefault", { message, current: formatValue(Config[name]), default: formatValue(DEFAULT_CONFIG[name]) })
 }
 
-export function decimalOptions(number: Value = 0, { type = "string", shouldRound = true, places = Config.decimalPlaces }: NumericOptions = {}): string {
+export function decimalOptions(number: string | number = 0, { type = "string", shouldRound = true, places = Config.decimalPlaces }: NumericOptions = {}): string {
     let result = String(number)
 
     if (type === "number") return replace(result, ",", ".")
 
-    const num = Number(result)
+    const value = parseReal(result)
 
-    if (shouldRound && isFiniteNumber(num)) result = String(round(num, places))
+    if (shouldRound && isReal(value)) result = String(round(value, places))
     if (Config.decimalSeparator === "comma") result = replace(result, ".", ",")
 
     return result
@@ -44,7 +64,10 @@ export function lowercase(text = ""): string {
 }
 
 export function noAccents(text = ""): string {
-    return text.normalize("NFD").replaceAll(/\p{M}/gv, "")
+    return text
+        .normalize("NFD")
+        .replaceAll(/(?<=\p{L})\p{M}+/gv, "")
+        .normalize("NFC")
 }
 
 const localizedReplacementsCache = new Map<Language, [string, string][]>(),
@@ -75,6 +98,7 @@ const localizedReplacementsCache = new Map<Language, [string, string][]>(),
         ["⁺", "+"],
         ["⁻", "-"],
         ["⁼", "="],
+        ["⁽⁽", "^(("],
         ["⁽", "^("],
         ["⁾", ")"],
         ["₁", "1"],
@@ -126,6 +150,7 @@ function getLocalizedReplacements(): [string, string][] {
 
     const computed: [string, string][] = [
         ["-∞", tr("symbols.negativeInfinity")],
+        ["−∞", tr("symbols.negativeInfinity")],
         ["¬", tr("symbols.notWord")],
         ["Δ", tr("symbols.delta")],
         ["α", tr("symbols.alpha")],
@@ -212,14 +237,14 @@ function replace(text = "", from = "", to = ""): string {
 }
 
 function replaceGroup(text = "", list: readonly (readonly [string, string])[] = [["", ""]]): string {
-    return list.reduce((acc, [from, to]) => replace(acc, from, to), text)
+    return list.reduce((total, [from, to]) => replace(total, from, to), text)
 }
 
 function simplifyMultiplication(text = ""): string {
     return replace(text, " · ", "")
 }
 
-export function subscript(value: Value = ""): string {
+export function subscript(value: string | number = ""): string {
     return Config.showUnicode === "on"
         ? replaceGroup(String(value), [
               ["-", "₋"],
@@ -239,5 +264,8 @@ export function subscript(value: Value = ""): string {
 }
 
 export function uppercase(text = ""): string {
-    return replace(text.toUpperCase(), "Ƒ", "ƒ")
+    return replaceGroup(text.toUpperCase(), [
+        ["Ƒ", "ƒ"],
+        ["Π", "π"],
+    ])
 }

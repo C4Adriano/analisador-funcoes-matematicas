@@ -1,3 +1,4 @@
+import type { INPUT_FAILED } from "../Base/consts.js"
 import { MathFunction } from "../Math/math.js"
 
 class StateStore {
@@ -8,14 +9,14 @@ class StateStore {
     public keepChoice: Toggle = "off"
     public lastRecorded: NamedCoefficients | null = null
     public loop: Toggle = "off"
-    public menuChoice: number | CommandNames = "start"
+    public menuChoice: Real | CommandNames | typeof INPUT_FAILED = "start"
 
     public get funcChanged(): boolean {
         return this.current.a !== this.lastRecorded?.a || this.current.b !== this.lastRecorded.b || this.current.c !== this.lastRecorded.c
     }
 
     public get currentCoefs(): NamedCoefficients {
-        return { a: this.current.a, b: this.current.b, c: this.current.c }
+        return this.current.toCoefficients()
     }
 
     public set currentCoefs(coefs: NamedCoefficients) {

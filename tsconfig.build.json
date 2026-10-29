@@ -1,0 +1,1 @@
+{ "compilerOptions": { "incremental": false, "noEmit": false, "noEmitOnError": true, "outDir": "dist", "removeComments": true, "rootDir": "src" }, "extends": "./tsconfig.json", "include": ["src/**/*.ts", "src/**/*.json"] }

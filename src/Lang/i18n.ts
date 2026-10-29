@@ -1,4 +1,4 @@
-import { Config } from "../Core/config.js"
+import { Config } from "../Base/config.js"
 
 import enGB from "./i18n/en-GB.json" with { type: "json" }
 import enUS from "./i18n/en-US.json" with { type: "json" }
@@ -10,13 +10,12 @@ import ptPT from "./i18n/pt-PT.json" with { type: "json" }
 const dictionaries = Object.freeze({ "pt-br": ptBR, "pt-pt": ptPT, "en-us": enUS, "en-gb": enGB, "es-419": es419, "es-es": esES }) satisfies Record<Language, typeof ptBR>,
     COMMA_DECIMAL_LANGUAGES = new Set<Language>(["pt-br", "pt-pt", "es-419", "es-es"])
 
-export function changeLanguage(language: Language = "pt-br"): "same" | "notChange" | "changed" {
+export function changeLanguage(language: Language = "pt-br"): "same" | "changed" {
     if (Config.language === language) return "same"
-    if (!confirm(tr("i18n.confirmChangeLanguage", { language }))) return "notChange"
 
-    const useComma = COMMA_DECIMAL_LANGUAGES.has(language)
-    Config.decimalSeparator = useComma ? "comma" : "dot"
-    Config.showAccents = useComma ? "on" : "off"
+    const shouldUseComma = COMMA_DECIMAL_LANGUAGES.has(language)
+    Config.decimalSeparator = shouldUseComma ? "comma" : "dot"
+    Config.showAccents = shouldUseComma ? "on" : "off"
 
     Config.language = language
     Config.save()
@@ -25,18 +24,18 @@ export function changeLanguage(language: Language = "pt-br"): "same" | "notChang
 
 const trCache = new Map<string, string>()
 
-export function tr(...args: TrArgs): string
-export function tr(key: TranslationKey, params?: Record<string, Value>): string
-export function tr(key: TranslationKey, params?: Record<string, Value>): string {
+export function tr(...parameters: TranslationParameters): string
+export function tr(key: TranslationKey): string
+export function tr(key: TranslationKey, parameters?: Record<string, Parameter>): string {
     const cacheKey = `${Config.language}:${key}`
     let raw = trCache.get(cacheKey)
 
     if (raw == null) {
-        const resolved = (key as string).split(".").reduce<unknown>((obj, part) => (typeof obj !== "object" || obj == null ? null : (obj as Record<string, unknown>)[part]), dictionaries[Config.language])
+        const resolved = (key as string).split(".").reduce<unknown>((object, part) => (typeof object !== "object" || object == null ? null : (object as Record<string, unknown>)[part]), dictionaries[Config.language])
         if (typeof resolved !== "string") return key
         trCache.set(cacheKey, resolved)
         raw = resolved
     }
 
-    return params ? Object.entries(params).reduce((str, [k, v]) => str.split(`{${k}}`).join(String(v)), raw) : raw
+    return parameters ? raw.replaceAll(/\{(\w+)\}/gv, (match: string, name: string): string => (Object.hasOwn(parameters, name) ? String(parameters[name]) : match)) : raw
 }

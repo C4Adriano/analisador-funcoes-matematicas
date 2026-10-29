@@ -6,7 +6,7 @@
         "lib": ["ESNext", "DOM"],
         "module": "nodenext",
         "moduleDetection": "force",
-        "noEmitOnError": true,
+        "noEmit": true,
         "noErrorTruncation": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitOverride": true,
@@ -15,14 +15,12 @@
         "noUncheckedIndexedAccess": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "outDir": "src",
-        "removeComments": true,
         "resolveJsonModule": true,
-        "rootDir": "src",
+        "types": ["node"],
         "verbatimModuleSyntax": true
     },
-    "exclude": ["pessoal", "**/node_modules"],
+    "exclude": ["**/node_modules", "dist"],
     "files": ["src/global.d.ts"],
-    "include": ["src/**/*.ts"],
-    "watchOptions": { "excludeDirectories": ["**/node_modules", "pessoal"] }
+    "include": ["**/*.ts", "pessoal/run.js", "pessoal/node-shim.js"],
+    "watchOptions": { "excludeDirectories": ["**/node_modules", "dist"] }
 }

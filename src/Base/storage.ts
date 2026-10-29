@@ -1,4 +1,13 @@
-const memory = new Map<string, string>()
+const memory: Map<string, string> = new Map<string, string>()
+
+function didStorageActionSucceed(action: () => void): boolean {
+    try {
+        action()
+        return true
+    } catch {
+        return false
+    }
+}
 
 export function readStorage(key: string): string | null {
     if (memory.has(key)) return memory.get(key) ?? null
@@ -12,20 +21,14 @@ export function readStorage(key: string): string | null {
 
 export function writeStorage(key: string, value: string): void {
     memory.set(key, value)
-
-    try {
+    didStorageActionSucceed(() => {
         localStorage.setItem(key, value)
-    } catch {
-        // Armazenamento indisponível ou cheio: o valor fica só na memória da sessão.
-    }
+    })
 }
 
 export function removeStorage(key: string): void {
     memory.delete(key)
-
-    try {
+    didStorageActionSucceed(() => {
         localStorage.removeItem(key)
-    } catch {
-        // Armazenamento indisponível: nada para remover.
-    }
+    })
 }

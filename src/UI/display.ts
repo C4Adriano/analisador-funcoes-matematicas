@@ -1,46 +1,62 @@
-import { isFiniteNumber } from "../Core/checks.js"
-import { Config } from "../Core/config.js"
-import { INPUT_FAILED } from "../Core/consts.js"
-import { tr } from "../Lang/i18n.js"
+import { isReal } from "../Base/checks.js"
+import { Config } from "../Base/config.js"
+import { INPUT_FAILED } from "../Base/consts.js"
+import { round } from "../Base/numeric.js"
+import { toReal } from "../Base/quantity.js"
+import { changeLanguage, tr } from "../Lang/i18n.js"
 import { decimalOptions, formatMessage } from "../Lang/writing.js"
-import { round } from "../Math/numeric.js"
+import { showAlert, showConfirm, showPrompt } from "./io.js"
 
-function _notify(message = "", explanation = "", asConfirm = false): boolean | null {
-    return asConfirm ? confirm(formatMessage(message, `${explanation}\n\n${tr("ui.confirm")}`)) : (alert(formatMessage(message, explanation)) as unknown as null)
+function withHeading(message: string, type: MessageType): string {
+    if (type === "error") return `=== ${tr("ui.error")} ===\n${message}`
+    return type === "warning" ? `=== ${tr("ui.warning")} ===\n${message}` : message
 }
 
-export function notify(message: string, option: MessageOptions & { type: "warning"; asConfirm?: false }): void
-export function notify(message: string, option: (MessageOptions & { type: "warning"; asConfirm: true }) | (MessageOptions & { type: "confirm"; asConfirm?: never })): boolean
-export function notify(message?: string, option?: MessageOptions & { type?: "display" | "error" | "console"; asConfirm?: never }): void
-export function notify(message: string, option?: MessageOptions): boolean | null
-export function notify(message = "", { explanation = "", type = "display", asConfirm = false }: { explanation?: string; type?: MessageType; asConfirm?: boolean } = {}): boolean | null {
-    if (type === "display") return _notify(message, explanation)
-    if (type === "confirm") return _notify(message, explanation, true)
-    if (type === "error") return Config.showErrors === "on" ? _notify(`=== ${tr("ui.error")} ===\n${message}`, explanation) : null
-    if (type === "warning") return _notify(`=== ${tr("ui.warning")} ===\n${message}`, explanation, asConfirm)
+export async function notify(message = "", { explanation = "", type = "display" }: MessageOptions = {}): Promise<void> {
+    if (type === "console") {
+        console.warn(message, explanation)
+        return
+    }
 
-    console.warn(message, explanation)
-    return null
+    if (type === "error" && Config.showErrors !== "on") return
+
+    await showAlert(formatMessage(withHeading(message, type), explanation))
 }
 
-export function input(message: string, options?: InputOptions & { type?: "string" }): string
-export function input(message: string, options?: InputOptions & { type: "number" }): number
-export function input(message = "", { explanation = "", type = "string", places = Config.decimalPlaces, placeholder = "" }: InputOptions = {}): Value | typeof INPUT_FAILED {
+export async function isActionConfirmed(message: string, { explanation = "", type = "display" }: { explanation?: string; type?: "display" | "warning" } = {}): Promise<boolean> {
+    return showConfirm(formatMessage(withHeading(message, type), `${explanation}\n\n${tr("ui.confirm")}`))
+}
+
+export async function readText(message: string, { explanation = "", placeholder = "" }: Pick<InputOptions, "explanation" | "placeholder"> = {}): Promise<string> {
+    const raw = await showPrompt(formatMessage(message, explanation), placeholder)
+    return raw?.trim() ?? ""
+}
+
+export async function isInputAccepted(text: string, type: NonNullable<InputOptions["type"]> = "string"): Promise<boolean> {
+    const value = type === "number" ? decimalOptions(text, { type: "number" }) : text
+
+    if (type === "number" && !isReal(value)) return false
+    return Config.inputConfirm === "on" ? isActionConfirmed(tr("ui.inputConfirm", { input: value }), { explanation: tr("ui.inputConfirmNote"), type: "warning" }) : true
+}
+
+export function input(message: string, options?: InputOptions & { type?: "string" }): Promise<string | typeof INPUT_FAILED>
+export function input(message: string, options: InputOptions & { type: "number" }): Promise<Real | typeof INPUT_FAILED>
+export async function input(message = "", { explanation = "", type = "string", places = Config.decimalPlaces, placeholder = "" }: InputOptions = {}): Promise<string | Real | typeof INPUT_FAILED> {
     let limit = 0
 
     do {
-        const raw = prompt(formatMessage(message, explanation), placeholder)
-        if (raw == null) continue
+        const text: string = await readText(message, { explanation, placeholder })
+        if (text === "" || !(await isInputAccepted(text, type))) continue
+        if (type === "string") return text
 
-        const text = raw.trim()
-        if (text === "") continue
-
-        if (type === "number" && !isFiniteNumber(decimalOptions(text, { type: "number" }))) continue
-
-        if (Config.inputConfirm === "on" && !notify(tr("ui.inputConfirm", { input: type === "number" ? decimalOptions(text, { type: "number" }) : text }), { asConfirm: true, explanation: tr("ui.inputConfirmNote"), type: "warning" })) continue
-
-        return type === "number" ? round(Number(decimalOptions(text, { type: "number" })), places) : text
+        const value: Real | null = round(toReal(decimalOptions(text, { type: "number" })), places)
+        if (value != null) return value
     } while (limit++ < Config.iterationLimit)
 
     return INPUT_FAILED
+}
+
+export async function confirmLanguageChange(language: Language = "pt-br"): Promise<"same" | "notChange" | "changed"> {
+    if (Config.language === language) return "same"
+    return (await isActionConfirmed(tr("i18n.confirmChangeLanguage", { language }))) ? changeLanguage(language) : "notChange"
 }
