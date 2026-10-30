@@ -33,7 +33,6 @@ const layers = ["Base", "Lang", "Math", "UI", "Core"],
         complexity: ["warn", { max: 30 }],
         eqeqeq: ["warn", "smart"],
         "func-style": ["warn", "declaration"],
-        "local/no-comments": "warn",
         "max-depth": ["warn", { max: 5 }],
         "no-console": ["warn", { allow: ["warn", "error"] }],
         "one-var": ["warn", { const: "consecutive", let: "consecutive" }],
@@ -75,24 +74,7 @@ const layers = ["Base", "Lang", "Math", "UI", "Core"],
             "unicorn/no-null",
             "unicorn/prefer-switch",
         ].map(ruleName => [ruleName, "off"]),
-    ),
-    allowedCommentPattern = /^\s*(eslint-|@ts-|\/\s*<reference)/u,
-    localPlugin = {
-        rules: {
-            "no-comments": {
-                meta: { type: "suggestion", schema: [], messages: { forbidden: "Comments are not allowed." } },
-                create(context) {
-                    return {
-                        Program() {
-                            for (const comment of context.sourceCode.getAllComments()) {
-                                if (!allowedCommentPattern.test(comment.value)) context.report({ loc: comment.loc, messageId: "forbidden" })
-                            }
-                        },
-                    }
-                },
-            },
-        },
-    }
+    )
 
 function layerBlock(layer, index) {
     const forbidden = layers.slice(index + 1)
@@ -108,7 +90,7 @@ export default defineConfig([
     {
         files: ["src/**/*.ts"],
         extends: [js.configs.all, tseslint.configs.all, unicorn.configs.all, regexp.configs.all, promise.configs["flat/recommended"], security.configs.recommended, sonarjs.configs.recommended, noUnsanitized.configs.recommended, eslintCommentsConfigs.recommended],
-        plugins: { regexp, unicorn, promise, security, local: localPlugin },
+        plugins: { regexp, unicorn, promise, security },
         languageOptions: { parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname } },
         rules: { ...disabledRules, ...commonRules },
     },

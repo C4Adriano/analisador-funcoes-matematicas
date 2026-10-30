@@ -1,7 +1,7 @@
-import { isInInterval, isReal } from "../Base/checks.js"
+import { isInInterval, isNumber } from "../Base/checks.js"
 import { Config, type ConfigKey, DEFAULT_CONFIG } from "../Base/config.js"
 import { INPUT_FAILED } from "../Base/consts.js"
-import { ensureReal, num, ONE, placesOf, toNatural, toPlaces, toPrecision, toReal, ZERO } from "../Base/quantity.js"
+import { ensureReal, toPlaces, toPrecision } from "../Base/quantity.js"
 import { tr } from "../Lang/i18n.js"
 import { configItem, decimalOptions, uppercase } from "../Lang/writing.js"
 import { resolveUnknown } from "../Math/algebra.js"
@@ -53,17 +53,17 @@ function submenuFooter(backLabel: string): string {
     return `----------------\n6 = ${tr("main.history")} | 7 = ${tr("main.settings")} | 8 = ${tr("main.review")} | 9 = ${tr("main.change")} | 0 = ${backLabel}`
 }
 
-async function runSubmenu(buildMenuText: () => string, maxOption: Natural, handlers: Record<Raw, () => Promise<void>>): Promise<void> {
+async function runSubmenu(buildMenuText: () => string, maxOption: number, handlers: Record<number, () => Promise<void>>): Promise<void> {
     let isSubLoop: boolean
 
     do {
-        const subtype = await inputCommands(buildMenuText(), { type: "number", places: placesOf(0), placeholder: "0" })
+        const subtype = await inputCommands(buildMenuText(), { type: "number", places: 0, placeholder: "0" })
         if (subtype === INPUT_FAILED) return
 
-        isSubLoop = !((isReal(subtype) && isInInterval(subtype, [0, maxOption, 6, 9])) || isValidCommand(subtype))
+        isSubLoop = !((isNumber(subtype) && isInInterval(subtype, [0, maxOption, 6, 9])) || isValidCommand(subtype))
 
         if (!isSubLoop) {
-            if (isReal(subtype) && isInInterval(subtype, [6, 9])) {
+            if (isNumber(subtype) && isInInterval(subtype, [6, 9])) {
                 State.menuChoice = subtype
                 State.loop = "on"
                 State.keepChoice = "on"
@@ -71,7 +71,7 @@ async function runSubmenu(buildMenuText: () => string, maxOption: Natural, handl
                 State.menuChoice = subtype
                 State.loop = "on"
                 if (subtype !== "exit") State.keepChoice = "on"
-            } else if (subtype === ZERO) State.loop = "on"
+            } else if (subtype === 0) State.loop = "on"
             else await handlers[subtype]?.()
         }
     } while (isSubLoop)
@@ -91,11 +91,11 @@ async function handleExpOrLog(kind: FunctionType, label: string, resolveFunction
     if (State.current.isConstantExpLog) {
         await notify(tr("errors.error004", { type: label }), { explanation: "(a = 0) ∨ (a = 1) ∨ (b = 0)", type: "error" })
 
-        if (State.current.numericA === ONE) State.current.c = toReal(State.current.numericC! + State.current.numericB!)!
+        if (State.current.numericA === 1) State.current.c = State.current.numericC + State.current.numericB
 
-        State.current.a = ZERO
-        State.current.b = ZERO
-        State.menuChoice = ONE
+        State.current.a = 0
+        State.current.b = 0
+        State.menuChoice = 1
         State.keepChoice = "on"
         State.loop = "on"
         return
@@ -122,23 +122,23 @@ async function handleTrig(kind: FunctionType, label: string, resolveFunction: (c
     if (!State.current.isConstantTrig) return
 
     await notify(tr("errors.error004", { type: label }), { explanation: "(a = 0) ∨ (b = 0)", type: "error" })
-    if (shouldMerge && State.current.numericA === ZERO) State.current.c = toReal(State.current.numericC! + State.current.numericB!)!
+    if (shouldMerge && State.current.numericA === 0) State.current.c = State.current.numericC + State.current.numericB
 
-    State.current.a = ZERO
-    State.current.b = ZERO
-    State.menuChoice = ONE
+    State.current.a = 0
+    State.current.b = 0
+    State.menuChoice = 1
     State.keepChoice = "on"
     State.loop = "on"
 }
 
-const settingsPageActions: Record<Raw, Record<Raw, () => Promise<void>>> = {
+const settingsPageActions: Record<number, Record<number, () => Promise<void>>> = {
         1: {
             1: async () => {
                 const LANGUAGES: Language[] = ["pt-br", "pt-pt", "en-us", "en-gb", "es-419", "es-es"],
                     displayLocale = Config.language.replace(/-\w+$/v, m => uppercase(m)),
                     languageNames = new Intl.DisplayNames([displayLocale], { type: "language" }),
                     optionLines = LANGUAGES.map((lang, index) => `${index + 1} = ${languageNames.of(lang)}`),
-                    question = await rangeOptions(`${configItem(tr("main.whatLanguage"), "language")}\n${optionLines.join("\n")}`, { explanation: tr("main.noteLanguage"), min: num(1), max: num(6) }),
+                    question = await rangeOptions(`${configItem(tr("main.whatLanguage"), "language")}\n${optionLines.join("\n")}`, { explanation: tr("main.noteLanguage"), min: 1, max: 6 }),
                     language: Language = LANGUAGES.at(question - 1) ?? "pt-br"
 
                 if (Config.language === language) await notify(tr("commands.languageAlready"), { type: "warning" })
@@ -157,7 +157,7 @@ const settingsPageActions: Record<Raw, Record<Raw, () => Promise<void>>> = {
             4: async () => {
                 const cases: TextCase[] = ["capitalized", "uppercase", "lowercase", "default"],
                     message = [tr("main.textCaseCapitalized"), tr("main.textCaseUppercase"), tr("main.textCaseLowercase"), tr("main.textCaseNormal")].map((label, index) => `${index + 1} = ${label}`).join("\n"),
-                    choice = await rangeOptions(`${configItem(tr("main.changeTextCase"), "textCase")}\n${message}`, { explanation: tr("main.noteTextCase"), min: num(1), max: num(4) })
+                    choice = await rangeOptions(`${configItem(tr("main.changeTextCase"), "textCase")}\n${message}`, { explanation: tr("main.noteTextCase"), min: 1, max: 4 })
                 Config.textCase = cases.at(choice - 1) ?? "default"
             },
             5: async () => {
@@ -186,26 +186,26 @@ const settingsPageActions: Record<Raw, Record<Raw, () => Promise<void>>> = {
         },
         3: {
             1: async () => {
-                Config.decimalPlaces = toPlaces(await rangeOptions(configItem(tr("main.howManyDecimalPlaces"), "decimalPlaces"), { explanation: tr("main.noteDecimalPlaces"), min: num(3), max: num(10) })) ?? Config.decimalPlaces
+                Config.decimalPlaces = toPlaces(await rangeOptions(configItem(tr("main.howManyDecimalPlaces"), "decimalPlaces"), { explanation: tr("main.noteDecimalPlaces"), min: 3, max: 10 })) ?? Config.decimalPlaces
                 State.current.a = settleCoef(State.current.a)
                 State.current.b = settleCoef(State.current.b)
                 State.current.c = settleCoef(State.current.c)
             },
             2: async () => {
-                Config.logPrecision = toPrecision(await rangeOptions(configItem(tr("main.whatLogPrecision"), "logPrecision"), { explanation: tr("main.noteLogPrecision"), min: num(1e-12), max: num(1e-6), places: placesOf(20) })) ?? Config.logPrecision
+                Config.logPrecision = toPrecision(await rangeOptions(configItem(tr("main.whatLogPrecision"), "logPrecision"), { explanation: tr("main.noteLogPrecision"), min: 1e-12, max: 1e-6, places: 20 })) ?? Config.logPrecision
             },
             3: async () => {
-                Config.divPrecision = toPrecision(await rangeOptions(configItem(tr("main.whatDivisionPrecision"), "divPrecision"), { explanation: tr("main.noteDivisionPrecision"), min: num(1e-12), max: num(1e-6), places: placesOf(20) })) ?? Config.divPrecision
+                Config.divPrecision = toPrecision(await rangeOptions(configItem(tr("main.whatDivisionPrecision"), "divPrecision"), { explanation: tr("main.noteDivisionPrecision"), min: 1e-12, max: 1e-6, places: 20 })) ?? Config.divPrecision
             },
             4: async () => {
-                Config.iterationLimit = toNatural(await rangeOptions(configItem(tr("main.whatIterationLimit"), "iterationLimit"), { explanation: tr("main.noteIterationLimit"), min: num(100), max: num(10_000), places: placesOf(0) }))
+                Config.iterationLimit = await rangeOptions(configItem(tr("main.whatIterationLimit"), "iterationLimit"), { explanation: tr("main.noteIterationLimit"), min: 100, max: 10_000, places: 0 })
             },
             5: async () => {
                 Config.angleUnit = (await isActionConfirmed(configItem(tr("main.changeDegrees"), "angleUnit"), { explanation: tr("main.noteDegrees") })) ? "deg" : "rad"
             },
         },
     },
-    TYPE_ALIASES: Record<CommandNames, Raw> = { history: 6, config: 7, review: 8, change: 9, exit: 0, start: -1 }
+    TYPE_ALIASES: Record<CommandNames, number> = { history: 6, config: 7, review: 8, change: 9, exit: 0, start: -1 }
 
 async function runHistoryMenu(): Promise<void> {
     State.loop = "on"
@@ -230,13 +230,13 @@ async function runHistoryMenu(): Promise<void> {
 
 async function runSettingsMenu(): Promise<void> {
     let page = 1,
-        choice: Real | CommandNames
+        choice: number | CommandNames
 
     do {
-        State.menuChoice = num(-1)
+        State.menuChoice = -1
         State.loop = "on"
 
-        const configOptions: List<string> = [
+        const configOptions: string[] = [
                 configItem(tr("main.language"), "language"),
                 configItem(tr("main.unicode"), "showUnicode"),
                 configItem(tr("main.accents"), "showAccents"),
@@ -270,7 +270,7 @@ async function runSettingsMenu(): Promise<void> {
                 ...configOptions.slice(start, start + 6).map((option, index) => `\n${index + 1} = ${option}`),
                 `\n----------------\n7 = ${tr("main.restoreDefault")} | 8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`,
             ].join(""),
-            { max: num(9), commands: true },
+            { max: 9, commands: true },
         )
 
         if (choice === 7) {
@@ -285,16 +285,16 @@ async function runSettingsMenu(): Promise<void> {
         } else if (choice === 8) page--
         else if (choice === 9) page++
         else if (choice === "exit") {
-            choice = ZERO
+            choice = 0
             State.menuChoice = "exit"
-        } else if (isReal(choice)) {
+        } else if (isNumber(choice)) {
             const pageActions = settingsPageActions[page],
                 action = pageActions?.[choice]
             if (action) await action()
         }
 
-        if (isReal(choice) && isInInterval(choice, [1, 6])) Config.save()
-    } while (choice !== ZERO)
+        if (isNumber(choice) && isInInterval(choice, [1, 6])) Config.save()
+    } while (choice !== 0)
 }
 
 do {
@@ -310,7 +310,7 @@ do {
     if (State.keepChoice === "off" || State.menuChoice === "start") {
         State.menuChoice = await inputCommands(`=== ${tr("main.start")} ===\n${tr("main.whatWant")}\n1 = ${tr("main.polynomialFunctions")}\n2 = ${tr("main.nonPolynomialFunctions")}\n3 = ${tr("main.trigonometricFunctions")}\n${submenuFooter(tr("main.exit"))}`, {
             type: "number",
-            places: placesOf(0),
+            places: 0,
             placeholder: "0",
         })
     }
@@ -319,7 +319,7 @@ do {
     State.askCoeffs = "off"
     State.loop = "off"
 
-    if ((isReal(State.menuChoice) && isInInterval(State.menuChoice, [0, 3, 6, 9])) || isValidCommand(State.menuChoice)) {
+    if ((isNumber(State.menuChoice) && isInInterval(State.menuChoice, [0, 3, 6, 9])) || isValidCommand(State.menuChoice)) {
         const menuKey = isValidCommand(State.menuChoice) ? TYPE_ALIASES[State.menuChoice] : State.menuChoice
 
         if (menuKey === 1) {
@@ -329,12 +329,12 @@ do {
 
             State.current.isConstant ? await resolveConstant() : State.current.isAffine ? await resolveAffine() : await resolveQuadratic()
         } else if (menuKey === 2)
-            await runSubmenu(() => `=== Menu ===\n${tr("main.whatWant")}\n1 = ${tr("main.exponentialFunction")}\n2 = ${tr("main.logarithmicFunction")}\n${submenuFooter(tr("commands.back"))}`, num(2), {
+            await runSubmenu(() => `=== Menu ===\n${tr("main.whatWant")}\n1 = ${tr("main.exponentialFunction")}\n2 = ${tr("main.logarithmicFunction")}\n${submenuFooter(tr("commands.back"))}`, 2, {
                 1: async () => handleExpOrLog("exp", tr("main.exponential"), async coefs => resolveExponential(coefs)),
                 2: async () => handleExpOrLog("log", tr("main.logarithmic"), async coefs => resolveLogarithmic(coefs)),
             })
         else if (menuKey === 3)
-            await runSubmenu(() => `=== Menu ===\n${tr("main.whatWant")}\n1 = ${tr("main.sineFunction")}\n2 = ${tr("main.cosineFunction")}\n3 = ${tr("main.tangentFunction")}\n${submenuFooter(tr("commands.back"))}`, num(3), {
+            await runSubmenu(() => `=== Menu ===\n${tr("main.whatWant")}\n1 = ${tr("main.sineFunction")}\n2 = ${tr("main.cosineFunction")}\n3 = ${tr("main.tangentFunction")}\n${submenuFooter(tr("commands.back"))}`, 3, {
                 1: async () => handleTrig("sin", tr("main.sine"), async coefs => resolveSine(coefs)),
                 2: async () => handleTrig("cos", tr("main.cosine"), async coefs => resolveCosine(coefs), true),
                 3: async () => handleTrig("tan", tr("main.tangent"), async coefs => resolveTangent(coefs)),

@@ -1,4 +1,4 @@
-import { num, placesOf, precisionOf, PRECISIONS, toNatural } from "./quantity.js"
+import { PRECISIONS } from "./quantity.js"
 import { readStorage, removeStorage, writeStorage } from "./storage.js"
 
 export type ConfigType = { [K in keyof ConfigStore as ConfigStore[K] extends (...parameters: never[]) => unknown ? never : K]: ConfigStore[K] }
@@ -26,21 +26,21 @@ function isValidConfig(key: ConfigKey, value: unknown, fallback: unknown): boole
     if (typeof value !== typeof fallback) return false
     if (key !== "iterationLimit") return VALID_VALUES[key]?.has(value) ?? true
 
-    const limit: Natural | null = toNatural(value)
-    return limit != null && limit >= 100 && limit <= 10_000
+    const limit = Number(value)
+    return limit >= 100 && limit <= 10_000
 }
 
 class ConfigStore {
     public angleUnit: AngleUnit = "deg"
-    public decimalPlaces: Places = placesOf(6)
+    public decimalPlaces: Places = 6
     public decimalSeparator: DecimalSeparator = "comma"
-    public divPrecision: Precision = precisionOf(1e-12)
+    public divPrecision: Precision = 1e-12
     public exitConfirm: Toggle = "on"
     public implicitMulti: Toggle = "on"
     public inputConfirm: Toggle = "off"
-    public iterationLimit: Natural = num(1000)
+    public iterationLimit = 1000
     public language: Language = "pt-br"
-    public logPrecision: Precision = precisionOf(1e-12)
+    public logPrecision: Precision = 1e-12
     public showAccents: Toggle = "on"
     public showErrors: Toggle = "on"
     public showExplanations: Toggle = "on"

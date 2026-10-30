@@ -1,8 +1,6 @@
-import { isReal } from "../Base/checks.js"
+import { isNumber } from "../Base/checks.js"
 import { Config, type ConfigKey, DEFAULT_CONFIG } from "../Base/config.js"
 import { round } from "../Base/numeric.js"
-import { isInfinity, parseReal } from "../Base/quantity.js"
-import { cardinality, complement } from "../Base/sets.js"
 import { tr } from "./i18n.js"
 
 function capitalize(text = ""): string {
@@ -11,24 +9,6 @@ function capitalize(text = ""): string {
 
 function formatValue(value: string | number | boolean = true): string {
     return typeof value === "boolean" ? tr(value ? "writing.yes" : "writing.no") : String(value)
-}
-
-export function formatReal(value: Real | null): string {
-    return value == null ? "∄" : decimalOptions(value)
-}
-
-export function formatExtended(value: ExtendedReal): string {
-    return isInfinity(value) ? (value > 0 ? "∞" : "−∞") : formatReal(value)
-}
-
-export function formatInterval({ lower, upper }: Interval): string {
-    return `${lower.closure === "closed" ? "[" : "("}${formatExtended(lower.value)}, ${formatExtended(upper.value)}${upper.closure === "closed" ? "]" : ")"}`
-}
-
-export function formatSet(set: RealSet): string {
-    if (set.length === 0) return "∅"
-    if (complement(set).length === 0) return "ℝ"
-    return cardinality(set) === "infinite" ? set.map(element => formatInterval(element)).join(" ∪ ") : `{${set.map(({ lower }: Interval): string => formatExtended(lower.value)).join(", ")}}`
 }
 
 export function configItem(message: string, name: ConfigKey): string {
@@ -40,9 +20,9 @@ export function decimalOptions(number: string | number = 0, { type = "string", s
 
     if (type === "number") return replace(result, ",", ".")
 
-    const value = parseReal(result)
+    const value = Number(result)
 
-    if (shouldRound && isReal(value)) result = String(round(value, places))
+    if (shouldRound && isNumber(value)) result = String(round(value, places))
     if (Config.decimalSeparator === "comma") result = replace(result, ".", ",")
 
     return result

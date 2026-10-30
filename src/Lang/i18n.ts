@@ -26,7 +26,7 @@ const trCache = new Map<string, string>()
 
 export function tr(...parameters: TranslationParameters): string
 export function tr(key: TranslationKey): string
-export function tr(key: TranslationKey, parameters?: Record<string, Parameter>): string {
+export function tr(key: TranslationKey, parameters?: Record<string, string | number>): string {
     const cacheKey = `${Config.language}:${key}`
     let raw = trCache.get(cacheKey)
 

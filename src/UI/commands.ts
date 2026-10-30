@@ -1,5 +1,4 @@
 import { Config, type ConfigKey, type ConfigType, isConfigKey } from "../Base/config.js"
-import { isZero, num, toNatural, ZERO } from "../Base/quantity.js"
 import { tr } from "../Lang/i18n.js"
 import { configItem, lowercase, noAccents } from "../Lang/writing.js"
 import { State } from "../Math/state.js"
@@ -10,7 +9,7 @@ import { rangeOptions } from "./ui.js"
 type CommandAction = (argument: boolean | null, parts: [cmd: string, raw: string]) => CommandNames | Promise<CommandNames | null> | Promise<void>
 
 function toggle(argument: boolean | null, key: ConfigKey): Toggle
-function toggle<const Values extends readonly [string, string]>(argument: boolean | null, key: ConfigKey, values: Values): Values[Real]
+function toggle<const Values extends readonly [string, string]>(argument: boolean | null, key: ConfigKey, values: Values): Values[number]
 function toggle(argument: boolean | null, key: ConfigKey, values: readonly [string, string] = ["on", "off"]): string {
     const [first, second] = values
     return argument === null ? (Config[key] === first ? second : first) : argument ? first : second
@@ -49,7 +48,7 @@ async function help(specific: string): Promise<void> {
     const key = Object.keys(cmds),
         total = Math.ceil(key.length / 5)
     let page = 1,
-        answer: Raw | CommandNames
+        answer: number | CommandNames
 
     do {
         page = Math.min(Math.max(page, 1), total)
@@ -59,14 +58,14 @@ async function help(specific: string): Promise<void> {
                 .slice((page - 1) * 5, Math.min(page * 5, key.length))
                 .map(name => `\n/${name} — ${cmds[name]!.short}\n ↳ ${[name, ...cmds[name]!.variations].join(", ")}`)
                 .join("")}\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`,
-            { max: 9 as Integer, commands: true },
+            { max: 9, commands: true },
         )
 
         page += answer === 8 ? -1 : answer === 9 ? 1 : 0
     } while (answer !== 0)
 }
 
-function listCmds(): Record<string, { short: string; long: string; variations: List<string>; action: CommandAction }> {
+function listCmds(): Record<string, { short: string; long: string; variations: string[]; action: CommandAction }> {
     return {
         help: { short: tr("commands.shortHelp"), long: tr("commands.longHelp"), variations: ["ajuda", "help", "a", "h", "cmd", "cmds", "c", "comandos", "?"], action: async (_, [, raw]) => help(raw) },
         search: {
@@ -93,7 +92,7 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
 
                 const total = Math.ceil(results.length / 5)
                 let page = 1,
-                    answer: Raw | CommandNames
+                    answer: number | CommandNames
 
                 do {
                     page = Math.min(Math.max(page, 1), total)
@@ -103,7 +102,7 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
                             .slice((page - 1) * 5, Math.min(page * 5, results.length))
                             .map(name => `\n/${name} — ${cmds[name]!.short}`)
                             .join("")}\n----------------\n8 = ${tr("commands.previous")} | 9 = ${tr("commands.next")} | 0 = ${tr("commands.back")}`,
-                        { max: 9 as Integer, commands: true },
+                        { max: 9, commands: true },
                     )
 
                     page += answer === 8 ? -1 : answer === 9 ? 1 : 0
@@ -206,7 +205,7 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
                 const TEXT_CASES: TextCase[] = ["capitalized", "uppercase", "lowercase", "default"],
                     hasArgument = raw.trim() !== "",
                     target = hasArgument ? noAccents(lowercase(raw)) : "",
-                    TEXT_CASE_ALIASES: Record<TextCase, List<string>> = {
+                    TEXT_CASE_ALIASES: Record<TextCase, string[]> = {
                         capitalized: ["capitalizado", "capitalizada", "capitalize", "capitalized", "capitalise", "capitalised", "cap"],
                         uppercase: ["maiuscula", "maiusculas", "uppercase", "upper"],
                         lowercase: ["minuscula", "minusculas", "lowercase", "lower"],
@@ -215,7 +214,7 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
                 let value: TextCase
 
                 if (hasArgument) {
-                    const match = (Object.entries(TEXT_CASE_ALIASES) as [TextCase, List<string>][]).find(([, aliases]) => aliases.includes(target))?.[0]
+                    const match = (Object.entries(TEXT_CASE_ALIASES) as [TextCase, string[]][]).find(([, aliases]) => aliases.includes(target))?.[0]
 
                     if (match == null) {
                         await notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: target }), type: "error" })
@@ -246,11 +245,11 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
             action: async (_, [, raw]): Promise<void> => {
                 const hasArgument = raw.trim() !== "",
                     target = hasArgument ? noAccents(lowercase(raw)) : "",
-                    DEGREES_ALIASES: Record<AngleUnit, List<string>> = { deg: ["graus", "grau", "degrees", "degree", "deg"], rad: ["radianos", "radians", "rad"] }
+                    DEGREES_ALIASES: Record<AngleUnit, string[]> = { deg: ["graus", "grau", "degrees", "degree", "deg"], rad: ["radianos", "radians", "rad"] }
                 let value: AngleUnit
 
                 if (hasArgument) {
-                    const match = (Object.entries(DEGREES_ALIASES) as [AngleUnit, List<string>][]).find(([, aliases]) => aliases.includes(target))?.[0]
+                    const match = (Object.entries(DEGREES_ALIASES) as [AngleUnit, string[]][]).find(([, aliases]) => aliases.includes(target))?.[0]
 
                     if (match == null) {
                         await notify(tr("commands.invalidSetting"), { explanation: tr("commands.invalidSettingExp", { setting: target }), type: "error" })
@@ -268,7 +267,7 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
             long: tr("commands.longLanguage"),
             variations: ["lingua", "language", "lang", "idioma", "pt", "pt-br", "pt-pt", "portugues", "portuguese", "brasileiro", "brazilian", "br", "ptbr", "en", "en-us", "en-gb", "ingles", "english", "anglo", "eua", "usa", "uk", "es", "es-es", "es-419", "espanol"],
             action: async (_, [command, raw]): Promise<void> => {
-                const LANGUAGE_ALIASES: Record<Language, List<string>> = {
+                const LANGUAGE_ALIASES: Record<Language, string[]> = {
                         "pt-br": ["br", "pt-br", "ptbr", "brasileiro", "brazilian", "brasil", "brazil"],
                         "pt-pt": ["pt", "pt-pt", "ptpt", "portugues", "portuguese", "portugal"],
                         "en-us": ["en", "en-us", "enus", "americano", "american", "eua", "usa"],
@@ -278,7 +277,7 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
                     },
                     hasArgument = raw.trim() !== "",
                     target = noAccents(lowercase(hasArgument ? raw : command)),
-                    entries = Object.entries(LANGUAGE_ALIASES) as [Language, List<string>][],
+                    entries = Object.entries(LANGUAGE_ALIASES) as [Language, string[]][],
                     match = entries.find(([, aliases]) => aliases.includes(target))?.[0]
 
                 if (match != null) {
@@ -301,50 +300,50 @@ function listCmds(): Record<string, { short: string; long: string; variations: L
     }
 }
 
-function levenshteinDistance(left: string, right: string, limit: Raw): Natural {
-    const cols: Raw = left.length + 1
+function levenshteinDistance(left: string, right: string, limit: number): number {
+    const cols: number = left.length + 1
 
-    let previousRow: Raw[] = Array.from({ length: cols }, (_, col) => col),
-        currentRow: Raw[] = Array.from({ length: cols }, () => 0)
+    let previousRow: number[] = Array.from({ length: cols }, (_, col) => col),
+        currentRow: number[] = Array.from({ length: cols }, () => 0)
 
     for (let row = 1; row <= right.length; row++) {
         currentRow[0] = row
-        let rowMin: Raw = row
+        let rowMin: number = row
 
         for (let col = 1; col < cols; col++) {
-            const cost: Raw = left[col - 1] === right[row - 1] ? 0 : 1,
-                distance: Raw = Math.min(previousRow[col]! + 1, currentRow[col - 1]! + 1, previousRow[col - 1]! + cost)
+            const cost: number = left[col - 1] === right[row - 1] ? 0 : 1,
+                distance: number = Math.min(previousRow[col]! + 1, currentRow[col - 1]! + 1, previousRow[col - 1]! + cost)
 
             currentRow[col] = distance
             rowMin = Math.min(rowMin, distance)
         }
 
-        if (rowMin > limit) return toNatural(limit + 1)!
+        if (rowMin > limit) return limit + 1
 
         const nextRow = previousRow
         previousRow = currentRow
         currentRow = nextRow
     }
 
-    return toNatural(previousRow[cols - 1]!)!
+    return previousRow[cols - 1]!
 }
 
-function suggestCommand(raw: string): { best: string; distance: Natural } | null {
+function suggestCommand(raw: string): { best: string; distance: number } | null {
     const cmds = listCmds()
     let best = "",
-        lowerDistance: Natural = num(4)
+        lowerDistance = 4
 
     for (const [key, command] of Object.entries(cmds)) {
         for (const candidate of [key, ...command.variations]) {
             if (Math.abs(raw.length - candidate.length) > lowerDistance) continue
-            if (raw === candidate) return { best: key, distance: ZERO }
+            if (raw === candidate) return { best: key, distance: 0 }
 
             const distance = levenshteinDistance(raw, candidate, lowerDistance)
             if (distance >= lowerDistance) continue
 
             lowerDistance = distance
             best = key
-            if (isZero(distance)) return { best, distance }
+            if (distance === 0) return { best, distance }
         }
     }
 

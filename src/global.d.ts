@@ -2,82 +2,23 @@ import type { PLACES, PRECISIONS } from "./Base/quantity.js"
 import type PtBR from "./Lang/i18n/pt-BR.js"
 
 declare global {
-    const brand: unique symbol
-    type Brand<Base, Name extends string> = Base & { readonly [brand]: Readonly<Record<Name, true>> }
-
-    type List<T> = T[]
-    type Matrix<T> = T[][]
-    type Raw = number
-    type Token = string | Real
-    type Parameter = string | Real
-
-    type SetName = "integer" | "rational" | "irrational"
-    type SignName = "negative" | "zero" | "positive"
-    type Flip<G extends SignName> = G extends "positive" ? "negative" : G extends "negative" ? "positive" : "zero"
-
-    type Finite<S extends SetName = SetName, G extends SignName = SignName> = number & { readonly [brand]: { readonly extent: "finite"; readonly set: S; readonly sign: G } }
-
-    type Real = Finite
-    type Rational = Finite<"integer" | "rational">
-    type Irrational = Finite<"irrational">
-    type Integer = Finite<"integer">
-
-    type Zero = Finite<"integer", "zero">
-    type Positive = Finite<SetName, "positive">
-    type Negative = Finite<SetName, "negative">
-    type NonZero = Finite<SetName, "negative" | "positive">
-    type NonNegative = Finite<SetName, "zero" | "positive">
-    type NonPositive = Finite<SetName, "negative" | "zero">
-
-    type Natural = Finite<"integer", "zero" | "positive">
-    type PositiveInteger = Finite<"integer", "positive">
-    type NegativeInteger = Finite<"integer", "negative">
-
-    type PositiveInfinity = number & { readonly [brand]: { readonly extent: "infinite"; readonly sign: "positive" } }
-    type NegativeInfinity = number & { readonly [brand]: { readonly extent: "infinite"; readonly sign: "negative" } }
-    type Infinity = PositiveInfinity | NegativeInfinity
-    type ExtendedReal = Real | Infinity
-
-    type LogBase = Positive & Brand<number, "logBase">
-    type Places = Natural & Brand<(typeof PLACES)[number], "places">
-    type Precision = Rational & Positive & Brand<(typeof PRECISIONS)[number], "precision">
-    type Radians = Real & Brand<number, "radians">
-    type Degrees = Real & Brand<number, "degrees">
-
-    type SignOf<N extends number> = `${N}` extends "0" ? "zero" : `${N}` extends `-${string}` ? "negative" : "positive"
-    type SetOf<N extends number> = `${N}` extends `${string}.${string}` | `${string}e-${string}` ? "rational" : "integer"
-    type Numeric<N extends number> = number extends N ? Real : N extends unknown ? N & Finite<SetOf<N>, SignOf<N>> : never
-    type IsLiteral<T extends number> = number extends T ? false : true
-    type Checked<T, Target extends number> = T extends Target ? T : T extends Infinity ? null : T extends number ? (IsLiteral<T> extends true ? (Numeric<T> extends Target ? Numeric<T> : null) : Target | null) : Target | null
-
-    type Closure = "open" | "closed"
-    type LowerBound = { value: Real; closure: Closure } | { value: NegativeInfinity; closure: "open" }
-    type UpperBound = { value: Real; closure: Closure } | { value: PositiveInfinity; closure: "open" }
-
-    interface Interval {
-        lower: LowerBound
-        upper: UpperBound
-    }
-
-    type RealSet = List<Interval>
-    type Cardinality = Natural | "infinite"
+    type Places = (typeof PLACES)[number]
+    type Precision = (typeof PRECISIONS)[number]
 
     type Variable = "a" | "b" | "c"
-    type MathValue = Variable | Real
 
-    type Coefficients = Record<Variable, MathValue>
-    type NamedCoefficient<Name extends Variable = Variable> = Real | Name
+    type NamedCoefficient<Name extends Variable = Variable> = number | Name
     type NamedCoefficients = { [Name in Variable]: NamedCoefficient<Name> }
     type NamedCoefficientsFor<K extends Variable> = Partial<Pick<NamedCoefficients, K>>
-    type NumericCoefficients = Record<Variable, Real>
+    type NumericCoefficients = Record<Variable, number>
     type NumericCoefficientsFor<K extends Variable> = Partial<Pick<NumericCoefficients, K>>
 
     interface Point {
-        x: Real
-        y: Real
+        x: number
+        y: number
     }
     type PointPairReturn<T extends 1 | 2 | 3 = 1> = T extends 1 ? [Point] : T extends 2 ? [Point, Point] : [Point, Point, Point]
-    type LinearBasis = Record<string, (x: Real) => Real | null>
+    type LinearBasis = Record<string, (x: number) => number | null>
 
     type TrigonometricName = "sin" | "cos" | "tan" | "csc" | "sec" | "cot"
     type TrigonometricFunction = TrigonometricName | ""
@@ -96,7 +37,7 @@ declare global {
 
     interface ValueTypeMap {
         string: string
-        number: Real
+        number: number
     }
     type ValueTypeName = keyof ValueTypeMap
 
@@ -120,17 +61,13 @@ declare global {
 
     interface RangeOptions extends BaseOptions {
         commands?: boolean
-        max?: Real
-        min?: Real
+        max?: number
+        min?: number
     }
 
     interface MessageOptions {
         explanation?: string
         type?: MessageType
-    }
-
-    interface Pager {
-        page: Natural
     }
 
     type PtBRShape = typeof PtBR
@@ -139,17 +76,13 @@ declare global {
     type ResolveValue<T, P extends string> = P extends `${infer Head}.${infer Rest}` ? (Head extends keyof T ? ResolveValue<T[Head], Rest> : never) : P extends keyof T ? T[P] : never
     type ExtractPlaceholders<S extends string> = S extends `${string}{${infer Parameter}}${infer Rest}` ? Parameter | ExtractPlaceholders<Rest> : never
     type PlaceholdersOf<K extends TranslationKey> = ExtractPlaceholders<ResolveValue<PtBRShape, K> & string>
-    type ParametersOf<K extends TranslationKey> = [PlaceholdersOf<K>] extends [never] ? undefined : Record<PlaceholdersOf<K>, Parameter>
+    type ParametersOf<K extends TranslationKey> = [PlaceholdersOf<K>] extends [never] ? undefined : Record<PlaceholdersOf<K>, string | number>
     type TranslationParameters<K extends TranslationKey = TranslationKey> = K extends TranslationKey ? (ParametersOf<K> extends undefined ? [key: K] : [key: K, params: ParametersOf<K>]) : never
     type ErrorCode = Extract<TranslationKey, `errors.${string}`>
 
     interface ValidResult<TValue> {
         kind: "valid"
         value: TValue
-    }
-    interface SymbolResult<TSymbol> {
-        kind: "symbol"
-        name: TSymbol
     }
     interface NoteResult<TValue, TError> {
         kind: "note"
@@ -159,16 +92,9 @@ declare global {
     interface InvalidResult {
         kind: "invalid"
     }
-    interface ErrorResult<TError> {
-        kind: "error"
-        error: TError
-    }
 
-    type DomainResult<TValue = unknown, TError = ErrorCode, TSymbol = string> = ValidResult<TValue> | SymbolResult<TSymbol> | NoteResult<TValue, TError> | InvalidResult | ErrorResult<TError>
     type SimpleResult<TValue = unknown> = ValidResult<TValue> | InvalidResult
-    type SymbolicResult<TValue = unknown, TSymbol = string> = SimpleResult<TValue> | SymbolResult<TSymbol>
     type NotedResult<TValue = unknown, TError = ErrorCode> = SimpleResult<TValue> | NoteResult<TValue, TError>
-    type FallibleResult<TValue = unknown, TError = ErrorCode> = SimpleResult<TValue> | ErrorResult<TError>
 
     type Kind = "real" | "complex" | "angle"
     type Operator = "+" | "-" | "*" | "/" | "^"
@@ -176,13 +102,13 @@ declare global {
     type FailReason = "incompatible" | "divZero"
 
     interface Complex {
-        re: Real
-        im: Real
+        re: number
+        im: number
     }
 
     interface RealQuantity {
         kind: "real"
-        value: Real
+        value: number
     }
 
     interface ComplexQuantity extends Complex {
@@ -191,7 +117,7 @@ declare global {
 
     interface AngleQuantity {
         kind: "angle"
-        radians: Radians
+        radians: number
     }
 
     type Quantity = RealQuantity | ComplexQuantity | AngleQuantity
@@ -199,7 +125,7 @@ declare global {
     type Outcome = Quantity | "divZero"
     type Handler = (left: Quantity, right: Quantity) => Outcome
     type UnaryHandler = (argument: Quantity) => Quantity
-    type Builder = (value: Raw) => Quantity
+    type Builder = (value: number) => Quantity
 
     interface Invalid {
         kind: "invalid"

@@ -1,6 +1,5 @@
-import { isReal } from "../Base/checks.js"
+import { isNumber } from "../Base/checks.js"
 import { round } from "../Base/numeric.js"
-import { ONE, toReal, ZERO } from "../Base/quantity.js"
 import { readStorage, removeStorage, writeStorage } from "../Base/storage.js"
 import { type AlgebraIO, variables } from "./algebra.js"
 
@@ -19,8 +18,8 @@ function parseSavedCoef<T extends Variable>(raw: string | null, variable: T): Na
 
     if (raw === variable) result = variable
     else if (raw != null && raw.trim() !== "") {
-        const value = toReal(raw)
-        if (isReal(value)) result = value
+        const value = Number(raw)
+        if (isNumber(value)) result = value
     }
 
     return result
@@ -43,20 +42,20 @@ export class MathFunction {
         this.c = c
     }
 
-    public get numericA(): Real | null {
-        return toReal(this.a)
+    public get numericA(): number {
+        return Number(this.a)
     }
 
-    public get numericB(): Real | null {
-        return toReal(this.b)
+    public get numericB(): number {
+        return Number(this.b)
     }
 
-    public get numericC(): Real | null {
-        return toReal(this.c)
+    public get numericC(): number {
+        return Number(this.c)
     }
 
     public get numericCoefs(): boolean {
-        return isReal(this.numericA) && isReal(this.numericB) && isReal(this.numericC)
+        return isNumber(this.numericA) && isNumber(this.numericB) && isNumber(this.numericC)
     }
 
     public get variableA(): boolean {
@@ -76,35 +75,35 @@ export class MathFunction {
     }
 
     public get isConstant(): boolean {
-        return this.numericA === ZERO && this.numericB === ZERO
+        return this.numericA === 0 && this.numericB === 0
     }
 
     public get isAffine(): boolean {
-        return this.numericA === ZERO && this.numericB !== ZERO
+        return this.numericA === 0 && this.numericB !== 0
     }
 
     public get isQuadratic(): boolean {
-        return this.numericA !== ZERO
+        return this.numericA !== 0
     }
 
     public get isValidExpLog(): boolean {
-        return isReal(this.numericA) && this.numericA > ZERO && this.numericA !== ONE && this.numericB !== ZERO
+        return isNumber(this.numericA) && this.numericA > 0 && this.numericA !== 1 && this.numericB !== 0
     }
 
     public get isConstantExpLog(): boolean {
-        return this.numericA === ZERO || this.numericA === ONE || this.numericB === ZERO
+        return this.numericA === 0 || this.numericA === 1 || this.numericB === 0
     }
 
     public get isInvalidExpLog(): boolean {
-        return !isReal(this.numericA) || this.numericA < ZERO
+        return !isNumber(this.numericA) || this.numericA < 0
     }
 
     public get isValidTrig(): boolean {
-        return this.numericA !== ZERO && this.numericB !== ZERO
+        return this.numericA !== 0 && this.numericB !== 0
     }
 
     public get isConstantTrig(): boolean {
-        return this.numericA === ZERO || this.numericB === ZERO
+        return this.numericA === 0 || this.numericB === 0
     }
 
     public resolveCoefs(solved: NamedCoefficients): void {
@@ -130,7 +129,7 @@ export class MathFunction {
             b = this.numericB,
             c = this.numericC
 
-        if (!isReal(a) || !isReal(b) || !isReal(c)) {
+        if (!isNumber(a) || !isNumber(b) || !isNumber(c)) {
             throw new Error("Function coefficients must be finite numbers")
         }
 

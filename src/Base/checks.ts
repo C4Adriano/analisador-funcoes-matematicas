@@ -2,7 +2,7 @@ export function isText(value: unknown): value is string {
     return typeof value === "string" && value.trim() !== ""
 }
 
-export function isReal(value: unknown): value is Real {
+export function isNumber(value: unknown): value is number {
     return typeof value === "number" && Number.isFinite(value)
 }
 

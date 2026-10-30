@@ -1,14 +1,13 @@
 import { Config } from "./config.js"
-import { ensureReal, num, toReal, ZERO } from "./quantity.js"
+import { ensureReal } from "./quantity.js"
 
-export function round(value: Real, places?: Places): Real
-export function round(value: Raw | null, places?: Places): Real | null
-export function round(value: Raw | null, places: Places = Config.decimalPlaces): Real | null {
-    const finite: Real | null = toReal(value)
-    if (finite == null) return null
-    if (finite === ZERO) return ZERO
+export function round(value: number, places?: Places): number
+export function round(value: number | null, places?: Places): number | null
+export function round(value: number | null, places: Places = Config.decimalPlaces): number | null {
+    if (value == null || !Number.isFinite(value)) return null
+    if (value === 0) return 0
 
-    let numberText = String(finite),
+    let numberText = String(value),
         sign: "positive" | "negative" = "positive"
 
     if (numberText.startsWith("-")) {
@@ -28,13 +27,13 @@ export function round(value: Raw | null, places: Places = Config.decimalPlaces):
         fractionPart = decimalIndex === -1 ? "" : numberText.slice(decimalIndex + 1),
         pow = exponent - fractionPart.length,
         shift = pow + places
-    if (shift >= 0) return finite
+    if (shift >= 0) return value
 
     const integerPart = decimalIndex === -1 ? numberText : numberText.slice(0, decimalIndex),
         digitsText = `${integerPart}${fractionPart}`,
         digits = BigInt(digitsText)
 
-    if (-shift > digitsText.length) return ZERO
+    if (-shift > digitsText.length) return 0
 
     const divisor = 10n ** BigInt(-shift),
         integer = digits / divisor,
@@ -45,77 +44,64 @@ export function round(value: Raw | null, places: Places = Config.decimalPlaces):
 
     if (sign === "negative" ? remainder > half : remainder >= half) rounded++
 
-    if (rounded === 0n) return ZERO
+    if (rounded === 0n) return 0
 
     const result = Number(`${rounded}e-${places}`)
     return ensureReal(sign === "negative" ? -result : result)
 }
 
-export function add(left: Natural, right: Natural): Natural
-export function add(left: Integer, right: Integer): Integer
-export function add(left: Rational, right: Rational): Rational
-export function add(left: Real, right: Real): Real
-export function add(left: Real, right: Real): Real {
+export function add(left: number, right: number): number {
     return ensureReal(left + right)
 }
 
-export function subtract(left: Integer, right: Integer): Integer
-export function subtract(left: Rational, right: Rational): Rational
-export function subtract(left: Real, right: Real): Real
-export function subtract(left: Real, right: Real): Real {
+export function subtract(left: number, right: number): number {
     return ensureReal(left - right)
 }
 
-export function multiply(left: Natural, right: Natural): Natural
-export function multiply(left: Integer, right: Integer): Integer
-export function multiply(left: Rational, right: Rational): Rational
-export function multiply(left: Real, right: Real): Real
-export function multiply(left: Real, right: Real): Real {
+export function multiply(left: number, right: number): number {
     return ensureReal(left * right)
 }
 
-export function divide(numerator: Rational, denominator: NonZero & Rational): Rational
-export function divide(numerator: Real, denominator: NonZero): Real
-export function divide(numerator: Real, denominator: NonZero): Real {
+export function divide(numerator: number, denominator: number): number {
     return ensureReal(numerator / denominator)
 }
 
-export function abs(value: NonZero): Positive
-export function abs(value: Real): NonNegative
-export function abs(value: Real): NonNegative {
-    return Math.abs(value) as NonNegative
+export function abs(value: number): number {
+    return Math.abs(value)
 }
 
-export function negate<S extends SetName, G extends SignName>(value: Finite<S, G>): Finite<S, Flip<G>> {
-    return multiply(value, num(-1)) as Finite<S, Flip<G>>
+export function negate(value: number): number {
+    return multiply(value, -1)
 }
 
-export function square(value: Real): NonNegative {
-    return ensureReal(value * value) as NonNegative
+export function square(value: number): number {
+    return ensureReal(value * value)
 }
 
-export function sqrt(value: NonNegative): NonNegative {
-    return Math.sqrt(value) as NonNegative
+export function sqrt(value: number): number {
+    return Math.sqrt(value)
 }
 
-export function min(left: Real, right: Real): Real {
-    return left < right ? left : right
+export function min(left: number, right: number): number {
+    return Math.min(left, right)
 }
 
-export function max(left: Real, right: Real): Real {
-    return left > right ? left : right
+export function max(left: number, right: number): number {
+    return Math.max(left, right)
 }
 
-export function ln(value: LogBase): NonZero
-export function ln(value: Positive): Real
-export function ln(value: Positive): Real {
+export function ln(value: number): number {
     return ensureReal(Math.log(value))
 }
 
-export function log(value: Positive, base: LogBase): Real {
+export function log(value: number, base: number): number {
     return ensureReal(base === 10 ? Math.log10(value) : base === 2 ? Math.log2(value) : Math.log(value) / ln(base))
 }
 
-export function power(base: Real, exponent: Real): Real | null {
-    return toReal(base ** exponent)
+export function finite(value: number): number | null {
+    return Number.isFinite(value) ? value : null
+}
+
+export function power(base: number, exponent: number): number | null {
+    return finite(base ** exponent)
 }

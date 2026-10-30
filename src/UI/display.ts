@@ -1,8 +1,7 @@
-import { isReal } from "../Base/checks.js"
+import { isNumber } from "../Base/checks.js"
 import { Config } from "../Base/config.js"
 import { INPUT_FAILED } from "../Base/consts.js"
 import { round } from "../Base/numeric.js"
-import { toReal } from "../Base/quantity.js"
 import { changeLanguage, tr } from "../Lang/i18n.js"
 import { decimalOptions, formatMessage } from "../Lang/writing.js"
 import { showAlert, showConfirm, showPrompt } from "./io.js"
@@ -35,13 +34,13 @@ export async function readText(message: string, { explanation = "", placeholder 
 export async function isInputAccepted(text: string, type: NonNullable<InputOptions["type"]> = "string"): Promise<boolean> {
     const value = type === "number" ? decimalOptions(text, { type: "number" }) : text
 
-    if (type === "number" && !isReal(value)) return false
+    if (type === "number" && !isNumber(Number(value))) return false
     return Config.inputConfirm === "on" ? isActionConfirmed(tr("ui.inputConfirm", { input: value }), { explanation: tr("ui.inputConfirmNote"), type: "warning" }) : true
 }
 
 export function input(message: string, options?: InputOptions & { type?: "string" }): Promise<string | typeof INPUT_FAILED>
-export function input(message: string, options: InputOptions & { type: "number" }): Promise<Real | typeof INPUT_FAILED>
-export async function input(message = "", { explanation = "", type = "string", places = Config.decimalPlaces, placeholder = "" }: InputOptions = {}): Promise<string | Real | typeof INPUT_FAILED> {
+export function input(message: string, options: InputOptions & { type: "number" }): Promise<number | typeof INPUT_FAILED>
+export async function input(message = "", { explanation = "", type = "string", places = Config.decimalPlaces, placeholder = "" }: InputOptions = {}): Promise<string | number | typeof INPUT_FAILED> {
     let limit = 0
 
     do {
@@ -49,8 +48,8 @@ export async function input(message = "", { explanation = "", type = "string", p
         if (text === "" || !(await isInputAccepted(text, type))) continue
         if (type === "string") return text
 
-        const value: Real | null = round(toReal(decimalOptions(text, { type: "number" })), places)
-        if (value != null) return value
+        const value: number | null = round(Number(decimalOptions(text, { type: "number" })), places)
+        if (isNumber(value)) return value
     } while (limit++ < Config.iterationLimit)
 
     return INPUT_FAILED

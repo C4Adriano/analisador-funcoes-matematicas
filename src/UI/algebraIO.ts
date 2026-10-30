@@ -1,5 +1,4 @@
 import { INPUT_FAILED } from "../Base/consts.js"
-import { ZERO } from "../Base/quantity.js"
 import { tr } from "../Lang/i18n.js"
 import { subscript } from "../Lang/writing.js"
 import type { AlgebraIO } from "../Math/algebra.js"
@@ -13,7 +12,7 @@ async function askPoints<Count extends 1 | 2 | 3>(count: Count): Promise<PointPa
         const x = await input(`x${subscript(index)} = `, { type: "number", placeholder: String(index) }),
             y = await input(`y${subscript(index)} = `, { type: "number", placeholder: String(index) })
 
-        pairs.push({ x: x === INPUT_FAILED ? ZERO : x, y: y === INPUT_FAILED ? ZERO : y })
+        pairs.push({ x: x === INPUT_FAILED ? 0 : x, y: y === INPUT_FAILED ? 0 : y })
     }
 
     return pairs as PointPairReturn<Count>

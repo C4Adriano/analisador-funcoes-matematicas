@@ -9,7 +9,7 @@ class StateStore {
     public keepChoice: Toggle = "off"
     public lastRecorded: NamedCoefficients | null = null
     public loop: Toggle = "off"
-    public menuChoice: Real | CommandNames | typeof INPUT_FAILED = "start"
+    public menuChoice: number | CommandNames | typeof INPUT_FAILED = "start"
 
     public get funcChanged(): boolean {
         return this.current.a !== this.lastRecorded?.a || this.current.b !== this.lastRecorded.b || this.current.c !== this.lastRecorded.c

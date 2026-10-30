@@ -1,43 +1,9 @@
 export const PLACES = [0, 3, 4, 5, 6, 7, 8, 9, 10, 20] as const
 export const PRECISIONS = [1e-6, 1e-7, 1e-8, 1e-9, 1e-10, 1e-11, 1e-12] as const
 
-const LIMIT: Raw = 1e100
-
-export function ensureReal(value: Raw): Real {
-    if (Number.isFinite(value)) return value as Real
+export function ensureReal(value: number): number {
+    if (Number.isFinite(value)) return value
     throw new RangeError("ensureReal: value is not finite", { cause: value })
-}
-
-export function num<N extends number>(value: number extends N ? never : N): Numeric<N> {
-    return value as unknown as Numeric<N>
-}
-
-export const ZERO = num(0)
-export const ONE = num(1)
-export const PI = Math.PI as Irrational & Positive
-export const E = Math.E as Irrational & Positive
-export const POSITIVE_INFINITY = Infinity as PositiveInfinity
-export const NEGATIVE_INFINITY = -Infinity as NegativeInfinity
-
-export function toReal<const T>(value: T): Checked<T, Real>
-export function toReal(value: unknown): Real | null {
-    return typeof value === "number" && Number.isFinite(value) ? (value as Real) : null
-}
-
-export function toInteger<const T>(value: T): Checked<T, Integer>
-export function toInteger(value: unknown): Integer | null {
-    return typeof value === "number" && Number.isSafeInteger(value) ? (value as Integer) : null
-}
-
-export function toNatural<const T>(value: T): Checked<T, Natural>
-export function toNatural(value: unknown): Natural | null {
-    const integer: Integer | null = toInteger(value)
-    return integer != null && isNonNegative(integer) ? integer : null
-}
-
-export function toExtended<const T>(value: T): Checked<T, ExtendedReal>
-export function toExtended(value: unknown): ExtendedReal | null {
-    return typeof value === "number" && !Number.isNaN(value) ? (value as ExtendedReal) : null
 }
 
 export function toPlaces(value: unknown): Places | null {
@@ -48,113 +14,54 @@ export function toPrecision(value: unknown): Precision | null {
     return (PRECISIONS as readonly unknown[]).includes(value) ? (value as Precision) : null
 }
 
-export function placesOf(value: (typeof PLACES)[number]): Places {
-    return value as Places
+export function isLogBase(value: number): boolean {
+    return value > 0 && value !== 1
 }
 
-export function precisionOf(value: (typeof PRECISIONS)[number]): Precision {
-    return value as Precision
+export function toRadians(angle: number): number {
+    return ensureReal((angle * Math.PI) / 180)
 }
 
-export function negate<S extends SetName, G extends SignName>(value: Finite<S, G>): Finite<S, Flip<G>> {
-    return (0 - value) as Finite<S, Flip<G>>
+export function toDegrees(angle: number): number {
+    return ensureReal((angle * 180) / Math.PI)
 }
 
-export function parseReal(text: string): Rational | null {
-    if (!/^[+\-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+\-]?\d+)?$/iv.test(text.trim())) return null
-    const value: Raw = Number(text)
-    if (Math.abs(value) > LIMIT) return null
-    return (Math.abs(value) < ONE / LIMIT ? ZERO : value) as Rational
-}
-
-export function isPositive(value: Real): value is Positive {
-    return value > ZERO
-}
-
-export function isNonPositive(value: Real): value is NonPositive {
-    return value <= ZERO
-}
-
-export function isNegative(value: Real): value is Negative {
-    return value < ZERO
-}
-
-export function isNonNegative(value: Real): value is NonNegative {
-    return value >= ZERO
-}
-
-export function isZero(value: Real): value is Zero {
-    return value === ZERO
-}
-
-export function isNonZero(value: Real): value is NonZero {
-    return value !== ZERO
-}
-
-export function isInteger(value: Real): value is Integer {
-    return Number.isSafeInteger(value)
-}
-
-export function isLogBase(value: Real): value is LogBase {
-    return value > ZERO && value !== ONE
-}
-
-export function isInfinity(value: unknown): value is Infinity {
-    return typeof value === "number" && Math.abs(value) === Infinity
-}
-
-export function radians(value: Raw): Radians {
-    return ensureReal(value) as Radians
-}
-
-export function degrees(value: Raw): Degrees {
-    return ensureReal(value) as Degrees
-}
-
-export function toRadians(angle: Degrees): Radians {
-    return radians((angle * PI) / 180)
-}
-
-export function toDegrees(angle: Radians): Degrees {
-    return degrees((angle * 180) / PI)
-}
-
-export function sin(angle: Radians): Real {
+export function sin(angle: number): number {
     return ensureReal(Math.sin(angle))
 }
 
-export function cos(angle: Radians): Real {
+export function cos(angle: number): number {
     return ensureReal(Math.cos(angle))
 }
 
-export function tan(angle: Radians): Real {
+export function tan(angle: number): number {
     return ensureReal(Math.tan(angle))
 }
 
-export function real(value: Raw): RealQuantity {
+export function real(value: number): RealQuantity {
     return { kind: "real", value: ensureReal(value) }
 }
 
-export function complex(re: Raw, im: Raw): ComplexQuantity {
+export function complex(re: number, im: number): ComplexQuantity {
     return { kind: "complex", re: ensureReal(re), im: ensureReal(im) }
 }
 
-export function toAngle(value: Raw): AngleQuantity {
-    return { kind: "angle", radians: radians(value) }
+export function toAngle(value: number): AngleQuantity {
+    return { kind: "angle", radians: ensureReal(value) }
 }
 
-function fromDegrees(value: Raw): AngleQuantity {
-    return toAngle(toRadians(degrees(value)))
+function fromDegrees(value: number): AngleQuantity {
+    return toAngle(toRadians(value))
 }
 
-function toQuantity(re: Raw, im: Raw): Quantity {
-    const tolerance: Raw = 64 * Number.EPSILON * Math.hypot(re, im)
+function toQuantity(re: number, im: number): Quantity {
+    const tolerance: number = 64 * Number.EPSILON * Math.hypot(re, im)
     if (Math.abs(im) <= tolerance) return real(re)
-    return complex(Math.abs(re) <= tolerance ? ZERO : re, im)
+    return complex(Math.abs(re) <= tolerance ? 0 : re, im)
 }
 
 function toComplex(quantity: RealQuantity | ComplexQuantity): ComplexQuantity {
-    return quantity.kind === "real" ? complex(quantity.value, ZERO) : quantity
+    return quantity.kind === "real" ? complex(quantity.value, 0) : quantity
 }
 
 function addComplex(left: RealQuantity | ComplexQuantity, right: RealQuantity | ComplexQuantity): Quantity {
@@ -178,19 +85,19 @@ function mulComplex(left: RealQuantity | ComplexQuantity, right: RealQuantity | 
 function divComplex(left: RealQuantity | ComplexQuantity, right: RealQuantity | ComplexQuantity): Outcome {
     const l: ComplexQuantity = toComplex(left),
         r: ComplexQuantity = toComplex(right),
-        denominator: Raw = r.re ** 2 + r.im ** 2
-    return denominator === ZERO ? "divZero" : toQuantity((l.re * r.re + l.im * r.im) / denominator, (l.im * r.re - l.re * r.im) / denominator)
+        denominator: number = r.re ** 2 + r.im ** 2
+    return denominator === 0 ? "divZero" : toQuantity((l.re * r.re + l.im * r.im) / denominator, (l.im * r.re - l.re * r.im) / denominator)
 }
 
 function powComplex(base: ComplexQuantity, exponent: RealQuantity): Quantity {
-    const modulus: Raw = Math.hypot(base.re, base.im) ** exponent.value,
-        theta: Raw = Math.atan2(base.im, base.re) * exponent.value
+    const modulus: number = Math.hypot(base.re, base.im) ** exponent.value,
+        theta: number = Math.atan2(base.im, base.re) * exponent.value
     return toQuantity(modulus * Math.cos(theta), modulus * Math.sin(theta))
 }
 
 function powReal(base: RealQuantity, exponent: RealQuantity): Quantity {
-    const value: Raw = base.value ** exponent.value
-    return Number.isNaN(value) ? powComplex(complex(base.value, ZERO), exponent) : real(value)
+    const value: number = base.value ** exponent.value
+    return Number.isNaN(value) ? powComplex(complex(base.value, 0), exponent) : real(value)
 }
 
 const OPERATIONS: OperationTable = {
@@ -202,11 +109,11 @@ const OPERATIONS: OperationTable = {
             angle: { real: (l: AngleQuantity, r: RealQuantity): AngleQuantity => toAngle(l.radians * r.value) },
         },
         "/": {
-            real: { real: (l: RealQuantity, r: RealQuantity): Outcome => (r.value === ZERO ? "divZero" : real(l.value / r.value)), complex: divComplex },
+            real: { real: (l: RealQuantity, r: RealQuantity): Outcome => (r.value === 0 ? "divZero" : real(l.value / r.value)), complex: divComplex },
             complex: { real: divComplex, complex: divComplex },
-            angle: { real: (l: AngleQuantity, r: RealQuantity): Outcome => (r.value === ZERO ? "divZero" : toAngle(l.radians / r.value)), angle: (l: AngleQuantity, r: AngleQuantity): Outcome => (r.radians === ZERO ? "divZero" : real(l.radians / r.radians)) },
+            angle: { real: (l: AngleQuantity, r: RealQuantity): Outcome => (r.value === 0 ? "divZero" : toAngle(l.radians / r.value)), angle: (l: AngleQuantity, r: AngleQuantity): Outcome => (r.radians === 0 ? "divZero" : real(l.radians / r.radians)) },
         },
-        "^": { real: { real: (l: RealQuantity, r: RealQuantity): Outcome => (l.value === ZERO && r.value < ZERO ? "divZero" : powReal(l, r)) }, complex: { real: powComplex } },
+        "^": { real: { real: (l: RealQuantity, r: RealQuantity): Outcome => (l.value === 0 && r.value < 0 ? "divZero" : powReal(l, r)) }, complex: { real: powComplex } },
     },
     FUNCTIONS: FunctionTable = {
         sin: { angle: (a: AngleQuantity): RealQuantity => real(sin(a.radians)) },
@@ -215,8 +122,8 @@ const OPERATIONS: OperationTable = {
         atan: { real: (a: RealQuantity): AngleQuantity => toAngle(Math.atan(a.value)) },
         abs: { real: (a: RealQuantity): RealQuantity => real(Math.abs(a.value)), complex: (a: ComplexQuantity): RealQuantity => real(Math.hypot(a.re, a.im)) },
         arg: { complex: (a: ComplexQuantity): AngleQuantity => toAngle(Math.atan2(a.im, a.re)) },
-        conj: { complex: (a: ComplexQuantity): Quantity => toQuantity(a.re, negate(a.im)) },
-        sqrt: { real: (a: RealQuantity): Quantity => (a.value >= ZERO ? real(Math.sqrt(a.value)) : complex(ZERO, Math.sqrt(negate(a.value)))), complex: (a: ComplexQuantity): Quantity => powComplex(a, real(0.5)) },
+        conj: { complex: (a: ComplexQuantity): Quantity => toQuantity(a.re, -a.im) },
+        sqrt: { real: (a: RealQuantity): Quantity => (a.value >= 0 ? real(Math.sqrt(a.value)) : complex(0, Math.sqrt(-a.value))), complex: (a: ComplexQuantity): Quantity => powComplex(a, real(0.5)) },
         cbrt: { real: (a: RealQuantity): RealQuantity => real(Math.cbrt(a.value)), complex: (a: ComplexQuantity): Quantity => powComplex(a, real(1 / 3)) },
     }
 
@@ -229,7 +136,7 @@ export function operate(operator: Operator, left: Quantity, right: Quantity): Qu
 
 export const SUFFIXES = new Map<string, Builder>([
     ["", real],
-    ["i", (value: Raw): Quantity => complex(ZERO, value)],
+    ["i", (value: number): Quantity => complex(0, value)],
     ["°", fromDegrees],
     ["deg", fromDegrees],
     ["rad", toAngle],
