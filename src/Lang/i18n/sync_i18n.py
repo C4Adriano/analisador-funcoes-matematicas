@@ -1,14 +1,16 @@
 import argparse
 import hashlib
+import io
 import json
 import re
 import sys
 import time
 import traceback
 from collections.abc import Callable, Iterator, Sequence
+from copy import deepcopy
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, cast
+from typing import NamedTuple, cast
 
 type JsonValue = (
     str | int | float | bool | None | list[JsonValue] | dict[str, JsonValue]
@@ -16,57 +18,27 @@ type JsonValue = (
 type JsonObject = dict[str, JsonValue]
 type Replacement = str | Callable[[re.Match[str]], str]
 
-# ---------------------------------------------------------------------------
-# Estrutura dos arquivos
-#
-#   BASES     -> escritos à mão, completos (pt-BR é o mestre).
-#   VARIANTS  -> GERADOS (variante -> base de onde derivam). Não edite!
-#                Eles = base + regras regionais + overrides/<variante>.json.
-#   overrides -> só o que REALMENTE difere do que as regras produzem.
-# ---------------------------------------------------------------------------
 MASTER = "pt-BR"
-BASES = ["pt-BR", "en-US", "es-419"]
+BASES = ("pt-BR", "en-US", "es-419")
 VARIANTS = {"pt-PT": "pt-BR", "en-GB": "en-US", "es-ES": "es-419"}
-
-TODO_MARKER = "[//TODO] "
-OVERRIDES_DIRNAME = "overrides"
-LOCK_FILENAME = "i18n.lock.json"
-SCHEMA_FILENAME = "i18n.schema.json"
-DTS_FILENAME = "pt-BR.d.ts"
-
-PAUSE_SECONDS = 0.5  # pausa entre os tópicos (--nosleep zera)
-MAX_LISTED = 10  # itens listados por vez (-v mostra todos)
-TAG_WIDTH = 12  # largura da coluna das etiquetas [OK], [AVISO]...
-
-# Trechos que nenhuma regra pode alterar: {placeholders} e o marcador de TODO.
+TODO_MARKER = "[//TODO]"
+PAUSE_SECONDS = 0.5
+MAX_LISTED = 10
+TAG_WIDTH = 12
+WIDTH = 60
+INDENT = " " * TAG_WIDTH
 PROTECTED = re.compile(r"(\{[^{}]*\}|\[//TODO\])")
 PLACEHOLDER = re.compile(r"\{[^{}]*\}")
-
-
-# ===========================================================================
-# MENSAGENS: tudo o que o script imprime fica nesta seção.
-#
-# Regras para editar:
-#   - Os textos passam por str.format(); chaves LITERAIS precisam ser dobradas:
-#     "{{placeholders}}" imprime {placeholders}.
-#   - {campos} são preenchidos pelo código (veja onde a mensagem é usada).
-#   - Valores inseridos (caminhos, chaves) nunca precisam de escape.
-# ===========================================================================
-class Tag:
-    OK = "OK"
-    CHANGED = "ALTERADO"
-    WARN = "AVISO"
-    ERROR = "ERRO"
-    BLOCKED = "BLOQUEADO"
-    TIP = "DICA"
-    MIGRATED = "MIGRADO"
-    PRUNED = "PODADO"
-    PENDING = "PENDENTE"
-    INTERRUPTED = "INTERROMPIDO"
+SCHEMA_TYPES: dict[type, str] = {
+    str: "string",
+    bool: "boolean",
+    int: "integer",
+    float: "number",
+    type(None): "null",
+}
 
 
 class Msg:
-    # Cabeçalho e tópicos
     TITLE = "Sincronização dos arquivos de i18n"
     HEADER_DIR = "Diretório: {path}"
     HEADER_MASTER = "Arquivo mestre: {name}.json"
@@ -77,15 +49,11 @@ class Msg:
     SEC_ARTIFACTS = "5/5  Schema e .d.ts"
     SEC_SUMMARY = "Resumo"
     MORE = "... e mais {count} (use -v para listar tudo)"
-
-    # 1/5 Bases
     BASE_MISSING = "{name}.json não foi encontrado em {dir}; a base foi ignorada."
     BASE_MISSING_NOTE = "Variantes que dependem dela e não serão geradas: {variants}"
     BASE_ADDED = "{name}.json: {count} chave(s) nova(s) copiada(s) do mestre, marcadas com {marker}."
     BASE_OK = "{name}.json já tem todas as chaves do mestre."
     BASE_PENDING = "{name}.json: {count} texto(s) ainda marcado(s) com {marker} (precisam de tradução):"
-
-    # 2/5 Variantes
     VARIANT_BASE_MISSING = (
         "{variant}.json não foi gerado: a base {base}.json não está disponível."
     )
@@ -107,8 +75,6 @@ class Msg:
     VARIANT_REFORMATTED = (
         "{variant}.json reescrito: mesmo conteúdo, só a formatação mudou."
     )
-
-    # 3/5 Órfãs e 4/5 placeholders
     ORPHANS_OK = "{name}.json não tem chaves órfãs."
     ORPHANS_FOUND = "{name}.json: {count} chave(s) sem correspondente em {master}.json:"
     PLACEHOLDERS_OK = "Todos os {{placeholders}} batem com {master}.json ({count} arquivo(s) conferidos)."
@@ -116,14 +82,8 @@ class Msg:
         "{name}: {count} chave(s) com {{placeholders}} diferentes de {master}.json:"
     )
     PLACEHOLDERS_NOTE = "Placeholder faltando ou renomeado aparece literal para o usuário (ex.: {{language}})."
-
-    # 5/5 Schema e .d.ts
-    SCHEMA_UPDATED = "Schema atualizado: {path}"
-    SCHEMA_UNCHANGED = "Schema já estava atualizado: {path}"
-    DTS_UPDATED = ".d.ts atualizado: {path}"
-    DTS_UNCHANGED = ".d.ts já estava atualizado: {path}"
-
-    # Resumo
+    ARTIFACT_UPDATED = "{name} atualizado: {path}"
+    ARTIFACT_UNCHANGED = "{name} já estava atualizado: {path}"
     SUMMARY_LINE = "{label:<19} {total} chaves = {inherited} herdadas + {rules} por regras + {overrides} overrides"
     SUMMARY_BLOCKED = "{label:<19} BLOQUEADA, o arquivo não foi atualizado"
     ISSUE_BLOCKED = "{count} variante(s) bloqueada(s)"
@@ -136,82 +96,60 @@ class Msg:
         "Interrompido pelo usuário (Ctrl+C). Arquivos já gravados foram mantidos."
     )
 
-    # Ajuda da linha de comando
-    HELP_DESCRIPTION = (
-        "Sincroniza os arquivos de i18n (bases escritas à mão + variantes geradas)."
-    )
-    HELP_DIRECTORY = "pasta dos JSONs (padrão: a pasta deste script)"
-    HELP_MIGRATE = "cria overrides/ a partir das variantes atuais (use UMA vez)"
-    HELP_PRUNE = "apaga dos overrides o que as regras já geram"
-    HELP_FORCE = "sobrescreve variantes editadas à mão e overrides existentes"
-    HELP_QUIET = "só avisos, erros e a linha final"
-    HELP_VERBOSE = "mostra também as listas completas de chaves"
-    HELP_NOSLEEP = "sem pausas entre os tópicos"
-    HELP_DEBUG = "mostra o traceback completo quando algo falha"
+
+class ErrorInfo(NamedTuple):
+    what: str
+    cause: str
+    fix: str
 
 
-@dataclass(frozen=True)
-class ErrorInfo:
-    what: str  # o que aconteceu
-    cause: str  # por que costuma acontecer
-    fix: str  # o que fazer
-
-
-# Cada erro tem um código (E01...), para você achar rápido neste bloco.
-# Campos extras: {script} = nome deste arquivo.
 ERRORS: dict[str, ErrorInfo] = {
     "E01": ErrorInfo(
-        what="Arquivo mestre não encontrado: {path}",
-        cause="O script procura o mestre na pasta {dir} e ele não está lá.",
-        fix="Rode o script a partir da pasta dos JSONs ou passe a pasta: python {script} <pasta>",
+        "Arquivo mestre não encontrado: {path}",
+        "O script procura o mestre na pasta {dir} e ele não está lá.",
+        "Rode o script a partir da pasta dos JSONs ou passe a pasta: python {script} <pasta>",
     ),
     "E02": ErrorInfo(
-        what="JSON inválido em {path} (linha {line}, coluna {col}): {reason}",
-        cause="{hint}",
-        fix="Abra o arquivo nessa linha e corrija (o VS Code sublinha o problema). "
+        "JSON inválido em {path} (linha {line}, coluna {col}): {reason}",
+        "{hint}",
+        "Abra o arquivo nessa linha e corrija (o VS Code sublinha o problema). "
         "Se for o i18n.lock.json, pode apagá-lo: ele é recriado.",
     ),
     "E03": ErrorInfo(
-        what="Não foi possível {action} {path}: {detail}",
-        cause="Arquivo aberto ou bloqueado por outro programa, sem permissão, caminho inexistente "
+        "Não foi possível {action} {path}: {detail}",
+        "Arquivo aberto ou bloqueado por outro programa, sem permissão, caminho inexistente "
         "ou texto fora de UTF-8.",
-        fix="Feche o arquivo em outros programas, confira permissões e o caminho, e rode de novo.",
+        "Feche o arquivo em outros programas, confira permissões e o caminho, e rode de novo.",
     ),
     "E04": ErrorInfo(
-        what="O --migrate não sobrescreve overrides que já existem: {paths}",
-        cause="O --migrate deve rodar UMA vez; refazer apagaria overrides escritos à mão.",
-        fix="Se quer mesmo refazer, use --migrate --force (as diferenças serão recalculadas a partir "
+        "O --migrate não sobrescreve overrides que já existem: {paths}",
+        "O --migrate deve rodar UMA vez; refazer apagaria overrides escritos à mão.",
+        "Se quer mesmo refazer, use --migrate --force (as diferenças serão recalculadas a partir "
         "das variantes atuais).",
     ),
     "E05": ErrorInfo(
-        what="Não há o que migrar: arquivo(s) ausente(s) em {path}: {variants}",
-        cause="O --migrate lê as variantes atuais para descobrir o que difere das regras.",
-        fix="Se a variante é nova, crie o arquivo dela em {overrides_dir} contendo {{}} e rode sem --migrate.",
+        "Não há o que migrar: arquivo(s) ausente(s) em {path}: {variants}",
+        "O --migrate lê as variantes atuais para descobrir o que difere das regras.",
+        "Se a variante é nova, crie o arquivo dela em {overrides_dir} contendo {{}} e rode sem --migrate.",
     ),
     "E06": ErrorInfo(
-        what="{variant}.json existe, mas {override} não.",
-        cause="Sem o override, a variante seria gerada só pelas regras e sobrescreveria "
+        "{variant}.json existe, mas {override} não.",
+        "Sem o override, a variante seria gerada só pelas regras e sobrescreveria "
         "as diferenças escritas à mão.",
-        fix="Rode uma vez: python {script} --migrate (cria os overrides a partir dos arquivos atuais).",
+        "Rode uma vez: python {script} --migrate (cria os overrides a partir dos arquivos atuais).",
     ),
     "E07": ErrorInfo(
-        what="{path} deve ter um objeto JSON na raiz, mas contém {kind}.",
-        cause="Os arquivos de i18n são sempre {{ ... }} com as chaves dentro.",
-        fix="Corrija o arquivo para começar com {{ e terminar com }}.",
-    ),
-    "E08": ErrorInfo(
-        what="Tipo não suportado ao gerar o schema: {kind} em {path}",
-        cause="O schema só entende texto, número, booleano, lista, objeto e null.",
-        fix="Troque o valor dessa chave em {master}.json por um dos tipos suportados.",
+        "{path} deve ter um objeto JSON na raiz, mas contém {kind}.",
+        "Os arquivos de i18n são sempre {{ ... }} com as chaves dentro.",
+        "Corrija o arquivo para começar com {{ e terminar com }}.",
     ),
     "E99": ErrorInfo(
-        what="Erro inesperado ({kind}): {detail}",
-        cause="Provavelmente um bug do script ou um arquivo fora do formato esperado.",
-        fix="Rode de novo com --debug para ver o traceback completo e anote a saída.",
+        "Erro inesperado ({kind}): {detail}",
+        "Provavelmente um bug do script ou um arquivo fora do formato esperado.",
+        "Rode de novo com --debug para ver o traceback completo e anote a saída.",
     ),
 }
 
-# Explicações em português para as mensagens de erro do json do Python.
 JSON_HINTS: dict[str, str] = {
     "Expecting property name enclosed in double quotes": "Geralmente é uma vírgula sobrando antes de } ou uma chave sem aspas duplas.",
     "Expecting ',' delimiter": "Falta uma vírgula entre dois itens, ou há aspas sem fechar logo antes.",
@@ -228,9 +166,6 @@ JSON_HINT_DEFAULT = (
 )
 
 
-# ===========================================================================
-# Erros e saída no terminal
-# ===========================================================================
 class SyncError(Exception):
     def __init__(
         self, code: str, extra: list[str] | None = None, **params: object
@@ -243,7 +178,7 @@ class SyncError(Exception):
 
 class Console:
     def __init__(self, verbosity: int, pause: float) -> None:
-        self.verbosity = verbosity  # 0 = -q, 1 = normal, 2 = -v
+        self.verbosity = verbosity
         self.pause = pause
         self.sections = 0
         self.warnings = 0
@@ -254,16 +189,15 @@ class Console:
 
     def say(self, tag: str, template: str, *, level: int = 1, **params: object) -> None:
         if self.verbosity >= level:
-            label = f"[{tag}]"
+            label = f"[{tag}]" if tag else ""
             print(f"{label:<{TAG_WIDTH}}{template.format(**params)}")
+
+    def note(self, template: str, *, level: int = 1, **params: object) -> None:
+        self.say("", template, level=level, **params)
 
     def warn(self, template: str, **params: object) -> None:
         self.warnings += 1
-        self.say(Tag.WARN, template, level=0, **params)
-
-    def note(self, template: str, *, level: int = 1, **params: object) -> None:
-        if self.verbosity >= level:
-            print(" " * TAG_WIDTH + template.format(**params))
+        self.say("AVISO", template, level=0, **params)
 
     def items(self, items: Sequence[str], *, level: int = 1) -> None:
         if self.verbosity < level:
@@ -272,7 +206,7 @@ class Console:
         shown = items if self.verbosity >= 2 else items[:MAX_LISTED]
 
         for item in shown:
-            print(" " * TAG_WIDTH + "- " + item)
+            print(f"{INDENT}- {item}")
 
         if len(shown) < len(items):
             self.note(Msg.MORE, level=level, count=len(items) - len(shown))
@@ -280,7 +214,7 @@ class Console:
     def header(self, title: str) -> None:
         if self.verbosity >= 1:
             print(title)
-            print("=" * 60)
+            print("=" * WIDTH)
 
     def section(self, title: str, **params: object) -> None:
         if self.verbosity < 1:
@@ -292,49 +226,38 @@ class Console:
         self.sections += 1
         print()
         print(title.format(**params))
-        print("-" * 60)
+        print("-" * WIDTH)
 
     def final(self, text: str) -> None:
-        if self.verbosity >= 1:
-            print()
-            print("=" * 60)
-            print(text)
-            print("=" * 60)
-        else:
+        if self.verbosity < 1:
             print(Msg.FINAL_QUIET.format(text=text))
+            return
+
+        print()
+        print("=" * WIDTH)
+        print(text)
+        print("=" * WIDTH)
 
     def error(self, error: SyncError, script: str) -> None:
-        info = ERRORS[error.code]
-        params: dict[str, Any] = {"script": script, **error.params}
-        label = f"[{Tag.ERROR} {error.code}]"
-        print(f"{label:<{TAG_WIDTH}}{info.what.format(**params)}")
+        what, cause, fix = ERRORS[error.code]
+        params: dict[str, object] = {"script": script, **error.params}
+        print(f"{f'[ERRO {error.code}]':<{TAG_WIDTH}}{what.format(**params)}")
 
         for extra in error.extra:
-            print(" " * TAG_WIDTH + extra)
+            print(INDENT + extra)
 
-        print(" " * TAG_WIDTH + "Causa: " + info.cause.format(**params))
-        print(" " * TAG_WIDTH + "Como resolver: " + info.fix.format(**params))
+        print(f"{INDENT}Causa: {cause.format(**params)}")
+        print(f"{INDENT}Como resolver: {fix.format(**params)}")
 
 
-# ---------------------------------------------------------------------------
-# Regras regionais (a parte "tradutora")
-#
-# >>> Se você já mexeu nas regras, copie o SEU bloco RULES por cima do daqui. <<<
-# ---------------------------------------------------------------------------
 @dataclass(frozen=True)
 class Rules:
-    # Palavras/expressões inteiras (sem diferenciar maiúsculas; a capitalização
-    # do original é mantida). Ex.: {"slope": "gradient"}
     words: dict[str, str] = field(default_factory=dict)  # type: ignore
-    # Regex (padrão, substituição). A substituição pode ser texto ou função.
-    # Diferencia maiúsculas, a menos que o padrão comece com (?i).
     regex: tuple[tuple[str, Replacement], ...] = ()
-    # Aspas de abertura/fechamento da variante. None = não mexe nas aspas.
     quotes: tuple[str, str] | None = None
 
 
 def _subscript_to_number(match: re.Match[str]) -> str:
-    """'Note₁' -> 'Note 1' (grupo 1 = palavra, grupo 2 = dígito subscrito)."""
     return f"{match.group(1)} {ord(match.group(2)) - 0x2080}"
 
 
@@ -342,21 +265,37 @@ _PRETERITE = {"ou": "aste", "eu": "este", "iu": "iste"}
 
 
 def _voce_preterite(match: re.Match[str]) -> str:
-    """'Você tentou' -> 'Tu tentaste' (pretérito regular após 'Você')."""
     pronoun, stem, ending = match.groups()
     tu = "Tu" if pronoun[0].isupper() else "tu"
 
     return f"{tu} {stem}{_PRETERITE[ending]}"
 
 
-# en-US -> en-GB: -ize/-yze -> -ise/-yse (exceto size, prize, seize...).
 _IZE = r"(?i)\b([A-Za-z]{2,}?)(iz|yz)(e|es|ed|ing|er|ers|ation|ations)\b"
-_NOT_ISE = {
-    "size", "sizes", "sized", "sizing", "resize", "resized", "resizing",
-    "downsize", "downsized", "upsize", "oversize", "oversized",
-    "prize", "prizes", "prized", "seize", "seized", "seizing",
-    "capsize", "capsized",
-}  # fmt: skip
+_NOT_ISE = frozenset(
+    [
+        "size",
+        "sizes",
+        "sized",
+        "sizing",
+        "resize",
+        "resized",
+        "resizing",
+        "downsize",
+        "downsized",
+        "upsize",
+        "oversize",
+        "oversized",
+        "prize",
+        "prizes",
+        "prized",
+        "seize",
+        "seized",
+        "seizing",
+        "capsize",
+        "capsized",
+    ]
+)
 
 
 def _ize_to_ise(match: re.Match[str]) -> str:
@@ -440,17 +379,10 @@ RULES: dict[str, Rules] = {
 class Translator:
     def __init__(self, rules: Rules) -> None:
         self.words = {word.lower(): new for word, new in rules.words.items()}
+        names = sorted(self.words, key=len, reverse=True)
         self.word_pattern = (
-            re.compile(
-                r"\b("
-                + "|".join(
-                    re.escape(word)
-                    for word in sorted(self.words, key=len, reverse=True)
-                )
-                + r")\b",
-                re.IGNORECASE,
-            )
-            if self.words
+            re.compile(r"\b(" + "|".join(map(re.escape, names)) + r")\b", re.IGNORECASE)
+            if names
             else None
         )
         self.regex = [(re.compile(pattern), repl) for pattern, repl in rules.regex]
@@ -467,35 +399,30 @@ class Translator:
             else None
         )
 
-    def _swap_word(self, match: re.Match[str]) -> str:
+    def swap(self, match: re.Match[str]) -> str:
         source = match.group(0)
         target = self.words[source.lower()]
 
         if len(source) > 1 and source.isupper():
             return target.upper()
 
-        if source[0].isupper():
-            return target[0].upper() + target[1:]
-
-        return target
-
-    def _apply(self, text: str) -> str:
-        if self.word_pattern:
-            text = self.word_pattern.sub(self._swap_word, text)
-
-        for pattern, repl in self.regex:
-            text = pattern.sub(repl, text)
-
-        if self.quote_table:
-            text = text.translate(self.quote_table)
-
-        return text
+        return target[0].upper() + target[1:] if source[0].isupper() else target
 
     def translate(self, text: str) -> str:
         parts = PROTECTED.split(text)
 
         for index in range(0, len(parts), 2):
-            parts[index] = self._apply(parts[index])
+            part = parts[index]
+
+            if self.word_pattern:
+                part = self.word_pattern.sub(self.swap, part)
+
+            for pattern, repl in self.regex:
+                part = pattern.sub(repl, part)
+
+            parts[index] = (
+                part.translate(self.quote_table) if self.quote_table else part
+            )
 
         return "".join(parts)
 
@@ -503,19 +430,7 @@ class Translator:
         if isinstance(node, dict):
             return {key: self.derive(value) for key, value in node.items()}
 
-        if isinstance(node, str):
-            return self.translate(node)
-
-        return node
-
-
-# ---------------------------------------------------------------------------
-# Utilitários de arquivo e JSON
-# ---------------------------------------------------------------------------
-@dataclass
-class LocaleFile:
-    path: Path
-    data: JsonObject
+        return self.translate(node) if isinstance(node, str) else node
 
 
 def display_path(path: Path) -> Path:
@@ -527,19 +442,21 @@ def display_path(path: Path) -> Path:
 
 def json_error(path: Path, exc: json.JSONDecodeError) -> SyncError:
     lines = exc.doc.splitlines() or [""]
-    text = lines[exc.lineno - 1] if 0 < exc.lineno <= len(lines) else ""
+    text = lines[exc.lineno - 1] if exc.lineno <= len(lines) else ""
     text = text.replace("\t", " ").rstrip()
-    shown = text if len(text) <= 100 else text[:100] + "..."
+    shown = text[:100] + ("..." if len(text) > 100 else "")
     prefix = f"linha {exc.lineno}: "
-    caret = min(max(exc.colno - 1, 0), len(shown))
     hint = next(
-        (text for start, text in JSON_HINTS.items() if exc.msg.startswith(start)),
+        (hint for start, hint in JSON_HINTS.items() if exc.msg.startswith(start)),
         JSON_HINT_DEFAULT,
     )
 
     return SyncError(
         "E02",
-        extra=[prefix + shown, " " * (len(prefix) + caret) + "^"],
+        extra=[
+            prefix + shown,
+            " " * (len(prefix) + min(exc.colno - 1, len(shown))) + "^",
+        ],
         path=display_path(path),
         line=exc.lineno,
         col=exc.colno,
@@ -570,7 +487,6 @@ def dump_json(data: JsonObject) -> str:
 
 
 def write_text(path: Path, text: str) -> bool:
-    """Grava só se o conteúdo mudou (não mexe na data do arquivo à toa)."""
     try:
         if path.exists() and path.read_text(encoding="utf-8") == text:
             return False
@@ -586,14 +502,18 @@ def write_text(path: Path, text: str) -> bool:
 
 
 def digest(data: JsonObject) -> str:
-    """Hash do CONTEÚDO (ignora formatação, então o Prettier não atrapalha)."""
     text = json.dumps(data, ensure_ascii=False, sort_keys=True)
+
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def join(prefix: str, key: str) -> str:
+    return f"{prefix}.{key}" if prefix else key
 
 
 def leaves(node: JsonObject, prefix: str = "") -> Iterator[tuple[str, JsonValue]]:
     for key, value in node.items():
-        path = f"{prefix}.{key}" if prefix else key
+        path = join(prefix, key)
 
         if isinstance(value, dict):
             yield from leaves(value, path)
@@ -602,7 +522,6 @@ def leaves(node: JsonObject, prefix: str = "") -> Iterator[tuple[str, JsonValue]
 
 
 def differing_paths(first: JsonObject, second: JsonObject) -> list[str]:
-    """Caminhos cujo valor difere (ou existe só de um lado), na ordem de `first`."""
     left, right = dict(leaves(first)), dict(leaves(second))
     paths = [path for path in left if left[path] != right.get(path)]
 
@@ -610,35 +529,27 @@ def differing_paths(first: JsonObject, second: JsonObject) -> list[str]:
 
 
 def merge(base: JsonObject, override: JsonObject) -> JsonObject:
-    """Aplica o override sobre a base, mantendo a ordem das chaves da base."""
     result: JsonObject = {}
 
     for key, value in base.items():
-        if key not in override:
-            result[key] = value
-            continue
-
-        other = override[key]
-
-        if isinstance(value, dict) and isinstance(other, dict):
-            result[key] = merge(value, other)
-        else:
-            result[key] = other
+        other = override.get(key, value)
+        result[key] = (
+            merge(value, other)
+            if isinstance(value, dict) and isinstance(other, dict)
+            else other
+        )
 
     return result
 
 
 def diff(actual: JsonObject, expected: JsonObject) -> JsonObject:
-    """Só o que em `actual` difere de `expected` (usado para criar overrides)."""
     result: JsonObject = {}
 
     for key, value in actual.items():
         other = expected.get(key)
 
         if isinstance(value, dict) and isinstance(other, dict):
-            nested = diff(value, other)
-
-            if nested:
+            if nested := diff(value, other):
                 result[key] = nested
         elif value != other:
             result[key] = value
@@ -646,94 +557,69 @@ def diff(actual: JsonObject, expected: JsonObject) -> JsonObject:
     return result
 
 
-def remove_redundant(override: JsonObject, derived: JsonObject) -> list[str]:
-    """Apaga do override o que as regras já produzem. Devolve os caminhos."""
+def remove_redundant(
+    override: JsonObject, derived: JsonObject, prefix: str = ""
+) -> list[str]:
     removed: list[str] = []
 
-    def walk(node: JsonObject, expected: JsonObject, prefix: str) -> None:
-        for key in list(node):
-            path = f"{prefix}.{key}" if prefix else key
-            value, other = node[key], expected.get(key)
+    for key in list(override):
+        path = join(prefix, key)
+        value, other = override[key], derived.get(key)
 
-            if isinstance(value, dict) and isinstance(other, dict):
-                walk(value, other, path)
+        if isinstance(value, dict) and isinstance(other, dict):
+            removed += remove_redundant(value, other, path)
 
-                if not value:
-                    del node[key]
-            elif value == other:
-                removed.append(path)
-                del node[key]
+            if not value:
+                del override[key]
+        elif value == other:
+            removed.append(path)
+            del override[key]
 
-    walk(override, derived, "")
     return removed
 
 
-def fill_missing(
-    target: JsonObject,
-    source: JsonObject,
-    mark_todo: bool,
-    prefix: str = "",
-) -> list[str]:
+def fill_missing(target: JsonObject, source: JsonObject, prefix: str = "") -> list[str]:
     added: list[str] = []
 
     for key, value in source.items():
-        path = f"{prefix}.{key}" if prefix else key
+        path = join(prefix, key)
 
         if isinstance(value, dict):
             existing = target.get(key)
             child: JsonObject = existing if isinstance(existing, dict) else {}
             target[key] = child
-
-            added.extend(fill_missing(child, value, mark_todo, path))
-            continue
-
-        if key in target:
-            continue
-
-        if mark_todo and isinstance(value, str):
-            target[key] = TODO_MARKER + value
-        else:
-            target[key] = value
-
-        added.append(path)
+            added += fill_missing(child, value, path)
+        elif key not in target:
+            target[key] = f"{TODO_MARKER} {value}" if isinstance(value, str) else value
+            added.append(path)
 
     return added
 
 
-def find_orphans(
-    target: JsonObject,
-    source: JsonObject,
-    prefix: str = "",
-) -> list[str]:
+def find_orphans(target: JsonObject, source: JsonObject, prefix: str = "") -> list[str]:
     orphans: list[str] = []
 
     for key, value in target.items():
-        path = f"{prefix}.{key}" if prefix else key
+        path = join(prefix, key)
+        other = source.get(key)
 
         if key not in source:
             orphans.append(path)
-            continue
-
-        source_value = source[key]
-
-        if isinstance(value, dict) and isinstance(source_value, dict):
-            orphans.extend(find_orphans(value, source_value, path))
+        elif isinstance(value, dict) and isinstance(other, dict):
+            orphans += find_orphans(value, other, path)
 
     return orphans
 
 
 def todo_paths(data: JsonObject) -> list[str]:
-    marker = TODO_MARKER.strip()
-
     return [
         path
         for path, value in leaves(data)
-        if isinstance(value, str) and value.startswith(marker)
+        if isinstance(value, str) and value.startswith(TODO_MARKER)
     ]
 
 
 def placeholder_problems(data: JsonObject, master: JsonObject) -> list[str]:
-    """Chaves cujos {placeholders} diferem dos do arquivo mestre."""
     expected = {
         path: sorted(PLACEHOLDER.findall(value))
         for path, value in leaves(master)
@@ -742,7 +628,7 @@ def placeholder_problems(data: JsonObject, master: JsonObject) -> list[str]:
     problems: list[str] = []
 
     for path, value in leaves(data):
-        if path in expected and isinstance(value, str):
+        if isinstance(value, str) and path in expected:
             found = sorted(PLACEHOLDER.findall(value))
 
             if found != expected[path]:
@@ -753,112 +639,85 @@ def placeholder_problems(data: JsonObject, master: JsonObject) -> list[str]:
     return problems
 
 
-# ---------------------------------------------------------------------------
-# Schema e .d.ts
-# ---------------------------------------------------------------------------
-def build_schema(node: JsonValue, path: str = "") -> JsonObject:
-    # Nenhum objeto leva "required": toda chave é OPCIONAL. Por isso o mesmo
-    # schema serve para os arquivos completos e para os overrides parciais.
-    # O additionalProperties=false continua barrando chaves digitadas errado.
+def build_schema(node: JsonValue) -> JsonObject:
     if isinstance(node, dict):
         return {
             "type": "object",
             "additionalProperties": False,
-            "properties": {
-                key: build_schema(value, f"{path}.{key}" if path else key)
-                for key, value in node.items()
-            },
+            "properties": {key: build_schema(value) for key, value in node.items()},
         }
-
-    if isinstance(node, str):
-        return {"type": "string"}
-
-    if isinstance(node, bool):
-        return {"type": "boolean"}
-
-    if isinstance(node, int):
-        return {"type": "integer"}
-
-    if isinstance(node, float):
-        return {"type": "number"}
 
     if isinstance(node, list):
-        return {
-            "type": "array",
-            "items": build_schema(node[0], f"{path}[0]") if node else {},
-        }
+        return {"type": "array", "items": build_schema(node[0]) if node else {}}
 
-    if node is None:
-        return {"type": "null"}
-
-    raise SyncError(
-        "E08", kind=type(node).__name__, path=path or "(raiz)", master=MASTER
-    )
-
-
-def write_schema(directory: Path, master_data: JsonObject) -> tuple[Path, bool]:
-    schema: JsonObject = {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "i18n schema (gerado automaticamente a partir de pt-BR.json; todas as chaves são opcionais)",
-        **build_schema(master_data),
-    }
-    path = directory / "schemas" / SCHEMA_FILENAME
-
-    return path, write_text(path, dump_json(schema))
-
-
-def write_dts(directory: Path, master_data: JsonObject) -> tuple[Path, bool]:
-    literal = json.dumps(master_data, ensure_ascii=False, indent=4)
-    path = directory / DTS_FILENAME
-
-    return path, write_text(
-        path, f"declare const ptBR: {literal}\n\nexport default ptBR\n"
-    )
-
-
-# ---------------------------------------------------------------------------
-# Programa principal
-# ---------------------------------------------------------------------------
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=Msg.HELP_DESCRIPTION)
-    parser.add_argument("directory", nargs="?", type=Path, help=Msg.HELP_DIRECTORY)
-    parser.add_argument("--migrate", action="store_true", help=Msg.HELP_MIGRATE)
-    parser.add_argument("--prune", action="store_true", help=Msg.HELP_PRUNE)
-    parser.add_argument("--force", action="store_true", help=Msg.HELP_FORCE)
-    parser.add_argument("--nosleep", action="store_true", help=Msg.HELP_NOSLEEP)
-    parser.add_argument("--debug", action="store_true", help=Msg.HELP_DEBUG)
-
-    verbosity = parser.add_mutually_exclusive_group()
-    verbosity.add_argument("-q", "--quiet", action="store_true", help=Msg.HELP_QUIET)
-    verbosity.add_argument(
-        "-v", "--verbose", action="store_true", help=Msg.HELP_VERBOSE
-    )
-
-    return parser.parse_args()
+    return {"type": SCHEMA_TYPES[type(node)]}
 
 
 @dataclass
 class VariantReport:
     variant: str
     base: str
-    total: int = 0
-    inherited: int = 0
-    rules: int = 0
-    overrides: int = 0
+    total: int
+    rules: int
+    overrides: int
     blocked: bool = False
 
 
-def run(args: argparse.Namespace, out: Console, script: str) -> int:
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Sincroniza os arquivos de i18n (bases escritas à mão + variantes geradas)."
+    )
+    parser.add_argument(
+        "directory",
+        nargs="?",
+        type=Path,
+        help="pasta dos JSONs (padrão: a pasta deste script)",
+    )
+    parser.add_argument(
+        "--migrate",
+        action="store_true",
+        help="cria overrides/ a partir das variantes atuais (use UMA vez)",
+    )
+    parser.add_argument(
+        "--prune",
+        action="store_true",
+        help="apaga dos overrides o que as regras já geram",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="sobrescreve variantes editadas à mão e overrides existentes",
+    )
+    parser.add_argument(
+        "--nosleep", action="store_true", help="sem pausas entre os tópicos"
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="mostra o traceback completo quando algo falha",
+    )
+    verbosity = parser.add_mutually_exclusive_group()
+    verbosity.add_argument(
+        "-q", "--quiet", action="store_true", help="só avisos, erros e a linha final"
+    )
+    verbosity.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="mostra também as listas completas de chaves",
+    )
+
+    return parser.parse_args()
+
+
+def run(args: argparse.Namespace, out: Console) -> int:
     directory: Path = args.directory or Path(__file__).resolve().parent
-    overrides_dir = directory / OVERRIDES_DIRNAME
-    lock_path = directory / LOCK_FILENAME
-    marker = TODO_MARKER.strip()
+    overrides_dir = directory / "overrides"
+    lock_path = directory / "i18n.lock.json"
 
     out.header(Msg.TITLE)
     out.line(Msg.HEADER_DIR, path=directory)
     out.line(Msg.HEADER_MASTER, name=MASTER)
-
-    # 1/5 Bases ----------------------------------------------------------------
     out.section(Msg.SEC_BASES, master=MASTER)
 
     if not (directory / f"{MASTER}.json").exists():
@@ -866,71 +725,62 @@ def run(args: argparse.Namespace, out: Console, script: str) -> int:
             "E01", path=display_path(directory / f"{MASTER}.json"), dir=directory
         )
 
-    bases: dict[str, LocaleFile] = {}
+    bases: dict[str, JsonObject] = {}
 
     for name in BASES:
         path = directory / f"{name}.json"
 
-        if not path.exists():
-            out.warn(Msg.BASE_MISSING, name=name, dir=display_path(directory))
-            dependents = [v for v, base in VARIANTS.items() if base == name]
-
-            if dependents:
-                out.note(Msg.BASE_MISSING_NOTE, level=0, variants=", ".join(dependents))
-
+        if path.exists():
+            bases[name] = load(path)
             continue
 
-        bases[name] = LocaleFile(path=path, data=load(path))
+        out.warn(Msg.BASE_MISSING, name=name, dir=display_path(directory))
 
-    master = bases[MASTER].data
+        if dependents := [v for v, base in VARIANTS.items() if base == name]:
+            out.note(Msg.BASE_MISSING_NOTE, level=0, variants=", ".join(dependents))
 
-    for name, info in bases.items():
-        if name == MASTER:
-            continue
-
-        added = fill_missing(info.data, master, mark_todo=True)
-
-        if added:
-            write_text(info.path, dump_json(info.data))
-            out.say(
-                Tag.CHANGED, Msg.BASE_ADDED, name=name, count=len(added), marker=marker
-            )
-        else:
-            out.say(Tag.OK, Msg.BASE_OK, name=name)
-
+    master = bases[MASTER]
     pending = 0
 
-    for name, info in bases.items():
-        todos = todo_paths(info.data)
+    for name, data in bases.items():
+        if name != MASTER:
+            if added := fill_missing(data, master):
+                write_text(directory / f"{name}.json", dump_json(data))
+                out.say(
+                    "ALTERADO",
+                    Msg.BASE_ADDED,
+                    name=name,
+                    count=len(added),
+                    marker=TODO_MARKER,
+                )
+            else:
+                out.say("OK", Msg.BASE_OK, name=name)
 
-        if todos:
+        if todos := todo_paths(data):
             pending += len(todos)
             out.say(
-                Tag.PENDING,
+                "PENDENTE",
                 Msg.BASE_PENDING,
                 level=0,
                 name=name,
                 count=len(todos),
-                marker=marker,
+                marker=TODO_MARKER,
             )
             out.items(todos)
 
-    # 2/5 Variantes ------------------------------------------------------------
     out.section(Msg.SEC_VARIANTS)
+    lock: JsonObject = load(lock_path) if lock_path.exists() else {}
 
-    lock = cast(dict[str, str], load(lock_path)) if lock_path.exists() else {}
-
-    if args.migrate and not args.force:
+    if args.migrate:
         existing = [
             str(display_path(overrides_dir / f"{variant}.json"))
             for variant in VARIANTS
             if (overrides_dir / f"{variant}.json").exists()
         ]
 
-        if existing:
+        if existing and not args.force:
             raise SyncError("E04", paths=", ".join(existing))
 
-    if args.migrate:
         missing = [
             f"{variant}.json"
             for variant in VARIANTS
@@ -953,69 +803,51 @@ def run(args: argparse.Namespace, out: Console, script: str) -> int:
             out.warn(Msg.VARIANT_BASE_MISSING, variant=variant, base=base_name)
             continue
 
-        base = bases[base_name].data
+        base = bases[base_name]
         derived = cast(JsonObject, Translator(RULES[variant]).derive(base))
         variant_path = directory / f"{variant}.json"
         override_path = overrides_dir / f"{variant}.json"
-        override_label = display_path(override_path)
+        label = display_path(override_path)
         on_disk = load(variant_path) if variant_path.exists() else None
 
         if args.migrate:
-            if on_disk is None:  # já checado acima; só para o tipo
-                raise SyncError(
-                    "E05",
-                    variants=f"{variant}.json",
-                    path=directory,
-                    overrides_dir=display_path(overrides_dir),
-                )
-
-            override = diff(on_disk, derived)
+            override = diff(on_disk or {}, derived)
             write_text(override_path, dump_json(override))
             out.say(
-                Tag.MIGRATED,
+                "MIGRADO",
                 Msg.MIGRATED,
-                path=override_label,
-                count=sum(1 for _ in leaves(override)),
+                path=label,
+                count=len(dict(leaves(override))),
                 variant=variant,
             )
             out.note(Msg.MIGRATED_NOTE)
         elif override_path.exists():
             override = load(override_path)
         elif on_disk is not None:
-            raise SyncError("E06", variant=variant, override=override_label)
+            raise SyncError("E06", variant=variant, override=label)
         else:
             override = {}
 
-        orphans = find_orphans(override, base)
-
-        if orphans:
+        if orphans := find_orphans(override, base):
             out.warn(
-                Msg.OVERRIDE_ORPHANS,
-                path=override_label,
-                count=len(orphans),
-                base=base_name,
+                Msg.OVERRIDE_ORPHANS, path=label, count=len(orphans), base=base_name
             )
             out.items(orphans, level=0)
 
-        if args.prune:
-            removed = remove_redundant(override, derived)
+        redundant = remove_redundant(
+            override if args.prune else deepcopy(override), derived
+        )
 
-            if removed:
-                write_text(override_path, dump_json(override))
-                out.say(Tag.PRUNED, Msg.PRUNED, path=override_label, count=len(removed))
-                out.items(removed, level=2)
-        else:
-            redundant = remove_redundant(json.loads(json.dumps(override)), derived)
-
-            if redundant:
-                out.say(
-                    Tag.TIP, Msg.REDUNDANT, path=override_label, count=len(redundant)
-                )
-                out.items(redundant, level=2)
+        if redundant and args.prune:
+            write_text(override_path, dump_json(override))
+            out.say("PODADO", Msg.PRUNED, path=label, count=len(redundant))
+            out.items(redundant, level=2)
+        elif redundant:
+            out.say("DICA", Msg.REDUNDANT, path=label, count=len(redundant))
+            out.items(redundant, level=2)
 
         final = merge(derived, override)
         outputs[variant] = final
-
         overridden = {path for path, _ in leaves(override)} - set(orphans)
         rule_paths = [
             path
@@ -1023,35 +855,32 @@ def run(args: argparse.Namespace, out: Console, script: str) -> int:
             if new != old and path not in overridden
         ]
         report = VariantReport(
-            variant=variant,
-            base=base_name,
-            total=sum(1 for _ in leaves(final)),
-            rules=len(rule_paths),
-            overrides=len(overridden),
+            variant,
+            base_name,
+            len(dict(leaves(final))),
+            len(rule_paths),
+            len(overridden),
         )
-        report.inherited = report.total - report.rules - report.overrides
         reports.append(report)
 
-        if rule_paths and out.verbosity >= 2:
+        if rule_paths:
             out.say(
-                Tag.OK, Msg.RULES_LIST, level=2, variant=variant, count=len(rule_paths)
+                "OK", Msg.RULES_LIST, level=2, variant=variant, count=len(rule_paths)
             )
             out.items(rule_paths, level=2)
 
-        # Proteção contra edição manual do arquivo gerado.
         if (
             on_disk is not None
             and variant in lock
-            and not args.migrate
-            and not args.force
+            and not (args.migrate or args.force)
             and digest(on_disk) != lock[variant]
         ):
             report.blocked = True
             edited = differing_paths(on_disk, final)
-            out.say(Tag.BLOCKED, Msg.BLOCKED, level=0, variant=variant)
+            out.say("BLOQUEADO", Msg.BLOCKED, level=0, variant=variant)
             out.note(Msg.BLOCKED_DIFF, level=0, count=len(edited))
             out.items(edited, level=0)
-            out.note(Msg.BLOCKED_KEEP, level=0, path=override_label)
+            out.note(Msg.BLOCKED_KEEP, level=0, path=label)
             out.note(Msg.BLOCKED_DROP, level=0)
             continue
 
@@ -1060,106 +889,105 @@ def run(args: argparse.Namespace, out: Console, script: str) -> int:
 
         if on_disk is None:
             out.say(
-                Tag.CHANGED, Msg.VARIANT_CREATED, variant=variant, total=report.total
+                "ALTERADO", Msg.VARIANT_CREATED, variant=variant, total=report.total
             )
         elif not wrote:
-            out.say(Tag.OK, Msg.VARIANT_UNCHANGED, variant=variant, total=report.total)
+            out.say("OK", Msg.VARIANT_UNCHANGED, variant=variant, total=report.total)
+        elif changed := differing_paths(on_disk, final):
+            out.say(
+                "ALTERADO",
+                Msg.VARIANT_UPDATED,
+                variant=variant,
+                changed=len(changed),
+                total=report.total,
+            )
+            out.items(changed, level=2)
         else:
-            changed = differing_paths(on_disk, final)
+            out.say("ALTERADO", Msg.VARIANT_REFORMATTED, variant=variant)
 
-            if changed:
-                out.say(
-                    Tag.CHANGED,
-                    Msg.VARIANT_UPDATED,
-                    variant=variant,
-                    changed=len(changed),
-                    total=report.total,
-                )
-                out.items(changed, level=2)
-            else:
-                out.say(Tag.CHANGED, Msg.VARIANT_REFORMATTED, variant=variant)
+    write_text(lock_path, dump_json(dict(sorted(lock.items()))))
 
-    write_text(lock_path, dump_json(cast(JsonObject, dict(sorted(lock.items())))))
-
-    # 3/5 Órfãs nas bases ------------------------------------------------------
     out.section(Msg.SEC_ORPHANS)
 
-    for name, info in bases.items():
+    for name, data in bases.items():
         if name == MASTER:
             continue
 
-        orphans = find_orphans(info.data, master)
+        if orphans := find_orphans(data, master):
+            out.warn(Msg.ORPHANS_FOUND, name=name, count=len(orphans), master=MASTER)
+            out.items(orphans, level=0)
+        else:
+            out.say("OK", Msg.ORPHANS_OK, name=name)
 
-        if not orphans:
-            out.say(Tag.OK, Msg.ORPHANS_OK, name=name)
-            continue
-
-        out.warn(Msg.ORPHANS_FOUND, name=name, count=len(orphans), master=MASTER)
-        out.items(orphans, level=0)
-
-    # 4/5 Placeholders ---------------------------------------------------------
     out.section(Msg.SEC_PLACEHOLDERS)
-    every_locale = {name: info.data for name, info in bases.items()} | outputs
+    every_locale = bases | outputs
     placeholders_ok = True
 
     for name, data in every_locale.items():
-        problems = placeholder_problems(data, master)
-
-        if not problems:
-            continue
-
-        placeholders_ok = False
-        out.warn(Msg.PLACEHOLDERS_BAD, name=name, count=len(problems), master=MASTER)
-        out.items(problems, level=0)
+        if problems := placeholder_problems(data, master):
+            placeholders_ok = False
+            out.warn(
+                Msg.PLACEHOLDERS_BAD, name=name, count=len(problems), master=MASTER
+            )
+            out.items(problems, level=0)
 
     if placeholders_ok:
-        out.say(Tag.OK, Msg.PLACEHOLDERS_OK, master=MASTER, count=len(every_locale))
+        out.say("OK", Msg.PLACEHOLDERS_OK, master=MASTER, count=len(every_locale))
     else:
         out.note(Msg.PLACEHOLDERS_NOTE, level=0)
 
-    # 5/5 Schema e .d.ts -------------------------------------------------------
     out.section(Msg.SEC_ARTIFACTS)
-
-    path, wrote = write_schema(directory, master)
-    out.say(
-        Tag.OK,
-        Msg.SCHEMA_UPDATED if wrote else Msg.SCHEMA_UNCHANGED,
-        path=display_path(path),
+    schema: JsonObject = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "i18n schema (gerado automaticamente a partir de pt-BR.json; todas as chaves são opcionais)",
+        **build_schema(master),
+    }
+    literal = json.dumps(master, ensure_ascii=False, indent=4)
+    artifacts = (
+        ("Schema", directory / "schemas" / "i18n.schema.json", dump_json(schema)),
+        (
+            ".d.ts",
+            directory / f"{MASTER}.d.ts",
+            f"declare const ptBR: {literal}\n\nexport default ptBR\n",
+        ),
     )
 
-    path, wrote = write_dts(directory, master)
-    out.say(
-        Tag.OK, Msg.DTS_UPDATED if wrote else Msg.DTS_UNCHANGED, path=display_path(path)
-    )
+    for name, path, text in artifacts:
+        wrote = write_text(path, text)
+        out.say(
+            "OK",
+            Msg.ARTIFACT_UPDATED if wrote else Msg.ARTIFACT_UNCHANGED,
+            name=name,
+            path=display_path(path),
+        )
 
-    # Resumo -------------------------------------------------------------------
     out.section(Msg.SEC_SUMMARY)
 
     for report in reports:
+        label = f"{report.variant} (de {report.base})"
+
         if report.blocked:
-            out.line(Msg.SUMMARY_BLOCKED, label=f"{report.variant} (de {report.base})")
+            out.line(Msg.SUMMARY_BLOCKED, label=label)
         else:
             out.line(
                 Msg.SUMMARY_LINE,
-                label=f"{report.variant} (de {report.base})",
+                label=label,
                 total=report.total,
-                inherited=report.inherited,
+                inherited=report.total - report.rules - report.overrides,
                 rules=report.rules,
                 overrides=report.overrides,
             )
 
-    blocked = sum(1 for report in reports if report.blocked)
-    issues: list[str] = []
-
-    if blocked:
-        issues.append(Msg.ISSUE_BLOCKED.format(count=blocked))
-
-    if out.warnings:
-        issues.append(Msg.ISSUE_WARNINGS.format(count=out.warnings))
-
-    if pending:
-        issues.append(Msg.ISSUE_PENDING.format(count=pending, marker=marker))
-
+    blocked = sum(report.blocked for report in reports)
+    issues = [
+        text.format(count=count, marker=TODO_MARKER)
+        for count, text in (
+            (blocked, Msg.ISSUE_BLOCKED),
+            (out.warnings, Msg.ISSUE_WARNINGS),
+            (pending, Msg.ISSUE_PENDING),
+        )
+        if count
+    ]
     out.final(
         Msg.FINAL_ISSUES.format(issues=", ".join(issues)) if issues else Msg.FINAL_CLEAN
     )
@@ -1168,19 +996,18 @@ def run(args: argparse.Namespace, out: Console, script: str) -> int:
 
 
 def main() -> int:
-    if hasattr(sys.stdout, "reconfigure"):
-        cast(Any, sys.stdout).reconfigure(
-            errors="replace"
-        )  # nunca quebrar por causa de acento no console
+    if isinstance(sys.stdout, io.TextIOWrapper):
+        sys.stdout.reconfigure(errors="replace")  # type: ignore
 
     args = parse_args()
-    verbosity = 0 if args.quiet else 2 if args.verbose else 1
-    pause = 0 if args.nosleep or not sys.stdout.isatty() else PAUSE_SECONDS
-    out = Console(verbosity, pause)
+    out = Console(
+        0 if args.quiet else 2 if args.verbose else 1,
+        0 if args.nosleep or not sys.stdout.isatty() else PAUSE_SECONDS,  # type: ignore
+    )
     script = Path(sys.argv[0]).name
 
     try:
-        return run(args, out, script)
+        return run(args, out)
     except SyncError as error:
         print()
         out.error(error, script)
@@ -1191,7 +1018,7 @@ def main() -> int:
         return 1
     except KeyboardInterrupt:
         print()
-        out.say(Tag.INTERRUPTED, Msg.INTERRUPTED, level=0)
+        out.say("INTERROMPIDO", Msg.INTERRUPTED, level=0)
         return 130
     except Exception as exc:
         if args.debug:

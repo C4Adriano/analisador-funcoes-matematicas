@@ -1,8 +1,6 @@
-// Variáveis
 $bg-color: #000;
 $font-stack: "times new roman", times, serif;
 
-// Cores do ciclo RGB, na ordem em que aparecem na animação
 $rgb-colors: (
     0%: (
         255,
@@ -60,7 +58,6 @@ h1 {
     animation: rgb-colors 35s linear infinite;
 }
 
-// RGB colors animation
 @keyframes rgb-colors {
     @each $stop, $rgb in $rgb-colors {
         #{$stop} {
